@@ -300,4 +300,13 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     public List<V> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException("Creating in-memory sub-lists is currently not supported.");
     }
+
+    @Override
+    public String toString() {
+        return "LayeredStack{" +
+                "parent=" + parent +
+                ", layer=" + layer +
+                ", size=" + size +
+                '}';
+    }
 }

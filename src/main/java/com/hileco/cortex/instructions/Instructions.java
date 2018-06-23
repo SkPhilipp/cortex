@@ -2,7 +2,6 @@ package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.primitives.LayeredMap;
 import com.hileco.cortex.primitives.LayeredStack;
-import com.hileco.cortex.primitives.ProcessContext;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -12,7 +11,7 @@ import java.util.Map;
 public class Instructions {
 
     public interface InstructionExecutor<T extends InstructionData> {
-        void execute(ProcessContext context, T Data);
+        void execute(ProgramContext context, T Data);
     }
 
     public interface InstructionData {
@@ -20,6 +19,8 @@ public class Instructions {
 
     public static class NoData implements InstructionData {
     }
+
+    public static NoData NO_DATA = new NoData();
 
     // --------------------------------------------------------------------------------------------
     // --                                                                                        --
@@ -32,13 +33,18 @@ public class Instructions {
             public byte[] bytes;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             context.getStack().push(data.bytes);
+        }
+
+        @Override
+        public String toString() {
+            return "PUSH";
         }
     }
 
     public static class Pop implements InstructionExecutor<NoData> {
-        public void execute(ProcessContext context, NoData data) {
+        public void execute(ProgramContext context, NoData data) {
             context.getStack().pop();
         }
     }
@@ -49,8 +55,13 @@ public class Instructions {
             public int topOffsetRight;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             context.getStack().swap(data.topOffsetLeft, data.topOffsetRight);
+        }
+
+        @Override
+        public String toString() {
+            return "POP";
         }
     }
 
@@ -59,8 +70,13 @@ public class Instructions {
             public int topOffset;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             context.getStack().duplicate(data.topOffset);
+        }
+
+        @Override
+        public String toString() {
+            return "DUPLICATE";
         }
     }
 
@@ -74,7 +90,7 @@ public class Instructions {
     private static byte[] FALSE = {0};
 
     private static abstract class ConditionInstructionExecutor implements InstructionExecutor<NoData> {
-        public void execute(ProcessContext context, NoData data) {
+        public void execute(ProgramContext context, NoData data) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
@@ -90,6 +106,12 @@ public class Instructions {
         public boolean innerExecute(byte[] left, byte[] right) {
             return Arrays.equals(left, right);
         }
+
+
+        @Override
+        public String toString() {
+            return "EQUALS";
+        }
     }
 
     public static class GreaterThan extends ConditionInstructionExecutor {
@@ -98,6 +120,11 @@ public class Instructions {
             BigInteger leftAsBigInteger = new BigInteger(left);
             BigInteger rightAsBigInteger = new BigInteger(right);
             return leftAsBigInteger.compareTo(rightAsBigInteger) > 0;
+        }
+
+        @Override
+        public String toString() {
+            return "GREATER_THAN";
         }
     }
 
@@ -108,10 +135,15 @@ public class Instructions {
             BigInteger rightAsBigInteger = new BigInteger(right);
             return leftAsBigInteger.compareTo(rightAsBigInteger) < 0;
         }
+
+        @Override
+        public String toString() {
+            return "LESS_THAN";
+        }
     }
 
     public static class IsZero implements InstructionExecutor<NoData> {
-        public void execute(ProcessContext context, NoData data) {
+        public void execute(ProgramContext context, NoData data) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] top = stack.pop();
             boolean isZero = true;
@@ -121,6 +153,11 @@ public class Instructions {
                 }
             }
             stack.push(isZero ? TRUE.clone() : FALSE.clone());
+        }
+
+        @Override
+        public String toString() {
+            return "IS_ZERO";
         }
     }
 
@@ -132,7 +169,7 @@ public class Instructions {
 
     private static abstract class BitwiseInstructionExecutor implements InstructionExecutor<NoData> {
 
-        public void execute(ProcessContext context, NoData data) {
+        public void execute(ProgramContext context, NoData data) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
@@ -156,6 +193,11 @@ public class Instructions {
             result |= right;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "OR";
+        }
     }
 
     public static class BitwiseXor extends BitwiseInstructionExecutor {
@@ -164,6 +206,11 @@ public class Instructions {
             byte result = left;
             result ^= right;
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "XOR";
         }
     }
 
@@ -174,11 +221,16 @@ public class Instructions {
             result &= right;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "AND";
+        }
     }
 
     public static class BitwiseNot implements InstructionExecutor<NoData> {
         @Override
-        public void execute(ProcessContext context, NoData Data) {
+        public void execute(ProgramContext context, NoData Data) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] pop = stack.pop();
             byte[] result = new byte[pop.length];
@@ -187,6 +239,11 @@ public class Instructions {
                 result[i] ^= pop[i];
             }
             stack.push(result);
+        }
+
+        @Override
+        public String toString() {
+            return "NOT";
         }
     }
 
@@ -198,7 +255,7 @@ public class Instructions {
 
     private static abstract class MathematicalInstructionExecutor implements InstructionExecutor<NoData> {
 
-        public void execute(ProcessContext context, NoData data) {
+        public void execute(ProgramContext context, NoData data) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
@@ -216,12 +273,22 @@ public class Instructions {
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.add(right);
         }
+
+        @Override
+        public String toString() {
+            return "ADD";
+        }
     }
 
     public static class Subtract extends MathematicalInstructionExecutor {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.subtract(right);
+        }
+
+        @Override
+        public String toString() {
+            return "SUBTRACT";
         }
     }
 
@@ -230,6 +297,11 @@ public class Instructions {
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.multiply(right);
         }
+
+        @Override
+        public String toString() {
+            return "MULTIPLY";
+        }
     }
 
     public static class Divide extends MathematicalInstructionExecutor {
@@ -237,12 +309,22 @@ public class Instructions {
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.divide(right);
         }
+
+        @Override
+        public String toString() {
+            return "DIVIDE";
+        }
     }
 
     public static class Modulo extends MathematicalInstructionExecutor {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.mod(right);
+        }
+
+        @Override
+        public String toString() {
+            return "MODULO";
         }
     }
 
@@ -255,12 +337,17 @@ public class Instructions {
             public String hashMethod;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             if (HASH_METHOD_SHA_3.equals(data.hashMethod)) {
                 throw new UnsupportedOperationException(String.format("Unimplemented hash method: %s", data.hashMethod));
             } else if (!HASH_METHOD_NONE.equals(data.hashMethod)) {
                 throw new IllegalArgumentException(String.format("Unknown hash method: %s", data.hashMethod));
             }
+        }
+
+        @Override
+        public String toString() {
+            return "HASH";
         }
     }
 
@@ -272,45 +359,65 @@ public class Instructions {
 
     public static class Jump implements InstructionExecutor<Jump.Data> {
         public static class Data implements InstructionData {
-            public long destination;
+            public int destination;
         }
 
-        public void execute(ProcessContext context, Data data) {
-            context.setJumpDestinaitonRequired(true);
-            context.setCounter(data.destination);
+        public void execute(ProgramContext context, Data data) {
+            context.setJumping(true);
+            context.setInstructionPosition(data.destination);
+        }
+
+        @Override
+        public String toString() {
+            return "JUMP";
         }
     }
 
     public static class JumpDestination implements InstructionExecutor<NoData> {
-        public void execute(ProcessContext context, NoData data) {
-            context.setJumpDestinaitonRequired(false);
+        public void execute(ProgramContext context, NoData data) {
+            context.setJumping(false);
+        }
+
+        @Override
+        public String toString() {
+            return "JUMP_DESTINATION";
         }
     }
 
     public static class JumpIf implements InstructionExecutor<JumpIf.Data> {
         public static class Data implements InstructionData {
-            public long destination;
+            public int destination;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] top = stack.pop();
             boolean isZero = true;
             for (byte item : top) {
-                if (item >= 0) {
+                if (item > 0) {
                     isZero = false;
                 }
             }
             if (!isZero) {
-                context.setJumpDestinaitonRequired(true);
-                context.setCounter(data.destination);
+                context.setJumping(true);
+                context.setInstructionPosition(data.destination);
             }
+        }
+
+        @Override
+        public String toString() {
+            return "JUMP_IF";
         }
     }
 
     public static class Exit implements InstructionExecutor<NoData> {
-        public void execute(ProcessContext context, NoData data) {
+        public void execute(ProgramContext context, NoData data) {
             context.setExiting(true);
+        }
+
+        @Override
+        public String toString() {
+            return "EXIT";
         }
     }
 
@@ -326,7 +433,7 @@ public class Instructions {
             public String address;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             Map<String, LayeredMap<String, byte[]>> storage = context.getStorage();
             LayeredStack<byte[]> stack = context.getStack();
             if (!storage.containsKey(data.group)) {
@@ -339,6 +446,11 @@ public class Instructions {
             byte[] bytes = volume.get(data.address);
             stack.push(bytes);
         }
+
+        @Override
+        public String toString() {
+            return "LOAD";
+        }
     }
 
     public static class Save implements InstructionExecutor<Save.Data> {
@@ -347,7 +459,7 @@ public class Instructions {
             public String address;
         }
 
-        public void execute(ProcessContext context, Data data) {
+        public void execute(ProgramContext context, Data data) {
             Map<String, LayeredMap<String, byte[]>> storage = context.getStorage();
             LayeredStack<byte[]> stack = context.getStack();
             byte[] bytes = stack.pop();
@@ -359,6 +471,27 @@ public class Instructions {
                 throw new IllegalArgumentException();
             }
             volume.put(data.address, bytes);
+        }
+
+        @Override
+        public String toString() {
+            return "SAVE";
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // --                                                                                        --
+    // --                              TESTING                                                   --
+    // --                                                                                        --
+    // --------------------------------------------------------------------------------------------
+
+    public static class NoOp implements InstructionExecutor<NoData> {
+        public void execute(ProgramContext context, NoData data) {
+        }
+
+        @Override
+        public String toString() {
+            return "NOOP";
         }
     }
 

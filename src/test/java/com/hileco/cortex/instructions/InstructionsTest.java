@@ -19,7 +19,6 @@ import com.hileco.cortex.instructions.Instructions.LessThan;
 import com.hileco.cortex.instructions.Instructions.Load;
 import com.hileco.cortex.instructions.Instructions.Modulo;
 import com.hileco.cortex.instructions.Instructions.Multiply;
-import com.hileco.cortex.instructions.Instructions.NoData;
 import com.hileco.cortex.instructions.Instructions.Pop;
 import com.hileco.cortex.instructions.Instructions.Push;
 import com.hileco.cortex.instructions.Instructions.Save;
@@ -27,33 +26,31 @@ import com.hileco.cortex.instructions.Instructions.Subtract;
 import com.hileco.cortex.instructions.Instructions.Swap;
 import com.hileco.cortex.primitives.LayeredMap;
 import com.hileco.cortex.primitives.LayeredStack;
-import com.hileco.cortex.primitives.ProcessContext;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
 
+import static com.hileco.cortex.instructions.Instructions.NO_DATA;
+
 public class InstructionsTest {
 
-    private NoData NO_DATA = new NoData();
-
-    private ProcessContext testProcessContext() {
-        ProcessContext processContext = new ProcessContext();
-        LayeredStack<byte[]> stack = processContext.getStack();
+    private ProgramContext testProcessContext() {
+        ProgramContext programContext = new ProgramContext();
+        LayeredStack<byte[]> stack = programContext.getStack();
         stack.push(new byte[]{5});
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        Map<String, LayeredMap<String, byte[]>> storage = processContext.getStorage();
+        Map<String, LayeredMap<String, byte[]>> storage = programContext.getStorage();
         storage.put("MEMORY", new LayeredMap<>());
         storage.get("MEMORY").put("0x1234", new byte[]{0x56, 0x78});
-        return processContext;
+        return programContext;
     }
 
     @Test
     public void runPush() {
-        ProcessContext context;
-        context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Push.Data data = new Push.Data();
         data.bytes = new byte[]{127};
         Push push = new Push();
@@ -62,14 +59,14 @@ public class InstructionsTest {
 
     @Test
     public void runPop() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Pop pop = new Pop();
         pop.execute(context, NO_DATA);
     }
 
     @Test
     public void runSwap() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Swap.Data data = new Swap.Data();
         data.topOffsetLeft = 1;
         data.topOffsetRight = 2;
@@ -79,7 +76,7 @@ public class InstructionsTest {
 
     @Test
     public void runDuplicate() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Duplicate.Data data = new Duplicate.Data();
         data.topOffset = 1;
         Duplicate duplicate = new Duplicate();
@@ -88,91 +85,91 @@ public class InstructionsTest {
 
     @Test
     public void runEquals() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Equals equals = new Equals();
         equals.execute(context, NO_DATA);
     }
 
     @Test
     public void runGreaterThan() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         GreaterThan greaterThan = new GreaterThan();
         greaterThan.execute(context, NO_DATA);
     }
 
     @Test
     public void runLessThan() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         LessThan lessThan = new LessThan();
         lessThan.execute(context, NO_DATA);
     }
 
     @Test
     public void runIsZero() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         IsZero isZero = new IsZero();
         isZero.execute(context, NO_DATA);
     }
 
     @Test
     public void runBitwiseOr() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         BitwiseOr bitwiseOr = new BitwiseOr();
         bitwiseOr.execute(context, NO_DATA);
     }
 
     @Test
     public void runBitwiseXor() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         BitwiseXor bitwiseXor = new BitwiseXor();
         bitwiseXor.execute(context, NO_DATA);
     }
 
     @Test
     public void runBitwiseAnd() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         BitwiseAnd bitwiseAnd = new BitwiseAnd();
         bitwiseAnd.execute(context, NO_DATA);
     }
 
     @Test
     public void runBitwiseNot() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         BitwiseNot bitwiseNot = new BitwiseNot();
         bitwiseNot.execute(context, NO_DATA);
     }
 
     @Test
     public void runAdd() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Add add = new Add();
         add.execute(context, NO_DATA);
     }
 
     @Test
     public void runSubtract() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Subtract subtract = new Subtract();
         subtract.execute(context, NO_DATA);
     }
 
     @Test
     public void runMultiply() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Multiply multiply = new Multiply();
         multiply.execute(context, NO_DATA);
     }
 
     @Test
     public void runDivide() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Divide divide = new Divide();
         divide.execute(context, NO_DATA);
     }
 
     @Test
     public void runModulo() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Modulo modulo = new Modulo();
         modulo.execute(context, NO_DATA);
     }
@@ -180,7 +177,7 @@ public class InstructionsTest {
     @Ignore
     @Test
     public void runHashSha3() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Hash.Data data = new Hash.Data();
         data.hashMethod = "SHA3";
         Hash hash = new Hash();
@@ -189,7 +186,7 @@ public class InstructionsTest {
 
     @Test
     public void runHashNone() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Hash.Data data = new Hash.Data();
         data.hashMethod = "NONE";
         Hash hash = new Hash();
@@ -198,7 +195,7 @@ public class InstructionsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void runHashUnsupported() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Hash.Data data = new Hash.Data();
         data.hashMethod = "Unsupported";
         Hash hash = new Hash();
@@ -207,7 +204,7 @@ public class InstructionsTest {
 
     @Test
     public void runJump() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Jump.Data data = new Jump.Data();
         data.destination = 1;
         Jump jump = new Jump();
@@ -216,14 +213,14 @@ public class InstructionsTest {
 
     @Test
     public void runJumpDestination() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         JumpDestination jumpDestination = new JumpDestination();
         jumpDestination.execute(context, NO_DATA);
     }
 
     @Test
     public void runJumpIf() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         JumpIf.Data data = new JumpIf.Data();
         data.destination = 1;
         JumpIf jumpIf = new JumpIf();
@@ -232,14 +229,14 @@ public class InstructionsTest {
 
     @Test
     public void runExit() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Exit exit = new Exit();
         exit.execute(context, NO_DATA);
     }
 
     @Test
     public void runLoad() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Load.Data data = new Load.Data();
         data.group = "MEMORY";
         data.address = "0x1234";
@@ -249,7 +246,7 @@ public class InstructionsTest {
 
     @Test
     public void runSave() {
-        ProcessContext context = testProcessContext();
+        ProgramContext context = testProcessContext();
         Save.Data data = new Save.Data();
         data.group = "MEMORY";
         data.address = "0x1234";
