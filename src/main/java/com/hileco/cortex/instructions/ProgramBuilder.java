@@ -8,7 +8,7 @@ import static com.hileco.cortex.instructions.Instructions.*;
 public class ProgramBuilder {
     private List<Instruction> instructions;
 
-    public ProgramBuilder() {
+    ProgramBuilder() {
         this.instructions = new ArrayList<>();
     }
 

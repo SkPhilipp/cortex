@@ -3,8 +3,8 @@ package com.hileco.cortex.instructions;
 import static com.hileco.cortex.instructions.Instructions.*;
 
 public class Instruction {
-    final InstructionExecutor executor;
-    final InstructionData data;
+    private final InstructionExecutor executor;
+    private final InstructionData data;
 
     Instruction(InstructionExecutor executor, InstructionData data) {
         this.executor = executor;
@@ -17,5 +17,13 @@ public class Instruction {
 
     public InstructionData getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "Instruction{" +
+                "executor=" + executor +
+                ", data=" + data +
+                '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.hileco.cortex.tree;
 
+
 import com.hileco.cortex.instructions.Instruction;
 
 import java.util.ArrayList;
@@ -10,12 +11,12 @@ import java.util.Optional;
 
 public class TreeBranch {
     private List<TreeBranch> branches;
-    private Instruction instruction;
+    private List<Instruction> instructions;
     private Map<Class<?>, Object> metadata;
 
     public TreeBranch() {
         branches = new ArrayList<>();
-        instruction = null;
+        instructions = null;
         metadata = new HashMap<>();
     }
 
@@ -27,12 +28,12 @@ public class TreeBranch {
         this.branches = branches;
     }
 
-    public Instruction getInstruction() {
-        return instruction;
+    public List<Instruction> getInstructions() {
+        return instructions;
     }
 
-    public void setInstruction(Instruction instruction) {
-        this.instruction = instruction;
+    public void setInstructions(List<Instruction> instructions) {
+        this.instructions = instructions;
     }
 
     public boolean hasBranches() {
@@ -40,7 +41,7 @@ public class TreeBranch {
     }
 
     public boolean isInstruction() {
-        return instruction != null;
+        return instructions != null;
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +58,7 @@ public class TreeBranch {
     public String toString() {
         return "TreeBranch{" +
                 "branches=" + branches +
-                ", instruction=" + instruction +
+                ", instructions=" + instructions +
                 ", metadata=" + metadata +
                 '}';
     }

@@ -20,19 +20,19 @@ public class ProgramRunner {
     public void run(List<Instruction> instructions) throws ProgramException {
         int size = instructions.size();
         System.out.println();
-        System.out.println(String.format("[   SYSTEM   ] Executing program of size %d", size));
+        System.out.println(String.format("[     SYSTEM ] Executing program of size %d", size));
         while (!programContext.isExiting() && programContext.getInstructionPosition() != size) {
             checkInstructionPosition(size);
             Instruction current = instructions.get(programContext.getInstructionPosition());
             checkJumping(current);
-            System.out.println(String.format("[ %10d ] [ %10d ] [ %10s ] [ %10s ] %-15s",
+            System.out.println(String.format("OP#=%8d, LEN=%8d, EL#1=%8s, EL#0=%8s, OPC=%s",
                     programContext.getInstructionPosition(),
                     programContext.getStack().size(),
                     programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
                     programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
-                    current.executor.toString()));
+                    current.getExecutor().toString()));
             incrementInstructionPosition(current);
-            current.executor.execute(programContext, current.data);
+            current.getExecutor().execute(programContext, current.getData());
             incrementInstructionsExecuted();
             checkStack();
             manageInstructionExecution();
@@ -44,7 +44,7 @@ public class ProgramRunner {
     }
 
     private void incrementInstructionPosition(Instruction current) {
-        if (!(current.executor instanceof Instructions.Jump)) {
+        if (!(current.getExecutor() instanceof Instructions.Jump)) {
             programContext.setInstructionPosition(programContext.getInstructionPosition() + 1);
         }
     }
@@ -60,7 +60,7 @@ public class ProgramRunner {
 
     private void checkJumping(Instruction current) throws ProgramException {
         if (programContext.isJumping()
-                && !(current.executor instanceof Instructions.JumpDestination)) {
+                && !(current.getExecutor() instanceof Instructions.JumpDestination)) {
             throw new ProgramException(programContext, JUMP_TO_ILLEGAL_INSTRUCTION);
         }
     }

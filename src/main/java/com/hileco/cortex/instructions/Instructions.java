@@ -47,6 +47,11 @@ public class Instructions {
         public void execute(ProgramContext context, NoData data) {
             context.getStack().pop();
         }
+
+        @Override
+        public String toString() {
+            return "POP";
+        }
     }
 
     public static class Swap implements InstructionExecutor<Swap.Data> {
