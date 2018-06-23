@@ -2,6 +2,7 @@ package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.instructions.ProgramException.Reason;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
@@ -24,7 +25,12 @@ public class ProgramRunner {
             checkInstructionPosition(size);
             Instruction current = instructions.get(programContext.getInstructionPosition());
             checkJumping(current);
-            System.out.println(String.format("[ %10d ] %-15s", programContext.getInstructionPosition(), current.executor.toString()));
+            System.out.println(String.format("[ %10d ] [ %10d ] [ %10s ] [ %10s ] %-15s",
+                    programContext.getInstructionPosition(),
+                    programContext.getStack().size(),
+                    programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
+                    programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
+                    current.executor.toString()));
             incrementInstructionPosition(current);
             current.executor.execute(programContext, current.data);
             incrementInstructionsExecuted();

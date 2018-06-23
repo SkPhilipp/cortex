@@ -92,7 +92,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized void duplicate(int topOffset) {
-        int index = this.size - 1 - topOffset;
+        int index = this.size - topOffset;
         checkBounds(index);
         V value = get(index);
         push(value);

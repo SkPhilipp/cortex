@@ -25,7 +25,7 @@ public class ProgramBuilderTest {
         ProgramContext programContext = new ProgramContext();
         ProgramRunner programRunner = new ProgramRunner(programContext);
         programRunner.run(build);
-        Assert.assertEquals(11, programContext.getInstructionPosition());
+        Assert.assertEquals(build.size(), programContext.getInstructionPosition());
         Assert.assertEquals(5, programContext.getInstructionsExecuted());
     }
 
@@ -47,7 +47,28 @@ public class ProgramBuilderTest {
         ProgramContext programContext = new ProgramContext();
         ProgramRunner programRunner = new ProgramRunner(programContext);
         programRunner.run(build);
-        Assert.assertEquals(11, programContext.getInstructionPosition());
-        Assert.assertEquals(11, programContext.getInstructionsExecuted());
+        Assert.assertEquals(build.size(), programContext.getInstructionPosition());
+        Assert.assertEquals(build.size(), programContext.getInstructionsExecuted());
     }
+
+    @Test
+    public void testLoop() throws ProgramException {
+        List<Instruction> build = new ProgramBuilder()
+                .PUSH(new byte[]{0})
+                .JUMP_DESTINATION()
+                .PUSH(new byte[]{1})
+                .ADD()
+                .DUPLICATE(0)
+                .PUSH(new byte[]{1, 0})
+                .EQUALS()
+                .IS_ZERO()
+                .JUMP_IF(1)
+                .build();
+        ProgramContext programContext = new ProgramContext();
+        ProgramRunner programRunner = new ProgramRunner(programContext);
+        programRunner.run(build);
+        Assert.assertEquals(build.size(), programContext.getInstructionPosition());
+        Assert.assertEquals(((build.size() - 1) * 256) + 1, programContext.getInstructionsExecuted());
+    }
+
 }

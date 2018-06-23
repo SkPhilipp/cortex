@@ -148,7 +148,7 @@ public class Instructions {
             byte[] top = stack.pop();
             boolean isZero = true;
             for (byte item : top) {
-                if (item >= 0) {
+                if (item > 0) {
                     isZero = false;
                 }
             }
@@ -235,7 +235,7 @@ public class Instructions {
             byte[] pop = stack.pop();
             byte[] result = new byte[pop.length];
             for (int i = 0; i < result.length; i++) {
-                result[i] = 0;
+                result[i] = 127;
                 result[i] ^= pop[i];
             }
             stack.push(result);
