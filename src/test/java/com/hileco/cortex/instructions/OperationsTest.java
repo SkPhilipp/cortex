@@ -1,5 +1,6 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.data.ProgramData;
 import com.hileco.cortex.instructions.Operations.Add;
 import com.hileco.cortex.instructions.Operations.BitwiseAnd;
 import com.hileco.cortex.instructions.Operations.BitwiseNot;
@@ -39,7 +40,7 @@ public class OperationsTest {
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        programContext.setData("MEMORY", "0x1234", new ProgramContext.ProgramData(new byte[]{0x56, 0x78}));
+        programContext.setData("MEMORY", "0x1234", new ProgramData(new byte[]{0x56, 0x78}));
         return programContext;
     }
 

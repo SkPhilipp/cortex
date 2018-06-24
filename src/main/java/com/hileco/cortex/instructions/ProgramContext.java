@@ -1,60 +1,14 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.data.ProgramData;
 import com.hileco.cortex.primitives.LayeredMap;
 import com.hileco.cortex.primitives.LayeredStack;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.hileco.cortex.instructions.ProgramContext.ProgramData.Scope.CHANGING;
-
 public class ProgramContext {
-
-    public static class ProgramData {
-        // TODO: Embed scope into values on the tree
-        // TODO: Embed scope into values on the stack
-        public enum Scope {
-            /**
-             * Example: An unchanging number
-             */
-            STATIC,
-            /**
-             * Example: An SSH server's public key
-             */
-            DEPLOYMENT,
-            /**
-             * Example: A process ID assigned by an OS
-             */
-            EXECUTION,
-            /**
-             * Example: Weather
-             */
-            CHANGING,
-        }
-
-        public ProgramData(byte[] content) {
-            this.content = content;
-            this.scope = CHANGING;
-        }
-
-        public ProgramData(byte[] content, Scope scope) {
-            this.content = content;
-            this.scope = scope;
-        }
-
-        public byte[] content;
-        public Scope scope;
-
-        @Override
-        public String toString() {
-            return "ProgramData{" +
-                    "content=" + Arrays.toString(content) +
-                    ", scope=" + scope +
-                    '}';
-        }
-    }
 
     private boolean jumping;
     private boolean exiting;

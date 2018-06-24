@@ -9,8 +9,7 @@ public class ProgramBuilderTest {
 
     @Test
     public void testJump() throws ProgramException {
-        List<Instruction> build = new ProgramBuilderFactory()
-                .builder()
+        List<Instruction> build = new ProgramBuilderFactory().builder()
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{123})
                 .EQUALS()
@@ -32,8 +31,7 @@ public class ProgramBuilderTest {
 
     @Test
     public void testNoJump() throws ProgramException {
-        List<Instruction> build = new ProgramBuilderFactory()
-                .builder()
+        List<Instruction> build = new ProgramBuilderFactory().builder()
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{124})
                 .EQUALS()
@@ -55,8 +53,7 @@ public class ProgramBuilderTest {
 
     @Test
     public void testLoop() throws ProgramException {
-        List<Instruction> build = new ProgramBuilderFactory()
-                .builder()
+        List<Instruction> build = new ProgramBuilderFactory().builder()
                 .PUSH(new byte[]{0})
                 .JUMP_DESTINATION()
                 .PUSH(new byte[]{1})

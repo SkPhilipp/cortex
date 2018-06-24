@@ -1,5 +1,6 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.data.ProgramData;
 import com.hileco.cortex.primitives.LayeredStack;
 
 import java.math.BigInteger;
@@ -478,7 +479,7 @@ public class Operations {
         }
 
         public void execute(ProgramContext context, Operands operands) {
-            ProgramContext.ProgramData programData = context.getData(operands.group, operands.address);
+            ProgramData programData = context.getData(operands.group, operands.address);
             if (programData == null) {
                 throw new IllegalStateException("Missing program operands");
             }
@@ -505,7 +506,7 @@ public class Operations {
         public void execute(ProgramContext context, Operands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] bytes = stack.pop();
-            context.setData(operands.group, operands.address, new ProgramContext.ProgramData(bytes));
+            context.setData(operands.group, operands.address, new ProgramData(bytes));
         }
 
         @Override
