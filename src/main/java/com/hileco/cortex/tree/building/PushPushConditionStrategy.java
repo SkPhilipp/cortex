@@ -23,7 +23,6 @@ public class PushPushConditionStrategy implements InstructionsOptimizeStrategy {
                     || third.getExecutor() instanceof Instructions.GreaterThan
                     || third.getExecutor() instanceof Instructions.LessThan
                     || third.getExecutor() instanceof Instructions.IsZero)) {
-                // TODO: This is where the layered primitives could come into play
                 ProgramContext programContext = new ProgramContext();
                 ProgramRunner programRunner = new ProgramRunner(programContext);
                 List<Instruction> sublist = instructions.subList(i, i + 1 + 2);

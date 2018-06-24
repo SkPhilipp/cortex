@@ -25,12 +25,13 @@ public class ProgramRunner {
             checkInstructionPosition(size);
             Instruction current = instructions.get(programContext.getInstructionPosition());
             checkJumping(current);
-            System.out.println(String.format("OP#=%8d, LEN=%8d, EL#1=%8s, EL#0=%8s, OPC=%s",
+            System.out.println(String.format("OP#=%8d, LEN=%8d, EL#1=%8s, EL#0=%8s, OPC=%20s DAT=%s",
                     programContext.getInstructionPosition(),
                     programContext.getStack().size(),
                     programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
                     programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
-                    current.getExecutor().toString()));
+                    current.getExecutor().toString(),
+                    current.getData().toString()));
             incrementInstructionPosition(current);
             current.getExecutor().execute(programContext, current.getData());
             incrementInstructionsExecuted();

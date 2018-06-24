@@ -18,6 +18,11 @@ public class Instructions {
     }
 
     public static class NoData implements InstructionData {
+
+        @Override
+        public String toString() {
+            return "";
+        }
     }
 
     public static NoData NO_DATA = new NoData();
@@ -31,6 +36,11 @@ public class Instructions {
     public static class Push implements InstructionExecutor<Push.Data> {
         public static class Data implements InstructionData {
             public byte[] bytes;
+
+            @Override
+            public String toString() {
+                return new BigInteger(bytes).toString();
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -58,6 +68,11 @@ public class Instructions {
         public static class Data implements InstructionData {
             public int topOffsetLeft;
             public int topOffsetRight;
+
+            @Override
+            public String toString() {
+                return String.format("%d, %d", topOffsetLeft, topOffsetRight);
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -73,6 +88,11 @@ public class Instructions {
     public static class Duplicate implements InstructionExecutor<Duplicate.Data> {
         public static class Data implements InstructionData {
             public int topOffset;
+
+            @Override
+            public String toString() {
+                return Integer.toString(topOffset);
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -340,6 +360,11 @@ public class Instructions {
 
         public static class Data implements InstructionData {
             public String hashMethod;
+
+            @Override
+            public String toString() {
+                return hashMethod;
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -365,6 +390,12 @@ public class Instructions {
     public static class Jump implements InstructionExecutor<Jump.Data> {
         public static class Data implements InstructionData {
             public int destination;
+
+
+            @Override
+            public String toString() {
+                return String.format("%d", destination);
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -392,6 +423,11 @@ public class Instructions {
     public static class JumpIf implements InstructionExecutor<JumpIf.Data> {
         public static class Data implements InstructionData {
             public int destination;
+
+            @Override
+            public String toString() {
+                return String.format("%d", destination);
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -436,6 +472,11 @@ public class Instructions {
         public static class Data implements InstructionData {
             public String group;
             public String address;
+
+            @Override
+            public String toString() {
+                return String.format("%s, %s", group, address);
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
@@ -462,6 +503,11 @@ public class Instructions {
         public static class Data implements InstructionData {
             public String group;
             public String address;
+
+            @Override
+            public String toString() {
+                return String.format("%s, %s", group, address);
+            }
         }
 
         public void execute(ProgramContext context, Data data) {
