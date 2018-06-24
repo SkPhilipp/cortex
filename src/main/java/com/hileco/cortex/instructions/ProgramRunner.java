@@ -30,10 +30,10 @@ public class ProgramRunner {
                     programContext.getStack().size(),
                     programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
                     programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
-                    current.getExecutor().toString(),
-                    current.getData().toString()));
+                    current.getOperation().toString(),
+                    current.getOperands().toString()));
             incrementInstructionPosition(current);
-            current.getExecutor().execute(programContext, current.getData());
+            current.getOperation().execute(programContext, current.getOperands());
             incrementInstructionsExecuted();
             checkStack();
             manageInstructionExecution();
@@ -45,7 +45,7 @@ public class ProgramRunner {
     }
 
     private void incrementInstructionPosition(Instruction current) {
-        if (!(current.getExecutor() instanceof Instructions.Jump)) {
+        if (!(current.getOperation() instanceof Operations.Jump)) {
             programContext.setInstructionPosition(programContext.getInstructionPosition() + 1);
         }
     }
@@ -61,7 +61,7 @@ public class ProgramRunner {
 
     private void checkJumping(Instruction current) throws ProgramException {
         if (programContext.isJumping()
-                && !(current.getExecutor() instanceof Instructions.JumpDestination)) {
+                && !(current.getOperation() instanceof Operations.JumpDestination)) {
             throw new ProgramException(programContext, JUMP_TO_ILLEGAL_INSTRUCTION);
         }
     }

@@ -47,8 +47,8 @@ public class TreeBuilderTest {
                 .POP()
                 .build();
         TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
-        Assert.assertTrue(root.getInstructions().get(0).getExecutor() instanceof Instructions.NoOp);
-        Assert.assertTrue(root.getInstructions().get(1).getExecutor() instanceof Instructions.NoOp);
+        Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.NoOp);
+        Assert.assertTrue(root.getInstructions().get(1).getOperation() instanceof Operations.NoOp);
     }
 
     @Test
@@ -63,9 +63,9 @@ public class TreeBuilderTest {
                 .EQUALS()
                 .build();
         TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
-        Assert.assertTrue(root.getInstructions().get(0).getExecutor() instanceof Instructions.NoOp);
-        Assert.assertTrue(root.getInstructions().get(1).getExecutor() instanceof Instructions.NoOp);
-        Assert.assertTrue(root.getInstructions().get(2).getExecutor() instanceof Instructions.Push);
+        Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.NoOp);
+        Assert.assertTrue(root.getInstructions().get(1).getOperation() instanceof Operations.NoOp);
+        Assert.assertTrue(root.getInstructions().get(2).getOperation() instanceof Operations.Push);
     }
 
     @Test

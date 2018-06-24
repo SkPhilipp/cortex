@@ -1,23 +1,21 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.primitives.LayeredMap;
 import com.hileco.cortex.primitives.LayeredStack;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Map;
 
 @SuppressWarnings("WeakerAccess")
-public class Instructions {
+public class Operations {
 
-    public interface InstructionExecutor<T extends InstructionData> {
-        void execute(ProgramContext context, T Data);
+    public interface Operation<T extends Operands> {
+        void execute(ProgramContext context, T operands);
     }
 
-    public interface InstructionData {
+    public interface Operands {
     }
 
-    public static class NoData implements InstructionData {
+    public static class NoOperands implements Operands {
 
         @Override
         public String toString() {
@@ -25,7 +23,7 @@ public class Instructions {
         }
     }
 
-    public static NoData NO_DATA = new NoData();
+    public static NoOperands NO_DATA = new NoOperands();
 
     // --------------------------------------------------------------------------------------------
     // --                                                                                        --
@@ -33,8 +31,8 @@ public class Instructions {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Push implements InstructionExecutor<Push.Data> {
-        public static class Data implements InstructionData {
+    public static class Push implements Operation<Push.Operands> {
+        public static class Operands implements Operations.Operands {
             public byte[] bytes;
 
             @Override
@@ -43,8 +41,8 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
-            context.getStack().push(data.bytes);
+        public void execute(ProgramContext context, Operands operands) {
+            context.getStack().push(operands.bytes);
         }
 
         @Override
@@ -53,8 +51,8 @@ public class Instructions {
         }
     }
 
-    public static class Pop implements InstructionExecutor<NoData> {
-        public void execute(ProgramContext context, NoData data) {
+    public static class Pop implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands operands) {
             context.getStack().pop();
         }
 
@@ -64,8 +62,8 @@ public class Instructions {
         }
     }
 
-    public static class Swap implements InstructionExecutor<Swap.Data> {
-        public static class Data implements InstructionData {
+    public static class Swap implements Operation<Swap.Operands> {
+        public static class Operands implements Operations.Operands {
             public int topOffsetLeft;
             public int topOffsetRight;
 
@@ -75,8 +73,8 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
-            context.getStack().swap(data.topOffsetLeft, data.topOffsetRight);
+        public void execute(ProgramContext context, Operands operands) {
+            context.getStack().swap(operands.topOffsetLeft, operands.topOffsetRight);
         }
 
         @Override
@@ -85,8 +83,8 @@ public class Instructions {
         }
     }
 
-    public static class Duplicate implements InstructionExecutor<Duplicate.Data> {
-        public static class Data implements InstructionData {
+    public static class Duplicate implements Operation<Duplicate.Operands> {
+        public static class Operands implements Operations.Operands {
             public int topOffset;
 
             @Override
@@ -95,8 +93,8 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
-            context.getStack().duplicate(data.topOffset);
+        public void execute(ProgramContext context, Operands operands) {
+            context.getStack().duplicate(operands.topOffset);
         }
 
         @Override
@@ -114,8 +112,8 @@ public class Instructions {
     private static byte[] TRUE = {1};
     private static byte[] FALSE = {0};
 
-    private static abstract class ConditionInstructionExecutor implements InstructionExecutor<NoData> {
-        public void execute(ProgramContext context, NoData data) {
+    private static abstract class ConditionOperation implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
@@ -126,7 +124,7 @@ public class Instructions {
         public abstract boolean innerExecute(byte[] left, byte[] right);
     }
 
-    public static class Equals extends ConditionInstructionExecutor {
+    public static class Equals extends ConditionOperation {
         @Override
         public boolean innerExecute(byte[] left, byte[] right) {
             return Arrays.equals(left, right);
@@ -139,7 +137,7 @@ public class Instructions {
         }
     }
 
-    public static class GreaterThan extends ConditionInstructionExecutor {
+    public static class GreaterThan extends ConditionOperation {
         @Override
         public boolean innerExecute(byte[] left, byte[] right) {
             BigInteger leftAsBigInteger = new BigInteger(left);
@@ -153,7 +151,7 @@ public class Instructions {
         }
     }
 
-    public static class LessThan extends ConditionInstructionExecutor {
+    public static class LessThan extends ConditionOperation {
         @Override
         public boolean innerExecute(byte[] left, byte[] right) {
             BigInteger leftAsBigInteger = new BigInteger(left);
@@ -167,8 +165,8 @@ public class Instructions {
         }
     }
 
-    public static class IsZero implements InstructionExecutor<NoData> {
-        public void execute(ProgramContext context, NoData data) {
+    public static class IsZero implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] top = stack.pop();
             boolean isZero = true;
@@ -192,9 +190,9 @@ public class Instructions {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    private static abstract class BitwiseInstructionExecutor implements InstructionExecutor<NoData> {
+    private static abstract class BitwiseOperation implements Operation<NoOperands> {
 
-        public void execute(ProgramContext context, NoData data) {
+        public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
@@ -211,7 +209,7 @@ public class Instructions {
         public abstract byte innerExecute(byte left, byte right);
     }
 
-    public static class BitwiseOr extends BitwiseInstructionExecutor {
+    public static class BitwiseOr extends BitwiseOperation {
         @Override
         public byte innerExecute(byte left, byte right) {
             byte result = left;
@@ -225,7 +223,7 @@ public class Instructions {
         }
     }
 
-    public static class BitwiseXor extends BitwiseInstructionExecutor {
+    public static class BitwiseXor extends BitwiseOperation {
         @Override
         public byte innerExecute(byte left, byte right) {
             byte result = left;
@@ -239,7 +237,7 @@ public class Instructions {
         }
     }
 
-    public static class BitwiseAnd extends BitwiseInstructionExecutor {
+    public static class BitwiseAnd extends BitwiseOperation {
         @Override
         public byte innerExecute(byte left, byte right) {
             byte result = left;
@@ -253,9 +251,9 @@ public class Instructions {
         }
     }
 
-    public static class BitwiseNot implements InstructionExecutor<NoData> {
+    public static class BitwiseNot implements Operation<NoOperands> {
         @Override
-        public void execute(ProgramContext context, NoData Data) {
+        public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] pop = stack.pop();
             byte[] result = new byte[pop.length];
@@ -278,9 +276,9 @@ public class Instructions {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    private static abstract class MathematicalInstructionExecutor implements InstructionExecutor<NoData> {
+    private static abstract class MathematicalOperation implements Operation<NoOperands> {
 
-        public void execute(ProgramContext context, NoData data) {
+        public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
@@ -293,7 +291,7 @@ public class Instructions {
         public abstract BigInteger innerExecute(BigInteger left, BigInteger right);
     }
 
-    public static class Add extends MathematicalInstructionExecutor {
+    public static class Add extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.add(right);
@@ -305,7 +303,7 @@ public class Instructions {
         }
     }
 
-    public static class Subtract extends MathematicalInstructionExecutor {
+    public static class Subtract extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.subtract(right);
@@ -317,7 +315,7 @@ public class Instructions {
         }
     }
 
-    public static class Multiply extends MathematicalInstructionExecutor {
+    public static class Multiply extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.multiply(right);
@@ -329,7 +327,7 @@ public class Instructions {
         }
     }
 
-    public static class Divide extends MathematicalInstructionExecutor {
+    public static class Divide extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.divide(right);
@@ -341,7 +339,7 @@ public class Instructions {
         }
     }
 
-    public static class Modulo extends MathematicalInstructionExecutor {
+    public static class Modulo extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.mod(right);
@@ -353,12 +351,12 @@ public class Instructions {
         }
     }
 
-    public static class Hash implements InstructionExecutor<Hash.Data> {
+    public static class Hash implements Operation<Hash.Operands> {
 
         public static final String HASH_METHOD_SHA_3 = "SHA3";
         public static final String HASH_METHOD_NONE = "NONE";
 
-        public static class Data implements InstructionData {
+        public static class Operands implements Operations.Operands {
             public String hashMethod;
 
             @Override
@@ -367,11 +365,11 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
-            if (HASH_METHOD_SHA_3.equals(data.hashMethod)) {
-                throw new UnsupportedOperationException(String.format("Unimplemented hash method: %s", data.hashMethod));
-            } else if (!HASH_METHOD_NONE.equals(data.hashMethod)) {
-                throw new IllegalArgumentException(String.format("Unknown hash method: %s", data.hashMethod));
+        public void execute(ProgramContext context, Operands operands) {
+            if (HASH_METHOD_SHA_3.equals(operands.hashMethod)) {
+                throw new UnsupportedOperationException(String.format("Unimplemented hash method: %s", operands.hashMethod));
+            } else if (!HASH_METHOD_NONE.equals(operands.hashMethod)) {
+                throw new IllegalArgumentException(String.format("Unknown hash method: %s", operands.hashMethod));
             }
         }
 
@@ -387,8 +385,8 @@ public class Instructions {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Jump implements InstructionExecutor<Jump.Data> {
-        public static class Data implements InstructionData {
+    public static class Jump implements Operation<Jump.Operands> {
+        public static class Operands implements Operations.Operands {
             public int destination;
 
 
@@ -398,9 +396,9 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
+        public void execute(ProgramContext context, Operands operands) {
             context.setJumping(true);
-            context.setInstructionPosition(data.destination);
+            context.setInstructionPosition(operands.destination);
         }
 
         @Override
@@ -409,8 +407,8 @@ public class Instructions {
         }
     }
 
-    public static class JumpDestination implements InstructionExecutor<NoData> {
-        public void execute(ProgramContext context, NoData data) {
+    public static class JumpDestination implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands operands) {
             context.setJumping(false);
         }
 
@@ -420,8 +418,8 @@ public class Instructions {
         }
     }
 
-    public static class JumpIf implements InstructionExecutor<JumpIf.Data> {
-        public static class Data implements InstructionData {
+    public static class JumpIf implements Operation<JumpIf.Operands> {
+        public static class Operands implements Operations.Operands {
             public int destination;
 
             @Override
@@ -430,7 +428,7 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
+        public void execute(ProgramContext context, Operands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] top = stack.pop();
             boolean isZero = true;
@@ -441,7 +439,7 @@ public class Instructions {
             }
             if (!isZero) {
                 context.setJumping(true);
-                context.setInstructionPosition(data.destination);
+                context.setInstructionPosition(operands.destination);
             }
         }
 
@@ -451,8 +449,8 @@ public class Instructions {
         }
     }
 
-    public static class Exit implements InstructionExecutor<NoData> {
-        public void execute(ProgramContext context, NoData data) {
+    public static class Exit implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands operands) {
             context.setExiting(true);
         }
 
@@ -468,8 +466,8 @@ public class Instructions {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Load implements InstructionExecutor<Load.Data> {
-        public static class Data implements InstructionData {
+    public static class Load implements Operation<Load.Operands> {
+        public static class Operands implements Operations.Operands {
             public String group;
             public String address;
 
@@ -479,18 +477,12 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
-            Map<String, LayeredMap<String, byte[]>> storage = context.getStorage();
-            LayeredStack<byte[]> stack = context.getStack();
-            if (!storage.containsKey(data.group)) {
-                throw new IllegalArgumentException();
+        public void execute(ProgramContext context, Operands operands) {
+            ProgramContext.ProgramData programData = context.getData(operands.group, operands.address);
+            if (programData == null) {
+                throw new IllegalStateException("Missing program operands");
             }
-            LayeredMap<String, byte[]> volume = storage.get(data.group);
-            if (!volume.containsKey(data.address)) {
-                throw new IllegalArgumentException();
-            }
-            byte[] bytes = volume.get(data.address);
-            stack.push(bytes);
+            context.getStack().push(programData.content);
         }
 
         @Override
@@ -499,8 +491,8 @@ public class Instructions {
         }
     }
 
-    public static class Save implements InstructionExecutor<Save.Data> {
-        public static class Data implements InstructionData {
+    public static class Save implements Operation<Save.Operands> {
+        public static class Operands implements Operations.Operands {
             public String group;
             public String address;
 
@@ -510,18 +502,10 @@ public class Instructions {
             }
         }
 
-        public void execute(ProgramContext context, Data data) {
-            Map<String, LayeredMap<String, byte[]>> storage = context.getStorage();
+        public void execute(ProgramContext context, Operands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] bytes = stack.pop();
-            if (!storage.containsKey(data.group)) {
-                throw new IllegalArgumentException();
-            }
-            LayeredMap<String, byte[]> volume = storage.get(data.group);
-            if (!volume.containsKey(data.address)) {
-                throw new IllegalArgumentException();
-            }
-            volume.put(data.address, bytes);
+            context.setData(operands.group, operands.address, new ProgramContext.ProgramData(bytes));
         }
 
         @Override
@@ -536,8 +520,8 @@ public class Instructions {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class NoOp implements InstructionExecutor<NoData> {
-        public void execute(ProgramContext context, NoData data) {
+    public static class NoOp implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands operands) {
         }
 
         @Override

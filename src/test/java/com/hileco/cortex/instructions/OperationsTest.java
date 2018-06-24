@@ -1,39 +1,36 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.instructions.Instructions.Add;
-import com.hileco.cortex.instructions.Instructions.BitwiseAnd;
-import com.hileco.cortex.instructions.Instructions.BitwiseNot;
-import com.hileco.cortex.instructions.Instructions.BitwiseOr;
-import com.hileco.cortex.instructions.Instructions.BitwiseXor;
-import com.hileco.cortex.instructions.Instructions.Divide;
-import com.hileco.cortex.instructions.Instructions.Duplicate;
-import com.hileco.cortex.instructions.Instructions.Equals;
-import com.hileco.cortex.instructions.Instructions.Exit;
-import com.hileco.cortex.instructions.Instructions.GreaterThan;
-import com.hileco.cortex.instructions.Instructions.Hash;
-import com.hileco.cortex.instructions.Instructions.IsZero;
-import com.hileco.cortex.instructions.Instructions.Jump;
-import com.hileco.cortex.instructions.Instructions.JumpDestination;
-import com.hileco.cortex.instructions.Instructions.JumpIf;
-import com.hileco.cortex.instructions.Instructions.LessThan;
-import com.hileco.cortex.instructions.Instructions.Load;
-import com.hileco.cortex.instructions.Instructions.Modulo;
-import com.hileco.cortex.instructions.Instructions.Multiply;
-import com.hileco.cortex.instructions.Instructions.Pop;
-import com.hileco.cortex.instructions.Instructions.Push;
-import com.hileco.cortex.instructions.Instructions.Save;
-import com.hileco.cortex.instructions.Instructions.Subtract;
-import com.hileco.cortex.instructions.Instructions.Swap;
-import com.hileco.cortex.primitives.LayeredMap;
+import com.hileco.cortex.instructions.Operations.Add;
+import com.hileco.cortex.instructions.Operations.BitwiseAnd;
+import com.hileco.cortex.instructions.Operations.BitwiseNot;
+import com.hileco.cortex.instructions.Operations.BitwiseOr;
+import com.hileco.cortex.instructions.Operations.BitwiseXor;
+import com.hileco.cortex.instructions.Operations.Divide;
+import com.hileco.cortex.instructions.Operations.Duplicate;
+import com.hileco.cortex.instructions.Operations.Equals;
+import com.hileco.cortex.instructions.Operations.Exit;
+import com.hileco.cortex.instructions.Operations.GreaterThan;
+import com.hileco.cortex.instructions.Operations.Hash;
+import com.hileco.cortex.instructions.Operations.IsZero;
+import com.hileco.cortex.instructions.Operations.Jump;
+import com.hileco.cortex.instructions.Operations.JumpDestination;
+import com.hileco.cortex.instructions.Operations.JumpIf;
+import com.hileco.cortex.instructions.Operations.LessThan;
+import com.hileco.cortex.instructions.Operations.Load;
+import com.hileco.cortex.instructions.Operations.Modulo;
+import com.hileco.cortex.instructions.Operations.Multiply;
+import com.hileco.cortex.instructions.Operations.Pop;
+import com.hileco.cortex.instructions.Operations.Push;
+import com.hileco.cortex.instructions.Operations.Save;
+import com.hileco.cortex.instructions.Operations.Subtract;
+import com.hileco.cortex.instructions.Operations.Swap;
 import com.hileco.cortex.primitives.LayeredStack;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Map;
+import static com.hileco.cortex.instructions.Operations.NO_DATA;
 
-import static com.hileco.cortex.instructions.Instructions.NO_DATA;
-
-public class InstructionsTest {
+public class OperationsTest {
 
     private ProgramContext testProcessContext() {
         ProgramContext programContext = new ProgramContext();
@@ -42,19 +39,17 @@ public class InstructionsTest {
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        Map<String, LayeredMap<String, byte[]>> storage = programContext.getStorage();
-        storage.put("MEMORY", new LayeredMap<>());
-        storage.get("MEMORY").put("0x1234", new byte[]{0x56, 0x78});
+        programContext.setData("MEMORY", "0x1234", new ProgramContext.ProgramData(new byte[]{0x56, 0x78}));
         return programContext;
     }
 
     @Test
     public void runPush() {
         ProgramContext context = testProcessContext();
-        Push.Data data = new Push.Data();
-        data.bytes = new byte[]{127};
+        Push.Operands operands = new Push.Operands();
+        operands.bytes = new byte[]{127};
         Push push = new Push();
-        push.execute(context, data);
+        push.execute(context, operands);
     }
 
     @Test
@@ -67,20 +62,20 @@ public class InstructionsTest {
     @Test
     public void runSwap() {
         ProgramContext context = testProcessContext();
-        Swap.Data data = new Swap.Data();
-        data.topOffsetLeft = 1;
-        data.topOffsetRight = 2;
+        Swap.Operands operands = new Swap.Operands();
+        operands.topOffsetLeft = 1;
+        operands.topOffsetRight = 2;
         Swap swap = new Swap();
-        swap.execute(context, data);
+        swap.execute(context, operands);
     }
 
     @Test
     public void runDuplicate() {
         ProgramContext context = testProcessContext();
-        Duplicate.Data data = new Duplicate.Data();
-        data.topOffset = 1;
+        Duplicate.Operands operands = new Duplicate.Operands();
+        operands.topOffset = 1;
         Duplicate duplicate = new Duplicate();
-        duplicate.execute(context, data);
+        duplicate.execute(context, operands);
     }
 
     @Test
@@ -178,37 +173,37 @@ public class InstructionsTest {
     @Test
     public void runHashSha3() {
         ProgramContext context = testProcessContext();
-        Hash.Data data = new Hash.Data();
-        data.hashMethod = "SHA3";
+        Hash.Operands operands = new Hash.Operands();
+        operands.hashMethod = "SHA3";
         Hash hash = new Hash();
-        hash.execute(context, data);
+        hash.execute(context, operands);
     }
 
     @Test
     public void runHashNone() {
         ProgramContext context = testProcessContext();
-        Hash.Data data = new Hash.Data();
-        data.hashMethod = "NONE";
+        Hash.Operands operands = new Hash.Operands();
+        operands.hashMethod = "NONE";
         Hash hash = new Hash();
-        hash.execute(context, data);
+        hash.execute(context, operands);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void runHashUnsupported() {
         ProgramContext context = testProcessContext();
-        Hash.Data data = new Hash.Data();
-        data.hashMethod = "Unsupported";
+        Hash.Operands operands = new Hash.Operands();
+        operands.hashMethod = "Unsupported";
         Hash hash = new Hash();
-        hash.execute(context, data);
+        hash.execute(context, operands);
     }
 
     @Test
     public void runJump() {
         ProgramContext context = testProcessContext();
-        Jump.Data data = new Jump.Data();
-        data.destination = 1;
+        Jump.Operands operands = new Jump.Operands();
+        operands.destination = 1;
         Jump jump = new Jump();
-        jump.execute(context, data);
+        jump.execute(context, operands);
     }
 
     @Test
@@ -221,10 +216,10 @@ public class InstructionsTest {
     @Test
     public void runJumpIf() {
         ProgramContext context = testProcessContext();
-        JumpIf.Data data = new JumpIf.Data();
-        data.destination = 1;
+        JumpIf.Operands operands = new JumpIf.Operands();
+        operands.destination = 1;
         JumpIf jumpIf = new JumpIf();
-        jumpIf.execute(context, data);
+        jumpIf.execute(context, operands);
     }
 
     @Test
@@ -237,21 +232,21 @@ public class InstructionsTest {
     @Test
     public void runLoad() {
         ProgramContext context = testProcessContext();
-        Load.Data data = new Load.Data();
-        data.group = "MEMORY";
-        data.address = "0x1234";
+        Load.Operands operands = new Load.Operands();
+        operands.group = "MEMORY";
+        operands.address = "0x1234";
         Load load = new Load();
-        load.execute(context, data);
+        load.execute(context, operands);
     }
 
     @Test
     public void runSave() {
         ProgramContext context = testProcessContext();
-        Save.Data data = new Save.Data();
-        data.group = "MEMORY";
-        data.address = "0x1234";
+        Save.Operands operands = new Save.Operands();
+        operands.group = "MEMORY";
+        operands.address = "0x1234";
         Save save = new Save();
-        save.execute(context, data);
+        save.execute(context, operands);
     }
 
 }

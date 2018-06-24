@@ -1,7 +1,7 @@
 package com.hileco.cortex.tree.building;
 
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.instructions.Instructions;
+import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.instructions.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
@@ -17,12 +17,12 @@ public class PushPushConditionStrategy implements InstructionsOptimizeStrategy {
             Instruction first = instructions.get(i);
             Instruction second = instructions.get(i + 1);
             Instruction third = instructions.get(i + 2);
-            if (first.getExecutor() instanceof Instructions.Push
-                    && second.getExecutor() instanceof Instructions.Push
-                    && (third.getExecutor() instanceof Instructions.Equals
-                    || third.getExecutor() instanceof Instructions.GreaterThan
-                    || third.getExecutor() instanceof Instructions.LessThan
-                    || third.getExecutor() instanceof Instructions.IsZero)) {
+            if (first.getOperation() instanceof Operations.Push
+                    && second.getOperation() instanceof Operations.Push
+                    && (third.getOperation() instanceof Operations.Equals
+                    || third.getOperation() instanceof Operations.GreaterThan
+                    || third.getOperation() instanceof Operations.LessThan
+                    || third.getOperation() instanceof Operations.IsZero)) {
                 ProgramContext programContext = new ProgramContext();
                 ProgramRunner programRunner = new ProgramRunner(programContext);
                 List<Instruction> sublist = instructions.subList(i, i + 1 + 2);

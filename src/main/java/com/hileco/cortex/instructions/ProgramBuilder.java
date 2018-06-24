@@ -3,7 +3,7 @@ package com.hileco.cortex.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hileco.cortex.instructions.Instructions.*;
+import static com.hileco.cortex.instructions.Operations.*;
 
 public class ProgramBuilder {
     private List<Instruction> instructions;
@@ -17,7 +17,7 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder PUSH(byte[] bytes) {
-        Push.Data data = new Push.Data();
+        Push.Operands data = new Push.Operands();
         data.bytes = bytes;
         instructions.add(new Instruction(new Push(), data));
         return this;
@@ -29,7 +29,7 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder SWAP(int topOffsetLeft, int topOffsetRight) {
-        Swap.Data data = new Swap.Data();
+        Swap.Operands data = new Swap.Operands();
         data.topOffsetLeft = topOffsetLeft;
         data.topOffsetRight = topOffsetRight;
         instructions.add(new Instruction(new Swap(), data));
@@ -37,7 +37,7 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder DUPLICATE(int topOffset) {
-        Duplicate.Data data = new Duplicate.Data();
+        Duplicate.Operands data = new Duplicate.Operands();
         data.topOffset = topOffset;
         instructions.add(new Instruction(new Duplicate(), data));
         return this;
@@ -109,14 +109,14 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder HASH(String hashMethod) {
-        Hash.Data data = new Hash.Data();
+        Hash.Operands data = new Hash.Operands();
         data.hashMethod = hashMethod;
         instructions.add(new Instruction(new Hash(), data));
         return this;
     }
 
     public ProgramBuilder JUMP(int destination) {
-        Jump.Data data = new Jump.Data();
+        Jump.Operands data = new Jump.Operands();
         data.destination = destination;
         instructions.add(new Instruction(new Jump(), data));
         return this;
@@ -133,7 +133,7 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder JUMP_IF(int destination) {
-        JumpIf.Data data = new JumpIf.Data();
+        JumpIf.Operands data = new JumpIf.Operands();
         data.destination = destination;
         instructions.add(new Instruction(new JumpIf(), data));
         return this;
@@ -145,7 +145,7 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder LOAD() {
-        Load.Data data = new Load.Data();
+        Load.Operands data = new Load.Operands();
         data.group = "MEMORY";
         data.address = "0x1234";
         instructions.add(new Instruction(new Load(), data));
@@ -153,7 +153,7 @@ public class ProgramBuilder {
     }
 
     public ProgramBuilder SAVE() {
-        Save.Data data = new Save.Data();
+        Save.Operands data = new Save.Operands();
         data.group = "MEMORY";
         data.address = "0x1234";
         instructions.add(new Instruction(new Save(), data));

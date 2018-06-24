@@ -1,29 +1,29 @@
 package com.hileco.cortex.instructions;
 
-import static com.hileco.cortex.instructions.Instructions.*;
+import static com.hileco.cortex.instructions.Operations.*;
 
 public class Instruction {
-    private final InstructionExecutor executor;
-    private final InstructionData data;
+    private final Operation operation;
+    private final Operands operands;
 
-    Instruction(InstructionExecutor executor, InstructionData data) {
-        this.executor = executor;
-        this.data = data;
+    Instruction(Operation operation, Operands operands) {
+        this.operation = operation;
+        this.operands = operands;
     }
 
-    public InstructionExecutor getExecutor() {
-        return executor;
+    public Operation getOperation() {
+        return operation;
     }
 
-    public InstructionData getData() {
-        return data;
+    public Operands getOperands() {
+        return operands;
     }
 
     @Override
     public String toString() {
         return "Instruction{" +
-                "executor=" + executor +
-                ", data=" + data +
+                "operation=" + operation +
+                ", operands=" + operands +
                 '}';
     }
 }

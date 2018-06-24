@@ -1,7 +1,7 @@
 package com.hileco.cortex.tree.building;
 
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.instructions.Instructions;
+import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.tree.InstructionsOptimizeStrategy;
 
@@ -19,19 +19,19 @@ public class NoopDownwardStrategy implements InstructionsOptimizeStrategy {
         int initialSize = instructions.size();
         for (int i = 0; i < initialSize; i++) {
             Instruction instruction = instructions.get(i - removed);
-            if (instruction.getExecutor() instanceof Instructions.Jump
-                    && instruction.getData() instanceof Instructions.Jump.Data) {
-                Instructions.Jump.Data data = (Instructions.Jump.Data) instruction.getData();
+            if (instruction.getOperation() instanceof Operations.Jump
+                    && instruction.getOperands() instanceof Operations.Jump.Operands) {
+                Operations.Jump.Operands data = (Operations.Jump.Operands) instruction.getOperands();
                 List<Consumer<Integer>> consumers = updateable.computeIfAbsent(data.destination, k -> new ArrayList<>());
                 consumers.add((update) -> data.destination = update);
             }
-            if (instruction.getExecutor() instanceof Instructions.JumpIf
-                    && instruction.getData() instanceof Instructions.JumpIf.Data) {
-                Instructions.JumpIf.Data data = (Instructions.JumpIf.Data) instruction.getData();
+            if (instruction.getOperation() instanceof Operations.JumpIf
+                    && instruction.getOperands() instanceof Operations.JumpIf.Operands) {
+                Operations.JumpIf.Operands data = (Operations.JumpIf.Operands) instruction.getOperands();
                 List<Consumer<Integer>> consumers = updateable.computeIfAbsent(data.destination, k -> new ArrayList<>());
                 consumers.add((update) -> data.destination = update);
             }
-            if (instruction.getExecutor() instanceof Instructions.NoOp) {
+            if (instruction.getOperation() instanceof Operations.NoOp) {
                 instructions.remove(i - removed);
                 removed++;
             }
