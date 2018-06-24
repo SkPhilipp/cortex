@@ -23,14 +23,12 @@ public class PushJumpIfStrategy implements InstructionsOptimizeStrategy {
                 Instructions.Push.Data pushData = (Instructions.Push.Data) first.getData();
                 if (new BigInteger(pushData.bytes).compareTo(BigInteger.ZERO) > 0) {
                     Instructions.JumpIf.Data jumpData = (Instructions.JumpIf.Data) second.getData();
-                    instructions.addAll(i, programBuilderFactory
-                            .builder()
+                    instructions.addAll(i, programBuilderFactory.builder()
                             .NOOP()
                             .JUMP(jumpData.destination)
                             .build());
                 } else {
-                    instructions.addAll(i, programBuilderFactory
-                            .builder()
+                    instructions.addAll(i, programBuilderFactory.builder()
                             .NOOP()
                             .NOOP()
                             .build());

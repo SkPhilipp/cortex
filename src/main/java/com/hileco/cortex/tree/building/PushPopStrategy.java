@@ -17,8 +17,7 @@ public class PushPopStrategy implements InstructionsOptimizeStrategy {
                     && second.getExecutor() instanceof Instructions.Pop) {
                 instructions.remove(i + 1);
                 instructions.remove(i);
-                instructions.addAll(i, programBuilderFactory
-                        .builder()
+                instructions.addAll(i, programBuilderFactory.builder()
                         .NOOP()
                         .NOOP()
                         .build());

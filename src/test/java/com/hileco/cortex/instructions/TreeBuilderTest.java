@@ -6,6 +6,7 @@ import com.hileco.cortex.tree.building.NoopDownwardStrategy;
 import com.hileco.cortex.tree.building.PushJumpIfStrategy;
 import com.hileco.cortex.tree.building.PushPopStrategy;
 import com.hileco.cortex.tree.building.PushPushConditionStrategy;
+import com.hileco.cortex.tree.building.UnusedJumpDestinationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -73,19 +74,21 @@ public class TreeBuilderTest {
         treeBuilder.addStrategy(new PushPopStrategy());
         treeBuilder.addStrategy(new PushPushConditionStrategy());
         treeBuilder.addStrategy(new PushJumpIfStrategy());
+        treeBuilder.addStrategy(new UnusedJumpDestinationStrategy());
         treeBuilder.addStrategy(new NoopDownwardStrategy());
+        treeBuilder.setPasses(2);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory
                 .builder()
                 .PUSH(new byte[]{123})
-                .PUSH(new byte[]{123})
+                .PUSH(new byte[]{124})
                 .EQUALS()
                 .JUMP_IF(10)
                 .NOOP()
+                .PUSH(new byte[]{123})
                 .NOOP()
                 .NOOP()
-                .NOOP()
-                .NOOP()
+                .POP()
                 .NOOP()
                 .JUMP_DESTINATION()
                 .build();
