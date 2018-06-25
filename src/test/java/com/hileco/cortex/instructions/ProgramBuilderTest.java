@@ -3,6 +3,7 @@ package com.hileco.cortex.instructions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class ProgramBuilderTest {
@@ -13,8 +14,8 @@ public class ProgramBuilderTest {
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{123})
                 .EQUALS()
-                .JUMP_IF(10)
-                .NOOP()
+                .PUSH(BigInteger.valueOf(10L).toByteArray())
+                .JUMP_IF()
                 .NOOP()
                 .NOOP()
                 .NOOP()
@@ -26,7 +27,7 @@ public class ProgramBuilderTest {
         ProgramRunner programRunner = new ProgramRunner(programContext);
         programRunner.run(build);
         Assert.assertEquals(build.size(), programContext.getInstructionPosition());
-        Assert.assertEquals(5, programContext.getInstructionsExecuted());
+        Assert.assertEquals(6, programContext.getInstructionsExecuted());
     }
 
     @Test
@@ -35,8 +36,8 @@ public class ProgramBuilderTest {
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{124})
                 .EQUALS()
-                .JUMP_IF(10)
-                .NOOP()
+                .PUSH(BigInteger.valueOf(10L).toByteArray())
+                .JUMP_IF()
                 .NOOP()
                 .NOOP()
                 .NOOP()
@@ -62,7 +63,8 @@ public class ProgramBuilderTest {
                 .PUSH(new byte[]{1, 0})
                 .EQUALS()
                 .IS_ZERO()
-                .JUMP_IF(1)
+                .PUSH(BigInteger.valueOf(1L).toByteArray())
+                .JUMP_IF()
                 .build();
         ProgramContext programContext = new ProgramContext();
         ProgramRunner programRunner = new ProgramRunner(programContext);

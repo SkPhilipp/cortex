@@ -386,20 +386,11 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Jump implements Operation<Jump.Operands> {
-        public static class Operands implements Operations.Operands {
-            public int destination;
-
-
-            @Override
-            public String toString() {
-                return String.format("%d", destination);
-            }
-        }
-
-        public void execute(ProgramContext context, Operands operands) {
+    public static class Jump implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands noOperands) {
+            byte[] destination = context.getStack().pop();
             context.setJumping(true);
-            context.setInstructionPosition(operands.destination);
+            context.setInstructionPosition(new BigInteger(destination).intValue());
         }
 
         @Override
@@ -419,18 +410,10 @@ public class Operations {
         }
     }
 
-    public static class JumpIf implements Operation<JumpIf.Operands> {
-        public static class Operands implements Operations.Operands {
-            public int destination;
-
-            @Override
-            public String toString() {
-                return String.format("%d", destination);
-            }
-        }
-
-        public void execute(ProgramContext context, Operands operands) {
+    public static class JumpIf implements Operation<NoOperands> {
+        public void execute(ProgramContext context, NoOperands noOperands) {
             LayeredStack<byte[]> stack = context.getStack();
+            byte[] destination = context.getStack().pop();
             byte[] top = stack.pop();
             boolean isZero = true;
             for (byte item : top) {
@@ -440,7 +423,7 @@ public class Operations {
             }
             if (!isZero) {
                 context.setJumping(true);
-                context.setInstructionPosition(operands.destination);
+                context.setInstructionPosition(new BigInteger(destination).intValue());
             }
         }
 

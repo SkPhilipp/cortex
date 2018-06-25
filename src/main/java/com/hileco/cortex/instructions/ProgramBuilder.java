@@ -115,10 +115,8 @@ public class ProgramBuilder {
         return this;
     }
 
-    public ProgramBuilder JUMP(int destination) {
-        Jump.Operands data = new Jump.Operands();
-        data.destination = destination;
-        instructions.add(new Instruction(new Jump(), data));
+    public ProgramBuilder JUMP() {
+        instructions.add(new Instruction(new Jump(), NO_DATA));
         return this;
     }
 
@@ -132,10 +130,8 @@ public class ProgramBuilder {
         return this;
     }
 
-    public ProgramBuilder JUMP_IF(int destination) {
-        JumpIf.Operands data = new JumpIf.Operands();
-        data.destination = destination;
-        instructions.add(new Instruction(new JumpIf(), data));
+    public ProgramBuilder JUMP_IF() {
+        instructions.add(new Instruction(new JumpIf(), NO_DATA));
         return this;
     }
 

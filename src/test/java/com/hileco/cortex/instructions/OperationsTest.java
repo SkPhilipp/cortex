@@ -201,10 +201,8 @@ public class OperationsTest {
     @Test
     public void runJump() {
         ProgramContext context = testProcessContext();
-        Jump.Operands operands = new Jump.Operands();
-        operands.destination = 1;
         Jump jump = new Jump();
-        jump.execute(context, operands);
+        jump.execute(context, NO_DATA);
     }
 
     @Test
@@ -217,10 +215,8 @@ public class OperationsTest {
     @Test
     public void runJumpIf() {
         ProgramContext context = testProcessContext();
-        JumpIf.Operands operands = new JumpIf.Operands();
-        operands.destination = 1;
         JumpIf jumpIf = new JumpIf();
-        jumpIf.execute(context, operands);
+        jumpIf.execute(context, NO_DATA);
     }
 
     @Test

@@ -13,6 +13,7 @@ import com.hileco.cortex.tree.building.UnusedJumpDestinationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,8 +30,8 @@ public class TreeBuilderTest {
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{123})
                 .EQUALS()
-                .JUMP_IF(10)
-                .NOOP()
+                .PUSH(BigInteger.valueOf(10L).toByteArray())
+                .JUMP_IF()
                 .NOOP()
                 .NOOP()
                 .NOOP()
@@ -105,13 +106,13 @@ public class TreeBuilderTest {
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{124})
                 .EQUALS()
-                .JUMP_IF(10)
+                .PUSH(BigInteger.valueOf(10L).toByteArray())
+                .JUMP_IF()
                 .NOOP()
                 .PUSH(new byte[]{123})
                 .NOOP()
                 .NOOP()
                 .POP()
-                .NOOP()
                 .JUMP_DESTINATION()
                 .build();
         TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
