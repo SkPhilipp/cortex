@@ -1,4 +1,4 @@
-package com.hileco.cortex.tree.building;
+package com.hileco.cortex.optimizer.strategies;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
@@ -6,7 +6,7 @@ import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.instructions.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
-import com.hileco.cortex.tree.InstructionsOptimizeStrategy;
+import com.hileco.cortex.optimizer.InstructionsOptimizeStrategy;
 
 import java.util.List;
 

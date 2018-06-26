@@ -1,13 +1,19 @@
-package com.hileco.cortex.instructions;
+package com.hileco.cortex;
 
 import com.hileco.cortex.data.ProgramData;
 import com.hileco.cortex.data.ProgramDataScope;
+import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.Operations;
+import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.instructions.ProgramContext;
+import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.ProgramRunner;
 import com.hileco.cortex.tree.TreeBranch;
-import com.hileco.cortex.tree.TreeBuilder;
-import com.hileco.cortex.tree.building.LoadKnownProgramDataStrategy;
-import com.hileco.cortex.tree.building.PushJumpIfStrategy;
-import com.hileco.cortex.tree.building.PushPopStrategy;
-import com.hileco.cortex.tree.building.PushPushConditionStrategy;
+import com.hileco.cortex.optimizer.InstructionsOptimizer;
+import com.hileco.cortex.optimizer.strategies.LoadKnownProgramDataStrategy;
+import com.hileco.cortex.optimizer.strategies.PushJumpIfStrategy;
+import com.hileco.cortex.optimizer.strategies.PushPopStrategy;
+import com.hileco.cortex.optimizer.strategies.PushPushConditionStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,11 +24,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class TreeBuilderTest {
+public class InstructionsOptimizerTest {
 
     @Test
     public void testWithoutOptimizations() {
-        TreeBuilder treeBuilder = new TreeBuilder();
+        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
                 .PUSH(new byte[]{123})
@@ -37,35 +43,35 @@ public class TreeBuilderTest {
                 .NOOP()
                 .JUMP_DESTINATION()
                 .build();
-        TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
+        TreeBranch root = instructionsOptimizer.asTree(programBuilderFactory, instructions);
         Assert.assertEquals(instructions.size(), root.getInstructions().size());
     }
 
     @Test
     public void testPushPopStrategy() {
-        TreeBuilder treeBuilder = new TreeBuilder();
-        treeBuilder.addStrategy(new PushPopStrategy());
+        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
+        instructionsOptimizer.addStrategy(new PushPopStrategy());
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
                 .PUSH(new byte[]{123})
                 .POP()
                 .build();
-        TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
+        TreeBranch root = instructionsOptimizer.asTree(programBuilderFactory, instructions);
         Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(root.getInstructions().get(1).getOperation() instanceof Operations.NoOp);
     }
 
     @Test
     public void testPushPushConditionStrategy() {
-        TreeBuilder treeBuilder = new TreeBuilder();
-        treeBuilder.addStrategy(new PushPushConditionStrategy());
+        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
+        instructionsOptimizer.addStrategy(new PushPushConditionStrategy());
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{123})
                 .EQUALS()
                 .build();
-        TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
+        TreeBranch root = instructionsOptimizer.asTree(programBuilderFactory, instructions);
         Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(root.getInstructions().get(1).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(root.getInstructions().get(2).getOperation() instanceof Operations.Push);
@@ -73,19 +79,19 @@ public class TreeBuilderTest {
 
     @Test
     public void testLoadKnownProgramDataStrategy() {
-        TreeBuilder treeBuilder = new TreeBuilder();
+        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
         Map<String, Map<BigInteger, ProgramData>> knownData = new HashMap<>();
         Map<BigInteger, ProgramData> knownGroup = new HashMap<>();
         knownGroup.put(BigInteger.valueOf(1234L), new ProgramData(new byte[]{123}, ProgramDataScope.DEPLOYMENT));
         knownData.put("KNOWN", knownGroup);
         LoadKnownProgramDataStrategy strategy = new LoadKnownProgramDataStrategy(knownData, new HashSet<>(Collections.singletonList(ProgramDataScope.DEPLOYMENT)));
-        treeBuilder.addStrategy(strategy);
+        instructionsOptimizer.addStrategy(strategy);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
                 .PUSH(BigInteger.valueOf(1234L).toByteArray())
                 .LOAD("KNOWN")
                 .build();
-        TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
+        TreeBranch root = instructionsOptimizer.asTree(programBuilderFactory, instructions);
         Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(root.getInstructions().get(1).getOperation() instanceof Operations.Push);
         Assert.assertTrue(root.getInstructions().get(1).getOperands() instanceof Operations.Push.Operands);
@@ -94,11 +100,11 @@ public class TreeBuilderTest {
 
     @Test
     public void testFullOptimization() throws ProgramException {
-        TreeBuilder treeBuilder = new TreeBuilder();
-        treeBuilder.addStrategy(new PushPopStrategy());
-        treeBuilder.addStrategy(new PushPushConditionStrategy());
-        treeBuilder.addStrategy(new PushJumpIfStrategy());
-        treeBuilder.setPasses(2);
+        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
+        instructionsOptimizer.addStrategy(new PushPopStrategy());
+        instructionsOptimizer.addStrategy(new PushPushConditionStrategy());
+        instructionsOptimizer.addStrategy(new PushJumpIfStrategy());
+        instructionsOptimizer.setPasses(2);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
                 .PUSH(new byte[]{123})
@@ -113,7 +119,7 @@ public class TreeBuilderTest {
                 .POP()
                 .JUMP_DESTINATION()
                 .build();
-        TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
+        TreeBranch root = instructionsOptimizer.asTree(programBuilderFactory, instructions);
         ProgramContext programContext = new ProgramContext();
         ProgramRunner programRunner = new ProgramRunner(programContext);
         programRunner.run(root.getInstructions());

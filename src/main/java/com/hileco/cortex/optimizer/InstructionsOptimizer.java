@@ -1,17 +1,18 @@
-package com.hileco.cortex.tree;
+package com.hileco.cortex.optimizer;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.tree.TreeBranch;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreeBuilder {
+public class InstructionsOptimizer {
 
     private List<InstructionsOptimizeStrategy> strategies;
     private int passes;
 
-    public TreeBuilder() {
+    public InstructionsOptimizer() {
         this.strategies = new ArrayList<>();
         this.passes = 1;
     }
@@ -26,8 +27,8 @@ public class TreeBuilder {
         return root;
     }
 
-    public boolean addStrategy(InstructionsOptimizeStrategy instructionsOptimizeStrategy) {
-        return strategies.add(instructionsOptimizeStrategy);
+    public void addStrategy(InstructionsOptimizeStrategy instructionsOptimizeStrategy) {
+        strategies.add(instructionsOptimizeStrategy);
     }
 
     public void setPasses(int passes) {

@@ -1,11 +1,11 @@
-package com.hileco.cortex.tree.building;
+package com.hileco.cortex.optimizer.strategies;
 
 import com.hileco.cortex.data.ProgramData;
 import com.hileco.cortex.data.ProgramDataScope;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
-import com.hileco.cortex.tree.InstructionsOptimizeStrategy;
+import com.hileco.cortex.optimizer.InstructionsOptimizeStrategy;
 
 import java.math.BigInteger;
 import java.util.Collections;

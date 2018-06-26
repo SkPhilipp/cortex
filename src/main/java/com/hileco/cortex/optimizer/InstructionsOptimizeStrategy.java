@@ -1,4 +1,4 @@
-package com.hileco.cortex.tree;
+package com.hileco.cortex.optimizer;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;

@@ -1,5 +1,10 @@
-package com.hileco.cortex.instructions;
+package com.hileco.cortex;
 
+import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.instructions.ProgramContext;
+import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.ProgramRunner;
 import org.junit.Assert;
 import org.junit.Test;
 
