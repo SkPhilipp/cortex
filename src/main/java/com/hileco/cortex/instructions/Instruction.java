@@ -1,21 +1,22 @@
 package com.hileco.cortex.instructions;
 
-import static com.hileco.cortex.instructions.Operations.*;
+import static com.hileco.cortex.instructions.Operations.Operands;
+import static com.hileco.cortex.instructions.Operations.Operation;
 
-public class Instruction {
-    private final Operation operation;
-    private final Operands operands;
+public class Instruction<T extends Operation<V>, V extends Operands> {
+    private final T operation;
+    private final V operands;
 
-    Instruction(Operation operation, Operands operands) {
+    Instruction(T operation, V operands) {
         this.operation = operation;
         this.operands = operands;
     }
 
-    public Operation getOperation() {
+    public T getOperation() {
         return operation;
     }
 
-    public Operands getOperands() {
+    public V getOperands() {
         return operands;
     }
 
