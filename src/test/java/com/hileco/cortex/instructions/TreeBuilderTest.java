@@ -74,20 +74,22 @@ public class TreeBuilderTest {
     @Test
     public void testLoadKnownProgramDataStrategy() {
         TreeBuilder treeBuilder = new TreeBuilder();
-        Map<String, Map<String, ProgramData>> knownData = new HashMap<>();
-        Map<String, ProgramData> knownGroup = new HashMap<>();
-        knownGroup.put("AHEAD-OF-TIME", new ProgramData(new byte[]{123}, ProgramDataScope.DEPLOYMENT));
+        Map<String, Map<BigInteger, ProgramData>> knownData = new HashMap<>();
+        Map<BigInteger, ProgramData> knownGroup = new HashMap<>();
+        knownGroup.put(BigInteger.valueOf(1234L), new ProgramData(new byte[]{123}, ProgramDataScope.DEPLOYMENT));
         knownData.put("KNOWN", knownGroup);
         LoadKnownProgramDataStrategy strategy = new LoadKnownProgramDataStrategy(knownData, new HashSet<>(Collections.singletonList(ProgramDataScope.DEPLOYMENT)));
         treeBuilder.addStrategy(strategy);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
-                .LOAD("KNOWN", "AHEAD-OF-TIME")
+                .PUSH(BigInteger.valueOf(1234L).toByteArray())
+                .LOAD("KNOWN")
                 .build();
         TreeBranch root = treeBuilder.asTree(programBuilderFactory, instructions);
-        Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.Push);
-        Assert.assertTrue(root.getInstructions().get(0).getOperands() instanceof Operations.Push.Operands);
-        Assert.assertArrayEquals(((Operations.Push.Operands) root.getInstructions().get(0).getOperands()).bytes, new byte[]{123});
+        Assert.assertTrue(root.getInstructions().get(0).getOperation() instanceof Operations.NoOp);
+        Assert.assertTrue(root.getInstructions().get(1).getOperation() instanceof Operations.Push);
+        Assert.assertTrue(root.getInstructions().get(1).getOperands() instanceof Operations.Push.Operands);
+        Assert.assertArrayEquals(((Operations.Push.Operands) root.getInstructions().get(1).getOperands()).bytes, new byte[]{123});
     }
 
     @Test

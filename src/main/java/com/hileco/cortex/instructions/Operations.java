@@ -453,18 +453,19 @@ public class Operations {
     public static class Load implements Operation<Load.Operands> {
         public static class Operands implements Operations.Operands {
             public String group;
-            public String address;
 
             @Override
             public String toString() {
-                return String.format("%s, %s", group, address);
+                return String.format("%s", group);
             }
         }
 
         public void execute(ProgramContext context, Operands operands) {
-            ProgramData programData = context.getData(operands.group, operands.address);
+            byte[] addressBytes = context.getStack().pop();
+            BigInteger address = new BigInteger(addressBytes);
+            ProgramData programData = context.getData(operands.group, address);
             if (programData == null) {
-                throw new IllegalStateException("Missing program operands");
+                throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.group, address.toString()));
             }
             context.getStack().push(programData.content);
         }
@@ -478,18 +479,19 @@ public class Operations {
     public static class Save implements Operation<Save.Operands> {
         public static class Operands implements Operations.Operands {
             public String group;
-            public String address;
 
             @Override
             public String toString() {
-                return String.format("%s, %s", group, address);
+                return String.format("%s", group);
             }
         }
 
         public void execute(ProgramContext context, Operands operands) {
             LayeredStack<byte[]> stack = context.getStack();
+            byte[] addressBytes = context.getStack().pop();
+            BigInteger address = new BigInteger(addressBytes);
             byte[] bytes = stack.pop();
-            context.setData(operands.group, operands.address, new ProgramData(bytes));
+            context.setData(operands.group, address, new ProgramData(bytes));
         }
 
         @Override

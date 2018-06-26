@@ -140,18 +140,16 @@ public class ProgramBuilder {
         return this;
     }
 
-    public ProgramBuilder LOAD(String group, String address) {
+    public ProgramBuilder LOAD(String group) {
         Load.Operands data = new Load.Operands();
         data.group = group;
-        data.address = address;
         instructions.add(new Instruction(new Load(), data));
         return this;
     }
 
-    public ProgramBuilder SAVE(String group, String address) {
+    public ProgramBuilder SAVE(String group) {
         Save.Operands data = new Save.Operands();
         data.group = group;
-        data.address = address;
         instructions.add(new Instruction(new Save(), data));
         return this;
     }

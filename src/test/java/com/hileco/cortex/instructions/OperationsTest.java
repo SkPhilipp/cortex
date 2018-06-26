@@ -29,6 +29,8 @@ import com.hileco.cortex.primitives.LayeredStack;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.math.BigInteger;
+
 import static com.hileco.cortex.instructions.Operations.NO_DATA;
 
 public class OperationsTest {
@@ -40,7 +42,7 @@ public class OperationsTest {
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        programContext.setData("MEMORY", "0x1234", new ProgramData(new byte[]{0x56, 0x78}));
+        programContext.setData("MEMORY", BigInteger.valueOf(8L), new ProgramData(new byte[]{0x56, 0x78}));
         return programContext;
     }
 
@@ -231,7 +233,6 @@ public class OperationsTest {
         ProgramContext context = testProcessContext();
         Load.Operands operands = new Load.Operands();
         operands.group = "MEMORY";
-        operands.address = "0x1234";
         Load load = new Load();
         load.execute(context, operands);
     }
@@ -241,7 +242,6 @@ public class OperationsTest {
         ProgramContext context = testProcessContext();
         Save.Operands operands = new Save.Operands();
         operands.group = "MEMORY";
-        operands.address = "0x1234";
         Save save = new Save();
         save.execute(context, operands);
     }
