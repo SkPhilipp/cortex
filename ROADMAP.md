@@ -1,16 +1,21 @@
-optimizations:
-- downwards-NOOP-removal optimization strategy
-- upwards-NOOP-removal optimization strategy
-- bitwise operations optmimization strategy
-- hash precalculation optimization strategy
-- unused jump destination strategy
+|---------------|----------|----------|
+|   operation   | consumes | produces |
+|---------------|----------|----------|
+| PUSH          |        0 |        1 |
+| POP           |        1 |        0 |
+| BITWISE-OR    |        2 |        1 |
+| BITWISE-XOR   |        2 |        1 |
+| BITWISE-AND   |        2 |        1 |
+| BITWISE-NOT   |        2 |        1 |
+| HASH          |        1 |        1 |
+| EQUALS        |        2 |        1 |
+| GREATER-THAN  |        2 |        1 |
+| LESS-THAN     |        2 |        1 |
+| IS-ZERO       |        1 |        1 |
+|---------------|----------|----------|
 
 immediate:
 - rename current tree-building classes to instruction-optimization
-- better support for editing of streams
-- allow optimizers to filter on noop-equivalent instructions
-- allow optimizers to get an instruction's line number
-- allow optimizers to receive only instructions of a specific type, no typeof
 - EVM-based overflow configuration in ProgramBuilderFactory as well as related testcases
 - EVM-based signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
 - check for issues with Java's signed byte math (ie byte = 127 should be an unsigned int of 255)
@@ -18,13 +23,14 @@ immediate:
 - ProgramBuilder with higher level instructions (such as FOR, WHILE, IF, ELSE.)
 - try to find branchless methods of doing branched instructions, ideally, a generalized solution
 - a fuzzer, for compiler as well as optimizer
-- jump takes its destination parameter from the stack(edited)
+- pre-written assemblies to benchmark optimization and constraint solving
+- unused jump destination removal strategy
 
 post-tree-implementation:
-- write-into-read simplifications where read is known to return the same results
-- fixed-amount loop unrolling optimization
 - mark self-contained instructions as being such; (example; [PUSH])
 - mark self-contained tree nodes as being such; (example; [PUSH, PUSH, EQUALS], [PUSH, POP])
+- write-into-read simplifications where read is known to return the same results
+- fixed-amount loop unrolling optimization
 - implement a generic solving method for self-contained tree nodes (and remove obsolete'd instruction list optimizers)
 - exit-only optimization strategies (code only performing stack math, reading, and logging ending in an EXIT or EXIT-equivalent is not interesting)
 - optimization strategy to inline instructions from elsewhere in the code, allowing for further optimization passes (post-tree-implementation, this could be done transparently without memory overhead)
