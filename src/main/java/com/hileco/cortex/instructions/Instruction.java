@@ -1,9 +1,8 @@
 package com.hileco.cortex.instructions;
 
-import static com.hileco.cortex.instructions.Operations.Operands;
 import static com.hileco.cortex.instructions.Operations.Operation;
 
-public class Instruction<T extends Operation<V>, V extends Operands> {
+public class Instruction<T extends Operation<V>, V> {
     private final T operation;
     private final V operands;
 

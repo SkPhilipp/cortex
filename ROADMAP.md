@@ -1,5 +1,4 @@
 immediate:
-- rename current tree-building classes to instruction-optimization
 - EVM-based overflow configuration in ProgramBuilderFactory as well as related testcases
 - EVM-based signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
 - check for issues with Java's signed byte math (ie byte = 127 should be an unsigned int of 255)
@@ -28,3 +27,9 @@ constraint-implementation:
 post-constraint-implementation:
 - constraint-based load-known optimization (much like value-based load-known optimization)
 - constraint-based complexity
+
+full implementation:
+- sample contracts of legends implemented as cortex assembly, along with the attacks of legend performed on them
+- set up tests which verify that the generated attacks on the contracts of legends result in the same profits as the attacks of legend
+- find transaction history on popular contracts, and find out which data flow is desirable
+- when pulling down contracts, check for similarity with already pulled-down contracts

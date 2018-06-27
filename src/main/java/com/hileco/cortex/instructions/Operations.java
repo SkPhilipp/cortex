@@ -5,22 +5,36 @@ import com.hileco.cortex.primitives.LayeredStack;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class Operations {
 
-    public interface Operation<T extends Operands> {
-        void execute(ProgramContext context, T operands);
-    }
+    public abstract static class Operation<T> {
+        public abstract void execute(ProgramContext context, T operands);
 
-    public interface Operands {
-    }
+        public List<Integer> getStackTakes(T operands) {
+            return Collections.emptyList();
+        }
 
-    public static class NoOperands implements Operands {
+        public List<Integer> getStackAdds(T operands) {
+            return Collections.emptyList();
+        }
 
         @Override
         public String toString() {
-            return "";
+            return this.getClass()
+                    .getSimpleName()
+                    .replaceAll("(.)([A-Z])", "$1_$2")
+                    .toUpperCase();
+        }
+    }
+
+    public static class NoOperands {
+        @Override
+        public String toString() {
+            return "<empty>";
         }
     }
 
@@ -32,8 +46,8 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Push implements Operation<Push.Operands> {
-        public static class Operands implements Operations.Operands {
+    public static class Push extends Operation<Push.Operands> {
+        public static class Operands {
             public byte[] bytes;
 
             @Override
@@ -47,24 +61,23 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "PUSH";
+        public List<Integer> getStackAdds(Operands operands) {
+            return Collections.singletonList(-1);
         }
     }
 
-    public static class Pop implements Operation<NoOperands> {
+    public static class Pop extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
             context.getStack().pop();
         }
 
-        @Override
-        public String toString() {
-            return "POP";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Collections.singletonList(0);
         }
     }
 
-    public static class Swap implements Operation<Swap.Operands> {
-        public static class Operands implements Operations.Operands {
+    public static class Swap extends Operation<Swap.Operands> {
+        public static class Operands {
             public int topOffsetLeft;
             public int topOffsetRight;
 
@@ -78,14 +91,17 @@ public class Operations {
             context.getStack().swap(operands.topOffsetLeft, operands.topOffsetRight);
         }
 
-        @Override
-        public String toString() {
-            return "POP";
+        public List<Integer> getStackTakes(Swap.Operands operands) {
+            return Arrays.asList(operands.topOffsetLeft, operands.topOffsetRight);
+        }
+
+        public List<Integer> getStackAdds(Swap.Operands operands) {
+            return Arrays.asList(operands.topOffsetRight, operands.topOffsetLeft);
         }
     }
 
-    public static class Duplicate implements Operation<Duplicate.Operands> {
-        public static class Operands implements Operations.Operands {
+    public static class Duplicate extends Operation<Duplicate.Operands> {
+        public static class Operands {
             public int topOffset;
 
             @Override
@@ -98,9 +114,12 @@ public class Operations {
             context.getStack().duplicate(operands.topOffset);
         }
 
-        @Override
-        public String toString() {
-            return "DUPLICATE";
+        public List<Integer> getStackTakes(Duplicate.Operands operands) {
+            return Collections.singletonList(operands.topOffset);
+        }
+
+        public List<Integer> getStackAdds(Duplicate.Operands operands) {
+            return Collections.singletonList(-1);
         }
     }
 
@@ -113,7 +132,7 @@ public class Operations {
     private static byte[] TRUE = {1};
     private static byte[] FALSE = {0};
 
-    private static abstract class ConditionOperation implements Operation<NoOperands> {
+    private static abstract class ConditionOperation extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] left = stack.pop();
@@ -123,6 +142,11 @@ public class Operations {
         }
 
         public abstract boolean innerExecute(byte[] left, byte[] right);
+
+        @Override
+        public List<Integer> getStackAdds(NoOperands operands) {
+            return Collections.singletonList(-1);
+        }
     }
 
     public static class Equals extends ConditionOperation {
@@ -131,10 +155,9 @@ public class Operations {
             return Arrays.equals(left, right);
         }
 
-
         @Override
-        public String toString() {
-            return "EQUALS";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
@@ -147,8 +170,8 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "GREATER_THAN";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
@@ -161,12 +184,12 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "LESS_THAN";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
-    public static class IsZero implements Operation<NoOperands> {
+    public static class IsZero extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] top = stack.pop();
@@ -180,8 +203,8 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "IS_ZERO";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Collections.singletonList(0);
         }
     }
 
@@ -191,7 +214,8 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    private static abstract class BitwiseOperation implements Operation<NoOperands> {
+    private static abstract class BitwiseOperation extends Operation<NoOperands> {
+        public abstract byte innerExecute(byte left, byte right);
 
         public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
@@ -207,7 +231,10 @@ public class Operations {
             stack.push(result);
         }
 
-        public abstract byte innerExecute(byte left, byte right);
+        @Override
+        public List<Integer> getStackAdds(NoOperands operands) {
+            return Collections.singletonList(-1);
+        }
     }
 
     public static class BitwiseOr extends BitwiseOperation {
@@ -219,8 +246,8 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "OR";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
@@ -233,8 +260,8 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "XOR";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
@@ -247,12 +274,12 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "AND";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
-    public static class BitwiseNot implements Operation<NoOperands> {
+    public static class BitwiseNot extends Operation<NoOperands> {
         @Override
         public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
@@ -266,8 +293,8 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "NOT";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Collections.singletonList(0);
         }
     }
 
@@ -277,7 +304,7 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    private static abstract class MathematicalOperation implements Operation<NoOperands> {
+    private static abstract class MathematicalOperation extends Operation<NoOperands> {
 
         public void execute(ProgramContext context, NoOperands operands) {
             LayeredStack<byte[]> stack = context.getStack();
@@ -290,17 +317,22 @@ public class Operations {
         }
 
         public abstract BigInteger innerExecute(BigInteger left, BigInteger right);
+
+        @Override
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
+        }
+
+        @Override
+        public List<Integer> getStackAdds(NoOperands operands) {
+            return Collections.singletonList(-1);
+        }
     }
 
     public static class Add extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.add(right);
-        }
-
-        @Override
-        public String toString() {
-            return "ADD";
         }
     }
 
@@ -309,22 +341,12 @@ public class Operations {
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.subtract(right);
         }
-
-        @Override
-        public String toString() {
-            return "SUBTRACT";
-        }
     }
 
     public static class Multiply extends MathematicalOperation {
         @Override
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.multiply(right);
-        }
-
-        @Override
-        public String toString() {
-            return "MULTIPLY";
         }
     }
 
@@ -333,11 +355,6 @@ public class Operations {
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.divide(right);
         }
-
-        @Override
-        public String toString() {
-            return "DIVIDE";
-        }
     }
 
     public static class Modulo extends MathematicalOperation {
@@ -345,19 +362,14 @@ public class Operations {
         public BigInteger innerExecute(BigInteger left, BigInteger right) {
             return left.mod(right);
         }
-
-        @Override
-        public String toString() {
-            return "MODULO";
-        }
     }
 
-    public static class Hash implements Operation<Hash.Operands> {
+    public static class Hash extends Operation<Hash.Operands> {
 
         public static final String HASH_METHOD_SHA_3 = "SHA3";
         public static final String HASH_METHOD_NONE = "NONE";
 
-        public static class Operands implements Operations.Operands {
+        public static class Operands {
             public String hashMethod;
 
             @Override
@@ -375,8 +387,13 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "HASH";
+        public List<Integer> getStackTakes(Hash.Operands operands) {
+            return Collections.singletonList(0);
+        }
+
+        @Override
+        public List<Integer> getStackAdds(Hash.Operands operands) {
+            return Collections.singletonList(-1);
         }
     }
 
@@ -386,7 +403,7 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Jump implements Operation<NoOperands> {
+    public static class Jump extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands noOperands) {
             byte[] destination = context.getStack().pop();
             context.setJumping(true);
@@ -394,23 +411,18 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "JUMP";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Collections.singletonList(0);
         }
     }
 
-    public static class JumpDestination implements Operation<NoOperands> {
+    public static class JumpDestination extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
             context.setJumping(false);
         }
-
-        @Override
-        public String toString() {
-            return "JUMP_DESTINATION";
-        }
     }
 
-    public static class JumpIf implements Operation<NoOperands> {
+    public static class JumpIf extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands noOperands) {
             LayeredStack<byte[]> stack = context.getStack();
             byte[] destination = context.getStack().pop();
@@ -428,19 +440,14 @@ public class Operations {
         }
 
         @Override
-        public String toString() {
-            return "JUMP_IF";
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
-    public static class Exit implements Operation<NoOperands> {
+    public static class Exit extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
             context.setExiting(true);
-        }
-
-        @Override
-        public String toString() {
-            return "EXIT";
         }
     }
 
@@ -450,8 +457,8 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class Load implements Operation<Load.Operands> {
-        public static class Operands implements Operations.Operands {
+    public static class Load extends Operation<Load.Operands> {
+        public static class Operands {
             public String group;
 
             @Override
@@ -470,14 +477,13 @@ public class Operations {
             context.getStack().push(programData.content);
         }
 
-        @Override
-        public String toString() {
-            return "LOAD";
+        public List<Integer> getStackTakes(Load.Operands operands) {
+            return Arrays.asList(0, 1);
         }
     }
 
-    public static class Save implements Operation<Save.Operands> {
-        public static class Operands implements Operations.Operands {
+    public static class Save extends Operation<Save.Operands> {
+        public static class Operands {
             public String group;
 
             @Override
@@ -494,9 +500,13 @@ public class Operations {
             context.setData(operands.group, address, new ProgramData(bytes));
         }
 
-        @Override
-        public String toString() {
-            return "SAVE";
+
+        public List<Integer> getStackTakes(Save.Operands operands) {
+            return Collections.singletonList(0);
+        }
+
+        public List<Integer> getStackAdds(Save.Operands operands) {
+            return Collections.singletonList(-1);
         }
     }
 
@@ -506,13 +516,8 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
-    public static class NoOp implements Operation<NoOperands> {
+    public static class NoOp extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
-        }
-
-        @Override
-        public String toString() {
-            return "NOOP";
         }
     }
 
