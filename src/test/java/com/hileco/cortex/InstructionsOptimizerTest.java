@@ -27,55 +27,6 @@ import java.util.Map;
 public class InstructionsOptimizerTest {
 
     @Test
-    public void testWithoutOptimizations() {
-        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
-        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        List<Instruction> instructions = programBuilderFactory.builder()
-                .PUSH(new byte[]{123})
-                .PUSH(new byte[]{123})
-                .EQUALS()
-                .PUSH(BigInteger.valueOf(10L).toByteArray())
-                .JUMP_IF()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .JUMP_DESTINATION()
-                .build();
-        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
-        Assert.assertEquals(instructions.size(), optimized.size());
-    }
-
-    @Test
-    public void testPushPopStrategy() {
-        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
-        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        List<Instruction> instructions = programBuilderFactory.builder()
-                .PUSH(new byte[]{123})
-                .POP()
-                .build();
-        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
-        Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
-        Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.NoOp);
-    }
-
-    @Test
-    public void testPushPushConditionStrategy() {
-        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
-        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        List<Instruction> instructions = programBuilderFactory.builder()
-                .PUSH(new byte[]{123})
-                .PUSH(new byte[]{123})
-                .EQUALS()
-                .build();
-        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
-        Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
-        Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.NoOp);
-        Assert.assertTrue(optimized.get(2).getOperation() instanceof Operations.Push);
-    }
-
-    @Test
     public void testLoadKnownProgramDataStrategy() {
         InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
         Map<ProgramZone, Map<BigInteger, ProgramData>> knownData = new HashMap<>();
@@ -92,35 +43,27 @@ public class InstructionsOptimizerTest {
         List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
         Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.Push);
-        Assert.assertTrue(optimized.get(1).getOperands() instanceof Operations.Push.Operands);
-        Assert.assertArrayEquals(((Operations.Push.Operands) optimized.get(1).getOperands()).bytes, new byte[]{123});
     }
 
     @Test
-    public void testFullOptimization() throws ProgramException {
+    public void testPushJumpIfStrategy() throws ProgramException {
         InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
         instructionsOptimizer.addStrategy(new PushJumpIfStrategy());
         instructionsOptimizer.setPasses(2);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<Instruction> instructions = programBuilderFactory.builder()
-                .PUSH(new byte[]{123})
-                .PUSH(new byte[]{124})
-                .EQUALS()
-                .PUSH(BigInteger.valueOf(10L).toByteArray())
+                .PUSH(new byte[]{1})
+                .PUSH(new byte[]{3})
                 .JUMP_IF()
-                .NOOP()
-                .PUSH(new byte[]{123})
-                .NOOP()
-                .NOOP()
-                .POP()
                 .JUMP_DESTINATION()
                 .build();
         List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
         ProgramContext programContext = new ProgramContext();
         ProgramRunner programRunner = new ProgramRunner(programContext);
         programRunner.run(optimized);
+        Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
+        Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.Push);
     }
-
 
     @Test
     public void testPrecalculateSelfContainedStrategy() throws ProgramException {
