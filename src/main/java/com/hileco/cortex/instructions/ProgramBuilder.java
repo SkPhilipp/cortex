@@ -3,7 +3,32 @@ package com.hileco.cortex.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hileco.cortex.instructions.Operations.*;
+import static com.hileco.cortex.instructions.Operations.Add;
+import static com.hileco.cortex.instructions.Operations.BitwiseAnd;
+import static com.hileco.cortex.instructions.Operations.BitwiseNot;
+import static com.hileco.cortex.instructions.Operations.BitwiseOr;
+import static com.hileco.cortex.instructions.Operations.BitwiseXor;
+import static com.hileco.cortex.instructions.Operations.Divide;
+import static com.hileco.cortex.instructions.Operations.Duplicate;
+import static com.hileco.cortex.instructions.Operations.Equals;
+import static com.hileco.cortex.instructions.Operations.Exit;
+import static com.hileco.cortex.instructions.Operations.GreaterThan;
+import static com.hileco.cortex.instructions.Operations.Hash;
+import static com.hileco.cortex.instructions.Operations.IsZero;
+import static com.hileco.cortex.instructions.Operations.Jump;
+import static com.hileco.cortex.instructions.Operations.JumpDestination;
+import static com.hileco.cortex.instructions.Operations.JumpIf;
+import static com.hileco.cortex.instructions.Operations.LessThan;
+import static com.hileco.cortex.instructions.Operations.Load;
+import static com.hileco.cortex.instructions.Operations.Modulo;
+import static com.hileco.cortex.instructions.Operations.Multiply;
+import static com.hileco.cortex.instructions.Operations.NO_DATA;
+import static com.hileco.cortex.instructions.Operations.NoOp;
+import static com.hileco.cortex.instructions.Operations.Pop;
+import static com.hileco.cortex.instructions.Operations.Push;
+import static com.hileco.cortex.instructions.Operations.Save;
+import static com.hileco.cortex.instructions.Operations.Subtract;
+import static com.hileco.cortex.instructions.Operations.Swap;
 
 public class ProgramBuilder {
     private List<Instruction> instructions;
@@ -140,17 +165,21 @@ public class ProgramBuilder {
         return this;
     }
 
-    public ProgramBuilder LOAD(String group) {
+    public ProgramBuilder LOAD(ProgramZone programZone) {
         Load.Operands data = new Load.Operands();
-        data.group = group;
+        data.programZone = programZone;
         instructions.add(new Instruction(new Load(), data));
         return this;
     }
 
-    public ProgramBuilder SAVE(String group) {
+    public ProgramBuilder SAVE(ProgramZone programZone) {
         Save.Operands data = new Save.Operands();
-        data.group = group;
+        data.programZone = programZone;
         instructions.add(new Instruction(new Save(), data));
         return this;
+    }
+
+    public int currentSize() {
+        return instructions.size();
     }
 }

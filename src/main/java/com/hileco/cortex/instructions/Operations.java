@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.hileco.cortex.instructions.ProgramZone.*;
+
 @SuppressWarnings("WeakerAccess")
 public class Operations {
 
@@ -19,6 +21,10 @@ public class Operations {
         }
 
         public List<Integer> getStackAdds(T operands) {
+            return Collections.emptyList();
+        }
+
+        public List<ProgramZone> getInstructionModifiers(T operands) {
             return Collections.emptyList();
         }
 
@@ -34,7 +40,7 @@ public class Operations {
     public static class NoOperands {
         @Override
         public String toString() {
-            return "<empty>";
+            return "";
         }
     }
 
@@ -64,6 +70,10 @@ public class Operations {
         public List<Integer> getStackAdds(Operands operands) {
             return Collections.singletonList(-1);
         }
+
+        public List<ProgramZone> getInstructionModifiers(Operands operands) {
+            return Collections.singletonList(STACK);
+        }
     }
 
     public static class Pop extends Operation<NoOperands> {
@@ -73,6 +83,10 @@ public class Operations {
 
         public List<Integer> getStackTakes(NoOperands operands) {
             return Collections.singletonList(0);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(STACK);
         }
     }
 
@@ -98,6 +112,10 @@ public class Operations {
         public List<Integer> getStackAdds(Swap.Operands operands) {
             return Arrays.asList(operands.topOffsetRight, operands.topOffsetLeft);
         }
+
+        public List<ProgramZone> getInstructionModifiers(Operands operands) {
+            return Collections.singletonList(STACK);
+        }
     }
 
     public static class Duplicate extends Operation<Duplicate.Operands> {
@@ -120,6 +138,10 @@ public class Operations {
 
         public List<Integer> getStackAdds(Duplicate.Operands operands) {
             return Collections.singletonList(-1);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(Operands operands) {
+            return Collections.singletonList(STACK);
         }
     }
 
@@ -146,6 +168,10 @@ public class Operations {
         @Override
         public List<Integer> getStackAdds(NoOperands operands) {
             return Collections.singletonList(-1);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(STACK);
         }
     }
 
@@ -206,6 +232,10 @@ public class Operations {
         public List<Integer> getStackTakes(NoOperands operands) {
             return Collections.singletonList(0);
         }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(STACK);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -234,6 +264,10 @@ public class Operations {
         @Override
         public List<Integer> getStackAdds(NoOperands operands) {
             return Collections.singletonList(-1);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(STACK);
         }
     }
 
@@ -327,6 +361,10 @@ public class Operations {
         public List<Integer> getStackAdds(NoOperands operands) {
             return Collections.singletonList(-1);
         }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(STACK);
+        }
     }
 
     public static class Add extends MathematicalOperation {
@@ -395,6 +433,10 @@ public class Operations {
         public List<Integer> getStackAdds(Hash.Operands operands) {
             return Collections.singletonList(-1);
         }
+
+        public List<ProgramZone> getInstructionModifiers(Operands operands) {
+            return Collections.singletonList(STACK);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -413,6 +455,10 @@ public class Operations {
         @Override
         public List<Integer> getStackTakes(NoOperands operands) {
             return Collections.singletonList(0);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(INSTRUCTION_POSITION);
         }
     }
 
@@ -443,6 +489,10 @@ public class Operations {
         public List<Integer> getStackTakes(NoOperands operands) {
             return Arrays.asList(0, 1);
         }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Arrays.asList(STACK, INSTRUCTION_POSITION);
+        }
     }
 
     public static class Exit extends Operation<NoOperands> {
@@ -459,20 +509,20 @@ public class Operations {
 
     public static class Load extends Operation<Load.Operands> {
         public static class Operands {
-            public String group;
+            public ProgramZone programZone;
 
             @Override
             public String toString() {
-                return String.format("%s", group);
+                return String.format("%s", programZone);
             }
         }
 
         public void execute(ProgramContext context, Operands operands) {
             byte[] addressBytes = context.getStack().pop();
             BigInteger address = new BigInteger(addressBytes);
-            ProgramData programData = context.getData(operands.group, address);
+            ProgramData programData = context.getData(operands.programZone, address);
             if (programData == null) {
-                throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.group, address.toString()));
+                throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.programZone, address.toString()));
             }
             context.getStack().push(programData.content);
         }
@@ -480,15 +530,19 @@ public class Operations {
         public List<Integer> getStackTakes(Load.Operands operands) {
             return Arrays.asList(0, 1);
         }
+
+        public List<ProgramZone> getInstructionModifiers(Operands operands) {
+            return Arrays.asList(STACK, MEMORY);
+        }
     }
 
     public static class Save extends Operation<Save.Operands> {
         public static class Operands {
-            public String group;
+            public ProgramZone programZone;
 
             @Override
             public String toString() {
-                return String.format("%s", group);
+                return String.format("%s", programZone);
             }
         }
 
@@ -497,7 +551,7 @@ public class Operations {
             byte[] addressBytes = context.getStack().pop();
             BigInteger address = new BigInteger(addressBytes);
             byte[] bytes = stack.pop();
-            context.setData(operands.group, address, new ProgramData(bytes));
+            context.setData(operands.programZone, address, new ProgramData(bytes));
         }
 
 
@@ -507,6 +561,10 @@ public class Operations {
 
         public List<Integer> getStackAdds(Save.Operands operands) {
             return Collections.singletonList(-1);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(Operands operands) {
+            return Arrays.asList(STACK, MEMORY);
         }
     }
 

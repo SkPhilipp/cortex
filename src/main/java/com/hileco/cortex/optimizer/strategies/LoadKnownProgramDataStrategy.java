@@ -5,6 +5,7 @@ import com.hileco.cortex.data.ProgramDataScope;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.instructions.ProgramZone;
 import com.hileco.cortex.optimizer.InstructionsOptimizeStrategy;
 
 import java.math.BigInteger;
@@ -15,10 +16,10 @@ import java.util.Set;
 
 public class LoadKnownProgramDataStrategy implements InstructionsOptimizeStrategy {
 
-    private Map<String, Map<BigInteger, ProgramData>> knownData;
+    private Map<ProgramZone, Map<BigInteger, ProgramData>> knownData;
     private Set<ProgramDataScope> allowedScopes;
 
-    public LoadKnownProgramDataStrategy(Map<String, Map<BigInteger, ProgramData>> knownData, Set<ProgramDataScope> allowedScopes) {
+    public LoadKnownProgramDataStrategy(Map<ProgramZone, Map<BigInteger, ProgramData>> knownData, Set<ProgramDataScope> allowedScopes) {
         this.knownData = knownData;
         this.allowedScopes = allowedScopes;
     }
@@ -35,7 +36,7 @@ public class LoadKnownProgramDataStrategy implements InstructionsOptimizeStrateg
                 Operations.Push.Operands pushOperands = (Operations.Push.Operands) push.getOperands();
                 Operations.Load.Operands loadOperands = (Operations.Load.Operands) load.getOperands();
                 BigInteger address = new BigInteger(pushOperands.bytes);
-                ProgramData programData = this.knownData.getOrDefault(loadOperands.group, Collections.emptyMap()).get(address);
+                ProgramData programData = this.knownData.getOrDefault(loadOperands.programZone, Collections.emptyMap()).get(address);
                 if (programData != null && allowedScopes.contains(programData.scope)) {
                     instructions.remove(i + 1);
                     instructions.remove(i);

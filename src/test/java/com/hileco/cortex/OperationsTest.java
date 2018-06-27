@@ -26,6 +26,7 @@ import com.hileco.cortex.instructions.Operations.Save;
 import com.hileco.cortex.instructions.Operations.Subtract;
 import com.hileco.cortex.instructions.Operations.Swap;
 import com.hileco.cortex.instructions.ProgramContext;
+import com.hileco.cortex.instructions.ProgramZone;
 import com.hileco.cortex.primitives.LayeredStack;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class OperationsTest {
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        programContext.setData("MEMORY", BigInteger.valueOf(8L), new ProgramData(new byte[]{0x56, 0x78}));
+        programContext.setData(ProgramZone.MEMORY, BigInteger.valueOf(8L), new ProgramData(new byte[]{0x56, 0x78}));
         return programContext;
     }
 
@@ -233,7 +234,7 @@ public class OperationsTest {
     public void runLoad() {
         ProgramContext context = testProcessContext();
         Load.Operands operands = new Load.Operands();
-        operands.group = "MEMORY";
+        operands.programZone = ProgramZone.MEMORY;
         Load load = new Load();
         load.execute(context, operands);
     }
@@ -242,7 +243,7 @@ public class OperationsTest {
     public void runSave() {
         ProgramContext context = testProcessContext();
         Save.Operands operands = new Save.Operands();
-        operands.group = "MEMORY";
+        operands.programZone = ProgramZone.MEMORY;
         Save save = new Save();
         save.execute(context, operands);
     }

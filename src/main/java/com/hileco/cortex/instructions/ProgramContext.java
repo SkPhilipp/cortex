@@ -18,7 +18,7 @@ public class ProgramContext {
     private LayeredStack<byte[]> stack;
     private int stackLimit;
 
-    private Map<String, LayeredMap<BigInteger, ProgramData>> storage;
+    private Map<ProgramZone, LayeredMap<BigInteger, ProgramData>> storage;
 
     private boolean overflowAllowed;
     private BigInteger overflowLimit;
@@ -93,12 +93,12 @@ public class ProgramContext {
         this.stackLimit = stackLimit;
     }
 
-    public ProgramData getData(String group, BigInteger address) {
-        return storage.computeIfAbsent(group, s -> new LayeredMap<>()).get(address);
+    public ProgramData getData(ProgramZone programZone, BigInteger address) {
+        return storage.computeIfAbsent(programZone, s -> new LayeredMap<>()).get(address);
     }
 
-    public void setData(String group, BigInteger address, ProgramData programData) {
-        storage.computeIfAbsent(group, s -> new LayeredMap<>()).put(address, programData);
+    public void setData(ProgramZone programZone, BigInteger address, ProgramData programData) {
+        storage.computeIfAbsent(programZone, s -> new LayeredMap<>()).put(address, programData);
     }
 
     public boolean isOverflowAllowed() {

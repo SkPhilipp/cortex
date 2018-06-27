@@ -53,8 +53,8 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     }
 
     private synchronized void checkBounds(int index) {
-        if (index > size) {
-            throw new IndexOutOfBoundsException(String.format("Index %s > Size %s", index, size));
+        if (size < index) {
+            throw new IndexOutOfBoundsException(String.format("Size %s < Index %s", size, index));
         }
     }
 
@@ -116,12 +116,12 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
         @Override
         public synchronized boolean hasNext() {
-            return index < LayeredStack.this.size;
+            return index <= LayeredStack.this.size;
         }
 
         @Override
         public synchronized V next() {
-            if (index == size) {
+            if (index > size) {
                 throw new NoSuchElementException();
             }
             V value = LayeredStack.this.get(index);
@@ -171,7 +171,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public IndexedIterator iterator() {
-        return new IndexedIterator(0);
+        return new IndexedIterator(1);
     }
 
     @SuppressWarnings("unchecked")
@@ -179,7 +179,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     public synchronized V[] toArray() {
         Object[] objects = new Object[size];
         for (int index = 0; index < size; index++) {
-            V value = LayeredStack.this.get(index);
+            V value = LayeredStack.this.get(index + 1);
             objects[index] = value;
         }
         return (V[]) objects;
@@ -192,7 +192,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
             return (T[]) toArray();
         } else {
             for (int index = 0; index < a.length; index++) {
-                V value = LayeredStack.this.get(index);
+                V value = LayeredStack.this.get(index + 1);
                 a[index] = (T) value;
             }
             return a;
@@ -259,7 +259,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized int indexOf(Object o) {
-        IndexedIterator iterator = new IndexedIterator(0);
+        IndexedIterator iterator = new IndexedIterator(1);
         while (iterator.hasNext()) {
             if (Objects.equals(iterator.next(), o)) {
                 return iterator.index - 1;
@@ -270,7 +270,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized int lastIndexOf(Object o) {
-        IndexedIterator iterator = new IndexedIterator(0);
+        IndexedIterator iterator = new IndexedIterator(1);
         int match = -1;
         while (iterator.hasNext()) {
             if (Objects.equals(iterator.next(), o)) {
@@ -282,7 +282,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public ListIterator<V> listIterator() {
-        return new IndexedIterator(0);
+        return new IndexedIterator(1);
     }
 
     @Override
