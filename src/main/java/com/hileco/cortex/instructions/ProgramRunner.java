@@ -1,13 +1,18 @@
 package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.instructions.ProgramException.Reason;
+import com.hileco.cortex.output.Table;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED;
+import static com.hileco.cortex.output.Color.Palette.CYAN;
+import static com.hileco.cortex.output.Color.Palette.GREEN;
+import static com.hileco.cortex.output.Color.Palette.RED;
 
 public class ProgramRunner {
     private ProgramContext programContext;
@@ -19,25 +24,40 @@ public class ProgramRunner {
     @SuppressWarnings("unchecked")
     public void run(List<Instruction> instructions) throws ProgramException {
         int size = instructions.size();
-        System.out.println();
-        System.out.println(String.format("[     SYSTEM ] Executing program of size %d", size));
+        Table table = Table.builder()
+                .columns(Arrays.asList(
+                        Table.Column.builder().header("#").foreground(RED).width(6).build(),
+                        Table.Column.builder().header("size").foreground(CYAN).width(6).build(),
+                        Table.Column.builder().header("@3").foreground(CYAN).width(6).build(),
+                        Table.Column.builder().header("@2").foreground(CYAN).width(6).build(),
+                        Table.Column.builder().header("@1").foreground(CYAN).width(6).build(),
+                        Table.Column.builder().header("@0").foreground(CYAN).width(6).build(),
+                        Table.Column.builder().header("operation").foreground(GREEN).width(20).build(),
+                        Table.Column.builder().header("operands").foreground(GREEN).width(15).build()
+                ))
+                .build();
         while (!programContext.isExiting() && programContext.getInstructionPosition() != size) {
             checkInstructionPosition(size);
             Instruction current = instructions.get(programContext.getInstructionPosition());
             checkJumping(current);
-            System.out.println(String.format("OP#=%8d, LEN=%8d, EL#1=%8s, EL#0=%8s, OPC=%20s DAT=%s",
-                    programContext.getInstructionPosition(),
-                    programContext.getStack().size(),
-                    programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
-                    programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
-                    current.getOperation().toString(),
-                    current.getOperands().toString()));
+            if (!(current.getOperation() instanceof Operations.NoOp)) {
+                table.row(
+                        programContext.getInstructionPosition(),
+                        programContext.getStack().size(),
+                        programContext.getStack().size() > 3 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 3)) : "",
+                        programContext.getStack().size() > 2 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 2)) : "",
+                        programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
+                        programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
+                        current.getOperation().toString(),
+                        current.getOperands().toString());
+            }
             incrementInstructionPosition(current);
             current.getOperation().execute(programContext, current.getOperands());
             incrementInstructionsExecuted();
             checkStack();
             manageInstructionExecution();
         }
+        table.write(System.out);
     }
 
     private void incrementInstructionsExecuted() {

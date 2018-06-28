@@ -70,8 +70,8 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized void swap(int topOffsetLeft, int topOffsetRight) {
-        int indexA = this.size - 1 - topOffsetLeft;
-        int indexB = this.size - 1 - topOffsetRight;
+        int indexA = this.size - topOffsetLeft;
+        int indexB = this.size - topOffsetRight;
         checkBounds(indexA);
         checkBounds(indexB);
         V valueA = get(indexA);

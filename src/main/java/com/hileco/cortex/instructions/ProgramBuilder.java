@@ -44,12 +44,12 @@ public class ProgramBuilder {
     public ProgramBuilder PUSH(byte[] bytes) {
         Push.Operands data = new Push.Operands();
         data.bytes = bytes;
-        instructions.add(new Instruction(new Push(), data));
+        instructions.add(new Instruction<>(new Push(), data));
         return this;
     }
 
     public ProgramBuilder POP() {
-        instructions.add(new Instruction(new Pop(), NO_DATA));
+        instructions.add(new Instruction<>(new Pop(), NO_DATA));
         return this;
     }
 
@@ -57,125 +57,125 @@ public class ProgramBuilder {
         Swap.Operands data = new Swap.Operands();
         data.topOffsetLeft = topOffsetLeft;
         data.topOffsetRight = topOffsetRight;
-        instructions.add(new Instruction(new Swap(), data));
+        instructions.add(new Instruction<>(new Swap(), data));
         return this;
     }
 
     public ProgramBuilder DUPLICATE(int topOffset) {
         Duplicate.Operands data = new Duplicate.Operands();
         data.topOffset = topOffset;
-        instructions.add(new Instruction(new Duplicate(), data));
+        instructions.add(new Instruction<>(new Duplicate(), data));
         return this;
     }
 
     public ProgramBuilder EQUALS() {
-        instructions.add(new Instruction(new Equals(), NO_DATA));
+        instructions.add(new Instruction<>(new Equals(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder GREATER_THAN() {
-        instructions.add(new Instruction(new GreaterThan(), NO_DATA));
+        instructions.add(new Instruction<>(new GreaterThan(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder LESS_THAN() {
-        instructions.add(new Instruction(new LessThan(), NO_DATA));
+        instructions.add(new Instruction<>(new LessThan(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder IS_ZERO() {
-        instructions.add(new Instruction(new IsZero(), NO_DATA));
+        instructions.add(new Instruction<>(new IsZero(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder BITWISE_OR() {
-        instructions.add(new Instruction(new BitwiseOr(), NO_DATA));
+        instructions.add(new Instruction<>(new BitwiseOr(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder BITWISE_XOR() {
-        instructions.add(new Instruction(new BitwiseXor(), NO_DATA));
+        instructions.add(new Instruction<>(new BitwiseXor(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder BITWISE_AND() {
-        instructions.add(new Instruction(new BitwiseAnd(), NO_DATA));
+        instructions.add(new Instruction<>(new BitwiseAnd(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder BITWISE_NOT() {
-        instructions.add(new Instruction(new BitwiseNot(), NO_DATA));
+        instructions.add(new Instruction<>(new BitwiseNot(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder ADD() {
-        instructions.add(new Instruction(new Add(), NO_DATA));
+        instructions.add(new Instruction<>(new Add(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder SUBTRACT() {
-        instructions.add(new Instruction(new Subtract(), NO_DATA));
+        instructions.add(new Instruction<>(new Subtract(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder MULTIPLY() {
-        instructions.add(new Instruction(new Multiply(), NO_DATA));
+        instructions.add(new Instruction<>(new Multiply(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder DIVIDE() {
-        instructions.add(new Instruction(new Divide(), NO_DATA));
+        instructions.add(new Instruction<>(new Divide(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder MODULO() {
-        instructions.add(new Instruction(new Modulo(), NO_DATA));
+        instructions.add(new Instruction<>(new Modulo(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder HASH(String hashMethod) {
         Hash.Operands data = new Hash.Operands();
         data.hashMethod = hashMethod;
-        instructions.add(new Instruction(new Hash(), data));
+        instructions.add(new Instruction<>(new Hash(), data));
         return this;
     }
 
     public ProgramBuilder JUMP() {
-        instructions.add(new Instruction(new Jump(), NO_DATA));
+        instructions.add(new Instruction<>(new Jump(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder JUMP_DESTINATION() {
-        instructions.add(new Instruction(new JumpDestination(), NO_DATA));
+        instructions.add(new Instruction<>(new JumpDestination(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder NOOP() {
-        instructions.add(new Instruction(new NoOp(), NO_DATA));
+        instructions.add(new Instruction<>(new NoOp(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder JUMP_IF() {
-        instructions.add(new Instruction(new JumpIf(), NO_DATA));
+        instructions.add(new Instruction<>(new JumpIf(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder EXIT() {
-        instructions.add(new Instruction(new Exit(), NO_DATA));
+        instructions.add(new Instruction<>(new Exit(), NO_DATA));
         return this;
     }
 
     public ProgramBuilder LOAD(ProgramZone programZone) {
         Load.Operands data = new Load.Operands();
         data.programZone = programZone;
-        instructions.add(new Instruction(new Load(), data));
+        instructions.add(new Instruction<>(new Load(), data));
         return this;
     }
 
     public ProgramBuilder SAVE(ProgramZone programZone) {
         Save.Operands data = new Save.Operands();
         data.programZone = programZone;
-        instructions.add(new Instruction(new Save(), data));
+        instructions.add(new Instruction<>(new Save(), data));
         return this;
     }
 

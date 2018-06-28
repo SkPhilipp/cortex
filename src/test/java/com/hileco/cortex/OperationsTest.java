@@ -175,7 +175,6 @@ public class OperationsTest {
     }
 
     @Ignore
-    @Test
     public void runHashSha3() {
         ProgramContext context = testProcessContext();
         Hash.Operands operands = new Hash.Operands();

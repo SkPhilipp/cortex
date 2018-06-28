@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.hileco.cortex.instructions.ProgramZone.*;
+import static com.hileco.cortex.instructions.ProgramZone.INSTRUCTION_POSITION;
+import static com.hileco.cortex.instructions.ProgramZone.MEMORY;
+import static com.hileco.cortex.instructions.ProgramZone.STACK;
 
 @SuppressWarnings("WeakerAccess")
 public class Operations {
@@ -498,6 +500,11 @@ public class Operations {
     public static class Exit extends Operation<NoOperands> {
         public void execute(ProgramContext context, NoOperands operands) {
             context.setExiting(true);
+        }
+
+        @Override
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Collections.singletonList(ProgramZone.INSTRUCTION_POSITION);
         }
     }
 

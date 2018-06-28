@@ -17,9 +17,7 @@ public class ProgramContext {
     private int instructionPosition;
     private LayeredStack<byte[]> stack;
     private int stackLimit;
-
     private Map<ProgramZone, LayeredMap<BigInteger, ProgramData>> storage;
-
     private boolean overflowAllowed;
     private BigInteger overflowLimit;
 
