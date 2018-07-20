@@ -1,16 +1,18 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.data.ProgramData;
-import com.hileco.cortex.primitives.LayeredStack;
+import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.context.data.ProgramData;
+import com.hileco.cortex.context.layer.LayeredStack;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.hileco.cortex.instructions.ProgramZone.INSTRUCTION_POSITION;
-import static com.hileco.cortex.instructions.ProgramZone.MEMORY;
-import static com.hileco.cortex.instructions.ProgramZone.STACK;
+import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
+import static com.hileco.cortex.context.ProgramZone.MEMORY;
+import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @SuppressWarnings("WeakerAccess")
 public class Operations {

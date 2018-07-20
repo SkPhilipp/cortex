@@ -1,16 +1,16 @@
-package com.hileco.cortex.optimizer.strategies;
+package com.hileco.cortex.optimizerlow.strategies;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.Operations.Operation;
 import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
-import com.hileco.cortex.instructions.ProgramContext;
+import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
-import com.hileco.cortex.instructions.ProgramZone;
-import com.hileco.cortex.optimizer.InstructionsOptimizeStrategy;
-import com.hileco.cortex.primitives.LayeredStack;
+import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
+import com.hileco.cortex.context.layer.LayeredStack;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.hileco.cortex.instructions.ProgramZone.STACK;
+import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @SuppressWarnings("unchecked")
 public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeStrategy {

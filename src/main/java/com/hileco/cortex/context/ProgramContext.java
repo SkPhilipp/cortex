@@ -1,8 +1,8 @@
-package com.hileco.cortex.instructions;
+package com.hileco.cortex.context;
 
-import com.hileco.cortex.data.ProgramData;
-import com.hileco.cortex.primitives.LayeredMap;
-import com.hileco.cortex.primitives.LayeredStack;
+import com.hileco.cortex.context.data.ProgramData;
+import com.hileco.cortex.context.layer.LayeredMap;
+import com.hileco.cortex.context.layer.LayeredStack;
 
 import java.math.BigInteger;
 import java.util.HashMap;

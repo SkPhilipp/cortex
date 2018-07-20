@@ -1,9 +1,9 @@
-package com.hileco.cortex.optimizer.strategies;
+package com.hileco.cortex.optimizerlow.strategies;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
-import com.hileco.cortex.optimizer.InstructionsOptimizeStrategy;
+import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
 
 import java.math.BigInteger;
 import java.util.List;

@@ -1,7 +1,8 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException.Reason;
-import com.hileco.cortex.output.Table;
+import com.hileco.cortex.instructions.output.Table;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -10,9 +11,9 @@ import java.util.List;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED;
-import static com.hileco.cortex.output.Color.Palette.CYAN;
-import static com.hileco.cortex.output.Color.Palette.GREEN;
-import static com.hileco.cortex.output.Color.Palette.RED;
+import static com.hileco.cortex.instructions.output.Color.Palette.CYAN;
+import static com.hileco.cortex.instructions.output.Color.Palette.GREEN;
+import static com.hileco.cortex.instructions.output.Color.Palette.RED;
 
 public class ProgramRunner {
     private ProgramContext programContext;

@@ -1,4 +1,4 @@
-package com.hileco.cortex.output;
+package com.hileco.cortex.instructions.output;
 
 public class Color {
 

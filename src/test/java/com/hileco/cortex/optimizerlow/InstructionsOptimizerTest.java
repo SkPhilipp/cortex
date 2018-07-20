@@ -1,18 +1,17 @@
-package com.hileco.cortex;
+package com.hileco.cortex.optimizerlow;
 
-import com.hileco.cortex.data.ProgramData;
-import com.hileco.cortex.data.ProgramDataScope;
+import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.context.data.ProgramData;
+import com.hileco.cortex.context.data.ProgramDataScope;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
-import com.hileco.cortex.instructions.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
-import com.hileco.cortex.instructions.ProgramZone;
-import com.hileco.cortex.optimizer.InstructionsOptimizer;
-import com.hileco.cortex.optimizer.strategies.LoadKnownProgramDataStrategy;
-import com.hileco.cortex.optimizer.strategies.PrecalculateSelfContainedStrategy;
-import com.hileco.cortex.optimizer.strategies.PushJumpIfStrategy;
+import com.hileco.cortex.optimizerlow.strategies.LoadKnownProgramDataStrategy;
+import com.hileco.cortex.optimizerlow.strategies.PrecalculateSelfContainedStrategy;
+import com.hileco.cortex.optimizerlow.strategies.PushJumpIfStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 

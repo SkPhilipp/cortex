@@ -1,5 +1,7 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProgramContext;
+
 public class ProgramException extends Exception {
 
     public enum Reason {
