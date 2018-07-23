@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class ProcessContext {
 
+    public static final BigInteger NUMERICAL_LIMIT = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
+
     private LayeredStack<ProgramContext> programs;
     private Map<String, Program> atlas;
     private BigInteger overflowLimit;
@@ -19,8 +21,8 @@ public class ProcessContext {
         this.programs.push(programContext);
         this.atlas = new HashMap<>();
         this.stackLimit = Long.MAX_VALUE;
-        this.overflowLimit = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
-        this.underflowLimit = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
+        this.overflowLimit = NUMERICAL_LIMIT;
+        this.underflowLimit = NUMERICAL_LIMIT;
     }
 
     public LayeredStack<ProgramContext> getPrograms() {
