@@ -1,6 +1,9 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramData;
+import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Operations.Add;
 import com.hileco.cortex.instructions.Operations.BitwiseAnd;
 import com.hileco.cortex.instructions.Operations.BitwiseNot;
@@ -25,9 +28,7 @@ import com.hileco.cortex.instructions.Operations.Push;
 import com.hileco.cortex.instructions.Operations.Save;
 import com.hileco.cortex.instructions.Operations.Subtract;
 import com.hileco.cortex.instructions.Operations.Swap;
-import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -147,6 +148,16 @@ public class OperationsTest {
     }
 
     @Test
+    public void runAddOverflowing() {
+        ProgramContext context = testProcessContext();
+        context.getStack().push(context.getOverflowLimit().toByteArray());
+        context.getStack().push(BigInteger.ONE.toByteArray());
+        Add add = new Add();
+        add.execute(context, NO_DATA);
+        Assert.assertArrayEquals(BigInteger.ZERO.toByteArray(), context.getStack().pop());
+    }
+
+    @Test
     public void runSubtract() {
         ProgramContext context = testProcessContext();
         Subtract subtract = new Subtract();
@@ -158,6 +169,17 @@ public class OperationsTest {
         ProgramContext context = testProcessContext();
         Multiply multiply = new Multiply();
         multiply.execute(context, NO_DATA);
+    }
+
+    @Test
+    public void runMultiplyOverflowing() {
+        ProgramContext context = testProcessContext();
+        context.getStack().push(context.getOverflowLimit().toByteArray());
+        context.getStack().push(BigInteger.TEN.toByteArray());
+        Multiply multiply = new Multiply();
+        multiply.execute(context, NO_DATA);
+        BigInteger expected = context.getOverflowLimit().multiply(BigInteger.TEN).mod(context.getOverflowLimit().add(BigInteger.ONE));
+        Assert.assertArrayEquals(expected.toByteArray(), context.getStack().pop());
     }
 
     @Test
@@ -184,10 +206,10 @@ public class OperationsTest {
     }
 
     @Test
-    public void runHashNone() {
+    public void runHashSha512() {
         ProgramContext context = testProcessContext();
         Hash.Operands operands = new Hash.Operands();
-        operands.hashMethod = "NONE";
+        operands.hashMethod = "SHA-512";
         Hash hash = new Hash();
         hash.execute(context, operands);
     }

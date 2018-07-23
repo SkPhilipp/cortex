@@ -6,6 +6,8 @@ import com.hileco.cortex.context.data.ProgramData;
 import com.hileco.cortex.context.layer.LayeredStack;
 
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -350,11 +352,11 @@ public class Operations {
             byte[] right = stack.pop();
             BigInteger leftAsBigInteger = new BigInteger(left);
             BigInteger rightAsBigInteger = new BigInteger(right);
-            BigInteger result = innerExecute(leftAsBigInteger, rightAsBigInteger);
+            BigInteger result = innerExecute(context, leftAsBigInteger, rightAsBigInteger);
             stack.push(result.toByteArray());
         }
 
-        public abstract BigInteger innerExecute(BigInteger left, BigInteger right);
+        public abstract BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right);
 
         @Override
         public List<Integer> getStackTakes(NoOperands operands) {
@@ -373,43 +375,40 @@ public class Operations {
 
     public static class Add extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(BigInteger left, BigInteger right) {
-            return left.add(right);
+        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
+            return left.add(right).mod(context.getOverflowLimit().add(BigInteger.ONE));
         }
     }
 
     public static class Subtract extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(BigInteger left, BigInteger right) {
-            return left.subtract(right);
+        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
+            return left.subtract(right).mod(context.getUnderflowLimit().subtract(BigInteger.ONE));
         }
     }
 
     public static class Multiply extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(BigInteger left, BigInteger right) {
-            return left.multiply(right);
+        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
+            return left.multiply(right).mod(context.getOverflowLimit().add(BigInteger.ONE));
         }
     }
 
     public static class Divide extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(BigInteger left, BigInteger right) {
+        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
             return left.divide(right);
         }
     }
 
     public static class Modulo extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(BigInteger left, BigInteger right) {
+        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
             return left.mod(right);
         }
     }
 
     public static class Hash extends Operation<Hash.Operands> {
-
-        public static final String HASH_METHOD_SHA_3 = "SHA3";
-        public static final String HASH_METHOD_NONE = "NONE";
 
         public static class Operands {
             public String hashMethod;
@@ -421,10 +420,13 @@ public class Operations {
         }
 
         public void execute(ProgramContext context, Operands operands) {
-            if (HASH_METHOD_SHA_3.equals(operands.hashMethod)) {
-                throw new UnsupportedOperationException(String.format("Unimplemented hash method: %s", operands.hashMethod));
-            } else if (!HASH_METHOD_NONE.equals(operands.hashMethod)) {
-                throw new IllegalArgumentException(String.format("Unknown hash method: %s", operands.hashMethod));
+            try {
+                MessageDigest messageDigest = MessageDigest.getInstance(operands.hashMethod);
+                LayeredStack<byte[]> stack = context.getStack();
+                messageDigest.update(stack.pop());
+                stack.push(messageDigest.digest());
+            } catch (NoSuchAlgorithmException e) {
+                throw new IllegalArgumentException(String.format("Unknown hash method: %s", operands.hashMethod), e);
             }
         }
 

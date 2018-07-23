@@ -18,9 +18,8 @@ public class ProgramContext {
     private LayeredStack<byte[]> stack;
     private int stackLimit;
     private Map<ProgramZone, LayeredMap<BigInteger, ProgramData>> storage;
-    private boolean overflowAllowed;
     private BigInteger overflowLimit;
-
+    private BigInteger underflowLimit;
 
     public ProgramContext() {
         this.jumping = false;
@@ -31,8 +30,8 @@ public class ProgramContext {
         this.stack = new LayeredStack<>();
         this.stackLimit = 1024;
         this.storage = new HashMap<>();
-        this.overflowAllowed = false;
         this.overflowLimit = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
+        this.underflowLimit = new BigInteger(new byte[]{-2}).pow(256).subtract(BigInteger.ONE);
     }
 
     public boolean isJumping() {
@@ -99,20 +98,20 @@ public class ProgramContext {
         storage.computeIfAbsent(programZone, s -> new LayeredMap<>()).put(address, programData);
     }
 
-    public boolean isOverflowAllowed() {
-        return overflowAllowed;
-    }
-
-    public void setOverflowAllowed(boolean overflowAllowed) {
-        this.overflowAllowed = overflowAllowed;
-    }
-
     public BigInteger getOverflowLimit() {
         return overflowLimit;
     }
 
     public void setOverflowLimit(BigInteger overflowLimit) {
         this.overflowLimit = overflowLimit;
+    }
+
+    public BigInteger getUnderflowLimit() {
+        return underflowLimit;
+    }
+
+    public void setUnderflowLimit(BigInteger underflowLimit) {
+        this.underflowLimit = underflowLimit;
     }
 
     @Override
@@ -126,8 +125,8 @@ public class ProgramContext {
                 ", stack=" + stack +
                 ", stackLimit=" + stackLimit +
                 ", storage=" + storage +
-                ", overflowAllowed=" + overflowAllowed +
                 ", overflowLimit=" + overflowLimit +
+                ", underflowLimit=" + underflowLimit +
                 '}';
     }
 }

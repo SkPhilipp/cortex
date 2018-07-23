@@ -4,5 +4,6 @@ public enum ProgramZone {
     STACK,
     MEMORY,
     DISK,
-    INSTRUCTION_POSITION
+    INSTRUCTION_POSITION,
+    CALL_DATA
 }
