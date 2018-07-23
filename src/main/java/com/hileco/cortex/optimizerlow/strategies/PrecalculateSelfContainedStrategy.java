@@ -1,16 +1,18 @@
 package com.hileco.cortex.optimizerlow.strategies;
 
+import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.Program;
+import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.Operations.Operation;
 import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
-import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
-import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
-import com.hileco.cortex.context.layer.LayeredStack;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -53,10 +55,12 @@ public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeSt
      * Rewrites a list of optimizable instructions into a simplified equivalent.
      */
     private List<Instruction> rewrite(ProgramBuilderFactory programBuilderFactory, List<Instruction> optimizable) {
-        ProgramContext programContext = new ProgramContext();
-        ProgramRunner programRunner = new ProgramRunner(programContext);
+        Program program = programBuilderFactory.builder().include(optimizable).build();
+        ProgramContext programContext = new ProgramContext(program);
+        ProcessContext processContext = new ProcessContext(programContext);
+        ProgramRunner programRunner = new ProgramRunner(processContext);
         try {
-            programRunner.run(optimizable);
+            programRunner.run();
         } catch (ProgramException e) {
             throw new IllegalStateException("Unknown cause for ProgramException", e);
         }
@@ -69,7 +73,7 @@ public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeSt
         for (int currentSize = builder.currentSize(); currentSize < optimizable.size(); currentSize++) {
             builder = builder.NOOP();
         }
-        return builder.build();
+        return builder.build().getInstructions();
     }
 
     @Override

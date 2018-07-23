@@ -1,9 +1,11 @@
 package com.hileco.cortex.optimizerlow;
 
+import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramData;
-import com.hileco.cortex.context.data.ProgramDataScope;
+import com.hileco.cortex.context.data.ProgramDataSource;
+import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
@@ -28,18 +30,18 @@ public class InstructionsOptimizerTest {
     @Test
     public void testLoadKnownProgramDataStrategy() {
         InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
-        Map<ProgramZone, Map<BigInteger, ProgramData>> knownData = new HashMap<>();
+        Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData = new HashMap<>();
         Map<BigInteger, ProgramData> knownGroup = new HashMap<>();
-        knownGroup.put(BigInteger.valueOf(1234L), new ProgramData(new byte[]{123}, ProgramDataScope.DEPLOYMENT));
-        knownData.put(ProgramZone.MEMORY, knownGroup);
-        LoadKnownProgramDataStrategy strategy = new LoadKnownProgramDataStrategy(knownData, new HashSet<>(Collections.singletonList(ProgramDataScope.DEPLOYMENT)));
+        knownGroup.put(BigInteger.valueOf(1234L), new ProgramData(new byte[]{123}, new HashSet<>(Collections.singleton(ProgramDataSource.FIXED))));
+        knownData.put(ProgramStoreZone.MEMORY, knownGroup);
+        LoadKnownProgramDataStrategy strategy = new LoadKnownProgramDataStrategy(knownData, new HashSet<>(Collections.singletonList(ProgramDataSource.FIXED)));
         instructionsOptimizer.addStrategy(strategy);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        List<Instruction> instructions = programBuilderFactory.builder()
+        Program program = programBuilderFactory.builder()
                 .PUSH(BigInteger.valueOf(1234L).toByteArray())
-                .LOAD(ProgramZone.MEMORY)
+                .LOAD(ProgramStoreZone.MEMORY)
                 .build();
-        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
+        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, program.getInstructions());
         Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.Push);
     }
@@ -50,16 +52,17 @@ public class InstructionsOptimizerTest {
         instructionsOptimizer.addStrategy(new PushJumpIfStrategy());
         instructionsOptimizer.setPasses(2);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        List<Instruction> instructions = programBuilderFactory.builder()
+        Program program = programBuilderFactory.builder()
                 .PUSH(new byte[]{1})
                 .PUSH(new byte[]{3})
                 .JUMP_IF()
                 .JUMP_DESTINATION()
                 .build();
-        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
-        ProgramContext programContext = new ProgramContext();
-        ProgramRunner programRunner = new ProgramRunner(programContext);
-        programRunner.run(optimized);
+        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, program.getInstructions());
+        ProgramContext programContext = new ProgramContext(program);
+        ProcessContext processContext = new ProcessContext(programContext);
+        ProgramRunner programRunner = new ProgramRunner(processContext);
+        programRunner.run();
         Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.Push);
     }
@@ -69,7 +72,7 @@ public class InstructionsOptimizerTest {
         InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
         instructionsOptimizer.addStrategy(new PrecalculateSelfContainedStrategy());
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        List<Instruction> instructions = programBuilderFactory.builder()
+        Program original = programBuilderFactory.builder()
                 .PUSH(new byte[]{12})
                 .PUSH(new byte[]{12})
                 .EQUALS()
@@ -106,18 +109,21 @@ public class InstructionsOptimizerTest {
                 .SWAP(0, 1)
                 .POP()
                 .EXIT()
-                .SAVE(ProgramZone.MEMORY)
+                .SAVE(ProgramStoreZone.MEMORY)
                 .HASH("SHA3")
                 .build();
 
-        ProgramContext programContextForOriginal = new ProgramContext();
-        ProgramRunner programRunnerForOriginal = new ProgramRunner(programContextForOriginal);
-        programRunnerForOriginal.run(instructions);
+        ProgramContext programContextForOriginal = new ProgramContext(original);
+        ProcessContext processContextForOriginal = new ProcessContext(programContextForOriginal);
+        ProgramRunner programRunnerForOriginal = new ProgramRunner(processContextForOriginal);
+        programRunnerForOriginal.run();
 
-        List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, instructions);
-        ProgramContext programContextForOptimized = new ProgramContext();
-        ProgramRunner programRunnerForOptimized = new ProgramRunner(programContextForOptimized);
-        programRunnerForOptimized.run(optimized);
+        Program optimized = new Program();
+        optimized.setInstructions(instructionsOptimizer.optimize(programBuilderFactory, original.getInstructions()));
+        ProgramContext programContextForOptimized = new ProgramContext(optimized);
+        ProcessContext processContextForOptimized = new ProcessContext(programContextForOptimized);
+        ProgramRunner programRunnerForOptimized = new ProgramRunner(processContextForOptimized);
+        programRunnerForOptimized.run();
 
         Assert.assertTrue(Arrays.deepEquals(programContextForOriginal.getStack().toArray(), programContextForOptimized.getStack().toArray()));
     }

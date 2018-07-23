@@ -1,8 +1,11 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramData;
+import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.context.layer.LayeredStack;
 
 import java.math.BigInteger;
@@ -20,7 +23,7 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 public class Operations {
 
     public abstract static class Operation<T> {
-        public abstract void execute(ProgramContext context, T operands);
+        public abstract void execute(ProcessContext process, ProgramContext program, T operands);
 
         public List<Integer> getStackTakes(T operands) {
             return Collections.emptyList();
@@ -68,8 +71,8 @@ public class Operations {
             }
         }
 
-        public void execute(ProgramContext context, Operands operands) {
-            context.getStack().push(operands.bytes);
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+            program.getStack().push(operands.bytes);
         }
 
         @Override
@@ -83,8 +86,8 @@ public class Operations {
     }
 
     public static class Pop extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands operands) {
-            context.getStack().pop();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            program.getStack().pop();
         }
 
         public List<Integer> getStackTakes(NoOperands operands) {
@@ -107,8 +110,8 @@ public class Operations {
             }
         }
 
-        public void execute(ProgramContext context, Operands operands) {
-            context.getStack().swap(operands.topOffsetLeft, operands.topOffsetRight);
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+            program.getStack().swap(operands.topOffsetLeft, operands.topOffsetRight);
         }
 
         public List<Integer> getStackTakes(Swap.Operands operands) {
@@ -134,8 +137,8 @@ public class Operations {
             }
         }
 
-        public void execute(ProgramContext context, Operands operands) {
-            context.getStack().duplicate(operands.topOffset);
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+            program.getStack().duplicate(operands.topOffset);
         }
 
         public List<Integer> getStackTakes(Duplicate.Operands operands) {
@@ -161,8 +164,8 @@ public class Operations {
     private static byte[] FALSE = {0};
 
     private static abstract class ConditionOperation extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands operands) {
-            LayeredStack<byte[]> stack = context.getStack();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            LayeredStack<byte[]> stack = program.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
             boolean equals = innerExecute(left, right);
@@ -222,8 +225,8 @@ public class Operations {
     }
 
     public static class IsZero extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands operands) {
-            LayeredStack<byte[]> stack = context.getStack();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            LayeredStack<byte[]> stack = program.getStack();
             byte[] top = stack.pop();
             boolean isZero = true;
             for (byte item : top) {
@@ -253,8 +256,8 @@ public class Operations {
     private static abstract class BitwiseOperation extends Operation<NoOperands> {
         public abstract byte innerExecute(byte left, byte right);
 
-        public void execute(ProgramContext context, NoOperands operands) {
-            LayeredStack<byte[]> stack = context.getStack();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            LayeredStack<byte[]> stack = program.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
             byte[] result = new byte[Math.max(left.length, right.length)];
@@ -321,8 +324,8 @@ public class Operations {
 
     public static class BitwiseNot extends Operation<NoOperands> {
         @Override
-        public void execute(ProgramContext context, NoOperands operands) {
-            LayeredStack<byte[]> stack = context.getStack();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            LayeredStack<byte[]> stack = program.getStack();
             byte[] pop = stack.pop();
             byte[] result = new byte[pop.length];
             for (int i = 0; i < result.length; i++) {
@@ -336,6 +339,11 @@ public class Operations {
         public List<Integer> getStackTakes(NoOperands operands) {
             return Collections.singletonList(0);
         }
+
+        @Override
+        public List<Integer> getStackAdds(NoOperands operands) {
+            return Collections.singletonList(-1);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -346,17 +354,17 @@ public class Operations {
 
     private static abstract class MathematicalOperation extends Operation<NoOperands> {
 
-        public void execute(ProgramContext context, NoOperands operands) {
-            LayeredStack<byte[]> stack = context.getStack();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            LayeredStack<byte[]> stack = program.getStack();
             byte[] left = stack.pop();
             byte[] right = stack.pop();
             BigInteger leftAsBigInteger = new BigInteger(left);
             BigInteger rightAsBigInteger = new BigInteger(right);
-            BigInteger result = innerExecute(context, leftAsBigInteger, rightAsBigInteger);
+            BigInteger result = innerExecute(process, program, leftAsBigInteger, rightAsBigInteger);
             stack.push(result.toByteArray());
         }
 
-        public abstract BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right);
+        public abstract BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right);
 
         @Override
         public List<Integer> getStackTakes(NoOperands operands) {
@@ -375,35 +383,35 @@ public class Operations {
 
     public static class Add extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
-            return left.add(right).mod(context.getOverflowLimit().add(BigInteger.ONE));
+        public BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right) {
+            return left.add(right).mod(process.getOverflowLimit().add(BigInteger.ONE));
         }
     }
 
     public static class Subtract extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
-            return left.subtract(right).mod(context.getUnderflowLimit().subtract(BigInteger.ONE));
+        public BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right) {
+            return left.subtract(right).mod(process.getUnderflowLimit().subtract(BigInteger.ONE));
         }
     }
 
     public static class Multiply extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
-            return left.multiply(right).mod(context.getOverflowLimit().add(BigInteger.ONE));
+        public BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right) {
+            return left.multiply(right).mod(process.getOverflowLimit().add(BigInteger.ONE));
         }
     }
 
     public static class Divide extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
+        public BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right) {
             return left.divide(right);
         }
     }
 
     public static class Modulo extends MathematicalOperation {
         @Override
-        public BigInteger innerExecute(ProgramContext context, BigInteger left, BigInteger right) {
+        public BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right) {
             return left.mod(right);
         }
     }
@@ -419,10 +427,10 @@ public class Operations {
             }
         }
 
-        public void execute(ProgramContext context, Operands operands) {
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
             try {
                 MessageDigest messageDigest = MessageDigest.getInstance(operands.hashMethod);
-                LayeredStack<byte[]> stack = context.getStack();
+                LayeredStack<byte[]> stack = program.getStack();
                 messageDigest.update(stack.pop());
                 stack.push(messageDigest.digest());
             } catch (NoSuchAlgorithmException e) {
@@ -452,10 +460,10 @@ public class Operations {
     // --------------------------------------------------------------------------------------------
 
     public static class Jump extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands noOperands) {
-            byte[] destination = context.getStack().pop();
-            context.setJumping(true);
-            context.setInstructionPosition(new BigInteger(destination).intValue());
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) {
+            byte[] destination = program.getStack().pop();
+            program.setState(ProgramContext.ProgramState.IN_JUMP);
+            program.setInstructionPosition(new BigInteger(destination).intValue());
         }
 
         @Override
@@ -469,15 +477,15 @@ public class Operations {
     }
 
     public static class JumpDestination extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands operands) {
-            context.setJumping(false);
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            program.setState(ProgramContext.ProgramState.DEFAULT);
         }
     }
 
     public static class JumpIf extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands noOperands) {
-            LayeredStack<byte[]> stack = context.getStack();
-            byte[] destination = context.getStack().pop();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) {
+            LayeredStack<byte[]> stack = program.getStack();
+            byte[] destination = program.getStack().pop();
             byte[] top = stack.pop();
             boolean isZero = true;
             for (byte item : top) {
@@ -486,8 +494,8 @@ public class Operations {
                 }
             }
             if (!isZero) {
-                context.setJumping(true);
-                context.setInstructionPosition(new BigInteger(destination).intValue());
+                program.setState(ProgramContext.ProgramState.IN_JUMP);
+                program.setInstructionPosition(new BigInteger(destination).intValue());
             }
         }
 
@@ -502,8 +510,8 @@ public class Operations {
     }
 
     public static class Exit extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands operands) {
-            context.setExiting(true);
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+            program.setState(ProgramContext.ProgramState.IN_EXIT);
         }
 
         @Override
@@ -518,24 +526,43 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
+    private static LayeredMap<BigInteger, ProgramData> storageFor(ProgramContext program, ProgramStoreZone programStoreZone) {
+        LayeredMap<BigInteger, ProgramData> storage;
+        switch (programStoreZone) {
+            case MEMORY:
+                storage = program.getMemoryStorage();
+                break;
+            case STORAGE:
+                storage = program.getDiskStorage();
+                break;
+            case CALL_DATA:
+                storage = program.getCallDataStorage();
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
+        }
+        return storage;
+    }
+
     public static class Load extends Operation<Load.Operands> {
         public static class Operands {
-            public ProgramZone programZone;
+            public ProgramStoreZone programStoreZone;
 
             @Override
             public String toString() {
-                return String.format("%s", programZone);
+                return String.format("%s", programStoreZone);
             }
         }
 
-        public void execute(ProgramContext context, Operands operands) {
-            byte[] addressBytes = context.getStack().pop();
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+            byte[] addressBytes = program.getStack().pop();
             BigInteger address = new BigInteger(addressBytes);
-            ProgramData programData = context.getData(operands.programZone, address);
+            LayeredMap<BigInteger, ProgramData> storage = storageFor(program, operands.programStoreZone);
+            ProgramData programData = storage.get(address);
             if (programData == null) {
-                throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.programZone, address.toString()));
+                throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.programStoreZone, address.toString()));
             }
-            context.getStack().push(programData.content);
+            program.getStack().push(programData.getContent());
         }
 
         public List<Integer> getStackTakes(Load.Operands operands) {
@@ -549,20 +576,21 @@ public class Operations {
 
     public static class Save extends Operation<Save.Operands> {
         public static class Operands {
-            public ProgramZone programZone;
+            public ProgramStoreZone programStoreZone;
 
             @Override
             public String toString() {
-                return String.format("%s", programZone);
+                return String.format("%s", programStoreZone);
             }
         }
 
-        public void execute(ProgramContext context, Operands operands) {
-            LayeredStack<byte[]> stack = context.getStack();
-            byte[] addressBytes = context.getStack().pop();
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+            LayeredStack<byte[]> stack = program.getStack();
+            byte[] addressBytes = stack.pop();
             BigInteger address = new BigInteger(addressBytes);
             byte[] bytes = stack.pop();
-            context.setData(operands.programZone, address, new ProgramData(bytes));
+            LayeredMap<BigInteger, ProgramData> storage = storageFor(program, operands.programStoreZone);
+            storage.put(address, new ProgramData(bytes));
         }
 
 
@@ -586,7 +614,7 @@ public class Operations {
     // --------------------------------------------------------------------------------------------
 
     public static class NoOp extends Operation<NoOperands> {
-        public void execute(ProgramContext context, NoOperands operands) {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
         }
     }
 

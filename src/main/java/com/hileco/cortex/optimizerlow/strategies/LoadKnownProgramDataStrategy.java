@@ -1,11 +1,11 @@
 package com.hileco.cortex.optimizerlow.strategies;
 
 import com.hileco.cortex.context.data.ProgramData;
-import com.hileco.cortex.context.data.ProgramDataScope;
+import com.hileco.cortex.context.data.ProgramDataSource;
+import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
-import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
 
 import java.math.BigInteger;
@@ -16,12 +16,12 @@ import java.util.Set;
 
 public class LoadKnownProgramDataStrategy implements InstructionsOptimizeStrategy {
 
-    private Map<ProgramZone, Map<BigInteger, ProgramData>> knownData;
-    private Set<ProgramDataScope> allowedScopes;
+    private Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData;
+    private Set<ProgramDataSource> knownSources;
 
-    public LoadKnownProgramDataStrategy(Map<ProgramZone, Map<BigInteger, ProgramData>> knownData, Set<ProgramDataScope> allowedScopes) {
+    public LoadKnownProgramDataStrategy(Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData, Set<ProgramDataSource> knownSources) {
         this.knownData = knownData;
-        this.allowedScopes = allowedScopes;
+        this.knownSources = knownSources;
     }
 
     @Override
@@ -36,14 +36,15 @@ public class LoadKnownProgramDataStrategy implements InstructionsOptimizeStrateg
                 Operations.Push.Operands pushOperands = (Operations.Push.Operands) push.getOperands();
                 Operations.Load.Operands loadOperands = (Operations.Load.Operands) load.getOperands();
                 BigInteger address = new BigInteger(pushOperands.bytes);
-                ProgramData programData = this.knownData.getOrDefault(loadOperands.programZone, Collections.emptyMap()).get(address);
-                if (programData != null && allowedScopes.contains(programData.scope)) {
+                ProgramData programData = knownData.getOrDefault(loadOperands.programStoreZone, Collections.emptyMap()).get(address);
+                if (programData != null && knownSources.containsAll(programData.getSources())) {
                     instructions.remove(i + 1);
                     instructions.remove(i);
                     instructions.addAll(i, programBuilderFactory.builder()
                             .NOOP()
-                            .PUSH(programData.content)
-                            .build());
+                            .PUSH(programData.getContent())
+                            .build()
+                            .getInstructions());
                 }
             }
         }

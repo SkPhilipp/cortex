@@ -1,6 +1,7 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.context.Program;
+import com.hileco.cortex.context.data.ProgramStoreZone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,16 @@ public class ProgramBuilder {
         this.instructions = new ArrayList<>();
     }
 
-    public List<Instruction> build() {
-        return new ArrayList<>(instructions);
+    public Program build() {
+        Program program = new Program();
+        ArrayList<Instruction> mutableCopy = new ArrayList<>(this.instructions);
+        program.setInstructions(mutableCopy);
+        return program;
+    }
+
+    public ProgramBuilder include(List<Instruction> others) {
+        instructions.addAll(others);
+        return this;
     }
 
     public ProgramBuilder PUSH(byte[] bytes) {
@@ -167,16 +176,16 @@ public class ProgramBuilder {
         return this;
     }
 
-    public ProgramBuilder LOAD(ProgramZone programZone) {
+    public ProgramBuilder LOAD(ProgramStoreZone programStoreZone) {
         Load.Operands data = new Load.Operands();
-        data.programZone = programZone;
+        data.programStoreZone = programStoreZone;
         instructions.add(new Instruction<>(new Load(), data));
         return this;
     }
 
-    public ProgramBuilder SAVE(ProgramZone programZone) {
+    public ProgramBuilder SAVE(ProgramStoreZone programStoreZone) {
         Save.Operands data = new Save.Operands();
-        data.programZone = programZone;
+        data.programStoreZone = programStoreZone;
         instructions.add(new Instruction<>(new Save(), data));
         return this;
     }

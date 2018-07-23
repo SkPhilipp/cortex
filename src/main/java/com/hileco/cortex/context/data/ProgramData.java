@@ -1,27 +1,40 @@
 package com.hileco.cortex.context.data;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProgramData {
 
+    private byte[] content;
+    private Set<ProgramDataSource> sources;
+
+    public ProgramData(byte[] content, Set<ProgramDataSource> sources) {
+        this.content = content;
+        this.sources = sources;
+    }
+
     public ProgramData(byte[] content) {
+        super();
         this.content = content;
-        this.scope = ProgramDataScope.CHANGING;
     }
 
-    public ProgramData(byte[] content, ProgramDataScope scope) {
-        this.content = content;
-        this.scope = scope;
+    public ProgramData() {
+        this.sources = new HashSet<>();
     }
 
-    public byte[] content;
-    public ProgramDataScope scope;
+    public byte[] getContent() {
+        return content;
+    }
 
-    @Override
-    public String toString() {
-        return "ProgramData{" +
-                "content=" + Arrays.toString(content) +
-                ", scope=" + scope +
-                '}';
+    public void setContent(byte[] content) {
+        this.content = content;
+    }
+
+    public Set<ProgramDataSource> getSources() {
+        return sources;
+    }
+
+    public void setSources(Set<ProgramDataSource> sources) {
+        this.sources = sources;
     }
 }

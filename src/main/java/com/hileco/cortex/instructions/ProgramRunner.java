@@ -1,5 +1,6 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException.Reason;
 import com.hileco.cortex.instructions.output.Table;
@@ -16,14 +17,17 @@ import static com.hileco.cortex.instructions.output.Color.Palette.GREEN;
 import static com.hileco.cortex.instructions.output.Color.Palette.RED;
 
 public class ProgramRunner {
-    private ProgramContext programContext;
+    private final ProgramContext programContext;
+    private ProcessContext processContext;
 
-    public ProgramRunner(ProgramContext programContext) {
-        this.programContext = programContext;
+    public ProgramRunner(ProcessContext processContext) {
+        this.processContext = processContext;
+        this.programContext = processContext.getPrograms().peek();
     }
 
     @SuppressWarnings("unchecked")
-    public void run(List<Instruction> instructions) throws ProgramException {
+    public void run() throws ProgramException {
+        List<Instruction> instructions = programContext.getProgram().getInstructions();
         int size = instructions.size();
         Table table = Table.builder()
                 .columns(Arrays.asList(
@@ -37,7 +41,8 @@ public class ProgramRunner {
                         Table.Column.builder().header("operands").foreground(GREEN).width(15).build()
                 ))
                 .build();
-        while (!programContext.isExiting() && programContext.getInstructionPosition() != size) {
+        while (!(programContext.getState() == ProgramContext.ProgramState.IN_EXIT)
+                && (programContext.getInstructionPosition() != size)) {
             checkInstructionPosition(size);
             Instruction current = instructions.get(programContext.getInstructionPosition());
             checkJumping(current);
@@ -53,7 +58,7 @@ public class ProgramRunner {
                         current.getOperands().toString());
             }
             incrementInstructionPosition(current);
-            current.getOperation().execute(programContext, current.getOperands());
+            current.getOperation().execute(processContext, programContext, current.getOperands());
             incrementInstructionsExecuted();
             checkStack();
             manageInstructionExecution();
@@ -81,14 +86,14 @@ public class ProgramRunner {
     }
 
     private void checkJumping(Instruction current) throws ProgramException {
-        if (programContext.isJumping()
+        if ((programContext.getState() == ProgramContext.ProgramState.IN_JUMP)
                 && !(current.getOperation() instanceof Operations.JumpDestination)) {
             throw new ProgramException(programContext, JUMP_TO_ILLEGAL_INSTRUCTION);
         }
     }
 
     private void checkStack() throws ProgramException {
-        if (programContext.getStack().size() >= programContext.getStackLimit()) {
+        if (programContext.getStack().size() >= processContext.getStackLimit()) {
             throw new ProgramException(programContext, STACK_LIMIT_REACHED);
         }
     }

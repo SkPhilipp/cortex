@@ -1,8 +1,10 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramData;
+import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Operations.Add;
 import com.hileco.cortex.instructions.Operations.BitwiseAnd;
@@ -29,8 +31,9 @@ import com.hileco.cortex.instructions.Operations.Save;
 import com.hileco.cortex.instructions.Operations.Subtract;
 import com.hileco.cortex.instructions.Operations.Swap;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.math.BigInteger;
 
@@ -38,235 +41,206 @@ import static com.hileco.cortex.instructions.Operations.NO_DATA;
 
 public class OperationsTest {
 
-    private ProgramContext testProcessContext() {
-        ProgramContext programContext = new ProgramContext();
+    private ProcessContext processContext;
+    private ProgramContext programContext;
+
+    @Before
+    public void setup() {
+        Program program = Mockito.mock(Program.class);
+        programContext = new ProgramContext(program);
         LayeredStack<byte[]> stack = programContext.getStack();
         stack.push(new byte[]{5});
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        programContext.setData(ProgramZone.MEMORY, BigInteger.valueOf(8L), new ProgramData(new byte[]{0x56, 0x78}));
-        return programContext;
+        programContext.getMemoryStorage().put(BigInteger.valueOf(8L), new ProgramData(new byte[]{0x56, 0x78}));
+        processContext = new ProcessContext(programContext);
     }
 
     @Test
     public void runPush() {
-        ProgramContext context = testProcessContext();
+
+        // TODO: Perform setup & run using the actual instruction as the content of the program, instead of setting up a fake mock program
         Push.Operands operands = new Push.Operands();
         operands.bytes = new byte[]{127};
         Push push = new Push();
-        push.execute(context, operands);
+        push.execute(processContext, programContext, operands);
     }
 
     @Test
     public void runPop() {
-        ProgramContext context = testProcessContext();
         Pop pop = new Pop();
-        pop.execute(context, NO_DATA);
+        pop.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runSwap() {
-        ProgramContext context = testProcessContext();
         Swap.Operands operands = new Swap.Operands();
         operands.topOffsetLeft = 1;
         operands.topOffsetRight = 2;
         Swap swap = new Swap();
-        swap.execute(context, operands);
+        swap.execute(processContext, programContext, operands);
     }
 
     @Test
     public void runDuplicate() {
-        ProgramContext context = testProcessContext();
         Duplicate.Operands operands = new Duplicate.Operands();
         operands.topOffset = 1;
         Duplicate duplicate = new Duplicate();
-        duplicate.execute(context, operands);
+        duplicate.execute(processContext, programContext, operands);
     }
 
     @Test
     public void runEquals() {
-        ProgramContext context = testProcessContext();
         Equals equals = new Equals();
-        equals.execute(context, NO_DATA);
+        equals.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runGreaterThan() {
-        ProgramContext context = testProcessContext();
         GreaterThan greaterThan = new GreaterThan();
-        greaterThan.execute(context, NO_DATA);
+        greaterThan.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runLessThan() {
-        ProgramContext context = testProcessContext();
         LessThan lessThan = new LessThan();
-        lessThan.execute(context, NO_DATA);
+        lessThan.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runIsZero() {
-        ProgramContext context = testProcessContext();
         IsZero isZero = new IsZero();
-        isZero.execute(context, NO_DATA);
+        isZero.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runBitwiseOr() {
-        ProgramContext context = testProcessContext();
         BitwiseOr bitwiseOr = new BitwiseOr();
-        bitwiseOr.execute(context, NO_DATA);
+        bitwiseOr.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runBitwiseXor() {
-        ProgramContext context = testProcessContext();
         BitwiseXor bitwiseXor = new BitwiseXor();
-        bitwiseXor.execute(context, NO_DATA);
+        bitwiseXor.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runBitwiseAnd() {
-        ProgramContext context = testProcessContext();
         BitwiseAnd bitwiseAnd = new BitwiseAnd();
-        bitwiseAnd.execute(context, NO_DATA);
+        bitwiseAnd.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runBitwiseNot() {
-        ProgramContext context = testProcessContext();
         BitwiseNot bitwiseNot = new BitwiseNot();
-        bitwiseNot.execute(context, NO_DATA);
+        bitwiseNot.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runAdd() {
-        ProgramContext context = testProcessContext();
         Add add = new Add();
-        add.execute(context, NO_DATA);
+        add.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runAddOverflowing() {
-        ProgramContext context = testProcessContext();
-        context.getStack().push(context.getOverflowLimit().toByteArray());
-        context.getStack().push(BigInteger.ONE.toByteArray());
+        programContext.getStack().push(processContext.getOverflowLimit().toByteArray());
+        programContext.getStack().push(BigInteger.ONE.toByteArray());
         Add add = new Add();
-        add.execute(context, NO_DATA);
-        Assert.assertArrayEquals(BigInteger.ZERO.toByteArray(), context.getStack().pop());
+        add.execute(processContext, programContext, NO_DATA);
+        Assert.assertArrayEquals(BigInteger.ZERO.toByteArray(), programContext.getStack().pop());
     }
 
     @Test
     public void runSubtract() {
-        ProgramContext context = testProcessContext();
         Subtract subtract = new Subtract();
-        subtract.execute(context, NO_DATA);
+        subtract.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runMultiply() {
-        ProgramContext context = testProcessContext();
         Multiply multiply = new Multiply();
-        multiply.execute(context, NO_DATA);
+        multiply.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runMultiplyOverflowing() {
-        ProgramContext context = testProcessContext();
-        context.getStack().push(context.getOverflowLimit().toByteArray());
-        context.getStack().push(BigInteger.TEN.toByteArray());
+        programContext.getStack().push(processContext.getOverflowLimit().toByteArray());
+        programContext.getStack().push(BigInteger.TEN.toByteArray());
         Multiply multiply = new Multiply();
-        multiply.execute(context, NO_DATA);
-        BigInteger expected = context.getOverflowLimit().multiply(BigInteger.TEN).mod(context.getOverflowLimit().add(BigInteger.ONE));
-        Assert.assertArrayEquals(expected.toByteArray(), context.getStack().pop());
+        multiply.execute(processContext, programContext, NO_DATA);
+        BigInteger expected = processContext.getOverflowLimit().multiply(BigInteger.TEN).mod(processContext.getOverflowLimit().add(BigInteger.ONE));
+        Assert.assertArrayEquals(expected.toByteArray(), programContext.getStack().pop());
     }
 
     @Test
     public void runDivide() {
-        ProgramContext context = testProcessContext();
         Divide divide = new Divide();
-        divide.execute(context, NO_DATA);
+        divide.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runModulo() {
-        ProgramContext context = testProcessContext();
         Modulo modulo = new Modulo();
-        modulo.execute(context, NO_DATA);
-    }
-
-    @Ignore
-    public void runHashSha3() {
-        ProgramContext context = testProcessContext();
-        Hash.Operands operands = new Hash.Operands();
-        operands.hashMethod = "SHA3";
-        Hash hash = new Hash();
-        hash.execute(context, operands);
+        modulo.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runHashSha512() {
-        ProgramContext context = testProcessContext();
         Hash.Operands operands = new Hash.Operands();
         operands.hashMethod = "SHA-512";
         Hash hash = new Hash();
-        hash.execute(context, operands);
+        hash.execute(processContext, programContext, operands);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void runHashUnsupported() {
-        ProgramContext context = testProcessContext();
         Hash.Operands operands = new Hash.Operands();
         operands.hashMethod = "Unsupported";
         Hash hash = new Hash();
-        hash.execute(context, operands);
+        hash.execute(processContext, programContext, operands);
     }
 
     @Test
     public void runJump() {
-        ProgramContext context = testProcessContext();
         Jump jump = new Jump();
-        jump.execute(context, NO_DATA);
+        jump.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runJumpDestination() {
-        ProgramContext context = testProcessContext();
         JumpDestination jumpDestination = new JumpDestination();
-        jumpDestination.execute(context, NO_DATA);
+        jumpDestination.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runJumpIf() {
-        ProgramContext context = testProcessContext();
         JumpIf jumpIf = new JumpIf();
-        jumpIf.execute(context, NO_DATA);
+        jumpIf.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runExit() {
-        ProgramContext context = testProcessContext();
         Exit exit = new Exit();
-        exit.execute(context, NO_DATA);
+        exit.execute(processContext, programContext, NO_DATA);
     }
 
     @Test
     public void runLoad() {
-        ProgramContext context = testProcessContext();
         Load.Operands operands = new Load.Operands();
-        operands.programZone = ProgramZone.MEMORY;
+        operands.programStoreZone = ProgramStoreZone.MEMORY;
         Load load = new Load();
-        load.execute(context, operands);
+        load.execute(processContext, programContext, operands);
     }
 
     @Test
     public void runSave() {
-        ProgramContext context = testProcessContext();
         Save.Operands operands = new Save.Operands();
-        operands.programZone = ProgramZone.MEMORY;
+        operands.programStoreZone = ProgramStoreZone.MEMORY;
         Save save = new Save();
-        save.execute(context, operands);
+        save.execute(processContext, programContext, operands);
     }
 
 }

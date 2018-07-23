@@ -1,17 +1,18 @@
 package com.hileco.cortex.instructions;
 
+import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
-import java.util.List;
 
 public class ProgramBuilderTest {
 
     @Test
     public void testJump() throws ProgramException {
-        List<Instruction> build = new ProgramBuilderFactory().builder()
+        Program program = new ProgramBuilderFactory().builder()
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{123})
                 .EQUALS()
@@ -24,16 +25,17 @@ public class ProgramBuilderTest {
                 .NOOP()
                 .JUMP_DESTINATION()
                 .build();
-        ProgramContext programContext = new ProgramContext();
-        ProgramRunner programRunner = new ProgramRunner(programContext);
-        programRunner.run(build);
-        Assert.assertEquals(build.size(), programContext.getInstructionPosition());
+        ProgramContext programContext = new ProgramContext(program);
+        ProcessContext processContext = new ProcessContext(programContext);
+        ProgramRunner programRunner = new ProgramRunner(processContext);
+        programRunner.run();
+        Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
         Assert.assertEquals(6, programContext.getInstructionsExecuted());
     }
 
     @Test
     public void testNoJump() throws ProgramException {
-        List<Instruction> build = new ProgramBuilderFactory().builder()
+        Program program = new ProgramBuilderFactory().builder()
                 .PUSH(new byte[]{123})
                 .PUSH(new byte[]{124})
                 .EQUALS()
@@ -46,16 +48,17 @@ public class ProgramBuilderTest {
                 .NOOP()
                 .JUMP_DESTINATION()
                 .build();
-        ProgramContext programContext = new ProgramContext();
-        ProgramRunner programRunner = new ProgramRunner(programContext);
-        programRunner.run(build);
-        Assert.assertEquals(build.size(), programContext.getInstructionPosition());
-        Assert.assertEquals(build.size(), programContext.getInstructionsExecuted());
+        ProgramContext programContext = new ProgramContext(program);
+        ProcessContext processContext = new ProcessContext(programContext);
+        ProgramRunner programRunner = new ProgramRunner(processContext);
+        programRunner.run();
+        Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
+        Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionsExecuted());
     }
 
     @Test
     public void testLoop() throws ProgramException {
-        List<Instruction> build = new ProgramBuilderFactory().builder()
+        Program program = new ProgramBuilderFactory().builder()
                 .PUSH(new byte[]{0})
                 .JUMP_DESTINATION()
                 .PUSH(new byte[]{1})
@@ -67,11 +70,12 @@ public class ProgramBuilderTest {
                 .PUSH(BigInteger.valueOf(1L).toByteArray())
                 .JUMP_IF()
                 .build();
-        ProgramContext programContext = new ProgramContext();
-        ProgramRunner programRunner = new ProgramRunner(programContext);
-        programRunner.run(build);
-        Assert.assertEquals(build.size(), programContext.getInstructionPosition());
-        Assert.assertEquals(((build.size() - 1) * 256) + 1, programContext.getInstructionsExecuted());
+        ProgramContext programContext = new ProgramContext(program);
+        ProcessContext processContext = new ProcessContext(programContext);
+        ProgramRunner programRunner = new ProgramRunner(processContext);
+        programRunner.run();
+        Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
+        Assert.assertEquals(((program.getInstructions().size() - 1) * 256) + 1, programContext.getInstructionsExecuted());
     }
 
 }

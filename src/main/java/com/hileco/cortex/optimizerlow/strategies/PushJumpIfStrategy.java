@@ -30,13 +30,15 @@ public class PushJumpIfStrategy implements InstructionsOptimizeStrategy {
                             .NOOP()
                             .PUSH(destinationPushData.bytes)
                             .JUMP()
-                            .build());
+                            .build()
+                            .getInstructions());
                 } else {
                     instructions.addAll(i, programBuilderFactory.builder()
                             .NOOP()
                             .NOOP()
                             .NOOP()
-                            .build());
+                            .build()
+                            .getInstructions());
                 }
             }
         }

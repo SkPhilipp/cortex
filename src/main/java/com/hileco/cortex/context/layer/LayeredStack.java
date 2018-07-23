@@ -48,6 +48,10 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
         return removed;
     }
 
+    public synchronized V peek() {
+        return layer.get(size);
+    }
+
     private UnsupportedOperationException arbitraryModification() {
         return new UnsupportedOperationException("Modifying elements at arbitrary positions is not supported.");
     }

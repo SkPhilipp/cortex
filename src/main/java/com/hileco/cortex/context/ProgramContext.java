@@ -5,49 +5,40 @@ import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.context.layer.LayeredStack;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProgramContext {
 
-    private boolean jumping;
-    private boolean exiting;
+    public enum ProgramState {
+        DEFAULT, IN_JUMP, IN_CALL, IN_EXIT
+    }
+
+    private ProgramState state;
     private int instructionsExecuted;
     private int instructionLimit;
     private int instructionPosition;
     private LayeredStack<byte[]> stack;
-    private int stackLimit;
-    private Map<ProgramZone, LayeredMap<BigInteger, ProgramData>> storage;
-    private BigInteger overflowLimit;
-    private BigInteger underflowLimit;
+    private LayeredMap<BigInteger, ProgramData> memoryStorage;
+    private LayeredMap<BigInteger, ProgramData> diskStorage;
+    private LayeredMap<BigInteger, ProgramData> callDataStorage;
+    private Program program;
 
-    public ProgramContext() {
-        this.jumping = false;
-        this.exiting = false;
+    public ProgramContext(Program program) {
         this.instructionsExecuted = 0;
         this.instructionPosition = 0;
         this.instructionLimit = 1000000;
         this.stack = new LayeredStack<>();
-        this.stackLimit = 1024;
-        this.storage = new HashMap<>();
-        this.overflowLimit = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
-        this.underflowLimit = new BigInteger(new byte[]{-2}).pow(256).subtract(BigInteger.ONE);
+        this.memoryStorage = new LayeredMap<>();
+        this.diskStorage = new LayeredMap<>();
+        this.callDataStorage = new LayeredMap<>();
+        this.program = program;
     }
 
-    public boolean isJumping() {
-        return jumping;
+    public ProgramState getState() {
+        return state;
     }
 
-    public void setJumping(boolean jumping) {
-        this.jumping = jumping;
-    }
-
-    public boolean isExiting() {
-        return exiting;
-    }
-
-    public void setExiting(boolean exiting) {
-        this.exiting = exiting;
+    public void setState(ProgramState state) {
+        this.state = state;
     }
 
     public int getInstructionsExecuted() {
@@ -82,51 +73,50 @@ public class ProgramContext {
         this.stack = stack;
     }
 
-    public int getStackLimit() {
-        return stackLimit;
+    public LayeredMap<BigInteger, ProgramData> getMemoryStorage() {
+        return memoryStorage;
     }
 
-    public void setStackLimit(int stackLimit) {
-        this.stackLimit = stackLimit;
+    public void setMemoryStorage(LayeredMap<BigInteger, ProgramData> memoryStorage) {
+        this.memoryStorage = memoryStorage;
     }
 
-    public ProgramData getData(ProgramZone programZone, BigInteger address) {
-        return storage.computeIfAbsent(programZone, s -> new LayeredMap<>()).get(address);
+    public LayeredMap<BigInteger, ProgramData> getDiskStorage() {
+        return diskStorage;
     }
 
-    public void setData(ProgramZone programZone, BigInteger address, ProgramData programData) {
-        storage.computeIfAbsent(programZone, s -> new LayeredMap<>()).put(address, programData);
+    public void setDiskStorage(LayeredMap<BigInteger, ProgramData> diskStorage) {
+        this.diskStorage = diskStorage;
     }
 
-    public BigInteger getOverflowLimit() {
-        return overflowLimit;
+    public LayeredMap<BigInteger, ProgramData> getCallDataStorage() {
+        return callDataStorage;
     }
 
-    public void setOverflowLimit(BigInteger overflowLimit) {
-        this.overflowLimit = overflowLimit;
+    public void setCallDataStorage(LayeredMap<BigInteger, ProgramData> callDataStorage) {
+        this.callDataStorage = callDataStorage;
     }
 
-    public BigInteger getUnderflowLimit() {
-        return underflowLimit;
+    public Program getProgram() {
+        return program;
     }
 
-    public void setUnderflowLimit(BigInteger underflowLimit) {
-        this.underflowLimit = underflowLimit;
+    public void setProgram(Program program) {
+        this.program = program;
     }
 
     @Override
     public String toString() {
         return "ProgramContext{" +
-                "jumping=" + jumping +
-                ", exiting=" + exiting +
+                "state=" + state +
                 ", instructionsExecuted=" + instructionsExecuted +
                 ", instructionLimit=" + instructionLimit +
                 ", instructionPosition=" + instructionPosition +
                 ", stack=" + stack +
-                ", stackLimit=" + stackLimit +
-                ", storage=" + storage +
-                ", overflowLimit=" + overflowLimit +
-                ", underflowLimit=" + underflowLimit +
+                ", memoryStorage=" + memoryStorage +
+                ", diskStorage=" + diskStorage +
+                ", callDataStorage=" + callDataStorage +
+                ", program=" + program +
                 '}';
     }
 }
