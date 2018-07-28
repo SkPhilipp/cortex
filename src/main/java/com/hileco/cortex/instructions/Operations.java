@@ -1,12 +1,14 @@
 package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramData;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.context.layer.LayeredStack;
+import com.hileco.cortex.context.layer.Pair;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -15,15 +17,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.hileco.cortex.context.ProgramZone.DISK;
 import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
 import static com.hileco.cortex.context.ProgramZone.MEMORY;
+import static com.hileco.cortex.context.ProgramZone.PROGRAM_CONTEXT;
 import static com.hileco.cortex.context.ProgramZone.STACK;
+import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
+import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION;
+import static com.hileco.cortex.instructions.ProgramException.Reason.RETURN_DATA_TOO_LARGE;
+import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED;
 
 @SuppressWarnings("WeakerAccess")
 public class Operations {
 
     public abstract static class Operation<T> {
-        public abstract void execute(ProcessContext process, ProgramContext program, T operands);
+        public abstract void execute(ProcessContext process, ProgramContext program, T operands) throws ProgramException;
 
         public List<Integer> getStackTakes(T operands) {
             return Collections.emptyList();
@@ -71,8 +79,11 @@ public class Operations {
             }
         }
 
-        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
             program.getStack().push(operands.bytes);
+            if (program.getStack().size() >= process.getStackLimit()) {
+                throw new ProgramException(program, STACK_LIMIT_REACHED);
+            }
         }
 
         @Override
@@ -137,8 +148,11 @@ public class Operations {
             }
         }
 
-        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
             program.getStack().duplicate(operands.topOffset);
+            if (program.getStack().size() >= process.getStackLimit()) {
+                throw new ProgramException(program, STACK_LIMIT_REACHED);
+            }
         }
 
         public List<Integer> getStackTakes(Duplicate.Operands operands) {
@@ -459,11 +473,25 @@ public class Operations {
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
 
+    private static void performJump(ProgramContext program, int nextInstructionPosition) throws ProgramException {
+        if (nextInstructionPosition < 0) {
+            throw new ProgramException(program, JUMP_OUT_OF_BOUNDS);
+        }
+        List<Instruction> instructions = program.getProgram().getInstructions();
+        if (nextInstructionPosition > instructions.size()) {
+            throw new ProgramException(program, JUMP_OUT_OF_BOUNDS);
+        }
+        Instruction instruction = instructions.get(nextInstructionPosition);
+        if (!(instruction.getOperation() instanceof JumpDestination)) {
+            throw new ProgramException(program, JUMP_TO_ILLEGAL_INSTRUCTION);
+        }
+        program.setInstructionPosition(nextInstructionPosition);
+    }
+
     public static class Jump extends Operation<NoOperands> {
-        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) {
-            byte[] destination = program.getStack().pop();
-            program.setState(ProgramContext.ProgramState.IN_JUMP);
-            program.setInstructionPosition(new BigInteger(destination).intValue());
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
+            int nextInstructionPosition = new BigInteger(program.getStack().pop()).intValue();
+            performJump(program, nextInstructionPosition);
         }
 
         @Override
@@ -478,24 +506,22 @@ public class Operations {
 
     public static class JumpDestination extends Operation<NoOperands> {
         public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
-            program.setState(ProgramContext.ProgramState.DEFAULT);
         }
     }
 
     public static class JumpIf extends Operation<NoOperands> {
-        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
-            byte[] destination = program.getStack().pop();
+            int nextInstructionPosition = new BigInteger(program.getStack().pop()).intValue();
             byte[] top = stack.pop();
-            boolean isZero = true;
+            boolean isNonZero = false;
             for (byte item : top) {
                 if (item > 0) {
-                    isZero = false;
+                    isNonZero = true;
                 }
             }
-            if (!isZero) {
-                program.setState(ProgramContext.ProgramState.IN_JUMP);
-                program.setInstructionPosition(new BigInteger(destination).intValue());
+            if (isNonZero) {
+                performJump(program, nextInstructionPosition);
             }
         }
 
@@ -511,12 +537,68 @@ public class Operations {
 
     public static class Exit extends Operation<NoOperands> {
         public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
-            program.setState(ProgramContext.ProgramState.IN_EXIT);
+            process.getPrograms().clear();
         }
 
         @Override
         public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
-            return Collections.singletonList(ProgramZone.INSTRUCTION_POSITION);
+            return Collections.singletonList(ProgramZone.PROGRAM_CONTEXT);
+        }
+    }
+
+    public static class Call extends Operation<NoOperands> {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) {
+            LayeredStack<byte[]> stack = program.getStack();
+            BigInteger recipientAddress = new BigInteger(stack.pop());
+            BigInteger valueTransferred = new BigInteger(stack.pop());
+            BigInteger inOffset = new BigInteger(stack.pop());
+            BigInteger inSize = new BigInteger(stack.pop());
+            byte[] inputData = Arrays.copyOf(program.getMemoryStorage().get(inOffset).getContent(), inSize.intValue());
+            BigInteger outOffset = new BigInteger(stack.pop());
+            BigInteger outSize = new BigInteger(stack.pop());
+
+            program.setReturnDataOffset(outOffset);
+            program.setReturnDataSize(outSize);
+            Program recipient = process.getAtlas().get(recipientAddress);
+            BigInteger sourceAddress = program.getProgram().getAddress();
+            recipient.getTransfers().push(new Pair<>(sourceAddress, valueTransferred));
+            ProgramContext newContext = new ProgramContext(recipient);
+            newContext.setCallData(new ProgramData(inputData));
+            process.getPrograms().push(newContext);
+        }
+
+        @Override
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1, 2, 3, 4, 5);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
+        }
+    }
+
+    public static class CallReturn extends Operation<NoOperands> {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
+            LayeredStack<byte[]> stack = program.getStack();
+            BigInteger offset = new BigInteger(stack.pop());
+            BigInteger size = new BigInteger(stack.pop());
+            process.getPrograms().pop();
+            ProgramContext nextContext = process.getPrograms().peek();
+            byte[] data = Arrays.copyOf(program.getMemoryStorage().get(offset).getContent(), size.intValue());
+            if (data.length > nextContext.getReturnDataSize().intValue()) {
+                throw new ProgramException(program, RETURN_DATA_TOO_LARGE);
+            }
+            byte[] dataExpanded = Arrays.copyOf(data, nextContext.getReturnDataSize().intValue());
+            nextContext.getMemoryStorage().put(nextContext.getReturnDataOffset(), new ProgramData(dataExpanded));
+        }
+
+        @Override
+        public List<Integer> getStackTakes(NoOperands operands) {
+            return Arrays.asList(0, 1);
+        }
+
+        public List<ProgramZone> getInstructionModifiers(NoOperands operands) {
+            return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
         }
     }
 
@@ -532,16 +614,24 @@ public class Operations {
             case MEMORY:
                 storage = program.getMemoryStorage();
                 break;
-            case STORAGE:
-                storage = program.getDiskStorage();
-                break;
-            case CALL_DATA:
-                storage = program.getCallDataStorage();
+            case DISK:
+                storage = program.getProgram().getStorage();
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
         }
         return storage;
+    }
+
+    private static List<ProgramZone> programZoneFor(ProgramStoreZone programStoreZone) {
+        switch (programStoreZone) {
+            case MEMORY:
+                return Arrays.asList(STACK, MEMORY);
+            case DISK:
+                return Arrays.asList(STACK, DISK);
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
+        }
     }
 
     public static class Load extends Operation<Load.Operands> {
@@ -570,8 +660,9 @@ public class Operations {
         }
 
         public List<ProgramZone> getInstructionModifiers(Operands operands) {
-            return Arrays.asList(STACK, MEMORY);
+            return Operations.programZoneFor(operands.programStoreZone);
         }
+
     }
 
     public static class Save extends Operation<Save.Operands> {
@@ -602,8 +693,8 @@ public class Operations {
             return Collections.singletonList(-1);
         }
 
-        public List<ProgramZone> getInstructionModifiers(Operands operands) {
-            return Arrays.asList(STACK, MEMORY);
+        public List<ProgramZone> getInstructionModifiers(Load.Operands operands) {
+            return Operations.programZoneFor(operands.programStoreZone);
         }
     }
 

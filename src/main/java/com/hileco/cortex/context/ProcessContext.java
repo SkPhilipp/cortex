@@ -11,7 +11,7 @@ public class ProcessContext {
     public static final BigInteger NUMERICAL_LIMIT = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
 
     private LayeredStack<ProgramContext> programs;
-    private Map<String, Program> atlas;
+    private Map<BigInteger, Program> atlas;
     private BigInteger overflowLimit;
     private BigInteger underflowLimit;
     private long stackLimit;
@@ -33,11 +33,11 @@ public class ProcessContext {
         this.programs = programs;
     }
 
-    public Map<String, Program> getAtlas() {
+    public Map<BigInteger, Program> getAtlas() {
         return atlas;
     }
 
-    public void setAtlas(Map<String, Program> atlas) {
+    public void setAtlas(Map<BigInteger, Program> atlas) {
         this.atlas = atlas;
     }
 
@@ -63,5 +63,16 @@ public class ProcessContext {
 
     public void setStackLimit(long stackLimit) {
         this.stackLimit = stackLimit;
+    }
+
+    @Override
+    public String toString() {
+        return "ProcessContext{" +
+                "programs=" + programs +
+                ", atlas=" + atlas +
+                ", overflowLimit=" + overflowLimit +
+                ", underflowLimit=" + underflowLimit +
+                ", stackLimit=" + stackLimit +
+                '}';
     }
 }

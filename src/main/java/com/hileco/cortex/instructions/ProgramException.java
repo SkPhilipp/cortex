@@ -8,7 +8,8 @@ public class ProgramException extends Exception {
         JUMP_TO_ILLEGAL_INSTRUCTION,
         JUMP_OUT_OF_BOUNDS,
         INSTRUCTION_LIMIT_REACHED,
-        STACK_LIMIT_REACHED
+        STACK_LIMIT_REACHED,
+        RETURN_DATA_TOO_LARGE
     }
 
     private ProgramContext programContext;

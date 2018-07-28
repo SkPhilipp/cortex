@@ -8,19 +8,15 @@ import java.math.BigInteger;
 
 public class ProgramContext {
 
-    public enum ProgramState {
-        DEFAULT, IN_JUMP, IN_CALL, IN_EXIT
-    }
-
-    private ProgramState state;
     private int instructionsExecuted;
     private int instructionLimit;
     private int instructionPosition;
     private LayeredStack<byte[]> stack;
     private LayeredMap<BigInteger, ProgramData> memoryStorage;
-    private LayeredMap<BigInteger, ProgramData> diskStorage;
-    private LayeredMap<BigInteger, ProgramData> callDataStorage;
     private Program program;
+    private BigInteger returnDataOffset;
+    private BigInteger returnDataSize;
+    private ProgramData callData;
 
     public ProgramContext(Program program) {
         this.instructionsExecuted = 0;
@@ -28,17 +24,7 @@ public class ProgramContext {
         this.instructionLimit = 1000000;
         this.stack = new LayeredStack<>();
         this.memoryStorage = new LayeredMap<>();
-        this.diskStorage = new LayeredMap<>();
-        this.callDataStorage = new LayeredMap<>();
         this.program = program;
-    }
-
-    public ProgramState getState() {
-        return state;
-    }
-
-    public void setState(ProgramState state) {
-        this.state = state;
     }
 
     public int getInstructionsExecuted() {
@@ -81,22 +67,6 @@ public class ProgramContext {
         this.memoryStorage = memoryStorage;
     }
 
-    public LayeredMap<BigInteger, ProgramData> getDiskStorage() {
-        return diskStorage;
-    }
-
-    public void setDiskStorage(LayeredMap<BigInteger, ProgramData> diskStorage) {
-        this.diskStorage = diskStorage;
-    }
-
-    public LayeredMap<BigInteger, ProgramData> getCallDataStorage() {
-        return callDataStorage;
-    }
-
-    public void setCallDataStorage(LayeredMap<BigInteger, ProgramData> callDataStorage) {
-        this.callDataStorage = callDataStorage;
-    }
-
     public Program getProgram() {
         return program;
     }
@@ -105,18 +75,42 @@ public class ProgramContext {
         this.program = program;
     }
 
+    public BigInteger getReturnDataOffset() {
+        return returnDataOffset;
+    }
+
+    public void setReturnDataOffset(BigInteger returnDataOffset) {
+        this.returnDataOffset = returnDataOffset;
+    }
+
+    public BigInteger getReturnDataSize() {
+        return returnDataSize;
+    }
+
+    public void setReturnDataSize(BigInteger returnDataSize) {
+        this.returnDataSize = returnDataSize;
+    }
+
+    public ProgramData getCallData() {
+        return callData;
+    }
+
+    public void setCallData(ProgramData callData) {
+        this.callData = callData;
+    }
+
     @Override
     public String toString() {
         return "ProgramContext{" +
-                "state=" + state +
-                ", instructionsExecuted=" + instructionsExecuted +
+                "instructionsExecuted=" + instructionsExecuted +
                 ", instructionLimit=" + instructionLimit +
                 ", instructionPosition=" + instructionPosition +
                 ", stack=" + stack +
                 ", memoryStorage=" + memoryStorage +
-                ", diskStorage=" + diskStorage +
-                ", callDataStorage=" + callDataStorage +
                 ", program=" + program +
+                ", returnDataOffset=" + returnDataOffset +
+                ", returnDataSize=" + returnDataSize +
+                ", callData=" + callData +
                 '}';
     }
 }
