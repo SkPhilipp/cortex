@@ -35,4 +35,8 @@ public class Pair<K, V> {
         return new Pair<>(function.apply(key), value);
     }
 
+    public static <K, V> Pair<K, V> of(K key, V value) {
+        return new Pair<>(key, value);
+    }
+
 }
