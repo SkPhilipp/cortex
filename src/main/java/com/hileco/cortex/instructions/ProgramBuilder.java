@@ -2,6 +2,7 @@ package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.instructions.Operations.Call;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import static com.hileco.cortex.instructions.Operations.BitwiseAnd;
 import static com.hileco.cortex.instructions.Operations.BitwiseNot;
 import static com.hileco.cortex.instructions.Operations.BitwiseOr;
 import static com.hileco.cortex.instructions.Operations.BitwiseXor;
+import static com.hileco.cortex.instructions.Operations.CallReturn;
 import static com.hileco.cortex.instructions.Operations.Divide;
 import static com.hileco.cortex.instructions.Operations.Duplicate;
 import static com.hileco.cortex.instructions.Operations.Equals;
@@ -36,15 +38,12 @@ import static com.hileco.cortex.instructions.Operations.Swap;
 public class ProgramBuilder {
     private List<Instruction> instructions;
 
-    ProgramBuilder() {
+    public ProgramBuilder() {
         this.instructions = new ArrayList<>();
     }
 
     public Program build() {
-        Program program = new Program();
-        ArrayList<Instruction> mutableCopy = new ArrayList<>(this.instructions);
-        program.setInstructions(mutableCopy);
-        return program;
+        return new Program(new ArrayList<>(this.instructions));
     }
 
     public ProgramBuilder include(List<Instruction> others) {
@@ -187,6 +186,16 @@ public class ProgramBuilder {
         Save.Operands data = new Save.Operands();
         data.programStoreZone = programStoreZone;
         instructions.add(new Instruction<>(new Save(), data));
+        return this;
+    }
+
+    public ProgramBuilder CALL() {
+        instructions.add(new Instruction<>(new Call(), NO_DATA));
+        return this;
+    }
+
+    public ProgramBuilder CALL_RETURN() {
+        instructions.add(new Instruction<>(new CallReturn(), NO_DATA));
         return this;
     }
 

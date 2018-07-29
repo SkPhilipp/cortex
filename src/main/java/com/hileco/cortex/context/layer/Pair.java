@@ -1,5 +1,7 @@
 package com.hileco.cortex.context.layer;
 
+import java.util.function.Function;
+
 public class Pair<K, V> {
     private K key;
     private V value;
@@ -24,4 +26,13 @@ public class Pair<K, V> {
     public void setValue(V value) {
         this.value = value;
     }
+
+    public <T> Pair<K, T> mapValue(Function<V, T> function) {
+        return new Pair<>(key, function.apply(value));
+    }
+
+    public <T> Pair<T, V> mapKey(Function<K, T> function) {
+        return new Pair<>(function.apply(key), value);
+    }
+
 }

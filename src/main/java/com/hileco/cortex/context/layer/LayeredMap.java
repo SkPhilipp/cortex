@@ -75,7 +75,6 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K ,V>>{
         this.deletions.clear();
     }
 
-    // Expensive call
     public Set<K> keySet() {
         HashSet<K> keys = new HashSet<>();
         if (parent != null) {

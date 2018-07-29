@@ -1,7 +1,6 @@
 package com.hileco.cortex.context;
 
-import com.hileco.cortex.context.data.ProgramData;
-import com.hileco.cortex.context.layer.LayeredMap;
+import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.context.layer.LayeredStack;
 
 import java.math.BigInteger;
@@ -12,18 +11,19 @@ public class ProgramContext {
     private int instructionLimit;
     private int instructionPosition;
     private LayeredStack<byte[]> stack;
-    private LayeredMap<BigInteger, ProgramData> memoryStorage;
+    private LayeredBytes memory;
     private Program program;
     private BigInteger returnDataOffset;
     private BigInteger returnDataSize;
-    private ProgramData callData;
+    private LayeredBytes callData;
 
     public ProgramContext(Program program) {
         this.instructionsExecuted = 0;
         this.instructionPosition = 0;
         this.instructionLimit = 1000000;
         this.stack = new LayeredStack<>();
-        this.memoryStorage = new LayeredMap<>();
+        this.memory = new LayeredBytes();
+        this.callData = new LayeredBytes();
         this.program = program;
     }
 
@@ -59,12 +59,12 @@ public class ProgramContext {
         this.stack = stack;
     }
 
-    public LayeredMap<BigInteger, ProgramData> getMemoryStorage() {
-        return memoryStorage;
+    public LayeredBytes getMemory() {
+        return memory;
     }
 
-    public void setMemoryStorage(LayeredMap<BigInteger, ProgramData> memoryStorage) {
-        this.memoryStorage = memoryStorage;
+    public void setMemory(LayeredBytes memory) {
+        this.memory = memory;
     }
 
     public Program getProgram() {
@@ -91,12 +91,8 @@ public class ProgramContext {
         this.returnDataSize = returnDataSize;
     }
 
-    public ProgramData getCallData() {
+    public LayeredBytes getCallData() {
         return callData;
-    }
-
-    public void setCallData(ProgramData callData) {
-        this.callData = callData;
     }
 
     @Override
@@ -106,7 +102,7 @@ public class ProgramContext {
                 ", instructionLimit=" + instructionLimit +
                 ", instructionPosition=" + instructionPosition +
                 ", stack=" + stack +
-                ", memoryStorage=" + memoryStorage +
+                ", memory=" + memory +
                 ", program=" + program +
                 ", returnDataOffset=" + returnDataOffset +
                 ", returnDataSize=" + returnDataSize +

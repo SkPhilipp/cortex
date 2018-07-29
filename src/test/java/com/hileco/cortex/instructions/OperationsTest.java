@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.data.ProgramData;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Operations.Add;
@@ -49,15 +48,14 @@ public class OperationsTest {
 
     private <T extends Operations.Operation<V>, V> ProgramContext run(T operation, V operands, BiConsumer<ProcessContext, ProgramContext> customSetup) throws
             ProgramException {
-        Program program = new Program();
-        program.setInstructions(Collections.singletonList(new Instruction<>(operation, operands)));
+        Program program = new Program(Collections.singletonList(new Instruction<>(operation, operands)));
         ProgramContext programContext = new ProgramContext(program);
         LayeredStack<byte[]> stack = programContext.getStack();
         stack.push(new byte[]{5});
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
-        programContext.getMemoryStorage().put(BigInteger.valueOf(8L), new ProgramData(new byte[]{0x56, 0x78}));
+        programContext.getMemory().write(8, new byte[]{0x56, 0x78});
         ProcessContext processContext = new ProcessContext(programContext);
         customSetup.accept(processContext, programContext);
         ProgramRunner programRunner = new ProgramRunner(processContext);

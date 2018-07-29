@@ -4,9 +4,8 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.data.ProgramData;
 import com.hileco.cortex.context.data.ProgramStoreZone;
-import com.hileco.cortex.context.layer.LayeredMap;
+import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.context.layer.Pair;
 
@@ -553,7 +552,6 @@ public class Operations {
             BigInteger valueTransferred = new BigInteger(stack.pop());
             BigInteger inOffset = new BigInteger(stack.pop());
             BigInteger inSize = new BigInteger(stack.pop());
-            byte[] inputData = Arrays.copyOf(program.getMemoryStorage().get(inOffset).getContent(), inSize.intValue());
             BigInteger outOffset = new BigInteger(stack.pop());
             BigInteger outSize = new BigInteger(stack.pop());
 
@@ -563,7 +561,9 @@ public class Operations {
             BigInteger sourceAddress = program.getProgram().getAddress();
             recipient.getTransfers().push(new Pair<>(sourceAddress, valueTransferred));
             ProgramContext newContext = new ProgramContext(recipient);
-            newContext.setCallData(new ProgramData(inputData));
+            byte[] inputData = program.getMemory().read(inOffset.intValue(), inSize.intValue());
+            newContext.getCallData().reset();
+            newContext.getCallData().write(0, inputData);
             process.getPrograms().push(newContext);
         }
 
@@ -584,12 +584,14 @@ public class Operations {
             BigInteger size = new BigInteger(stack.pop());
             process.getPrograms().pop();
             ProgramContext nextContext = process.getPrograms().peek();
-            byte[] data = Arrays.copyOf(program.getMemoryStorage().get(offset).getContent(), size.intValue());
-            if (data.length > nextContext.getReturnDataSize().intValue()) {
+            byte[] data = program.getMemory().read(offset.intValue(), size.intValue());
+            BigInteger wSize = nextContext.getReturnDataSize();
+            if (data.length > wSize.intValue()) {
                 throw new ProgramException(program, RETURN_DATA_TOO_LARGE);
             }
-            byte[] dataExpanded = Arrays.copyOf(data, nextContext.getReturnDataSize().intValue());
-            nextContext.getMemoryStorage().put(nextContext.getReturnDataOffset(), new ProgramData(dataExpanded));
+            byte[] dataExpanded = Arrays.copyOf(data, wSize.intValue());
+            BigInteger wOffset = nextContext.getReturnDataOffset();
+            nextContext.getMemory().write(wOffset.intValue(), dataExpanded, wSize.intValue());
         }
 
         @Override
@@ -607,21 +609,6 @@ public class Operations {
     // --                              PERSISTENCE & PARAMETERS                                  --
     // --                                                                                        --
     // --------------------------------------------------------------------------------------------
-
-    private static LayeredMap<BigInteger, ProgramData> storageFor(ProgramContext program, ProgramStoreZone programStoreZone) {
-        LayeredMap<BigInteger, ProgramData> storage;
-        switch (programStoreZone) {
-            case MEMORY:
-                storage = program.getMemoryStorage();
-                break;
-            case DISK:
-                storage = program.getProgram().getStorage();
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
-        }
-        return storage;
-    }
 
     private static List<ProgramZone> programZoneFor(ProgramStoreZone programStoreZone) {
         switch (programStoreZone) {
@@ -647,12 +634,25 @@ public class Operations {
         public void execute(ProcessContext process, ProgramContext program, Operands operands) {
             byte[] addressBytes = program.getStack().pop();
             BigInteger address = new BigInteger(addressBytes);
-            LayeredMap<BigInteger, ProgramData> storage = storageFor(program, operands.programStoreZone);
-            ProgramData programData = storage.get(address);
-            if (programData == null) {
+            LayeredBytes layeredBytes;
+            switch (operands.programStoreZone) {
+                case MEMORY:
+                    layeredBytes = program.getMemory();
+                    break;
+                case DISK:
+                    layeredBytes = program.getProgram().getStorage();
+                    break;
+                case CALL_DATA:
+                    layeredBytes = program.getCallData();
+                    break;
+                default:
+                    throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", operands.programStoreZone));
+            }
+            byte[] bytes = layeredBytes.read(address.intValue(), 32);
+            if (bytes == null) {
                 throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.programStoreZone, address.toString()));
             }
-            program.getStack().push(programData.getContent());
+            program.getStack().push(bytes);
         }
 
         public List<Integer> getStackTakes(Load.Operands operands) {
@@ -680,8 +680,18 @@ public class Operations {
             byte[] addressBytes = stack.pop();
             BigInteger address = new BigInteger(addressBytes);
             byte[] bytes = stack.pop();
-            LayeredMap<BigInteger, ProgramData> storage = storageFor(program, operands.programStoreZone);
-            storage.put(address, new ProgramData(bytes));
+            LayeredBytes layeredBytes;
+            switch (operands.programStoreZone) {
+                case MEMORY:
+                    layeredBytes = program.getMemory();
+                    break;
+                case DISK:
+                    layeredBytes = program.getProgram().getStorage();
+                    break;
+                default:
+                    throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", operands.programStoreZone));
+            }
+            layeredBytes.write(address.intValue(), bytes);
         }
 
 

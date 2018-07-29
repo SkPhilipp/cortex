@@ -118,8 +118,7 @@ public class InstructionsOptimizerTest {
         ProgramRunner programRunnerForOriginal = new ProgramRunner(processContextForOriginal);
         programRunnerForOriginal.run();
 
-        Program optimized = new Program();
-        optimized.setInstructions(instructionsOptimizer.optimize(programBuilderFactory, original.getInstructions()));
+        Program optimized = new Program(instructionsOptimizer.optimize(programBuilderFactory, original.getInstructions()));
         ProgramContext programContextForOptimized = new ProgramContext(optimized);
         ProcessContext processContextForOptimized = new ProcessContext(programContextForOptimized);
         ProgramRunner programRunnerForOptimized = new ProgramRunner(processContextForOptimized);
