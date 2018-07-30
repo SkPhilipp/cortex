@@ -7,7 +7,7 @@ import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.context.layer.LayeredStack;
-import com.hileco.cortex.context.layer.Pair;
+import javafx.util.Pair;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -46,7 +46,7 @@ public class Operations {
 
         @Override
         public String toString() {
-            return this.getClass()
+            return getClass()
                     .getSimpleName()
                     .replaceAll("(.)([A-Z])", "$1_$2")
                     .toUpperCase();

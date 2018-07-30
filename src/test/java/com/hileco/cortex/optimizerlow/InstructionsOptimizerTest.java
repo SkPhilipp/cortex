@@ -8,6 +8,7 @@ import com.hileco.cortex.context.data.ProgramDataSource;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
+import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
@@ -37,10 +38,10 @@ public class InstructionsOptimizerTest {
         LoadKnownProgramDataStrategy strategy = new LoadKnownProgramDataStrategy(knownData, new HashSet<>(Collections.singletonList(ProgramDataSource.FIXED)));
         instructionsOptimizer.addStrategy(strategy);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        Program program = programBuilderFactory.builder()
-                .PUSH(BigInteger.valueOf(1234L).toByteArray())
-                .LOAD(ProgramStoreZone.MEMORY)
-                .build();
+        ProgramBuilder builder = programBuilderFactory.builder();
+        builder.PUSH(BigInteger.valueOf(1234L).toByteArray());
+        builder.LOAD(ProgramStoreZone.MEMORY);
+        Program program = builder.build();
         List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, program.getInstructions());
         Assert.assertTrue(optimized.get(0).getOperation() instanceof Operations.NoOp);
         Assert.assertTrue(optimized.get(1).getOperation() instanceof Operations.Push);
@@ -52,12 +53,12 @@ public class InstructionsOptimizerTest {
         instructionsOptimizer.addStrategy(new PushJumpIfStrategy());
         instructionsOptimizer.setPasses(2);
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        Program program = programBuilderFactory.builder()
-                .PUSH(new byte[]{1})
-                .PUSH(new byte[]{3})
-                .JUMP_IF()
-                .JUMP_DESTINATION()
-                .build();
+        ProgramBuilder builder = programBuilderFactory.builder();
+        builder.PUSH(new byte[]{1});
+        builder.PUSH(new byte[]{3});
+        builder.JUMP_IF();
+        builder.JUMP_DESTINATION();
+        Program program = builder.build();
         List<Instruction> optimized = instructionsOptimizer.optimize(programBuilderFactory, program.getInstructions());
         ProgramContext programContext = new ProgramContext(program);
         ProcessContext processContext = new ProcessContext(programContext);
@@ -72,46 +73,46 @@ public class InstructionsOptimizerTest {
         InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
         instructionsOptimizer.addStrategy(new PrecalculateSelfContainedStrategy());
         ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-        Program original = programBuilderFactory.builder()
-                .PUSH(new byte[]{12})
-                .PUSH(new byte[]{12})
-                .EQUALS()
-                .PUSH(new byte[]{13})
-                .GREATER_THAN()
-                .PUSH(new byte[]{11})
-                .LESS_THAN()
-                .PUSH(new byte[]{123})
-                .PUSH(new byte[]{1})
-                .PUSH(new byte[]{2})
-                .PUSH(new byte[]{2})
-                .PUSH(new byte[]{2})
-                .PUSH(new byte[]{3})
-                .EQUALS()
-                .PUSH(new byte[]{123})
-                .BITWISE_NOT()
-                .BITWISE_AND()
-                .BITWISE_XOR()
-                .EQUALS()
-                .POP()
-                .PUSH(new byte[]{2})
-                .PUSH(new byte[]{2})
-                .BITWISE_OR()
-                .PUSH(new byte[]{2})
-                .MULTIPLY()
-                .PUSH(new byte[]{2})
-                .DIVIDE()
-                .PUSH(new byte[]{2})
-                .PUSH(new byte[]{2})
-                .MODULO()
-                .SUBTRACT()
-                .POP()
-                .POP()
-                .SWAP(0, 1)
-                .POP()
-                .EXIT()
-                .SAVE(ProgramStoreZone.MEMORY)
-                .HASH("SHA3")
-                .build();
+        ProgramBuilder builder = programBuilderFactory.builder();
+        builder.PUSH(new byte[]{12});
+        builder.PUSH(new byte[]{12});
+        builder.EQUALS();
+        builder.PUSH(new byte[]{13});
+        builder.GREATER_THAN();
+        builder.PUSH(new byte[]{11});
+        builder.LESS_THAN();
+        builder.PUSH(new byte[]{123});
+        builder.PUSH(new byte[]{1});
+        builder.PUSH(new byte[]{2});
+        builder.PUSH(new byte[]{2});
+        builder.PUSH(new byte[]{2});
+        builder.PUSH(new byte[]{3});
+        builder.EQUALS();
+        builder.PUSH(new byte[]{123});
+        builder.BITWISE_NOT();
+        builder.BITWISE_AND();
+        builder.BITWISE_XOR();
+        builder.EQUALS();
+        builder.POP();
+        builder.PUSH(new byte[]{2});
+        builder.PUSH(new byte[]{2});
+        builder.BITWISE_OR();
+        builder.PUSH(new byte[]{2});
+        builder.MULTIPLY();
+        builder.PUSH(new byte[]{2});
+        builder.DIVIDE();
+        builder.PUSH(new byte[]{2});
+        builder.PUSH(new byte[]{2});
+        builder.MODULO();
+        builder.SUBTRACT();
+        builder.POP();
+        builder.POP();
+        builder.SWAP(0, 1);
+        builder.POP();
+        builder.EXIT();
+        builder.SAVE(ProgramStoreZone.MEMORY);
+        builder.HASH("SHA3");
+        Program original = builder.build();
 
         ProgramContext programContextForOriginal = new ProgramContext(original);
         ProcessContext processContextForOriginal = new ProcessContext(programContextForOriginal);

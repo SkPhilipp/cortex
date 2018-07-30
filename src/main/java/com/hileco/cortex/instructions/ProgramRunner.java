@@ -19,7 +19,7 @@ public class ProgramRunner {
 
     public ProgramRunner(ProcessContext processContext) {
         this.processContext = processContext;
-        this.table = Table.builder()
+        table = Table.builder()
                 .columns(Arrays.asList(
                         Table.Column.builder().header("#").foreground(RED).width(6).build(),
                         Table.Column.builder().header("size").foreground(CYAN).width(6).build(),

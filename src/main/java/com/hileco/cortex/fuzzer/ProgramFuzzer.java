@@ -3,72 +3,46 @@ package com.hileco.cortex.fuzzer;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.instructions.ProgramBuilder;
+import com.hileco.cortex.instructions.ProgramBuilderFactory;
 
-import java.math.BigInteger;
-import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ProgramFuzzer {
 
-    private Random random;
-    private ProgramBuilder programBuilder;
-    private LayeredMap<Integer, Program> programAtlas;
+    public enum FuzzType {
+        JUMP_TABLE,
+        UNDERFLOW,
+        OVERFLOW,
+        CALL_BACK,
+        COMPLEXITY,
+        DIRECT_VALUE_TRANSFER,
+        OPTIMIZABLE,
+        STORAGE_WRITER,
+        STORAGE_READER,
+        STORAGE_MIXER,
+        MATH_MIXER,
+        BIT_MIXER,
+        PROGRAM_PORTAL,
+        RANDOM_JUMP_DESTINATION,
+        JUMP_ANYWHERE,
+        STACK_SWAPPER,
+        INCREMENTING_LOOP,
+        DECREMENTING_LOOP,
+        STORE_INTO_LOAD;
 
-    public ProgramFuzzer() {
-        this.programBuilder = new ProgramBuilder();
-        this.programAtlas = new LayeredMap<>();
-        this.random = new Random();
+        private static Supplier<FuzzType> randomized() {
+            Random random = new Random();
+            FuzzType[] choices = FuzzType.values();
+            return () -> choices[random.nextInt(choices.length)];
+        }
     }
 
-    public ProgramFuzzer writeExit() {
-        programBuilder.EXIT();
-        return this;
-    }
-
-    public ProgramFuzzer writeInfiniteLoop(Consumer<ProgramFuzzer> loop) {
-        return writeLoop(fuzzer -> fuzzer.programBuilder.PUSH(BigInteger.valueOf(1).toByteArray()), loop);
-    }
-
-    public ProgramFuzzer writeLoop(Consumer<ProgramFuzzer> condition, Consumer<ProgramFuzzer> content) {
-        final String startLabel = UUID.randomUUID().toString();
-        final String endLabel = UUID.randomUUID().toString();
-        programBuilder.JUMP_DESTINATION_WITH_LABEL(startLabel);
-        condition.accept(this);
-        programBuilder.IS_ZERO();
-        programBuilder.PUSH_LABEL(endLabel);
-        programBuilder.JUMP_IF();
-        content.accept(this);
-        programBuilder.PUSH_LABEL(startLabel);
-        programBuilder.JUMP();
-        programBuilder.JUMP_DESTINATION_WITH_LABEL(endLabel);
-        return this;
-    }
-
-    public ProgramFuzzer inSwitch(Consumer<ProgramFuzzer> value, Map<byte[], Consumer<ProgramFuzzer>> cases) {
-        // TODO: Implement
-        // push key
-        // for each case:
-        //   if case key matches: jump to case value address
-        // for each case:
-        //   jump destination
-        return this;
-    }
-
-    public ProgramFuzzer conditional(Consumer<ProgramFuzzer> condition, Consumer<ProgramFuzzer> content) {
-        final String endLabel = UUID.randomUUID().toString();
-        condition.accept(this);
-        programBuilder.IS_ZERO();
-        programBuilder.PUSH_LABEL(endLabel);
-        programBuilder.JUMP_IF();
-        content.accept(this);
-        programBuilder.JUMP_DESTINATION_WITH_LABEL(endLabel);
-        return this;
-    }
-
-    public ProgramFuzzer inCall(Consumer<ProgramFuzzer> block) {
-        // TODO: Implement
-        return this;
+    public LayeredMap<Integer, Program> generate() {
+        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
+        ProgramBuilder builder = programBuilderFactory.builder();
+        LayeredMap<Integer, Program> programAtlas = new LayeredMap<>();
+        programAtlas.put(0, builder.build());
+        return programAtlas;
     }
 }

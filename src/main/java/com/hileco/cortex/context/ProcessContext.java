@@ -1,11 +1,13 @@
 package com.hileco.cortex.context;
 
 import com.hileco.cortex.context.layer.LayeredStack;
+import lombok.Data;
 
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
+@Data
 public class ProcessContext {
 
     public static final BigInteger NUMERICAL_LIMIT = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
@@ -17,62 +19,11 @@ public class ProcessContext {
     private long stackLimit;
 
     public ProcessContext(ProgramContext programContext) {
-        this.programs = new LayeredStack<>();
-        this.programs.push(programContext);
-        this.atlas = new HashMap<>();
-        this.stackLimit = Long.MAX_VALUE;
-        this.overflowLimit = NUMERICAL_LIMIT;
-        this.underflowLimit = NUMERICAL_LIMIT;
-    }
-
-    public LayeredStack<ProgramContext> getPrograms() {
-        return programs;
-    }
-
-    public void setPrograms(LayeredStack<ProgramContext> programs) {
-        this.programs = programs;
-    }
-
-    public Map<BigInteger, Program> getAtlas() {
-        return atlas;
-    }
-
-    public void setAtlas(Map<BigInteger, Program> atlas) {
-        this.atlas = atlas;
-    }
-
-    public BigInteger getOverflowLimit() {
-        return overflowLimit;
-    }
-
-    public void setOverflowLimit(BigInteger overflowLimit) {
-        this.overflowLimit = overflowLimit;
-    }
-
-    public BigInteger getUnderflowLimit() {
-        return underflowLimit;
-    }
-
-    public void setUnderflowLimit(BigInteger underflowLimit) {
-        this.underflowLimit = underflowLimit;
-    }
-
-    public long getStackLimit() {
-        return stackLimit;
-    }
-
-    public void setStackLimit(long stackLimit) {
-        this.stackLimit = stackLimit;
-    }
-
-    @Override
-    public String toString() {
-        return "ProcessContext{" +
-                "programs=" + programs +
-                ", atlas=" + atlas +
-                ", overflowLimit=" + overflowLimit +
-                ", underflowLimit=" + underflowLimit +
-                ", stackLimit=" + stackLimit +
-                '}';
+        programs = new LayeredStack<>();
+        programs.push(programContext);
+        atlas = new HashMap<>();
+        stackLimit = Long.MAX_VALUE;
+        overflowLimit = NUMERICAL_LIMIT;
+        underflowLimit = NUMERICAL_LIMIT;
     }
 }

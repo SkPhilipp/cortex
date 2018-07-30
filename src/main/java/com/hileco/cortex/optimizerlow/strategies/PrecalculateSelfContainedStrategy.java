@@ -16,7 +16,7 @@ import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -26,12 +26,7 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 @SuppressWarnings("unchecked")
 public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeStrategy {
 
-    private final Set<ProgramZone> allowedZones;
-
-    public PrecalculateSelfContainedStrategy() {
-        this.allowedZones = new HashSet<>();
-        this.allowedZones.add(STACK);
-    }
+    private static final Set<ProgramZone> ALLOWED_ZONES = Collections.singleton(STACK);
 
     /**
      * Verifies whether an instruction will stay within only a stack of a given size, possibly adding to it.
@@ -45,8 +40,7 @@ public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeSt
         List<Integer> stackAdds = operation.getStackAdds(operands);
         List<ProgramZone> instructionModifiers = operation.getInstructionModifiers(operands);
         return new Pair<>(
-                Stream.concat(stackTakes.stream(), stackAdds.stream()).noneMatch(position -> position + 1 > stackSize)
-                        && allowedZones.containsAll(instructionModifiers),
+                Stream.concat(stackTakes.stream(), stackAdds.stream()).noneMatch(position -> position + 1 > stackSize) && ALLOWED_ZONES.containsAll(instructionModifiers),
                 stackAdds.size() - stackTakes.size()
         );
     }
@@ -55,7 +49,9 @@ public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeSt
      * Rewrites a list of optimizable instructions into a simplified equivalent.
      */
     private List<Instruction> rewrite(ProgramBuilderFactory programBuilderFactory, List<Instruction> optimizable) {
-        Program program = programBuilderFactory.builder().include(optimizable).build();
+        ProgramBuilder optimizableBuilder = programBuilderFactory.builder();
+        optimizableBuilder.include(optimizable);
+        Program program = optimizableBuilder.build();
         ProgramContext programContext = new ProgramContext(program);
         ProcessContext processContext = new ProcessContext(programContext);
         ProgramRunner programRunner = new ProgramRunner(processContext);
@@ -67,11 +63,11 @@ public class PrecalculateSelfContainedStrategy implements InstructionsOptimizeSt
         LayeredStack<byte[]> stack = programContext.getStack();
         ProgramBuilder builder = programBuilderFactory.builder();
         for (byte[] bytes : stack) {
-            builder = builder.PUSH(bytes);
+            builder.PUSH(bytes);
         }
         // TODO: Preserve the original JUMP_DESTINATIONS before adding NOOP padding, this must account for stack size at all points
         for (int currentSize = builder.currentSize(); currentSize < optimizable.size(); currentSize++) {
-            builder = builder.NOOP();
+            builder.NOOP();
         }
         return builder.build().getInstructions();
     }

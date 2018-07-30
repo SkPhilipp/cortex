@@ -2,6 +2,7 @@ package com.hileco.cortex.optimizerlow.strategies;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
+import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
 
@@ -25,20 +26,17 @@ public class PushJumpIfStrategy implements InstructionsOptimizeStrategy {
                 instructions.remove(i);
                 Operations.Push.Operands conditionPushData = (Operations.Push.Operands) first.getOperands();
                 Operations.Push.Operands destinationPushData = (Operations.Push.Operands) second.getOperands();
+                ProgramBuilder builder = programBuilderFactory.builder();
                 if (new BigInteger(conditionPushData.bytes).compareTo(BigInteger.ZERO) > 0) {
-                    instructions.addAll(i, programBuilderFactory.builder()
-                            .NOOP()
-                            .PUSH(destinationPushData.bytes)
-                            .JUMP()
-                            .build()
-                            .getInstructions());
+                    builder.NOOP();
+                    builder.PUSH(destinationPushData.bytes);
+                    builder.JUMP();
+                    instructions.addAll(i, builder.build().getInstructions());
                 } else {
-                    instructions.addAll(i, programBuilderFactory.builder()
-                            .NOOP()
-                            .NOOP()
-                            .NOOP()
-                            .build()
-                            .getInstructions());
+                    builder.NOOP();
+                    builder.NOOP();
+                    builder.NOOP();
+                    instructions.addAll(i, builder.build().getInstructions());
                 }
             }
         }

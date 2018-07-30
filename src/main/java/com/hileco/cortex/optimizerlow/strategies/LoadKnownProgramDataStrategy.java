@@ -5,8 +5,10 @@ import com.hileco.cortex.context.data.ProgramDataSource;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.Operations;
+import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.optimizerlow.InstructionsOptimizeStrategy;
+import lombok.Value;
 
 import java.math.BigInteger;
 import java.util.Collections;
@@ -14,15 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Value
 public class LoadKnownProgramDataStrategy implements InstructionsOptimizeStrategy {
 
-    private Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData;
-    private Set<ProgramDataSource> knownSources;
-
-    public LoadKnownProgramDataStrategy(Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData, Set<ProgramDataSource> knownSources) {
-        this.knownData = knownData;
-        this.knownSources = knownSources;
-    }
+    private final Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData;
+    private final Set<ProgramDataSource> knownSources;
 
     @Override
     public void optimize(ProgramBuilderFactory programBuilderFactory, List<Instruction> instructions) {
@@ -40,11 +38,10 @@ public class LoadKnownProgramDataStrategy implements InstructionsOptimizeStrateg
                 if (programData != null && knownSources.containsAll(programData.getSources())) {
                     instructions.remove(i + 1);
                     instructions.remove(i);
-                    instructions.addAll(i, programBuilderFactory.builder()
-                            .NOOP()
-                            .PUSH(programData.getContent())
-                            .build()
-                            .getInstructions());
+                    ProgramBuilder builder = programBuilderFactory.builder();
+                    builder.NOOP();
+                    builder.PUSH(programData.getContent());
+                    instructions.addAll(i, builder.build().getInstructions());
                 }
             }
         }

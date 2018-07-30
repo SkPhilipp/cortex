@@ -12,19 +12,19 @@ public class ProgramBuilderTest {
 
     @Test
     public void testJump() throws ProgramException {
-        Program program = new ProgramBuilderFactory().builder()
-                .PUSH(new byte[]{123})
-                .PUSH(new byte[]{123})
-                .EQUALS()
-                .PUSH(BigInteger.valueOf(10L).toByteArray())
-                .JUMP_IF()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .JUMP_DESTINATION()
-                .build();
+        ProgramBuilder builder = new ProgramBuilderFactory().builder();
+        builder.PUSH(new byte[]{123});
+        builder.PUSH(new byte[]{123});
+        builder.EQUALS();
+        builder.PUSH(BigInteger.valueOf(10L).toByteArray());
+        builder.JUMP_IF();
+        builder.NOOP();
+        builder.NOOP();
+        builder.NOOP();
+        builder.NOOP();
+        builder.NOOP();
+        builder.JUMP_DESTINATION();
+        Program program = builder.build();
         ProgramContext programContext = new ProgramContext(program);
         ProcessContext processContext = new ProcessContext(programContext);
         ProgramRunner programRunner = new ProgramRunner(processContext);
@@ -35,18 +35,19 @@ public class ProgramBuilderTest {
 
     @Test
     public void testNoJump() throws ProgramException {
-        Program program = new ProgramBuilderFactory().builder()
-                .PUSH(new byte[]{123})
-                .PUSH(new byte[]{124})
-                .EQUALS()
-                .PUSH(BigInteger.valueOf(10L).toByteArray())
-                .JUMP_IF()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .NOOP()
-                .JUMP_DESTINATION()
+        ProgramBuilder builder = new ProgramBuilderFactory().builder();
+        builder.PUSH(new byte[]{123});
+        builder.PUSH(new byte[]{124});
+        builder.EQUALS();
+        builder.PUSH(BigInteger.valueOf(10L).toByteArray());
+        builder.JUMP_IF();
+        builder.NOOP();
+        builder.NOOP();
+        builder.NOOP();
+        builder.NOOP();
+        builder.NOOP();
+        builder.JUMP_DESTINATION();
+        Program program = builder
                 .build();
         ProgramContext programContext = new ProgramContext(program);
         ProcessContext processContext = new ProcessContext(programContext);
@@ -58,18 +59,18 @@ public class ProgramBuilderTest {
 
     @Test
     public void testLoop() throws ProgramException {
-        Program program = new ProgramBuilderFactory().builder()
-                .PUSH(new byte[]{0})
-                .JUMP_DESTINATION()
-                .PUSH(new byte[]{1})
-                .ADD()
-                .DUPLICATE(0)
-                .PUSH(new byte[]{1, 0})
-                .EQUALS()
-                .IS_ZERO()
-                .PUSH(BigInteger.valueOf(1L).toByteArray())
-                .JUMP_IF()
-                .build();
+        ProgramBuilder builder = new ProgramBuilderFactory().builder();
+        builder.PUSH(new byte[]{0});
+        builder.JUMP_DESTINATION();
+        builder.PUSH(new byte[]{1});
+        builder.ADD();
+        builder.DUPLICATE(0);
+        builder.PUSH(new byte[]{1, 0});
+        builder.EQUALS();
+        builder.IS_ZERO();
+        builder.PUSH(BigInteger.valueOf(1L).toByteArray());
+        builder.JUMP_IF();
+        Program program = builder.build();
         ProgramContext programContext = new ProgramContext(program);
         ProcessContext processContext = new ProcessContext(programContext);
         ProgramRunner programRunner = new ProgramRunner(processContext);

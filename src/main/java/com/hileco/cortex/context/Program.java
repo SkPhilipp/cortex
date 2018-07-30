@@ -2,12 +2,14 @@ package com.hileco.cortex.context;
 
 import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.context.layer.LayeredStack;
-import com.hileco.cortex.context.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
+import javafx.util.Pair;
+import lombok.Value;
 
 import java.math.BigInteger;
 import java.util.List;
 
+@Value
 public class Program {
     private final List<Instruction> instructions;
     private final LayeredBytes storage;
@@ -15,29 +17,17 @@ public class Program {
     private final BigInteger address;
 
     public Program(List<Instruction> instructions) {
-        this.address = null;
-        this.transfers = new LayeredStack<>();
+        address = null;
+        transfers = new LayeredStack<>();
         this.instructions = instructions;
-        this.storage = new LayeredBytes();
+        storage = new LayeredBytes();
     }
 
     public Program(BigInteger address, List<Instruction> instructions) {
         this.address = address;
-        this.transfers = new LayeredStack<>();
+        transfers = new LayeredStack<>();
         this.instructions = instructions;
-        this.storage = new LayeredBytes();
-    }
-
-    public List<Instruction> getInstructions() {
-        return instructions;
-    }
-
-    public LayeredBytes getStorage() {
-        return storage;
-    }
-
-    public LayeredStack<Pair<BigInteger, BigInteger>> getTransfers() {
-        return transfers;
+        storage = new LayeredBytes();
     }
 
     public BigInteger getAddress() {

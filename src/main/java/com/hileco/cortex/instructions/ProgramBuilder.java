@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -45,8 +47,8 @@ public class ProgramBuilder {
     private Map<String, Integer> addresses;
 
     public ProgramBuilder() {
-        this.instructions = new ArrayList<>();
-        this.addresses = new HashMap<>();
+        instructions = new ArrayList<>();
+        addresses = new HashMap<>();
     }
 
     public Program build() {
@@ -54,176 +56,178 @@ public class ProgramBuilder {
         return new Program(new ArrayList<>(instructions));
     }
 
-    public ProgramBuilder include(List<Instruction> others) {
+    public void include(List<Instruction> others) {
         others.forEach(instruction -> instructions.add(() -> instruction));
-        return this;
     }
 
-    public ProgramBuilder PUSH_LABEL(String name) {
+    public void PUSH_LABEL(String name) {
         instructions.add(() -> {
             Push.Operands data = new Push.Operands();
             Integer address = addresses.get(name);
             data.bytes = BigInteger.valueOf(address).toByteArray();
             return new Instruction<>(new Push(), data);
         });
-        return this;
     }
 
-    public ProgramBuilder PUSH(byte[] bytes) {
+    public void PUSH(byte[] bytes) {
         Push.Operands data = new Push.Operands();
         data.bytes = bytes;
         instructions.add(() -> new Instruction<>(new Push(), data));
-        return this;
     }
 
-    public ProgramBuilder POP() {
+    public void POP() {
         instructions.add(() -> new Instruction<>(new Pop(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder SWAP(int topOffsetLeft, int topOffsetRight) {
+    public void SWAP(int topOffsetLeft, int topOffsetRight) {
         Swap.Operands data = new Swap.Operands();
         data.topOffsetLeft = topOffsetLeft;
         data.topOffsetRight = topOffsetRight;
         instructions.add(() -> new Instruction<>(new Swap(), data));
-        return this;
     }
 
-    public ProgramBuilder DUPLICATE(int topOffset) {
+    public void DUPLICATE(int topOffset) {
         Duplicate.Operands data = new Duplicate.Operands();
         data.topOffset = topOffset;
         instructions.add(() -> new Instruction<>(new Duplicate(), data));
-        return this;
     }
 
-    public ProgramBuilder EQUALS() {
+    public void EQUALS() {
         instructions.add(() -> new Instruction<>(new Equals(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder GREATER_THAN() {
+    public void GREATER_THAN() {
         instructions.add(() -> new Instruction<>(new GreaterThan(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder LESS_THAN() {
+    public void LESS_THAN() {
         instructions.add(() -> new Instruction<>(new LessThan(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder IS_ZERO() {
+    public void IS_ZERO() {
         instructions.add(() -> new Instruction<>(new IsZero(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder BITWISE_OR() {
+    public void BITWISE_OR() {
         instructions.add(() -> new Instruction<>(new BitwiseOr(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder BITWISE_XOR() {
+    public void BITWISE_XOR() {
         instructions.add(() -> new Instruction<>(new BitwiseXor(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder BITWISE_AND() {
+    public void BITWISE_AND() {
         instructions.add(() -> new Instruction<>(new BitwiseAnd(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder BITWISE_NOT() {
+    public void BITWISE_NOT() {
         instructions.add(() -> new Instruction<>(new BitwiseNot(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder ADD() {
+    public void ADD() {
         instructions.add(() -> new Instruction<>(new Add(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder SUBTRACT() {
+    public void SUBTRACT() {
         instructions.add(() -> new Instruction<>(new Subtract(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder MULTIPLY() {
+    public void MULTIPLY() {
         instructions.add(() -> new Instruction<>(new Multiply(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder DIVIDE() {
+    public void DIVIDE() {
         instructions.add(() -> new Instruction<>(new Divide(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder MODULO() {
+    public void MODULO() {
         instructions.add(() -> new Instruction<>(new Modulo(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder HASH(String hashMethod) {
+    public void HASH(String hashMethod) {
         Hash.Operands data = new Hash.Operands();
         data.hashMethod = hashMethod;
         instructions.add(() -> new Instruction<>(new Hash(), data));
-        return this;
     }
 
-    public ProgramBuilder JUMP() {
+    public void JUMP() {
         instructions.add(() -> new Instruction<>(new Jump(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder JUMP_DESTINATION_WITH_LABEL(String name) {
+    public void JUMP_DESTINATION_WITH_LABEL(String name) {
         if (addresses.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Name %s is already taken", name));
         }
         addresses.put(name, instructions.size());
         instructions.add(() -> new Instruction<>(new JumpDestination(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder JUMP_DESTINATION() {
+    public void JUMP_DESTINATION() {
         instructions.add(() -> new Instruction<>(new JumpDestination(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder NOOP() {
+    public void NOOP() {
         instructions.add(() -> new Instruction<>(new NoOp(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder JUMP_IF() {
+    public void JUMP_IF() {
         instructions.add(() -> new Instruction<>(new JumpIf(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder EXIT() {
+    public void EXIT() {
         instructions.add(() -> new Instruction<>(new Exit(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder LOAD(ProgramStoreZone programStoreZone) {
+    public void LOAD(ProgramStoreZone programStoreZone) {
         Load.Operands data = new Load.Operands();
         data.programStoreZone = programStoreZone;
         instructions.add(() -> new Instruction<>(new Load(), data));
-        return this;
     }
 
-    public ProgramBuilder SAVE(ProgramStoreZone programStoreZone) {
+    public void SAVE(ProgramStoreZone programStoreZone) {
         Save.Operands data = new Save.Operands();
         data.programStoreZone = programStoreZone;
         instructions.add(() -> new Instruction<>(new Save(), data));
-        return this;
     }
 
-    public ProgramBuilder CALL() {
+    public void CALL() {
         instructions.add(() -> new Instruction<>(new Call(), NO_DATA));
-        return this;
     }
 
-    public ProgramBuilder CALL_RETURN() {
+    public void CALL_RETURN() {
         instructions.add(() -> new Instruction<>(new CallReturn(), NO_DATA));
-        return this;
+    }
+
+    public void CONSTRUCT_INFINITE_LOOP(Consumer<ProgramBuilder> loopBody) {
+        final String startLabel = UUID.randomUUID().toString();
+        JUMP_DESTINATION_WITH_LABEL(startLabel);
+        loopBody.accept(this);
+        PUSH_LABEL(startLabel);
+        JUMP();
+    }
+
+    public void CONSTRUCT_LOOP(Consumer<ProgramBuilder> conditionBody, Consumer<ProgramBuilder> loopBody) {
+        final String startLabel = UUID.randomUUID().toString();
+        final String endLabel = UUID.randomUUID().toString();
+        JUMP_DESTINATION_WITH_LABEL(startLabel);
+        conditionBody.accept(this);
+        IS_ZERO();
+        PUSH_LABEL(endLabel);
+        JUMP_IF();
+        loopBody.accept(this);
+        PUSH_LABEL(startLabel);
+        JUMP();
+        JUMP_DESTINATION_WITH_LABEL(endLabel);
+    }
+
+    public void CONSTRUCT_IF(Consumer<ProgramBuilder> condition, Consumer<ProgramBuilder> content) {
+        final String endLabel = UUID.randomUUID().toString();
+        condition.accept(this);
+        IS_ZERO();
+        PUSH_LABEL(endLabel);
+        JUMP_IF();
+        content.accept(this);
+        JUMP_DESTINATION_WITH_LABEL(endLabel);
     }
 
     public int currentSize() {

@@ -12,8 +12,8 @@ public class InstructionsOptimizer {
     private int passes;
 
     public InstructionsOptimizer() {
-        this.strategies = new ArrayList<>();
-        this.passes = 1;
+        strategies = new ArrayList<>();
+        passes = 1;
     }
 
     public List<Instruction> optimize(ProgramBuilderFactory programBuilderFactory, List<Instruction> instructions) {

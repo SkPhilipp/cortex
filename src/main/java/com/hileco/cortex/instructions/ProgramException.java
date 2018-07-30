@@ -1,7 +1,9 @@
 package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.context.ProgramContext;
+import lombok.Value;
 
+@Value
 public class ProgramException extends Exception {
 
     public enum Reason {
@@ -12,13 +14,8 @@ public class ProgramException extends Exception {
         RETURN_DATA_TOO_LARGE
     }
 
-    private ProgramContext programContext;
-    private Reason reason;
-
-    public ProgramException(ProgramContext core, Reason reason) {
-        this.programContext = core;
-        this.reason = reason;
-    }
+    private final ProgramContext programContext;
+    private final Reason reason;
 
     @Override
     public String getMessage() {
