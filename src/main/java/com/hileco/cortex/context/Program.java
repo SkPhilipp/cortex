@@ -17,10 +17,7 @@ public class Program {
     private final BigInteger address;
 
     public Program(List<Instruction> instructions) {
-        address = null;
-        transfers = new LayeredStack<>();
-        this.instructions = instructions;
-        storage = new LayeredBytes();
+        this(null, instructions);
     }
 
     public Program(BigInteger address, List<Instruction> instructions) {

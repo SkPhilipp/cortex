@@ -8,4 +8,9 @@ import static com.hileco.cortex.instructions.Operations.Operation;
 public class Instruction<T extends Operation<V>, V> {
     private final T operation;
     private final V operands;
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", operation, operands);
+    }
 }

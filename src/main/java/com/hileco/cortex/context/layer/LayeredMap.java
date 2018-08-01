@@ -5,15 +5,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K ,V>>{
+public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
     private LayeredMap<K, V> parent;
     private Map<K, V> layer;
     private Set<K> deletions;
 
     public LayeredMap() {
-        this.parent = null;
-        this.layer = new HashMap<>();
-        this.deletions = new HashSet<>();
+        parent = null;
+        layer = new HashMap<>();
+        deletions = new HashSet<>();
     }
 
     private LayeredMap(LayeredMap<K, V> parent, Map<K, V> layer, Set<K> deletions) {
@@ -24,15 +24,15 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K ,V>>{
 
     public LayeredMap<K, V> copy() {
         if (layer.size() > 0 || deletions.size() > 0) {
-            this.parent = new LayeredMap<>(parent, layer, deletions);
-            this.layer = new HashMap<>();
-            this.deletions = new HashSet<>();
+            parent = new LayeredMap<>(parent, layer, deletions);
+            layer = new HashMap<>();
+            deletions = new HashSet<>();
         }
         return new LayeredMap<>(parent, new HashMap<>(), new HashSet<>());
     }
 
     public int size() {
-        return this.keySet().size();
+        return keySet().size();
     }
 
     public boolean isEmpty() {
@@ -60,6 +60,13 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K ,V>>{
         return previous;
     }
 
+    public <K2 extends K, V2 extends V> void merge(LayeredMap<K2, V2> map) {
+        map.keySet().forEach(key -> {
+            V2 value = map.get(key);
+            put(key, value);
+        });
+    }
+
     public V remove(K key) {
         V previous = get(key);
         layer.remove(key);
@@ -70,9 +77,9 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K ,V>>{
     }
 
     public void clear() {
-        this.parent = null;
-        this.layer.clear();
-        this.deletions.clear();
+        parent = null;
+        layer.clear();
+        deletions.clear();
     }
 
     public Set<K> keySet() {
@@ -85,5 +92,22 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K ,V>>{
             keys.removeAll(deletions);
         }
         return keys;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("LayeredMap{");
+        stringBuilder.append("\n");
+        keySet().forEach(key -> {
+            stringBuilder.append("[");
+            stringBuilder.append(key);
+            stringBuilder.append("] = ");
+            stringBuilder.append(get(key));
+            stringBuilder.append(",");
+            stringBuilder.append("\n");
+        });
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }

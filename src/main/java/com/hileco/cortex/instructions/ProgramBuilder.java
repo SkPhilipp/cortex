@@ -51,15 +51,6 @@ public class ProgramBuilder {
         addresses = new HashMap<>();
     }
 
-    public Program build() {
-        List<Instruction> instructions = this.instructions.stream().map(Supplier::get).collect(Collectors.toList());
-        return new Program(new ArrayList<>(instructions));
-    }
-
-    public void include(List<Instruction> others) {
-        others.forEach(instruction -> instructions.add(() -> instruction));
-    }
-
     public void PUSH_LABEL(String name) {
         instructions.add(() -> {
             Push.Operands data = new Push.Operands();
@@ -244,4 +235,18 @@ public class ProgramBuilder {
         });
         instructions.addAll(programBuilder.instructions);
     }
+
+    public Program build() {
+        return build(null);
+    }
+
+    public Program build(BigInteger address) {
+        List<Instruction> instructions = this.instructions.stream().map(Supplier::get).collect(Collectors.toList());
+        return new Program(address, new ArrayList<>(instructions));
+    }
+
+    public void include(List<Instruction> others) {
+        others.forEach(instruction -> instructions.add(() -> instruction));
+    }
+
 }

@@ -7,7 +7,7 @@ public class LayeredBytes {
     private byte[] bytes;
 
     public LayeredBytes() {
-        bytes = new byte[4096];
+        bytes = new byte[8192];
     }
 
     public byte[] read(int offset, int length) {
@@ -15,7 +15,7 @@ public class LayeredBytes {
     }
 
     public void reset() {
-        bytes = new byte[4096];
+        bytes = new byte[8192];
     }
 
     public void write(int offset, byte[] bytesToWrite) {
@@ -28,5 +28,10 @@ public class LayeredBytes {
 
     public LayeredBytes copy() {
         throw new UnsupportedOperationException("Copying LayeredBytes is currently not supported.");
+    }
+
+    @Override
+    public String toString() {
+        return String.format("LayeredBytes{size %d}", bytes.length);
     }
 }

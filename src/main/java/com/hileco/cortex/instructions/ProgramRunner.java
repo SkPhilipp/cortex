@@ -14,6 +14,7 @@ import static com.hileco.cortex.instructions.output.Color.Palette.RED;
 
 public class ProgramRunner {
 
+    private static final boolean TABLE_LOGGING_ENABLED = Boolean.getBoolean(System.getProperty("TABLE_LOGGING_ENABLED", "true"));
     private final ProcessContext processContext;
     private final Table table;
 
@@ -53,11 +54,13 @@ public class ProgramRunner {
                 throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED);
             }
         }
-        table.write(System.out);
+        if (TABLE_LOGGING_ENABLED) {
+            table.write(System.out);
+        }
     }
 
     private void log(ProgramContext programContext, Instruction instruction) {
-        if (!(instruction.getOperation() instanceof Operations.NoOp)) {
+        if (TABLE_LOGGING_ENABLED && !(instruction.getOperation() instanceof Operations.NoOp)) {
             table.row(programContext.getInstructionPosition(),
                     programContext.getStack().size(),
                     programContext.getStack().size() > 3 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 3)) : "",
