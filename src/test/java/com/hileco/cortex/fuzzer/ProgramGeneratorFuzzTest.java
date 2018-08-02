@@ -6,37 +6,43 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class ProgramGeneratorFuzzTest {
 
-    // TODO: Seed randoms and put them behind one interface
-    // TODO: Ideally one with a java8-like interface to perform a for loop for a random number up to a limit
-    // TODO: A program generator context?
-    // TODO: Use FuzzExpression to wrap basic function layouts (& remember programbuilder has construct support now)
-    // TODO: Give programs always an address, ZERO is fine - remove null|empty constructors & utility methods
-    // TODO: Immediately fix any issues that pop up from fuzzing
+    public static final int LIMIT_RUNS = 50000;
 
     @Test
-    public void testGenerator() throws InterruptedException {
-        while (true) {
+    public void testGenerator() {
+        double exceptions = 0D;
+        double runs = 0D;
+        while (exceptions < LIMIT_RUNS) {
             ProgramGenerator programGenerator = new ProgramGenerator();
             LayeredMap<BigInteger, Program> generated = programGenerator.generate();
             Set<BigInteger> programAddresses = generated.keySet();
-            programAddresses.forEach(programAddress -> {
-                ProgramContext programContext = new ProgramContext(generated.get(programAddress));
-                ProcessContext processContext = new ProcessContext(programContext);
-                ProgramRunner programRunner = new ProgramRunner(processContext);
+            for (BigInteger programAddress : programAddresses) {
                 try {
+                    Program caller = new Program(BigInteger.ZERO, new ArrayList<>());
+                    Program program = generated.get(programAddress);
+                    ProgramContext callerContext = new ProgramContext(caller);
+                    ProgramContext programContext = new ProgramContext(program);
+                    ProcessContext processContext = new ProcessContext(callerContext, programContext);
+                    ProgramRunner programRunner = new ProgramRunner(processContext);
+                    exceptions++;
                     programRunner.run();
                 } catch (ProgramException e) {
+                    runs++;
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            });
-            Thread.sleep(10);
+            }
         }
+        double ratio = runs / exceptions;
+        Assert.assertFalse("Too many ProgramExceptions per generated program", ratio > 0.5);
     }
 }

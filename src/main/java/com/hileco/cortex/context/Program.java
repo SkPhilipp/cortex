@@ -17,7 +17,7 @@ public class Program {
     private final BigInteger address;
 
     public Program(List<Instruction> instructions) {
-        this(null, instructions);
+        this(BigInteger.ZERO, instructions);
     }
 
     public Program(BigInteger address, List<Instruction> instructions) {

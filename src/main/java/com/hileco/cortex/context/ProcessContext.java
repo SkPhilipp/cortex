@@ -17,9 +17,11 @@ public class ProcessContext {
     private BigInteger underflowLimit;
     private long stackLimit;
 
-    public ProcessContext(ProgramContext programContext) {
+    public ProcessContext(ProgramContext... programContexts) {
         programs = new LayeredStack<>();
-        programs.push(programContext);
+        for (ProgramContext programContext : programContexts) {
+            programs.push(programContext);
+        }
         atlas = new LayeredMap<>();
         stackLimit = Long.MAX_VALUE;
         overflowLimit = NUMERICAL_LIMIT;

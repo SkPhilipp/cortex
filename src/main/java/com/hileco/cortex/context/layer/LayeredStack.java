@@ -68,6 +68,9 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
         if (layer.containsKey(index)) {
             return layer.get(index);
         } else {
+            if (parent == null) {
+                throw new IndexOutOfBoundsException(String.format("Size %s < Index %s", size, index));
+            }
             return parent.get(index);
         }
     }

@@ -11,7 +11,9 @@ public class ProgramException extends Exception {
         JUMP_OUT_OF_BOUNDS,
         INSTRUCTION_LIMIT_REACHED,
         STACK_LIMIT_REACHED,
-        RETURN_DATA_TOO_LARGE
+        RETURN_DATA_TOO_LARGE,
+        STACK_TOO_FEW_ELEMENTS,
+        CALL_RECIPIENT_MISSING
     }
 
     private final ProgramContext programContext;

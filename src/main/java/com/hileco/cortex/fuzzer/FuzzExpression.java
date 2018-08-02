@@ -1,4 +1,4 @@
-package com.hileco.cortex.fuzzer.choices;
+package com.hileco.cortex.fuzzer;
 
 public enum FuzzExpression implements Chanced {
     /**

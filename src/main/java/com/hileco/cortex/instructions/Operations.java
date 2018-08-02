@@ -21,10 +21,12 @@ import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
 import static com.hileco.cortex.context.ProgramZone.MEMORY;
 import static com.hileco.cortex.context.ProgramZone.PROGRAM_CONTEXT;
 import static com.hileco.cortex.context.ProgramZone.STACK;
+import static com.hileco.cortex.instructions.ProgramException.Reason.CALL_RECIPIENT_MISSING;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION;
 import static com.hileco.cortex.instructions.ProgramException.Reason.RETURN_DATA_TOO_LARGE;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED;
+import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
 @SuppressWarnings("WeakerAccess")
 public class Operations {
@@ -80,7 +82,7 @@ public class Operations {
 
         public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
             program.getStack().push(operands.bytes);
-            if (program.getStack().size() >= process.getStackLimit()) {
+            if (program.getStack().size() > process.getStackLimit()) {
                 throw new ProgramException(program, STACK_LIMIT_REACHED);
             }
         }
@@ -96,8 +98,12 @@ public class Operations {
     }
 
     public static class Pop extends Operation<NoOperands> {
-        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
-            program.getStack().pop();
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) throws ProgramException {
+            LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 1) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
+            stack.pop();
         }
 
         public List<Integer> getStackTakes(NoOperands operands) {
@@ -120,8 +126,12 @@ public class Operations {
             }
         }
 
-        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
-            program.getStack().swap(operands.topOffsetLeft, operands.topOffsetRight);
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
+            LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() <= operands.topOffsetLeft || stack.size() <= operands.topOffsetRight) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
+            stack.swap(operands.topOffsetLeft, operands.topOffsetRight);
         }
 
         public List<Integer> getStackTakes(Swap.Operands operands) {
@@ -148,8 +158,12 @@ public class Operations {
         }
 
         public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
-            program.getStack().duplicate(operands.topOffset);
-            if (program.getStack().size() >= process.getStackLimit()) {
+            LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() <= operands.topOffset) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
+            stack.duplicate(operands.topOffset);
+            if (stack.size() > process.getStackLimit()) {
                 throw new ProgramException(program, STACK_LIMIT_REACHED);
             }
         }
@@ -177,8 +191,11 @@ public class Operations {
     private static byte[] FALSE = {0};
 
     private static abstract class ConditionOperation extends Operation<NoOperands> {
-        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 2) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             byte[] left = stack.pop();
             byte[] right = stack.pop();
             boolean equals = innerExecute(left, right);
@@ -269,8 +286,11 @@ public class Operations {
     private static abstract class BitwiseOperation extends Operation<NoOperands> {
         public abstract byte innerExecute(byte left, byte right);
 
-        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 2) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             byte[] left = stack.pop();
             byte[] right = stack.pop();
             byte[] result = new byte[Math.max(left.length, right.length)];
@@ -367,8 +387,11 @@ public class Operations {
 
     private static abstract class MathematicalOperation extends Operation<NoOperands> {
 
-        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands operands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 2) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             byte[] left = stack.pop();
             byte[] right = stack.pop();
             BigInteger leftAsBigInteger = new BigInteger(left);
@@ -440,10 +463,13 @@ public class Operations {
             }
         }
 
-        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
             try {
                 MessageDigest messageDigest = MessageDigest.getInstance(operands.hashMethod);
                 LayeredStack<byte[]> stack = program.getStack();
+                if (stack.size() < 1) {
+                    throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+                }
                 messageDigest.update(stack.pop());
                 stack.push(messageDigest.digest());
             } catch (NoSuchAlgorithmException e) {
@@ -489,7 +515,11 @@ public class Operations {
 
     public static class Jump extends Operation<NoOperands> {
         public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
-            int nextInstructionPosition = new BigInteger(program.getStack().pop()).intValue();
+            LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 1) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
+            int nextInstructionPosition = new BigInteger(stack.pop()).intValue();
             performJump(program, nextInstructionPosition);
         }
 
@@ -511,6 +541,9 @@ public class Operations {
     public static class JumpIf extends Operation<NoOperands> {
         public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 2) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             int nextInstructionPosition = new BigInteger(program.getStack().pop()).intValue();
             byte[] top = stack.pop();
             boolean isNonZero = false;
@@ -546,8 +579,11 @@ public class Operations {
     }
 
     public static class Call extends Operation<NoOperands> {
-        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) {
+        public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 6) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             BigInteger recipientAddress = new BigInteger(stack.pop());
             BigInteger valueTransferred = new BigInteger(stack.pop());
             BigInteger inOffset = new BigInteger(stack.pop());
@@ -558,6 +594,9 @@ public class Operations {
             program.setReturnDataOffset(outOffset);
             program.setReturnDataSize(outSize);
             Program recipient = process.getAtlas().get(recipientAddress);
+            if (recipient == null) {
+                throw new ProgramException(program, CALL_RECIPIENT_MISSING);
+            }
             BigInteger sourceAddress = program.getProgram().getAddress();
             recipient.getTransfers().push(new Pair<>(sourceAddress, valueTransferred));
             ProgramContext newContext = new ProgramContext(recipient);
@@ -580,6 +619,9 @@ public class Operations {
     public static class CallReturn extends Operation<NoOperands> {
         public void execute(ProcessContext process, ProgramContext program, NoOperands noOperands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 2) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             BigInteger offset = new BigInteger(stack.pop());
             BigInteger size = new BigInteger(stack.pop());
             process.getPrograms().pop();
@@ -631,8 +673,12 @@ public class Operations {
             }
         }
 
-        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
-            byte[] addressBytes = program.getStack().pop();
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
+            LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 1) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
+            byte[] addressBytes = stack.pop();
             BigInteger address = new BigInteger(addressBytes);
             LayeredBytes layeredBytes;
             switch (operands.programStoreZone) {
@@ -652,7 +698,7 @@ public class Operations {
             if (bytes == null) {
                 throw new IllegalStateException(String.format("Loading empty data at %s:%s", operands.programStoreZone, address.toString()));
             }
-            program.getStack().push(bytes);
+            stack.push(bytes);
         }
 
         public List<Integer> getStackTakes(Load.Operands operands) {
@@ -675,8 +721,11 @@ public class Operations {
             }
         }
 
-        public void execute(ProcessContext process, ProgramContext program, Operands operands) {
+        public void execute(ProcessContext process, ProgramContext program, Operands operands) throws ProgramException {
             LayeredStack<byte[]> stack = program.getStack();
+            if (stack.size() < 2) {
+                throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
+            }
             byte[] addressBytes = stack.pop();
             BigInteger address = new BigInteger(addressBytes);
             byte[] bytes = stack.pop();

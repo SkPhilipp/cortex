@@ -44,17 +44,17 @@ import static com.hileco.cortex.instructions.Operations.Swap;
 
 public class ProgramBuilder {
     private List<Supplier<Instruction>> instructions;
-    private Map<String, Integer> addresses;
+    private Map<String, Integer> labelAddresses;
 
     public ProgramBuilder() {
         instructions = new ArrayList<>();
-        addresses = new HashMap<>();
+        labelAddresses = new HashMap<>();
     }
 
     public void PUSH_LABEL(String name) {
         instructions.add(() -> {
             Push.Operands data = new Push.Operands();
-            Integer address = addresses.get(name);
+            Integer address = labelAddresses.get(name);
             data.bytes = BigInteger.valueOf(address).toByteArray();
             return new Instruction<>(new Push(), data);
         });
@@ -146,10 +146,10 @@ public class ProgramBuilder {
     }
 
     public void JUMP_DESTINATION_WITH_LABEL(String name) {
-        if (addresses.containsKey(name)) {
+        if (labelAddresses.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Name %s is already taken", name));
         }
-        addresses.put(name, instructions.size());
+        labelAddresses.put(name, instructions.size());
         instructions.add(() -> new Instruction<>(new JumpDestination(), NO_DATA));
     }
 
@@ -227,11 +227,11 @@ public class ProgramBuilder {
 
     public void include(ProgramBuilder programBuilder) {
         int currentSize = instructions.size();
-        programBuilder.addresses.forEach((name, address) -> {
-            if (addresses.containsKey(name)) {
+        programBuilder.labelAddresses.forEach((name, address) -> {
+            if (labelAddresses.containsKey(name)) {
                 throw new IllegalArgumentException(String.format("Name %s is already taken", name));
             }
-            addresses.put(name, address + currentSize);
+            labelAddresses.put(name, address + currentSize);
         });
         instructions.addAll(programBuilder.instructions);
     }

@@ -1,13 +1,10 @@
 package com.hileco.cortex.instructions.output;
 
-import org.junit.Test;
-
 import java.util.Arrays;
 
-public class TableTest {
+public class TableSample {
 
-    @Test
-    public void test() {
+    public static void main(String[] args) {
         Table table = Table.builder()
                 .columns(Arrays.asList(
                         Table.Column.builder().header("Column 1").foreground(Color.Palette.RED).width(8).build(),
