@@ -44,6 +44,6 @@ public class ProgramGeneratorFuzzTest {
             }
         }
         double ratio = ((double) exceptions) / ((double) runs);
-        Assert.assertFalse(String.format("Too many ProgramExceptions per generated program: %f", ratio), ratio > 0.5);
+        Assert.assertFalse(String.format("Too many ProgramExceptions per generated program: %f (seed: %d)", ratio, seed), ratio > 0.5);
     }
 }

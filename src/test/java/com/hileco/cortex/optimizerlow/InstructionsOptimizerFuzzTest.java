@@ -20,7 +20,7 @@ import java.util.List;
 
 public class InstructionsOptimizerFuzzTest {
 
-    private static final int LIMIT_RUNS = 10_000;
+    private static final int LIMIT_RUNS = 5_000;
     private final ProgramBuilderFactory programBuilderFactory;
     private final InstructionsOptimizer instructionsOptimizer;
 
@@ -55,10 +55,13 @@ public class InstructionsOptimizerFuzzTest {
     public void fuzzTestOptimizer() {
         long seed = System.currentTimeMillis() * LIMIT_RUNS;
         long runs = 0;
+        long totalTimeStandard = 0;
+        long totalTimeOptimized = 0;
         while (runs++ < LIMIT_RUNS) {
             ProgramGenerator programGenerator = new ProgramGenerator();
-            LayeredMap<BigInteger, Program> generated = programGenerator.generate(seed + runs);
-            LayeredMap<BigInteger, Program> generatedOptimized = programGenerator.generate(seed + runs);
+            long runSeed = seed + runs;
+            LayeredMap<BigInteger, Program> generated = programGenerator.generate(runSeed);
+            LayeredMap<BigInteger, Program> generatedOptimized = programGenerator.generate(runSeed);
             for (BigInteger address : generatedOptimized.keySet()) {
                 Program program = generatedOptimized.get(address);
                 List<Instruction> instructions = program.getInstructions();
@@ -66,23 +69,38 @@ public class InstructionsOptimizerFuzzTest {
                 generatedOptimized.put(program.getAddress(), new Program(program.getAddress(), optimizedInstructions));
             }
 
+            long startStandard = System.nanoTime();
             ProgramContext callerContext = executeAll(generated);
-            ProgramContext callerContextOptimized = executeAll(generatedOptimized);
+            long endStandard = System.nanoTime();
+            if (startStandard < endStandard) {
+                totalTimeStandard += endStandard - startStandard;
+            }
 
-            Assert.assertEquals(String.format("Issue with Generation %d in caller", seed + runs), callerContext.getMemory(),
+            long startOptimized = System.nanoTime();
+            ProgramContext callerContextOptimized = executeAll(generatedOptimized);
+            long endOptimized = System.nanoTime();
+            if (startOptimized < endOptimized) {
+                totalTimeOptimized += endOptimized - startOptimized;
+            }
+
+            Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getMemory(),
                     callerContextOptimized.getMemory());
-            Assert.assertEquals(String.format("Issue with Generation %d in caller", seed + runs), callerContext.getProgram().getStorage(),
+            Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getProgram().getStorage(),
                     callerContextOptimized.getProgram().getStorage());
-            Assert.assertEquals(String.format("Issue with Generation %d in caller", seed + runs), callerContext.getProgram().getTransfers(),
+            Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getProgram().getTransfers(),
                     callerContextOptimized.getProgram().getTransfers());
             for (BigInteger address : generated.keySet()) {
-                Assert.assertEquals(String.format("Issue with Generation %d in program %s", seed + runs, address.toString()),
-                        generated.get(address).getStorage(),
-                        generatedOptimized.get(address).getStorage());
-                Assert.assertEquals(String.format("Issue with Generation %d in program %s", seed + runs, address.toString()),
-                        generated.get(address).getTransfers(),
-                        generatedOptimized.get(address).getTransfers());
+                Program standard = generated.get(address);
+                Program optimized = generatedOptimized.get(address);
+                Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
+                        standard.getStorage(),
+                        optimized.getStorage());
+                Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
+                        standard.getTransfers(),
+                        optimized.getTransfers());
             }
         }
+        double ratio = ((double) totalTimeOptimized / (double) totalTimeStandard);
+        Assert.assertTrue(String.format("Optimized runs took %.0f%% of unoptimized runs' time.  (seed: %d)", ratio * 100, seed), ratio < 0.95);
     }
 }
