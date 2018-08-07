@@ -20,7 +20,7 @@ import java.util.List;
 
 public class InstructionsOptimizerFuzzTest {
 
-    private static final int LIMIT_RUNS = 100_000;
+    private static final int LIMIT_RUNS = 10_000;
     private final ProgramBuilderFactory programBuilderFactory;
     private final InstructionsOptimizer instructionsOptimizer;
 

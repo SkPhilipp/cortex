@@ -59,7 +59,7 @@ public class ProgramGeneratorContext {
 
     public void forRandom(int minimum, int maximum, IntConsumer consumer) {
         int choice = randomIntBetween(minimum, maximum);
-        IntStream.range(minimum, choice).forEach(consumer);
+        IntStream.range(minimum, choice + 1).forEach(consumer);
     }
 
     public LayeredMap<BigInteger, Program> atlas() {
