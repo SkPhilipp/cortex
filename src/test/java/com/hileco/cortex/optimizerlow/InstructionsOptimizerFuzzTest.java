@@ -58,7 +58,7 @@ public class InstructionsOptimizerFuzzTest {
         while (runs++ < LIMIT_RUNS) {
             ProgramGenerator programGenerator = new ProgramGenerator();
             LayeredMap<BigInteger, Program> generated = programGenerator.generate(seed + runs);
-            LayeredMap<BigInteger, Program> generatedOptimized = programGenerator.generate(seed);
+            LayeredMap<BigInteger, Program> generatedOptimized = programGenerator.generate(seed + runs);
             for (BigInteger address : generatedOptimized.keySet()) {
                 Program program = generatedOptimized.get(address);
                 List<Instruction> instructions = program.getInstructions();
@@ -69,12 +69,20 @@ public class InstructionsOptimizerFuzzTest {
             ProgramContext callerContext = executeAll(generated);
             ProgramContext callerContextOptimized = executeAll(generatedOptimized);
 
-            Assert.assertEquals(String.format("Issue with Generation %d", seed + runs), callerContext.getMemory(), callerContextOptimized.getMemory());
-            // Do the below two assertions on all atlas programs as well
-            Assert.assertEquals(String.format("Issue with Generation %d", seed + runs), callerContext.getProgram().getStorage(),
+            Assert.assertEquals(String.format("Issue with Generation %d in caller", seed + runs), callerContext.getMemory(),
+                    callerContextOptimized.getMemory());
+            Assert.assertEquals(String.format("Issue with Generation %d in caller", seed + runs), callerContext.getProgram().getStorage(),
                     callerContextOptimized.getProgram().getStorage());
-            Assert.assertEquals(String.format("Issue with Generation %d", seed + runs), callerContext.getProgram().getTransfers(),
+            Assert.assertEquals(String.format("Issue with Generation %d in caller", seed + runs), callerContext.getProgram().getTransfers(),
                     callerContextOptimized.getProgram().getTransfers());
+            for (BigInteger address : generated.keySet()) {
+                Assert.assertEquals(String.format("Issue with Generation %d in program %s", seed + runs, address.toString()),
+                        generated.get(address).getStorage(),
+                        generatedOptimized.get(address).getStorage());
+                Assert.assertEquals(String.format("Issue with Generation %d in program %s", seed + runs, address.toString()),
+                        generated.get(address).getTransfers(),
+                        generatedOptimized.get(address).getTransfers());
+            }
         }
     }
 }
