@@ -16,8 +16,8 @@ public class ProgramGenerator {
         programBuilderFactory = new ProgramBuilderFactory();
     }
 
-    public LayeredMap<BigInteger, Program> generate() {
-        ProgramGeneratorContext context = new ProgramGeneratorContext();
+    public LayeredMap<BigInteger, Program> generate(long seed) {
+        ProgramGeneratorContext context = new ProgramGeneratorContext(seed);
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS, i -> {
             context.pushBuilder(programBuilderFactory.builder());
             context.randomFuzzProgram().accept(context);

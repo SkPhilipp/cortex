@@ -1,5 +1,6 @@
 package com.hileco.cortex.context.layer;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -321,5 +322,19 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
         }
         stringBuilder.append("}");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LayeredStack<?> that = (LayeredStack<?>) o;
+        return size == that.size &&
+                Arrays.equals(toArray(), that.toArray());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash((Object[]) toArray());
     }
 }

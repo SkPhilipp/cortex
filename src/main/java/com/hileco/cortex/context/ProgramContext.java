@@ -8,6 +8,8 @@ import java.math.BigInteger;
 
 @Data
 public class ProgramContext {
+    public static final int INSTRUCTION_LIMIT = 1_000_000;
+
     private int instructionsExecuted;
     private int instructionLimit;
     private int instructionPosition;
@@ -21,7 +23,7 @@ public class ProgramContext {
     public ProgramContext(Program program) {
         instructionsExecuted = 0;
         instructionPosition = 0;
-        instructionLimit = 1000000;
+        instructionLimit = INSTRUCTION_LIMIT;
         stack = new LayeredStack<>();
         memory = new LayeredBytes();
         callData = new LayeredBytes();

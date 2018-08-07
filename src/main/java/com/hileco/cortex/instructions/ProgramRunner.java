@@ -51,7 +51,11 @@ public class ProgramRunner {
             }
             programContext.setInstructionsExecuted(programContext.getInstructionsExecuted() + 1);
             if (programContext.getInstructionsExecuted() >= programContext.getInstructionLimit()) {
-                throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED);
+                throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROGRAM_LEVEL);
+            }
+            processContext.setInstructionsExecuted(processContext.getInstructionsExecuted() + 1);
+            if (processContext.getInstructionsExecuted() >= processContext.getInstructionLimit()) {
+                throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROCESS_LEVEL);
             }
         }
         if (TABLE_LOGGING_ENABLED) {

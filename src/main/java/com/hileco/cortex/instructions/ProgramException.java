@@ -9,7 +9,8 @@ public class ProgramException extends Exception {
     public enum Reason {
         JUMP_TO_ILLEGAL_INSTRUCTION,
         JUMP_OUT_OF_BOUNDS,
-        INSTRUCTION_LIMIT_REACHED,
+        INSTRUCTION_LIMIT_REACHED_ON_PROCESS_LEVEL,
+        INSTRUCTION_LIMIT_REACHED_ON_PROGRAM_LEVEL,
         STACK_LIMIT_REACHED,
         RETURN_DATA_TOO_LARGE,
         STACK_TOO_FEW_ELEMENTS,

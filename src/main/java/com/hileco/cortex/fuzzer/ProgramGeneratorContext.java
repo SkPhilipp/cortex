@@ -20,17 +20,16 @@ public class ProgramGeneratorContext {
     private final Supplier<FuzzFunction> randomFuzzFunctionLayout;
     private final Supplier<FuzzExpression> randomFuzzExpression;
 
-    public ProgramGeneratorContext() {
+    public ProgramGeneratorContext(long seed) {
         programBuilders = new LayeredStack<>();
         atlas = new LayeredMap<>();
-        random = new Random();
+        random = new Random(seed);
         randomFuzzProgramLayout = of(FuzzProgram.values());
         randomFuzzFunctionLayout = of(FuzzFunction.values());
         randomFuzzExpression = of(FuzzExpression.values());
     }
 
     private <T extends Chanced> Supplier<T> of(T[] types) {
-        Random random = new Random();
         double total = Arrays.stream(types).mapToDouble(Chanced::chance).sum();
         return () -> {
             double choice = random.nextDouble() * total;

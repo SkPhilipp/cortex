@@ -5,5 +5,6 @@ public enum ProgramZone {
     MEMORY,
     DISK,
     INSTRUCTION_POSITION,
-    PROGRAM_CONTEXT
+    PROGRAM_CONTEXT,
+    CALL_DATA
 }

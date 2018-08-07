@@ -15,17 +15,19 @@ import java.util.Set;
 
 public class ProgramGeneratorFuzzTest {
 
-    public static final int LIMIT_RUNS = 50000;
+    private static final int LIMIT_RUNS = 100_000;
 
     @Test
-    public void testGenerator() {
-        double exceptions = 0D;
-        double runs = 0D;
-        while (exceptions < LIMIT_RUNS) {
+    public void fuzzTestGenerator() {
+        long seed = System.currentTimeMillis() * LIMIT_RUNS;
+        long exceptions = 0;
+        long runs = 0;
+        while (runs < LIMIT_RUNS) {
             ProgramGenerator programGenerator = new ProgramGenerator();
-            LayeredMap<BigInteger, Program> generated = programGenerator.generate();
+            LayeredMap<BigInteger, Program> generated = programGenerator.generate(seed + runs);
             Set<BigInteger> programAddresses = generated.keySet();
             for (BigInteger programAddress : programAddresses) {
+                runs++;
                 try {
                     Program caller = new Program(BigInteger.ZERO, new ArrayList<>());
                     Program program = generated.get(programAddress);
@@ -33,16 +35,15 @@ public class ProgramGeneratorFuzzTest {
                     ProgramContext programContext = new ProgramContext(program);
                     ProcessContext processContext = new ProcessContext(callerContext, programContext);
                     ProgramRunner programRunner = new ProgramRunner(processContext);
-                    exceptions++;
                     programRunner.run();
                 } catch (ProgramException e) {
-                    runs++;
+                    exceptions++;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-        double ratio = runs / exceptions;
-        Assert.assertFalse("Too many ProgramExceptions per generated program", ratio > 0.5);
+        double ratio = ((double) exceptions) / ((double) runs);
+        Assert.assertFalse(String.format("Too many ProgramExceptions per generated program: %f", ratio), ratio > 0.5);
     }
 }

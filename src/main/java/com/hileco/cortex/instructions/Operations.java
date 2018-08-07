@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.hileco.cortex.context.ProgramZone.CALL_DATA;
 import static com.hileco.cortex.context.ProgramZone.DISK;
 import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
 import static com.hileco.cortex.context.ProgramZone.MEMORY;
@@ -601,7 +602,7 @@ public class Operations {
             recipient.getTransfers().push(new Pair<>(sourceAddress, valueTransferred));
             ProgramContext newContext = new ProgramContext(recipient);
             byte[] inputData = program.getMemory().read(inOffset.intValue(), inSize.intValue());
-            newContext.getCallData().reset();
+            newContext.getCallData().clear();
             newContext.getCallData().write(0, inputData);
             process.getPrograms().push(newContext);
         }
@@ -658,6 +659,8 @@ public class Operations {
                 return Arrays.asList(STACK, MEMORY);
             case DISK:
                 return Arrays.asList(STACK, DISK);
+            case CALL_DATA:
+                return Arrays.asList(STACK, CALL_DATA);
             default:
                 throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
         }
@@ -752,7 +755,7 @@ public class Operations {
             return Collections.singletonList(-1);
         }
 
-        public List<ProgramZone> getInstructionModifiers(Load.Operands operands) {
+        public List<ProgramZone> getInstructionModifiers(Save.Operands operands) {
             return Operations.programZoneFor(operands.programStoreZone);
         }
     }

@@ -14,7 +14,7 @@ public class LayeredBytes {
         return Arrays.copyOfRange(bytes, offset, offset + length);
     }
 
-    public void reset() {
+    public void clear() {
         bytes = new byte[8192];
     }
 
@@ -33,5 +33,18 @@ public class LayeredBytes {
     @Override
     public String toString() {
         return String.format("LayeredBytes{size %d}", bytes.length);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LayeredBytes that = (LayeredBytes) o;
+        return Arrays.equals(bytes, that.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(bytes);
     }
 }
