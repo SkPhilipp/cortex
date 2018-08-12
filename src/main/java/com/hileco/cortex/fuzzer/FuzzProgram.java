@@ -30,6 +30,8 @@ public enum FuzzProgram implements Chanced, Consumer<ProgramGeneratorContext> {
         functions.forEach(address -> {
             context.builder().JUMP_DESTINATION_WITH_LABEL(address.toString());
             context.randomFuzzFunction().accept(context);
+            context.builder().PUSH_LABEL(Constants.PROGRAM_END_LABEL);
+            context.builder().JUMP();
         });
         context.builder().JUMP_DESTINATION_WITH_LABEL(Constants.PROGRAM_END_LABEL);
     }),

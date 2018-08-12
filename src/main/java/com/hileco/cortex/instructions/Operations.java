@@ -170,6 +170,7 @@ public class Operations {
         }
 
         public List<Integer> getStackTakes(Duplicate.Operands operands) {
+            // TODO: Currently getStackTakes is being used
             return Collections.singletonList(operands.topOffset);
         }
 
@@ -705,7 +706,11 @@ public class Operations {
         }
 
         public List<Integer> getStackTakes(Load.Operands operands) {
-            return Arrays.asList(0, 1);
+            return Collections.singletonList(0);
+        }
+
+        public List<Integer> getStackAdds(Load.Operands operands) {
+            return Collections.singletonList(-1);
         }
 
         public List<ProgramZone> getInstructionModifiers(Operands operands) {
@@ -746,13 +751,8 @@ public class Operations {
             layeredBytes.write(address.intValue(), bytes);
         }
 
-
         public List<Integer> getStackTakes(Save.Operands operands) {
-            return Collections.singletonList(0);
-        }
-
-        public List<Integer> getStackAdds(Save.Operands operands) {
-            return Collections.singletonList(-1);
+            return Arrays.asList(0, 1);
         }
 
         public List<ProgramZone> getInstructionModifiers(Save.Operands operands) {

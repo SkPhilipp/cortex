@@ -12,8 +12,10 @@ public class VariableStrategy implements ProgramTreeBuildingStrategy {
         //
         //Sample 3: Expression Strategies & References
         //--------------------------------------------
-        //      1. load(call_data, 0x1200)
-        //      2. load(call_data, 0x2400)
+        //    0.5. push(0x1200)
+        //      1. load(call_data)
+        //    1.5. push(0x2400)
+        //      2. load(call_data)
         //      3. add()
         //      4. dup(0)
         //      5. push(0x5001)
@@ -30,7 +32,7 @@ public class VariableStrategy implements ProgramTreeBuildingStrategy {
         //    201. (jump_destination)
         //
         //[ParameterStrategy]
-        //      1. add(load(call_data, 0x1200), load(call_data, 0x2400))
+        //      1. add(load(call_data, push(0x1200)), load(call_data, push(0x2400)))
         //      8. jump_if(101, equals(0x5001, dup(0)))
         //     12. jump_if(201, equals(0x6001, pop()))
         //         ...
@@ -39,7 +41,7 @@ public class VariableStrategy implements ProgramTreeBuildingStrategy {
         //    201. (jump_destination)
         //
         //[ParameterStrategy, ParameterLineStrategy]
-        //      1. add(load(call_data, 0x1200), load(call_data, 0x2400))
+        //      1. add(load(call_data, push(0x1200)), load(call_data, push(0x2400)))
         //      8. jump_if(101, equals(0x5001, dup(@1)))
         //     12. jump_if(101, equals(0x6001, @1))
         //         ...
@@ -48,12 +50,13 @@ public class VariableStrategy implements ProgramTreeBuildingStrategy {
         //    201. (jump_destination)
         //
         //[ParameterStrategy, ParameterLineStrategy, VariableStrategy]
-        //      1. var a = add(load(call_data, 0x1200), load(call_data, 0x2400))
+        //      1. var a = add(load(call_data, push(0x1200)), load(call_data, push(0x2400)))
         //      8. jump_if(101, equals(0x5001, @a))
         //     12. jump_if(101, equals(0x6001, @a))
         //         ...
         //    101. (jump_destination)
         //         ...
         //    201. (jump_destination)
+
     }
 }
