@@ -11,10 +11,12 @@ public class ProgramTree {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("        ┌───────────────────────────────────\n");
         for (ProgramNode node : nodes) {
             stringBuilder.append(node);
             stringBuilder.append('\n');
         }
+        stringBuilder.append("        └───────────────────────────────────");
         return stringBuilder.toString();
     }
 }

@@ -2,8 +2,16 @@ package com.hileco.cortex.tree;
 
 public enum ProgramNodeType {
 
+    UNKNOWN((programNode, stringBuilder, offset) -> {
+        stringBuilder.append(" ?????? │");
+        for (int i = 0; i < offset; i++) {
+            stringBuilder.append(' ');
+        }
+        stringBuilder.append(' ');
+        stringBuilder.append("????");
+    }),
     INSTRUCTION((programNode, stringBuilder, offset) -> {
-        stringBuilder.append(String.format("%06d │", programNode.getLine()));
+        stringBuilder.append(String.format(" %06d │", programNode.getLine()));
         for (int i = 0; i < offset; i++) {
             stringBuilder.append(' ');
         }
@@ -16,10 +24,6 @@ public enum ProgramNodeType {
                 parameter.getType().formatter.format(parameter, stringBuilder, offset + 2);
             }
         }
-    }),
-    JUMP_DESTINATION((programNode, stringBuilder, offset) -> {
-        stringBuilder.append(String.format("%06d │", programNode.getLine()));
-        stringBuilder.append("[JUMP DESTINATION]");
     });
 
     @FunctionalInterface

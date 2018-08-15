@@ -44,6 +44,7 @@ public class ProgramTreeBuilderFuzzTest {
             List<Instruction> instructions = program.getInstructions();
             ProgramTree programTree = programTreeBuilder.build(instructions);
             System.out.println(programTree);
+            System.out.flush();
         }
     }
 }
