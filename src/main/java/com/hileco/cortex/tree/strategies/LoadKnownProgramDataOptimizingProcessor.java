@@ -3,8 +3,7 @@ package com.hileco.cortex.tree.strategies;
 import com.hileco.cortex.context.data.ProgramData;
 import com.hileco.cortex.context.data.ProgramDataSource;
 import com.hileco.cortex.context.data.ProgramStoreZone;
-import com.hileco.cortex.instructions.ProgramBuilder;
-import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.instructions.debug.NOOP;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.tree.ProgramNode;
@@ -23,7 +22,6 @@ import static com.hileco.cortex.tree.stream.Filters.parameter;
 @Value
 public class LoadKnownProgramDataOptimizingProcessor implements ProgramTreeProcessor {
 
-    private final ProgramBuilderFactory programBuilderFactory;
     private final Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData;
     private final Set<ProgramDataSource> knownSources;
 
@@ -40,9 +38,8 @@ public class LoadKnownProgramDataOptimizingProcessor implements ProgramTreeProce
                     BigInteger address = new BigInteger(push.getBytes());
                     ProgramData programData = knownData.getOrDefault(load.getProgramStoreZone(), Collections.emptyMap()).get(address);
                     if (programData != null && knownSources.containsAll(programData.getSources())) {
-                        ProgramBuilder builder = programBuilderFactory.builder();
-                        parameterNode.setInstruction(builder.NOOP().get());
-                        programNode.setInstruction(builder.PUSH(programData.getContent()).get());
+                        parameterNode.setInstruction(new NOOP());
+                        programNode.setInstruction(new PUSH(programData.getContent()));
                     }
                 });
     }

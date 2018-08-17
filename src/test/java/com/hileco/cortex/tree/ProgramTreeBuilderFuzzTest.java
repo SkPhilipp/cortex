@@ -4,7 +4,6 @@ import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.tree.strategies.IfBlockProcessor;
 import com.hileco.cortex.tree.strategies.JumpDestinationProcessor;
 import com.hileco.cortex.tree.strategies.LoadKnownProgramDataOptimizingProcessor;
@@ -29,7 +28,6 @@ public class ProgramTreeBuilderFuzzTest {
 
     @Before
     public void setup() {
-        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
         List<ProgramTreeProcessor> strategies = new ArrayList<>();
         strategies.add(new JumpDestinationProcessor());
         strategies.add(new ParameterProcessor());
@@ -38,9 +36,9 @@ public class ProgramTreeBuilderFuzzTest {
         strategies.add(new IfBlockProcessor());
         strategies.add(new LoopBlockProcessor());
 
-        strategies.add(new LoadKnownProgramDataOptimizingProcessor(programBuilderFactory, new HashMap<>(), new HashSet<>()));
+        strategies.add(new LoadKnownProgramDataOptimizingProcessor(new HashMap<>(), new HashSet<>()));
         strategies.add(new PrecalculateSelfContainedOptimizingProcessor());
-        strategies.add(new PushJumpIfOptimizingProcessor(programBuilderFactory));
+        strategies.add(new PushJumpIfOptimizingProcessor());
         programTreeBuilder = new ProgramTreeBuilder(strategies);
     }
 

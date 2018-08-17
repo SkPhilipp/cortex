@@ -7,7 +7,6 @@ import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramBuilder;
-import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
@@ -46,8 +45,8 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
     /**
      * Rewrites a list of optimizable instructions into a simplified equivalent.
      */
-    private List<Instruction> rewrite(ProgramBuilderFactory programBuilderFactory, List<Instruction> optimizable) {
-        ProgramBuilder optimizableBuilder = programBuilderFactory.builder();
+    private List<Instruction> rewrite(List<Instruction> optimizable) {
+        ProgramBuilder optimizableBuilder = new ProgramBuilder();
         optimizableBuilder.include(optimizable);
         Program program = optimizableBuilder.build();
         ProgramContext programContext = new ProgramContext(program);
@@ -59,7 +58,7 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
             throw new IllegalStateException("Unknown cause for ProgramException", e);
         }
         LayeredStack<byte[]> stack = programContext.getStack();
-        ProgramBuilder builder = programBuilderFactory.builder();
+        ProgramBuilder builder = new ProgramBuilder();
         for (byte[] bytes : stack) {
             builder.PUSH(bytes);
         }
@@ -70,7 +69,7 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
         return builder.build().getInstructions();
     }
 
-    public void optimize(ProgramBuilderFactory programBuilderFactory, List<Instruction> instructions) {
+    public void optimize(List<Instruction> instructions) {
         List<Instruction> result = new ArrayList<>();
         List<Instruction> optimizable = new ArrayList<>();
         int stackSize = 0;
@@ -80,13 +79,13 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
                 stackSize += staysWithinStack.getValue();
                 optimizable.add(instruction);
             } else {
-                result.addAll(rewrite(programBuilderFactory, optimizable));
+                result.addAll(rewrite(optimizable));
                 result.add(instruction);
                 optimizable.clear();
                 stackSize = 0;
             }
         }
-        result.addAll(rewrite(programBuilderFactory, optimizable));
+        result.addAll(rewrite(optimizable));
         instructions.clear();
         instructions.addAll(result);
     }

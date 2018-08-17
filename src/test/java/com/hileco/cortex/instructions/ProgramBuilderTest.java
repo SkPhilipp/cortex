@@ -12,7 +12,7 @@ public class ProgramBuilderTest {
 
     @Test
     public void testJump() throws ProgramException {
-        ProgramBuilder builder = new ProgramBuilderFactory().builder();
+        ProgramBuilder builder = new ProgramBuilder();
         builder.PUSH(new byte[]{123});
         builder.PUSH(new byte[]{123});
         builder.EQUALS();
@@ -35,7 +35,7 @@ public class ProgramBuilderTest {
 
     @Test
     public void testNoJump() throws ProgramException {
-        ProgramBuilder builder = new ProgramBuilderFactory().builder();
+        ProgramBuilder builder = new ProgramBuilder();
         builder.PUSH(new byte[]{123});
         builder.PUSH(new byte[]{124});
         builder.EQUALS();
@@ -59,7 +59,7 @@ public class ProgramBuilderTest {
 
     @Test
     public void testLoop() throws ProgramException {
-        ProgramBuilder builder = new ProgramBuilderFactory().builder();
+        ProgramBuilder builder = new ProgramBuilder();
         builder.PUSH(new byte[]{0});
         builder.JUMP_DESTINATION();
         builder.PUSH(new byte[]{1});

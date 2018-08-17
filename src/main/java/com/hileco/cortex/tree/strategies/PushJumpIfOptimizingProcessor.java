@@ -1,7 +1,7 @@
 package com.hileco.cortex.tree.strategies;
 
-import com.hileco.cortex.instructions.ProgramBuilder;
-import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.instructions.debug.NOOP;
+import com.hileco.cortex.instructions.jumps.JUMP;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.tree.ProgramNode;
@@ -17,8 +17,6 @@ import static com.hileco.cortex.tree.stream.Filters.parameter;
 @Value
 public class PushJumpIfOptimizingProcessor implements ProgramTreeProcessor {
 
-    private final ProgramBuilderFactory programBuilderFactory;
-
     @Override
     public void process(ProgramTree programTree) {
         programTree.getNodes()
@@ -30,16 +28,15 @@ public class PushJumpIfOptimizingProcessor implements ProgramTreeProcessor {
                     ProgramNode parameterDestinationNode = programNode.getParameters().get(0);
                     ProgramNode parameterConditionNode = programNode.getParameters().get(1);
                     PUSH push = (PUSH) parameterConditionNode.getInstruction();
-                    ProgramBuilder builder = programBuilderFactory.builder();
                     if (new BigInteger(push.getBytes()).compareTo(BigInteger.ZERO) > 0) {
                         // TODO: Detatch the NOOP parameter
-                        parameterConditionNode.setInstruction(builder.NOOP().get());
-                        programNode.setInstruction(builder.JUMP().get());
+                        parameterConditionNode.setInstruction(new NOOP());
+                        programNode.setInstruction(new JUMP());
                     } else {
                         // TODO: Detatch all NOOP parameters
-                        parameterConditionNode.setInstruction(builder.NOOP().get());
-                        parameterDestinationNode.setInstruction(builder.NOOP().get());
-                        programNode.setInstruction(builder.NOOP().get());
+                        parameterConditionNode.setInstruction(new NOOP());
+                        parameterDestinationNode.setInstruction(new NOOP());
+                        programNode.setInstruction(new NOOP());
                     }
                 });
     }
