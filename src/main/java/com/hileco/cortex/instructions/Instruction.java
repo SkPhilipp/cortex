@@ -1,35 +1,18 @@
 package com.hileco.cortex.instructions;
 
+
+import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.instructions.operations.Operation;
-import lombok.Value;
 
 import java.util.List;
 
-import static com.hileco.cortex.instructions.Operations.Operation;
+public interface Instruction {
+    void execute(ProcessContext process, ProgramContext program) throws ProgramException;
 
-@Value
-public class Instruction<T extends Operation<V>, V> {
-    private final T operation;
-    private final V operands;
+    List<Integer> getStackTakes();
 
-    // TODO: Use these everywhere
-    public List<Integer> getStackTakes() {
-        return getOperation().getStackTakes(operands);
-    }
+    List<Integer> getStackAdds();
 
-    // TODO: Use these everywhere
-    public List<Integer> getStackAdds() {
-        return getOperation().getStackAdds(operands);
-    }
-
-    // TODO: Use these everywhere
-    public List<ProgramZone> getInstructionModifiers() {
-        return getOperation().getInstructionModifiers(operands);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s", operation, operands);
-    }
+    List<ProgramZone> getInstructionModifiers();
 }

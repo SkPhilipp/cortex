@@ -3,14 +3,15 @@ package com.hileco.cortex.instructions;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException.Reason;
-import com.hileco.cortex.instructions.output.Table;
+import com.hileco.cortex.instructions.debug.NOOP;
+import com.hileco.cortex.output.Table;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import static com.hileco.cortex.instructions.output.Color.Palette.CYAN;
-import static com.hileco.cortex.instructions.output.Color.Palette.GREEN;
-import static com.hileco.cortex.instructions.output.Color.Palette.RED;
+import static com.hileco.cortex.output.Color.Palette.CYAN;
+import static com.hileco.cortex.output.Color.Palette.GREEN;
+import static com.hileco.cortex.output.Color.Palette.RED;
 
 public class ProgramRunner {
 
@@ -28,8 +29,7 @@ public class ProgramRunner {
                         Table.Column.builder().header("@2").foreground(CYAN).width(6).build(),
                         Table.Column.builder().header("@1").foreground(CYAN).width(6).build(),
                         Table.Column.builder().header("@0").foreground(CYAN).width(6).build(),
-                        Table.Column.builder().header("operation").foreground(GREEN).width(20).build(),
-                        Table.Column.builder().header("operands").foreground(GREEN).width(15).build()
+                        Table.Column.builder().header("instruction").foreground(GREEN).width(20).build()
                 ))
                 .build();
     }
@@ -41,7 +41,7 @@ public class ProgramRunner {
             int currentInstructionPosition = programContext.getInstructionPosition();
             Instruction current = programContext.getProgram().getInstructions().get(currentInstructionPosition);
             log(programContext, current);
-            current.getOperation().execute(processContext, programContext, current.getOperands());
+            current.execute(processContext, programContext);
             programContext = processContext.getPrograms().peek();
             if (programContext == null) {
                 break;
@@ -64,15 +64,14 @@ public class ProgramRunner {
     }
 
     private void log(ProgramContext programContext, Instruction instruction) {
-        if (TABLE_LOGGING_ENABLED && !(instruction.getOperation() instanceof Operations.NoOp)) {
+        if (TABLE_LOGGING_ENABLED && !(instruction instanceof NOOP)) {
             table.row(programContext.getInstructionPosition(),
                     programContext.getStack().size(),
                     programContext.getStack().size() > 3 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 3)) : "",
                     programContext.getStack().size() > 2 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 2)) : "",
                     programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
                     programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
-                    instruction.getOperation().toString(),
-                    instruction.getOperands().toString());
+                    instruction.toString());
         }
     }
 

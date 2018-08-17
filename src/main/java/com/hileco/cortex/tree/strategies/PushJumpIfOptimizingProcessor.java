@@ -2,6 +2,8 @@ package com.hileco.cortex.tree.strategies;
 
 import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.instructions.jumps.JUMP_IF;
+import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.tree.ProgramNode;
 import com.hileco.cortex.tree.ProgramTree;
 import com.hileco.cortex.tree.ProgramTreeProcessor;
@@ -9,9 +11,7 @@ import lombok.Value;
 
 import java.math.BigInteger;
 
-import static com.hileco.cortex.instructions.Operations.JumpIf;
-import static com.hileco.cortex.instructions.Operations.Push;
-import static com.hileco.cortex.tree.stream.Filters.operation;
+import static com.hileco.cortex.tree.stream.Filters.instruction;
 import static com.hileco.cortex.tree.stream.Filters.parameter;
 
 @Value
@@ -23,15 +23,15 @@ public class PushJumpIfOptimizingProcessor implements ProgramTreeProcessor {
     public void process(ProgramTree programTree) {
         programTree.getNodes()
                 .stream()
-                .filter(operation(JumpIf.class))
-                .filter(parameter(0, operation(Push.class)))
-                .filter(parameter(1, operation(Push.class)))
+                .filter(instruction(JUMP_IF.class))
+                .filter(parameter(0, instruction(PUSH.class)))
+                .filter(parameter(1, instruction(PUSH.class)))
                 .forEach(programNode -> {
                     ProgramNode parameterDestinationNode = programNode.getParameters().get(0);
                     ProgramNode parameterConditionNode = programNode.getParameters().get(1);
-                    Push.Operands pushOperands = (Push.Operands) parameterConditionNode.getInstruction().getOperands();
+                    PUSH push = (PUSH) parameterConditionNode.getInstruction();
                     ProgramBuilder builder = programBuilderFactory.builder();
-                    if (new BigInteger(pushOperands.bytes).compareTo(BigInteger.ZERO) > 0) {
+                    if (new BigInteger(push.getBytes()).compareTo(BigInteger.ZERO) > 0) {
                         // TODO: Detatch the NOOP parameter
                         parameterConditionNode.setInstruction(builder.NOOP().get());
                         programNode.setInstruction(builder.JUMP().get());

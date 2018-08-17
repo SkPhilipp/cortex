@@ -16,10 +16,10 @@ public class Filters {
         return node -> node != null && node.getType() == ProgramNodeType.INSTRUCTION;
     }
 
-    public static Predicate<ProgramNode> operation(Class<?>... types) {
+    public static Predicate<ProgramNode> instruction(Class<?>... types) {
         return instruction().and(node -> {
             for (Class<?> type : types) {
-                if (!type.isInstance(node.getInstruction().getOperation())) {
+                if (!type.isInstance(node.getInstruction())) {
                     return false;
                 }
             }

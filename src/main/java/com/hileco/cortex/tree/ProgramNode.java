@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class ProgramNode {
     private ProgramNodeType type;
-    private Instruction<?, ?> instruction;
+    private Instruction instruction;
     private Integer line;
     private List<ProgramNode> parameters;
 

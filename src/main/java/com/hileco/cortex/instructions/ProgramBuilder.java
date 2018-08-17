@@ -2,7 +2,33 @@ package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.data.ProgramStoreZone;
-import com.hileco.cortex.instructions.Operations.Call;
+import com.hileco.cortex.instructions.bits.BITWISE_AND;
+import com.hileco.cortex.instructions.bits.BITWISE_NOT;
+import com.hileco.cortex.instructions.bits.BITWISE_OR;
+import com.hileco.cortex.instructions.bits.BITWISE_XOR;
+import com.hileco.cortex.instructions.calls.CALL;
+import com.hileco.cortex.instructions.calls.CALL_RETURN;
+import com.hileco.cortex.instructions.conditions.EQUALS;
+import com.hileco.cortex.instructions.conditions.GREATER_THAN;
+import com.hileco.cortex.instructions.conditions.IS_ZERO;
+import com.hileco.cortex.instructions.conditions.LESS_THAN;
+import com.hileco.cortex.instructions.debug.NOOP;
+import com.hileco.cortex.instructions.io.LOAD;
+import com.hileco.cortex.instructions.io.SAVE;
+import com.hileco.cortex.instructions.jumps.EXIT;
+import com.hileco.cortex.instructions.jumps.JUMP;
+import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
+import com.hileco.cortex.instructions.jumps.JUMP_IF;
+import com.hileco.cortex.instructions.math.ADD;
+import com.hileco.cortex.instructions.math.DIVIDE;
+import com.hileco.cortex.instructions.math.HASH;
+import com.hileco.cortex.instructions.math.MODULO;
+import com.hileco.cortex.instructions.math.MULTIPLY;
+import com.hileco.cortex.instructions.math.SUBTRACT;
+import com.hileco.cortex.instructions.stack.DUPLICATE;
+import com.hileco.cortex.instructions.stack.POP;
+import com.hileco.cortex.instructions.stack.PUSH;
+import com.hileco.cortex.instructions.stack.SWAP;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -14,34 +40,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.hileco.cortex.instructions.Operations.Add;
-import static com.hileco.cortex.instructions.Operations.BitwiseAnd;
-import static com.hileco.cortex.instructions.Operations.BitwiseNot;
-import static com.hileco.cortex.instructions.Operations.BitwiseOr;
-import static com.hileco.cortex.instructions.Operations.BitwiseXor;
-import static com.hileco.cortex.instructions.Operations.CallReturn;
-import static com.hileco.cortex.instructions.Operations.Divide;
-import static com.hileco.cortex.instructions.Operations.Duplicate;
-import static com.hileco.cortex.instructions.Operations.Equals;
-import static com.hileco.cortex.instructions.Operations.Exit;
-import static com.hileco.cortex.instructions.Operations.GreaterThan;
-import static com.hileco.cortex.instructions.Operations.Hash;
-import static com.hileco.cortex.instructions.Operations.IsZero;
-import static com.hileco.cortex.instructions.Operations.Jump;
-import static com.hileco.cortex.instructions.Operations.JumpDestination;
-import static com.hileco.cortex.instructions.Operations.JumpIf;
-import static com.hileco.cortex.instructions.Operations.LessThan;
-import static com.hileco.cortex.instructions.Operations.Load;
-import static com.hileco.cortex.instructions.Operations.Modulo;
-import static com.hileco.cortex.instructions.Operations.Multiply;
-import static com.hileco.cortex.instructions.Operations.NO_DATA;
-import static com.hileco.cortex.instructions.Operations.NoOp;
-import static com.hileco.cortex.instructions.Operations.Pop;
-import static com.hileco.cortex.instructions.Operations.Push;
-import static com.hileco.cortex.instructions.Operations.Save;
-import static com.hileco.cortex.instructions.Operations.Subtract;
-import static com.hileco.cortex.instructions.Operations.Swap;
-
 public class ProgramBuilder {
     private List<Supplier<Instruction>> instructions;
     private Map<String, Integer> labelAddresses;
@@ -51,138 +49,89 @@ public class ProgramBuilder {
         labelAddresses = new HashMap<>();
     }
 
-    public Supplier<Instruction> PUSH_LABEL(String name) {
-        Supplier<Instruction> supplier = () -> {
-            Push.Operands data = new Push.Operands();
-            Integer address = labelAddresses.get(name);
-            data.bytes = BigInteger.valueOf(address).toByteArray();
-            return new Instruction<>(new Push(), data);
-        };
+    private Supplier<Instruction> register(Supplier<Instruction> supplier) {
         instructions.add(supplier);
         return supplier;
+    }
+
+    public Supplier<Instruction> PUSH_LABEL(String name) {
+        return register(() -> new PUSH(BigInteger.valueOf(labelAddresses.get(name)).toByteArray()));
     }
 
     public Supplier<Instruction> PUSH(byte[] bytes) {
-        Push.Operands data = new Push.Operands();
-        data.bytes = bytes;
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Push(), data);
-        instructions.add(supplier);
-        return supplier;
+        return register(() -> new PUSH(bytes));
     }
 
     public Supplier<Instruction> POP() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Pop(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(POP::new);
     }
 
     public Supplier<Instruction> SWAP(int topOffsetLeft, int topOffsetRight) {
-        Swap.Operands data = new Swap.Operands();
-        data.topOffsetLeft = topOffsetLeft;
-        data.topOffsetRight = topOffsetRight;
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Swap(), data);
-        instructions.add(supplier);
-        return supplier;
+        return register(() -> new SWAP(topOffsetLeft, topOffsetRight));
     }
 
     public Supplier<Instruction> DUPLICATE(int topOffset) {
-        Duplicate.Operands data = new Duplicate.Operands();
-        data.topOffset = topOffset;
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Duplicate(), data);
-        instructions.add(supplier);
-        return supplier;
+        return register(() -> new DUPLICATE(topOffset));
     }
 
     public Supplier<Instruction> EQUALS() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Equals(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(EQUALS::new);
     }
 
     public Supplier<Instruction> GREATER_THAN() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new GreaterThan(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(GREATER_THAN::new);
     }
 
     public Supplier<Instruction> LESS_THAN() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new LessThan(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(LESS_THAN::new);
     }
 
     public Supplier<Instruction> IS_ZERO() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new IsZero(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(IS_ZERO::new);
     }
 
     public Supplier<Instruction> BITWISE_OR() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseOr(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(BITWISE_OR::new);
     }
 
     public Supplier<Instruction> BITWISE_XOR() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseXor(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(BITWISE_XOR::new);
     }
 
     public Supplier<Instruction> BITWISE_AND() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseAnd(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(BITWISE_AND::new);
     }
 
     public Supplier<Instruction> BITWISE_NOT() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseNot(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(BITWISE_NOT::new);
     }
 
     public Supplier<Instruction> ADD() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Add(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(ADD::new);
     }
 
     public Supplier<Instruction> SUBTRACT() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Subtract(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(SUBTRACT::new);
     }
 
     public Supplier<Instruction> MULTIPLY() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Multiply(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(MULTIPLY::new);
     }
 
     public Supplier<Instruction> DIVIDE() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Divide(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(DIVIDE::new);
     }
 
     public Supplier<Instruction> MODULO() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Modulo(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(MODULO::new);
     }
 
     public Supplier<Instruction> HASH(String hashMethod) {
-        Hash.Operands data = new Hash.Operands();
-        data.hashMethod = hashMethod;
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Hash(), data);
-        instructions.add(supplier);
-        return supplier;
+        return register(() -> new HASH(hashMethod));
     }
 
     public Supplier<Instruction> JUMP() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Jump(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(JUMP::new);
     }
 
     public Supplier<Instruction> JUMP_DESTINATION_WITH_LABEL(String name) {
@@ -190,61 +139,39 @@ public class ProgramBuilder {
             throw new IllegalArgumentException(String.format("Name %s is already taken", name));
         }
         labelAddresses.put(name, instructions.size());
-        Supplier<Instruction> supplier = () -> new Instruction<>(new JumpDestination(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(JUMP_DESTINATION::new);
     }
 
     public Supplier<Instruction> JUMP_DESTINATION() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new JumpDestination(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(JUMP_DESTINATION::new);
     }
 
     public Supplier<Instruction> NOOP() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new NoOp(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(NOOP::new);
     }
 
     public Supplier<Instruction> JUMP_IF() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new JumpIf(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(JUMP_IF::new);
     }
 
     public Supplier<Instruction> EXIT() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Exit(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(EXIT::new);
     }
 
     public Supplier<Instruction> LOAD(ProgramStoreZone programStoreZone) {
-        Load.Operands data = new Load.Operands();
-        data.programStoreZone = programStoreZone;
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Load(), data);
-        instructions.add(supplier);
-        return supplier;
+        return register(() -> new LOAD(programStoreZone));
     }
 
     public Supplier<Instruction> SAVE(ProgramStoreZone programStoreZone) {
-        Save.Operands data = new Save.Operands();
-        data.programStoreZone = programStoreZone;
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Save(), data);
-        instructions.add(supplier);
-        return supplier;
+        return register(() -> new SAVE(programStoreZone));
     }
 
     public Supplier<Instruction> CALL() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new Call(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(CALL::new);
     }
 
     public Supplier<Instruction> CALL_RETURN() {
-        Supplier<Instruction> supplier = () -> new Instruction<>(new CallReturn(), NO_DATA);
-        instructions.add(supplier);
-        return supplier;
+        return register(CALL_RETURN::new);
     }
 
     public void CONSTRUCT_INFINITE_LOOP(Consumer<ProgramBuilder> loopBody) {
@@ -295,7 +222,7 @@ public class ProgramBuilder {
     }
 
     public Program build() {
-        return build(null);
+        return build(BigInteger.ZERO);
     }
 
     public Program build(BigInteger address) {

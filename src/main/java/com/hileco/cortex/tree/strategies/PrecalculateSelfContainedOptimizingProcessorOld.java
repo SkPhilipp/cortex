@@ -6,12 +6,11 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.instructions.Operations;
-import com.hileco.cortex.instructions.Operations.Operation;
 import com.hileco.cortex.instructions.ProgramBuilder;
 import com.hileco.cortex.instructions.ProgramBuilderFactory;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
+import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.tree.ProgramTree;
 import com.hileco.cortex.tree.ProgramTreeProcessor;
 import javafx.util.Pair;
@@ -35,11 +34,9 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
      * @return The boolean result along with the amount of stack elements added(>0) or removed(<0).
      */
     private Pair<Boolean, Integer> staysWithinStack(Instruction instruction, int stackSize) {
-        Object operands = instruction.getOperands();
-        Operation operation = instruction.getOperation();
-        List<Integer> stackTakes = operation.getStackTakes(operands);
-        List<Integer> stackAdds = operation.getStackAdds(operands);
-        List<ProgramZone> instructionModifiers = operation.getInstructionModifiers(operands);
+        List<Integer> stackTakes = instruction.getStackTakes();
+        List<Integer> stackAdds = instruction.getStackAdds();
+        List<ProgramZone> instructionModifiers = instruction.getInstructionModifiers();
         return new Pair<>(
                 Stream.concat(stackTakes.stream(), stackAdds.stream()).noneMatch(position -> position + 1 > stackSize) && ALLOWED_ZONES.containsAll(instructionModifiers),
                 stackAdds.size() - stackTakes.size()
@@ -79,7 +76,7 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
         int stackSize = 0;
         for (Instruction instruction : instructions) {
             Pair<Boolean, Integer> staysWithinStack = staysWithinStack(instruction, stackSize);
-            if (staysWithinStack.getKey() && !(instruction.getOperation() instanceof Operations.JumpDestination)) {
+            if (staysWithinStack.getKey() && !(instruction instanceof JUMP_DESTINATION)) {
                 stackSize += staysWithinStack.getValue();
                 optimizable.add(instruction);
             } else {

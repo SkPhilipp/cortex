@@ -2,15 +2,15 @@ package com.hileco.cortex.tree.strategies;
 
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.instructions.Operations;
+import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
+import com.hileco.cortex.instructions.stack.DUPLICATE;
+import com.hileco.cortex.instructions.stack.SWAP;
 import com.hileco.cortex.tree.ProgramNode;
 import com.hileco.cortex.tree.ProgramTree;
 import com.hileco.cortex.tree.ProgramTreeProcessor;
 
 import java.util.List;
 
-import static com.hileco.cortex.instructions.Operations.Duplicate;
-import static com.hileco.cortex.instructions.Operations.Swap;
 import static com.hileco.cortex.tree.ProgramNodeType.INSTRUCTION;
 import static com.hileco.cortex.tree.ProgramNodeType.UNKNOWN;
 
@@ -21,14 +21,14 @@ public class ParameterProcessor implements ProgramTreeProcessor {
         List<ProgramNode> programNodes = programTree.getNodes();
         for (int node = 0; node < programNodes.size(); node++) {
             ProgramNode programNode = programNodes.get(node);
-            Instruction<?, ?> instruction = programNode.getInstruction();
+            Instruction instruction = programNode.getInstruction();
             if (programNode.getType() != INSTRUCTION
-            || instruction.getOperation() instanceof Operations.JumpDestination
-            || instruction.getOperation() instanceof Swap) {
+            || instruction instanceof JUMP_DESTINATION
+            || instruction instanceof SWAP) {
                 stack.clear();
                 continue;
             }
-            if (instruction.getOperation() instanceof Duplicate) {
+            if (instruction instanceof DUPLICATE) {
                 stack.clear();
                 stack.push(programNode);
                 continue;
