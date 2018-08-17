@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hileco.cortex.instructions.OperationsTest" tests="27" skipped="0" failures="0" errors="0" timestamp="2018-08-04T13:38:26" hostname="PHILIPP-PC" time="0.039">
+  <properties/>
+  <testcase name="runJumpDestination" classname="com.hileco.cortex.instructions.OperationsTest" time="0.001"/>
+  <testcase name="runDivide" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runEquals" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runIsZero" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runJumpIf" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runModulo" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runAdd" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runPop" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runMultiply" classname="com.hileco.cortex.instructions.OperationsTest" time="0.001"/>
+  <testcase name="runHashUnsupported" classname="com.hileco.cortex.instructions.OperationsTest" time="0.027"/>
+  <testcase name="runBitwiseAnd" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runBitwiseNot" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runBitwiseXor" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runBitwiseOr" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runLessThan" classname="com.hileco.cortex.instructions.OperationsTest" time="0.001"/>
+  <testcase name="runMultiplyOverflowing" classname="com.hileco.cortex.instructions.OperationsTest" time="0.002"/>
+  <testcase name="runDuplicate" classname="com.hileco.cortex.instructions.OperationsTest" time="0.001"/>
+  <testcase name="runSubtract" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runAddOverflowing" classname="com.hileco.cortex.instructions.OperationsTest" time="0.001"/>
+  <testcase name="runHashSha512" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runExit" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runJump" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runLoad" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runPush" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runSave" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runSwap" classname="com.hileco.cortex.instructions.OperationsTest" time="0.0"/>
+  <testcase name="runGreaterThan" classname="com.hileco.cortex.instructions.OperationsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

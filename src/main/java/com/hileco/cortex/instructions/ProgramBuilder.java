@@ -51,142 +51,200 @@ public class ProgramBuilder {
         labelAddresses = new HashMap<>();
     }
 
-    public void PUSH_LABEL(String name) {
-        instructions.add(() -> {
+    public Supplier<Instruction> PUSH_LABEL(String name) {
+        Supplier<Instruction> supplier = () -> {
             Push.Operands data = new Push.Operands();
             Integer address = labelAddresses.get(name);
             data.bytes = BigInteger.valueOf(address).toByteArray();
             return new Instruction<>(new Push(), data);
-        });
+        };
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void PUSH(byte[] bytes) {
+    public Supplier<Instruction> PUSH(byte[] bytes) {
         Push.Operands data = new Push.Operands();
         data.bytes = bytes;
-        instructions.add(() -> new Instruction<>(new Push(), data));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Push(), data);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void POP() {
-        instructions.add(() -> new Instruction<>(new Pop(), NO_DATA));
+    public Supplier<Instruction> POP() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Pop(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void SWAP(int topOffsetLeft, int topOffsetRight) {
+    public Supplier<Instruction> SWAP(int topOffsetLeft, int topOffsetRight) {
         Swap.Operands data = new Swap.Operands();
         data.topOffsetLeft = topOffsetLeft;
         data.topOffsetRight = topOffsetRight;
-        instructions.add(() -> new Instruction<>(new Swap(), data));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Swap(), data);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void DUPLICATE(int topOffset) {
+    public Supplier<Instruction> DUPLICATE(int topOffset) {
         Duplicate.Operands data = new Duplicate.Operands();
         data.topOffset = topOffset;
-        instructions.add(() -> new Instruction<>(new Duplicate(), data));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Duplicate(), data);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void EQUALS() {
-        instructions.add(() -> new Instruction<>(new Equals(), NO_DATA));
+    public Supplier<Instruction> EQUALS() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Equals(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void GREATER_THAN() {
-        instructions.add(() -> new Instruction<>(new GreaterThan(), NO_DATA));
+    public Supplier<Instruction> GREATER_THAN() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new GreaterThan(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void LESS_THAN() {
-        instructions.add(() -> new Instruction<>(new LessThan(), NO_DATA));
+    public Supplier<Instruction> LESS_THAN() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new LessThan(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void IS_ZERO() {
-        instructions.add(() -> new Instruction<>(new IsZero(), NO_DATA));
+    public Supplier<Instruction> IS_ZERO() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new IsZero(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void BITWISE_OR() {
-        instructions.add(() -> new Instruction<>(new BitwiseOr(), NO_DATA));
+    public Supplier<Instruction> BITWISE_OR() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseOr(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void BITWISE_XOR() {
-        instructions.add(() -> new Instruction<>(new BitwiseXor(), NO_DATA));
+    public Supplier<Instruction> BITWISE_XOR() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseXor(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void BITWISE_AND() {
-        instructions.add(() -> new Instruction<>(new BitwiseAnd(), NO_DATA));
+    public Supplier<Instruction> BITWISE_AND() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseAnd(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void BITWISE_NOT() {
-        instructions.add(() -> new Instruction<>(new BitwiseNot(), NO_DATA));
+    public Supplier<Instruction> BITWISE_NOT() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new BitwiseNot(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void ADD() {
-        instructions.add(() -> new Instruction<>(new Add(), NO_DATA));
+    public Supplier<Instruction> ADD() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Add(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void SUBTRACT() {
-        instructions.add(() -> new Instruction<>(new Subtract(), NO_DATA));
+    public Supplier<Instruction> SUBTRACT() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Subtract(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void MULTIPLY() {
-        instructions.add(() -> new Instruction<>(new Multiply(), NO_DATA));
+    public Supplier<Instruction> MULTIPLY() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Multiply(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void DIVIDE() {
-        instructions.add(() -> new Instruction<>(new Divide(), NO_DATA));
+    public Supplier<Instruction> DIVIDE() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Divide(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void MODULO() {
-        instructions.add(() -> new Instruction<>(new Modulo(), NO_DATA));
+    public Supplier<Instruction> MODULO() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Modulo(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void HASH(String hashMethod) {
+    public Supplier<Instruction> HASH(String hashMethod) {
         Hash.Operands data = new Hash.Operands();
         data.hashMethod = hashMethod;
-        instructions.add(() -> new Instruction<>(new Hash(), data));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Hash(), data);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void JUMP() {
-        instructions.add(() -> new Instruction<>(new Jump(), NO_DATA));
+    public Supplier<Instruction> JUMP() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Jump(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void JUMP_DESTINATION_WITH_LABEL(String name) {
+    public Supplier<Instruction> JUMP_DESTINATION_WITH_LABEL(String name) {
         if (labelAddresses.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Name %s is already taken", name));
         }
         labelAddresses.put(name, instructions.size());
-        instructions.add(() -> new Instruction<>(new JumpDestination(), NO_DATA));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new JumpDestination(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void JUMP_DESTINATION() {
-        instructions.add(() -> new Instruction<>(new JumpDestination(), NO_DATA));
+    public Supplier<Instruction> JUMP_DESTINATION() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new JumpDestination(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void NOOP() {
-        instructions.add(() -> new Instruction<>(new NoOp(), NO_DATA));
+    public Supplier<Instruction> NOOP() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new NoOp(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void JUMP_IF() {
-        instructions.add(() -> new Instruction<>(new JumpIf(), NO_DATA));
+    public Supplier<Instruction> JUMP_IF() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new JumpIf(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void EXIT() {
-        instructions.add(() -> new Instruction<>(new Exit(), NO_DATA));
+    public Supplier<Instruction> EXIT() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Exit(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void LOAD(ProgramStoreZone programStoreZone) {
+    public Supplier<Instruction> LOAD(ProgramStoreZone programStoreZone) {
         Load.Operands data = new Load.Operands();
         data.programStoreZone = programStoreZone;
-        instructions.add(() -> new Instruction<>(new Load(), data));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Load(), data);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void SAVE(ProgramStoreZone programStoreZone) {
+    public Supplier<Instruction> SAVE(ProgramStoreZone programStoreZone) {
         Save.Operands data = new Save.Operands();
         data.programStoreZone = programStoreZone;
-        instructions.add(() -> new Instruction<>(new Save(), data));
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Save(), data);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void CALL() {
-        instructions.add(() -> new Instruction<>(new Call(), NO_DATA));
+    public Supplier<Instruction> CALL() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new Call(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
-    public void CALL_RETURN() {
-        instructions.add(() -> new Instruction<>(new CallReturn(), NO_DATA));
+    public Supplier<Instruction> CALL_RETURN() {
+        Supplier<Instruction> supplier = () -> new Instruction<>(new CallReturn(), NO_DATA);
+        instructions.add(supplier);
+        return supplier;
     }
 
     public void CONSTRUCT_INFINITE_LOOP(Consumer<ProgramBuilder> loopBody) {

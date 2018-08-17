@@ -11,7 +11,6 @@ public class ProgramNode {
     private ProgramNodeType type;
     private Instruction<?, ?> instruction;
     private Integer line;
-    private Object value;
     private List<ProgramNode> parameters;
 
     public ProgramNode() {

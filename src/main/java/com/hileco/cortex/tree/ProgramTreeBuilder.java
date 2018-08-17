@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ProgramTreeBuilder {
 
-    private List<ProgramTreeBuildingStrategy> strategies;
+    private List<ProgramTreeProcessor> strategies;
 
-    public ProgramTreeBuilder(List<ProgramTreeBuildingStrategy> strategies) {
+    public ProgramTreeBuilder(List<ProgramTreeProcessor> strategies) {
         this.strategies = strategies;
     }
 
@@ -47,7 +47,7 @@ public class ProgramTreeBuilder {
             programNodes.add(programNode);
         }
         ProgramTree programTree = new ProgramTree(programNodes);
-        strategies.forEach(strategy -> strategy.expand(programTree));
+        strategies.forEach(strategy -> strategy.process(programTree));
         return programTree;
     }
 }

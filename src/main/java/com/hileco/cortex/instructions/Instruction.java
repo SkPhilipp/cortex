@@ -1,6 +1,7 @@
 package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.instructions.operations.Operation;
 import lombok.Value;
 
 import java.util.List;

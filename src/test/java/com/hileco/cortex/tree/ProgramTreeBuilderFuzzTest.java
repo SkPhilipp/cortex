@@ -4,17 +4,23 @@ import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.tree.strategies.IfBlockStrategy;
-import com.hileco.cortex.tree.strategies.JumpDestinationStrategy;
-import com.hileco.cortex.tree.strategies.LoopBlockStrategy;
-import com.hileco.cortex.tree.strategies.ParameterLineStrategy;
-import com.hileco.cortex.tree.strategies.ParameterStrategy;
-import com.hileco.cortex.tree.strategies.VariableStrategy;
+import com.hileco.cortex.instructions.ProgramBuilderFactory;
+import com.hileco.cortex.tree.strategies.IfBlockProcessor;
+import com.hileco.cortex.tree.strategies.JumpDestinationProcessor;
+import com.hileco.cortex.tree.strategies.LoadKnownProgramDataOptimizingProcessor;
+import com.hileco.cortex.tree.strategies.LoopBlockProcessor;
+import com.hileco.cortex.tree.strategies.ParameterLineProcessor;
+import com.hileco.cortex.tree.strategies.ParameterProcessor;
+import com.hileco.cortex.tree.strategies.PrecalculateSelfContainedOptimizingProcessor;
+import com.hileco.cortex.tree.strategies.PushJumpIfOptimizingProcessor;
+import com.hileco.cortex.tree.strategies.VariableProcessor;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,13 +29,18 @@ public class ProgramTreeBuilderFuzzTest {
 
     @Before
     public void setup() {
-        List<ProgramTreeBuildingStrategy> strategies = new ArrayList<>();
-        strategies.add(new JumpDestinationStrategy());
-        strategies.add(new ParameterStrategy());
-        strategies.add(new ParameterLineStrategy());
-        strategies.add(new VariableStrategy());
-        strategies.add(new IfBlockStrategy());
-        strategies.add(new LoopBlockStrategy());
+        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
+        List<ProgramTreeProcessor> strategies = new ArrayList<>();
+        strategies.add(new JumpDestinationProcessor());
+        strategies.add(new ParameterProcessor());
+        strategies.add(new ParameterLineProcessor());
+        strategies.add(new VariableProcessor());
+        strategies.add(new IfBlockProcessor());
+        strategies.add(new LoopBlockProcessor());
+
+        strategies.add(new LoadKnownProgramDataOptimizingProcessor(programBuilderFactory, new HashMap<>(), new HashSet<>()));
+        strategies.add(new PrecalculateSelfContainedOptimizingProcessor());
+        strategies.add(new PushJumpIfOptimizingProcessor(programBuilderFactory));
         programTreeBuilder = new ProgramTreeBuilder(strategies);
     }
 
