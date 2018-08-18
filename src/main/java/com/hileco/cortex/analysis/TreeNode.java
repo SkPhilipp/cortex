@@ -1,19 +1,23 @@
-package com.hileco.cortex.tree;
+package com.hileco.cortex.analysis;
 
 import com.hileco.cortex.instructions.Instruction;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-public class ProgramNode {
-    private ProgramNodeType type;
+@Getter
+public class TreeNode {
+    @Setter
+    private TreeNodeType type;
+    @Setter
     private Instruction instruction;
+    @Setter
     private Integer line;
-    private List<ProgramNode> parameters;
+    private List<TreeNode> parameters;
 
-    public ProgramNode() {
+    public TreeNode() {
         parameters = new ArrayList<>();
     }
 

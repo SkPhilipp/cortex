@@ -1,8 +1,8 @@
-package com.hileco.cortex.tree;
+package com.hileco.cortex.analysis;
 
-public enum ProgramNodeType {
+public enum TreeNodeType {
 
-    UNKNOWN((programNode, stringBuilder, offset) -> {
+    UNKNOWN((treeNode, stringBuilder, offset) -> {
         stringBuilder.append(" ?????? │");
         for (int i = 0; i < offset; i++) {
             stringBuilder.append(' ');
@@ -10,36 +10,35 @@ public enum ProgramNodeType {
         stringBuilder.append(' ');
         stringBuilder.append("????");
     }),
-    INSTRUCTION((programNode, stringBuilder, offset) -> {
-        stringBuilder.append(String.format(" %06d │", programNode.getLine()));
+    INSTRUCTION((treeNode, stringBuilder, offset) -> {
+        stringBuilder.append(String.format(" %06d │", treeNode.getLine()));
         for (int i = 0; i < offset; i++) {
             stringBuilder.append(' ');
         }
         stringBuilder.append(' ');
-        stringBuilder.append(programNode.getInstruction().toString().trim());
-        if (!programNode.getParameters().isEmpty()) {
+        stringBuilder.append(treeNode.getInstruction().toString().trim());
+        if (!treeNode.getParameters().isEmpty()) {
             stringBuilder.append(' ');
-            for (ProgramNode parameter : programNode.getParameters()) {
+            for (TreeNode parameter : treeNode.getParameters()) {
                 stringBuilder.append('\n');
                 parameter.getType().formatter.format(parameter, stringBuilder, offset + 2);
             }
         }
     });
 
-    @FunctionalInterface
     interface Formatter {
-        void format(ProgramNode programNode, StringBuilder stringBuilder, int offset);
+        void format(TreeNode treeNode, StringBuilder stringBuilder, int offset);
     }
 
     private Formatter formatter;
 
-    ProgramNodeType(Formatter formatter) {
+    TreeNodeType(Formatter formatter) {
         this.formatter = formatter;
     }
 
-    public String format(ProgramNode programNode) {
+    public String format(TreeNode treeNode) {
         StringBuilder stringBuilder = new StringBuilder();
-        formatter.format(programNode, stringBuilder, 0);
+        formatter.format(treeNode, stringBuilder, 0);
         return stringBuilder.toString();
     }
 }

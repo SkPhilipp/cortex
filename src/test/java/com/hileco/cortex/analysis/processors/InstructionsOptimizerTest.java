@@ -1,5 +1,6 @@
-package com.hileco.cortex.tree;
+package com.hileco.cortex.analysis.processors;
 
+@Deprecated
 public class InstructionsOptimizerTest {
 
 // TODO: Rewrite all this

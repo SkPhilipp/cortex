@@ -1,4 +1,4 @@
-package com.hileco.cortex.tree.strategies;
+package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
@@ -12,8 +12,6 @@ import com.hileco.cortex.instructions.ProgramRunner;
 import com.hileco.cortex.instructions.debug.NOOP;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.stack.PUSH;
-import com.hileco.cortex.tree.ProgramTree;
-import com.hileco.cortex.tree.ProgramTreeProcessor;
 import javafx.util.Pair;
 
 import java.math.BigInteger;
@@ -25,8 +23,8 @@ import java.util.stream.Stream;
 
 import static com.hileco.cortex.context.ProgramZone.STACK;
 
-@SuppressWarnings("unchecked")
-public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramTreeProcessor {
+@Deprecated
+public class LegacyKnownProcessor {
 
     private static final Set<ProgramZone> ALLOWED_ZONES = Collections.singleton(STACK);
 
@@ -91,8 +89,4 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
         instructions.addAll(result);
     }
 
-    @Override
-    public void process(ProgramTree programTree) {
-        // TODO: Implement
-    }
 }
