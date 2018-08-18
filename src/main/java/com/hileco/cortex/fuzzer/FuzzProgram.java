@@ -1,6 +1,11 @@
 package com.hileco.cortex.fuzzer;
 
 import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.instructions.conditions.EQUALS;
+import com.hileco.cortex.instructions.io.LOAD;
+import com.hileco.cortex.instructions.jumps.JUMP;
+import com.hileco.cortex.instructions.jumps.JUMP_IF;
+import com.hileco.cortex.instructions.stack.PUSH;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -14,32 +19,32 @@ public enum FuzzProgram implements Chanced, Consumer<ProgramGeneratorContext> {
      */
     FUNCTION_TABLE(12, context -> {
         context.forRandom(1, Constants.LIMIT_INITIAL_CALL_DATA_LOAD, index -> {
-            context.builder().PUSH(context.randomBetween(0, Constants.LIMIT_SIZE_CALL_DATA).toByteArray());
-            context.builder().LOAD(ProgramStoreZone.CALL_DATA);
+            context.currentBuilder().include(() -> new PUSH(context.randomBetween(0, Constants.LIMIT_SIZE_CALL_DATA).toByteArray()));
+            context.currentBuilder().include(() -> new LOAD(ProgramStoreZone.CALL_DATA));
         });
         List<BigInteger> functions = new ArrayList<>();
         context.forRandom(1, Constants.LIMIT_INITIAL_FUNCTIONS, i -> functions.add(context.random()));
         functions.forEach(address -> {
-            context.builder().PUSH(context.random().toByteArray());
-            context.builder().EQUALS();
-            context.builder().PUSH_LABEL(address.toString());
-            context.builder().JUMP_IF();
+            context.currentBuilder().include(() -> new PUSH(context.random().toByteArray()));
+            context.currentBuilder().include(EQUALS::new);
+            context.currentBuilder().PUSH_LABEL(address.toString());
+            context.currentBuilder().include(JUMP_IF::new);
         });
-        context.builder().PUSH_LABEL(Constants.PROGRAM_END_LABEL);
-        context.builder().JUMP();
+        context.currentBuilder().PUSH_LABEL(Constants.PROGRAM_END_LABEL);
+        context.currentBuilder().include(JUMP::new);
         functions.forEach(address -> {
-            context.builder().JUMP_DESTINATION_WITH_LABEL(address.toString());
+            context.currentBuilder().MARK_LABEL(address.toString());
             context.randomFuzzFunction().accept(context);
-            context.builder().PUSH_LABEL(Constants.PROGRAM_END_LABEL);
-            context.builder().JUMP();
+            context.currentBuilder().PUSH_LABEL(Constants.PROGRAM_END_LABEL);
+            context.currentBuilder().include(JUMP::new);
         });
-        context.builder().JUMP_DESTINATION_WITH_LABEL(Constants.PROGRAM_END_LABEL);
+        context.currentBuilder().MARK_LABEL(Constants.PROGRAM_END_LABEL);
     }),
 
     FUNCTION(1D, context -> {
         context.forRandom(1, Constants.LIMIT_INITIAL_CALL_DATA_LOAD, index -> {
-            context.builder().PUSH(context.randomBetween(0, Constants.LIMIT_SIZE_CALL_DATA).toByteArray());
-            context.builder().LOAD(ProgramStoreZone.CALL_DATA);
+            context.currentBuilder().include(() -> new PUSH(context.randomBetween(0, Constants.LIMIT_SIZE_CALL_DATA).toByteArray()));
+            context.currentBuilder().include(() -> new LOAD(ProgramStoreZone.CALL_DATA));
         });
         context.randomFuzzFunction().accept(context);
     });

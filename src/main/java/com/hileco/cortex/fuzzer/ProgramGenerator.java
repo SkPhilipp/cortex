@@ -2,7 +2,7 @@ package com.hileco.cortex.fuzzer;
 
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.layer.LayeredMap;
-import com.hileco.cortex.instructions.ProgramBuilder;
+import com.hileco.cortex.instructions.InstructionsBuilder;
 
 import java.math.BigInteger;
 
@@ -13,10 +13,11 @@ public class ProgramGenerator {
     public LayeredMap<BigInteger, Program> generate(long seed) {
         ProgramGeneratorContext context = new ProgramGeneratorContext(seed);
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS, i -> {
-            context.pushBuilder(new ProgramBuilder());
+            context.pushBuilder(new InstructionsBuilder());
             context.randomFuzzProgram().accept(context);
-            Program generated = context.builder().build(context.random());
-            context.atlas().put(generated.getAddress(), generated);
+            BigInteger address = context.random();
+            Program generated = new Program(address, context.currentBuilder().build());
+            context.atlas().put(address, generated);
             context.popBuilder();
         });
         return context.atlas();

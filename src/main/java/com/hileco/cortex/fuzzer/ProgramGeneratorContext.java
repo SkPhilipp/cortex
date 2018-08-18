@@ -3,7 +3,7 @@ package com.hileco.cortex.fuzzer;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.layer.LayeredMap;
 import com.hileco.cortex.context.layer.LayeredStack;
-import com.hileco.cortex.instructions.ProgramBuilder;
+import com.hileco.cortex.instructions.InstructionsBuilder;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class ProgramGeneratorContext {
-    private final LayeredStack<ProgramBuilder> programBuilders;
+    private final LayeredStack<InstructionsBuilder> instructionsBuilders;
     private final LayeredMap<BigInteger, Program> atlas;
     private final Random random;
     private final Supplier<FuzzProgram> randomFuzzProgramLayout;
@@ -21,7 +21,7 @@ public class ProgramGeneratorContext {
     private final Supplier<FuzzExpression> randomFuzzExpression;
 
     public ProgramGeneratorContext(long seed) {
-        programBuilders = new LayeredStack<>();
+        instructionsBuilders = new LayeredStack<>();
         atlas = new LayeredMap<>();
         random = new Random(seed);
         randomFuzzProgramLayout = of(FuzzProgram.values());
@@ -78,15 +78,15 @@ public class ProgramGeneratorContext {
         return randomFuzzExpression.get();
     }
 
-    public void pushBuilder(ProgramBuilder value) {
-        programBuilders.push(value);
+    public void pushBuilder(InstructionsBuilder value) {
+        instructionsBuilders.push(value);
     }
 
-    public ProgramBuilder popBuilder() {
-        return programBuilders.pop();
+    public InstructionsBuilder popBuilder() {
+        return instructionsBuilders.pop();
     }
 
-    public ProgramBuilder builder() {
-        return programBuilders.peek();
+    public InstructionsBuilder currentBuilder() {
+        return instructionsBuilders.peek();
     }
 }

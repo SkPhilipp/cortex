@@ -23,4 +23,8 @@ public class NOOP implements Instruction {
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.emptyList();
     }
+
+    public String toString() {
+        return "NOOP";
+    }
 }

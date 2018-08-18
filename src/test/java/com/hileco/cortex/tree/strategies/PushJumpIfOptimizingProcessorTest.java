@@ -1,7 +1,9 @@
 package com.hileco.cortex.tree.strategies;
 
-import com.hileco.cortex.context.Program;
-import com.hileco.cortex.instructions.ProgramBuilder;
+import com.hileco.cortex.instructions.debug.NOOP;
+import com.hileco.cortex.instructions.jumps.JUMP;
+import com.hileco.cortex.instructions.jumps.JUMP_IF;
+import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.tree.ProgramTree;
 import com.hileco.cortex.tree.ProgramTreeBuilder;
 import com.hileco.cortex.tree.ProgramTreeProcessor;
@@ -9,6 +11,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PushJumpIfOptimizingProcessorTest {
@@ -20,20 +23,17 @@ public class PushJumpIfOptimizingProcessorTest {
         strategies.add(new PushJumpIfOptimizingProcessor());
         ProgramTreeBuilder programTreeBuilder = new ProgramTreeBuilder(strategies);
 
-        ProgramBuilder builder = new ProgramBuilder();
-        builder.PUSH(BigInteger.ONE.toByteArray());
-        builder.PUSH(BigInteger.TEN.toByteArray());
-        builder.JUMP_IF();
-        Program program = builder.build();
-        ProgramTree programTree = programTreeBuilder.build(program.getInstructions());
+        ProgramTree programTree = programTreeBuilder.build(Arrays.asList(
+                new PUSH(BigInteger.ONE.toByteArray()),
+                new PUSH(BigInteger.TEN.toByteArray()),
+                new JUMP_IF()
+        ));
 
-        ProgramBuilder expectedBuilder = new ProgramBuilder();
-        expectedBuilder.NOOP();
-        expectedBuilder.PUSH(BigInteger.TEN.toByteArray());
-        expectedBuilder.JUMP();
-
-        Program expectedProgram = expectedBuilder.build();
-        ProgramTree expectedProgramTree = programTreeBuilder.build(expectedProgram.getInstructions());
+        ProgramTree expectedProgramTree = programTreeBuilder.build(Arrays.asList(
+                new NOOP(),
+                new PUSH(BigInteger.TEN.toByteArray()),
+                new JUMP()
+        ));
 
         System.out.println(programTree);
         System.out.println(expectedProgramTree);

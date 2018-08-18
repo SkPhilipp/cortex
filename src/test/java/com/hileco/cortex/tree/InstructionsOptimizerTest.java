@@ -13,7 +13,7 @@ public class InstructionsOptimizerTest {
 //        LoadKnownProgramDataOptimizingProcessor strategy = new LoadKnownProgramDataOptimizingProcessor(knownData, new HashSet<>(Collections.singletonList(ProgramDataSource.FIXED)));
 //        instructionsOptimizer.addStrategy(strategy);
 //        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-//        ProgramBuilder builder = programBuilderFactory.builder();
+//        InstructionsBuilder builder = programBuilderFactory.builder();
 //        builder.PUSH(BigInteger.valueOf(1234L).toByteArray());
 //        builder.LOAD(ProgramStoreZone.MEMORY);
 //        Program program = builder.build();
@@ -28,7 +28,7 @@ public class InstructionsOptimizerTest {
 //        instructionsOptimizer.addStrategy(new PushJumpIfOptimizingProcessor());
 //        instructionsOptimizer.setPasses(2);
 //        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-//        ProgramBuilder builder = programBuilderFactory.builder();
+//        InstructionsBuilder builder = programBuilderFactory.builder();
 //        builder.PUSH(new byte[]{1});
 //        builder.PUSH(new byte[]{3});
 //        builder.JUMP_IF();
@@ -48,7 +48,7 @@ public class InstructionsOptimizerTest {
 //        InstructionsOptimizer instructionsOptimizer = new InstructionsOptimizer();
 //        instructionsOptimizer.addStrategy(new PrecalculateSelfContainedOptimizingProcessor());
 //        ProgramBuilderFactory programBuilderFactory = new ProgramBuilderFactory();
-//        ProgramBuilder builder = programBuilderFactory.builder();
+//        InstructionsBuilder builder = programBuilderFactory.builder();
 //        builder.PUSH(new byte[]{12});
 //        builder.PUSH(new byte[]{12});
 //        builder.EQUALS();

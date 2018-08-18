@@ -6,14 +6,17 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.instructions.ProgramBuilder;
+import com.hileco.cortex.instructions.InstructionsBuilder;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
+import com.hileco.cortex.instructions.debug.NOOP;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
+import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.tree.ProgramTree;
 import com.hileco.cortex.tree.ProgramTreeProcessor;
 import javafx.util.Pair;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,9 +49,7 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
      * Rewrites a list of optimizable instructions into a simplified equivalent.
      */
     private List<Instruction> rewrite(List<Instruction> optimizable) {
-        ProgramBuilder optimizableBuilder = new ProgramBuilder();
-        optimizableBuilder.include(optimizable);
-        Program program = optimizableBuilder.build();
+        Program program = new Program(BigInteger.ZERO, optimizable);
         ProgramContext programContext = new ProgramContext(program);
         ProcessContext processContext = new ProcessContext(programContext);
         ProgramRunner programRunner = new ProgramRunner(processContext);
@@ -58,15 +59,15 @@ public class PrecalculateSelfContainedOptimizingProcessorOld implements ProgramT
             throw new IllegalStateException("Unknown cause for ProgramException", e);
         }
         LayeredStack<byte[]> stack = programContext.getStack();
-        ProgramBuilder builder = new ProgramBuilder();
+        InstructionsBuilder builder = new InstructionsBuilder();
         for (byte[] bytes : stack) {
-            builder.PUSH(bytes);
+            builder.include(() -> new PUSH(bytes));
         }
         // TODO: Preserve the original JUMP_DESTINATIONS before adding NOOP padding, this must account for stack size at all points
-        for (int currentSize = builder.currentSize(); currentSize < optimizable.size(); currentSize++) {
-            builder.NOOP();
+        for (int currentSize = builder.size(); currentSize < optimizable.size(); currentSize++) {
+            builder.include(NOOP::new);
         }
-        return builder.build().getInstructions();
+        return builder.build();
     }
 
     public void optimize(List<Instruction> instructions) {
