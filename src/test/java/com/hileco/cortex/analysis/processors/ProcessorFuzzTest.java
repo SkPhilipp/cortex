@@ -60,7 +60,7 @@ public class ProcessorFuzzTest {
             for (BigInteger address : generatedOptimized.keySet()) {
                 Program program = generatedOptimized.get(address);
                 List<Instruction> instructions = program.getInstructions();
-                List<Instruction> optimizedInstructions = treeBuilder.build(instructions).getInstructions();
+                List<Instruction> optimizedInstructions = treeBuilder.build(instructions).toInstructions();
                 generatedOptimized.put(program.getAddress(), new Program(program.getAddress(), optimizedInstructions));
             }
             ProgramContext callerContext = executeAll(generated);
@@ -117,10 +117,5 @@ public class ProcessorFuzzTest {
     @Test
     public void fuzzTestKnownProcessor() {
         fuzzTestProcessor(new KnownProcessor());
-    }
-
-    @Test
-    public void fuzzTestNoopProcessor() {
-        fuzzTestProcessor(new NoopProcessor());
     }
 }

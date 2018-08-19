@@ -2,9 +2,11 @@ package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.analysis.Tree;
 import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.instructions.debug.NOOP;
 import com.hileco.cortex.instructions.jumps.JUMP;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
 import com.hileco.cortex.instructions.stack.PUSH;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -29,12 +31,11 @@ public class KnownJumpIfProcessorTest {
         ));
 
         Tree expected = treeBuilder.build(Arrays.asList(
+                new NOOP(),
                 new PUSH(BigInteger.TEN.toByteArray()),
                 new JUMP()
-          ));
+        ));
 
-        // TODO: Perform assertions
-        System.out.println(processed);
-        System.out.println(expected);
+        Assert.assertEquals(expected.toInstructions(), processed.toInstructions());
     }
 }

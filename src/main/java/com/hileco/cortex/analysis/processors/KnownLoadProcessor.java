@@ -14,28 +14,24 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import static com.hileco.cortex.analysis.Predicates.instruction;
-import static com.hileco.cortex.analysis.Predicates.parameter;
-import static com.hileco.cortex.analysis.Predicates.type;
-
 @Value
 public class KnownLoadProcessor implements Processor {
     private final Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData;
     private final Set<ProgramDataSource> knownSources;
 
     public void process(Tree tree) {
+        // TODO: Parameters could also be LOAD.
         tree.getTreeBlocks().forEach(treeBlock -> treeBlock.getTreeNodes().stream()
-                .filter(instruction(type(LOAD.class)))
-                .filter(parameter(0, instruction(type(PUSH.class))))
+                .filter(treeNode -> treeNode.isInstruction(LOAD.class))
+                .filter(treeNode -> treeNode.hasParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
                 .forEach(treeNode -> {
-                    LOAD load = (LOAD) treeNode.getInstruction();
-                    PUSH push = (PUSH) treeNode.getParameters().get(0).getInstruction();
+                    LOAD load = (LOAD) treeNode.getInstruction().get();
+                    PUSH push = (PUSH) treeNode.getParameters().get(0).getInstruction().get();
                     BigInteger address = new BigInteger(push.getBytes());
                     ProgramData programData = knownData.getOrDefault(load.getProgramStoreZone(), Collections.emptyMap()).get(address);
                     if (programData != null && knownSources.containsAll(programData.getSources())) {
-                        // TODO: Replace the instructions within the block and tree as well...
-                        treeNode.setInstruction(new NOOP());
-                        treeNode.setInstruction(new PUSH(programData.getContent()));
+                        treeNode.getInstruction().set(new NOOP());
+                        treeNode.getInstruction().set(new PUSH(programData.getContent()));
                     }
                 }));
     }

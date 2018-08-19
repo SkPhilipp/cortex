@@ -4,10 +4,12 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
+import lombok.Value;
 
 import java.util.Collections;
 import java.util.List;
 
+@Value
 public class NOOP implements Instruction {
     public void execute(ProcessContext process, ProgramContext program) {
     }

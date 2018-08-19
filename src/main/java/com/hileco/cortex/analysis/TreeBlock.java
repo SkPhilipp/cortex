@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 public class TreeBlock {
@@ -15,7 +16,7 @@ public class TreeBlock {
     private Set<Integer> potentialEntries;
     private Set<Integer> potentialExits;
     private List<TreeNode> treeNodes;
-    private List<Instruction> instructions;
+    private List<AtomicReference<Instruction>> instructions;
 
     public TreeBlock() {
         knownEntries = new HashSet<>();
@@ -26,24 +27,16 @@ public class TreeBlock {
         instructions = new ArrayList<>();
     }
 
-    public void include(int lineOffset, List<Instruction> instructions) {
+    public void include(int lineOffset, List<AtomicReference<Instruction>> instructions) {
         for (int i = 0; i < instructions.size(); i++) {
-            Instruction instruction = instructions.get(i);
+            AtomicReference<Instruction> instructionReference = instructions.get(i);
             TreeNode treeNode = new TreeNode();
             treeNode.setLine(lineOffset + i);
             treeNode.setType(TreeNodeType.INSTRUCTION);
-            treeNode.setInstruction(instruction);
+            treeNode.setInstruction(instructionReference);
             treeNodes.add(treeNode);
         }
         this.instructions.addAll(instructions);
-    }
-
-    public void remove(TreeNode treeNode) {
-        // TODO: Implement
-    }
-
-    public void replace(TreeNode original, TreeNode replacement) {
-        // TODO: Implement
     }
 
     void append(TreeBlock other) {
@@ -62,5 +55,13 @@ public class TreeBlock {
             stringBuilder.append('\n');
         }
         return stringBuilder.toString();
+    }
+
+    public int countEntries() {
+        return knownEntries.size() + potentialEntries.size();
+    }
+
+    public int countExits() {
+        return knownExits.size() + potentialExits.size();
     }
 }

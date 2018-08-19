@@ -20,7 +20,7 @@ public class ParameterProcessor implements Processor {
             List<TreeNode> treeNodes = treeBlock.getTreeNodes();
             for (int node = 0; node < treeNodes.size(); node++) {
                 TreeNode treeNode = treeNodes.get(node);
-                Instruction instruction = treeNode.getInstruction();
+                Instruction instruction = treeNode.getInstruction().get();
                 if (treeNode.getType() != INSTRUCTION
                         || instruction instanceof JUMP_DESTINATION
                         || instruction instanceof SWAP) {

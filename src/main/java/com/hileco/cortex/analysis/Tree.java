@@ -6,43 +6,45 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
-@Getter
 public class Tree {
+    @Getter
     private List<TreeBlock> treeBlocks;
-    private List<Instruction> instructions;
+    private List<AtomicReference<Instruction>> instructions;
 
     public Tree() {
         treeBlocks = new ArrayList<>();
         instructions = new ArrayList<>();
     }
 
-    public void includeAsTreeBlock(int line, List<Instruction> instructions) {
+    public void includeAsTreeBlock(int line, List<AtomicReference<Instruction>> instructions) {
         TreeBlock treeBlock = new TreeBlock();
         treeBlock.include(line, instructions);
         treeBlocks.add(treeBlock);
     }
 
     public void include(List<Instruction> instructions) {
-        List<Instruction> blockInstructions = new ArrayList<>();
+        List<AtomicReference<Instruction>> blockInstructions = new ArrayList<>();
         int currentBlock = 0;
         int line = 0;
         while (line < instructions.size()) {
-            Instruction instruction = instructions.get(line);
-            if (instruction instanceof JUMP_DESTINATION) {
+            AtomicReference<Instruction> instructionReference = new AtomicReference<>(instructions.get(line));
+            if (instructionReference.get() instanceof JUMP_DESTINATION) {
                 if (blockInstructions.size() > 0) {
                     includeAsTreeBlock(currentBlock, blockInstructions);
                     currentBlock = line;
                 }
                 blockInstructions.clear();
             }
-            blockInstructions.add(instruction);
+            blockInstructions.add(instructionReference);
+            this.instructions.add(instructionReference);
             line++;
         }
         if (blockInstructions.size() > 0) {
             includeAsTreeBlock(currentBlock, blockInstructions);
         }
-        this.instructions.addAll(instructions);
     }
 
     private int indexOf(TreeBlock treeBlock) {
@@ -80,6 +82,12 @@ public class Tree {
     public void replace(TreeBlock original, TreeBlock replacement) {
         int index = indexOf(original);
         treeBlocks.set(index, replacement);
+    }
+
+    public List<Instruction> toInstructions() {
+        return instructions.stream()
+                .map(AtomicReference::get)
+                .collect(Collectors.toList());
     }
 
     public String toString() {
