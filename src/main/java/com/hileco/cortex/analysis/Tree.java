@@ -82,14 +82,14 @@ public class Tree {
         treeBlocks.set(index, replacement);
     }
 
-    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Tree Start:\n");
+        stringBuilder.append("        ┌───────────────────────────────────\n");
         for (TreeBlock treeBlock : treeBlocks) {
             stringBuilder.append(treeBlock);
+            stringBuilder.append("        │\n");
         }
-        stringBuilder.append("\nTree End.");
+        stringBuilder.append("        └───────────────────────────────────\n");
         return stringBuilder.toString();
     }
 }

@@ -15,7 +15,7 @@ abstract class JumpingInstruction implements Instruction {
             throw new ProgramException(program, JUMP_OUT_OF_BOUNDS);
         }
         List<Instruction> instructions = program.getProgram().getInstructions();
-        if (nextInstructionPosition > instructions.size()) {
+        if (nextInstructionPosition >= instructions.size()) {
             throw new ProgramException(program, JUMP_OUT_OF_BOUNDS);
         }
         Instruction instruction = instructions.get(nextInstructionPosition);

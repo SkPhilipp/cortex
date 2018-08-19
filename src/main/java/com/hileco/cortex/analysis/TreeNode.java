@@ -17,11 +17,17 @@ public class TreeNode {
     private Integer line;
     private List<TreeNode> parameters;
 
+    public TreeNode(Instruction instruction, Integer line, List<TreeNode> parameters) {
+        type = TreeNodeType.INSTRUCTION;
+        this.instruction = instruction;
+        this.line = line;
+        this.parameters = parameters;
+    }
+
     public TreeNode() {
         parameters = new ArrayList<>();
     }
 
-    @Override
     public String toString() {
         return type.format(this);
     }

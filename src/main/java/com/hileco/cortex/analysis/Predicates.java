@@ -44,21 +44,6 @@ public class Predicates {
         };
     }
 
-    public static Predicate<TreeNode> constraint(Predicate<TreeNode> predicate) {
-        // TODO: Implement
-        return t -> true;
-    }
-
-    public static Predicate<TreeNode> equalsToStatic() {
-        // TODO: Implement
-        return t -> true;
-    }
-
-    public static Predicate<TreeNode> hashOfUnknown() {
-        // TODO: Implement
-        return t -> true;
-    }
-
     public static Predicate<Instruction> type(Class<?>... classes) {
         return instruction -> Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(instruction));
     }

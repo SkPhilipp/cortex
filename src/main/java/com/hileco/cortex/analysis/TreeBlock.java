@@ -57,12 +57,10 @@ public class TreeBlock {
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("        ┌───────────────────────────────────\n");
         for (TreeNode treeNode : treeNodes) {
             stringBuilder.append(treeNode);
             stringBuilder.append('\n');
         }
-        stringBuilder.append("        └───────────────────────────────────\n");
         return stringBuilder.toString();
     }
 }
