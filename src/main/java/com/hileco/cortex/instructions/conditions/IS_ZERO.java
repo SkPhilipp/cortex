@@ -5,14 +5,12 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
-import lombok.Value;
 
 import java.util.Collections;
 import java.util.List;
 
 import static com.hileco.cortex.context.ProgramZone.STACK;
 
-@Value
 public class IS_ZERO implements Instruction {
     public void execute(ProcessContext process, ProgramContext program) {
         LayeredStack<byte[]> stack = program.getStack();
@@ -37,5 +35,10 @@ public class IS_ZERO implements Instruction {
 
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
+    }
+
+    @Override
+    public String toString() {
+        return "IS_ZERO";
     }
 }

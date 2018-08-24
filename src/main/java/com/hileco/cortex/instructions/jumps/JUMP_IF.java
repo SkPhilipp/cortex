@@ -5,7 +5,6 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.ProgramException;
-import lombok.Value;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -16,7 +15,6 @@ import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
 import static com.hileco.cortex.context.ProgramZone.STACK;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
-@Value
 public class JUMP_IF extends JumpingInstruction {
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();

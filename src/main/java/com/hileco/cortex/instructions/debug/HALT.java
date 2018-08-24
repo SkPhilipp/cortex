@@ -3,8 +3,8 @@ package com.hileco.cortex.instructions.debug;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.ProgramException;
 import lombok.Value;
 
 import java.util.Collections;
@@ -28,5 +28,10 @@ public class HALT implements Instruction {
 
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("HALT %s", reason);
     }
 }

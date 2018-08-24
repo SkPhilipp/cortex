@@ -1,12 +1,9 @@
 package com.hileco.cortex.instructions.conditions;
 
-import lombok.Value;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
-@Value
 public class GREATER_THAN extends ConditionInstruction {
     public boolean innerExecute(byte[] left, byte[] right) {
         BigInteger leftAsBigInteger = new BigInteger(left);

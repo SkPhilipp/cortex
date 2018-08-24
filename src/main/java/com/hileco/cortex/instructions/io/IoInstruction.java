@@ -5,6 +5,7 @@ import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public abstract class IoInstruction implements Instruction {
     private ProgramStoreZone programStoreZone;
 
