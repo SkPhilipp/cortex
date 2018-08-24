@@ -33,4 +33,16 @@ public class Program {
         }
         return address;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("        ┌───────────────────────────────────\n");
+        int size = instructions.size();
+        for (int i = 0; i < size; i++) {
+            stringBuilder.append(String.format(" %06d │ %s\n", i, instructions.get(i)));
+        }
+        stringBuilder.append("        └───────────────────────────────────\n");
+        return stringBuilder.toString();
+    }
 }
