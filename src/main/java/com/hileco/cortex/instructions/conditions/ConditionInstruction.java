@@ -5,8 +5,9 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
-import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.ProgramException;
+import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 import static com.hileco.cortex.context.ProgramZone.STACK;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
+@EqualsAndHashCode
 abstract class ConditionInstruction implements Instruction {
     static final byte[] TRUE = {1};
     static final byte[] FALSE = {0};

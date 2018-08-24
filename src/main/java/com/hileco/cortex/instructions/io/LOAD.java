@@ -6,6 +6,7 @@ import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.ProgramException;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
+@EqualsAndHashCode(callSuper = true)
 public class LOAD extends IoInstruction {
     public LOAD(ProgramStoreZone programStoreZone) {
         super(programStoreZone);

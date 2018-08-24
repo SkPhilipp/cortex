@@ -3,12 +3,14 @@ package com.hileco.cortex.instructions.jumps;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION;
 
+@EqualsAndHashCode
 abstract class JumpingInstruction implements Instruction {
     void performJump(ProgramContext program, int nextInstructionPosition) throws ProgramException {
         if (nextInstructionPosition < 0) {

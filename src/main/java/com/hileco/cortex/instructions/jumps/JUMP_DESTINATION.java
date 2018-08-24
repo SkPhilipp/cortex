@@ -4,10 +4,12 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
+import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
 import java.util.List;
 
+@EqualsAndHashCode
 public class JUMP_DESTINATION implements Instruction {
     public void execute(ProcessContext process, ProgramContext program) {
     }

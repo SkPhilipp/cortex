@@ -5,12 +5,14 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
+import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
 import java.util.List;
 
 import static com.hileco.cortex.context.ProgramZone.STACK;
 
+@EqualsAndHashCode
 public class IS_ZERO implements Instruction {
     public void execute(ProcessContext process, ProgramContext program) {
         LayeredStack<byte[]> stack = program.getStack();
