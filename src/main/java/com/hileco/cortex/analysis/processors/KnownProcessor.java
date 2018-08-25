@@ -5,14 +5,12 @@ import com.hileco.cortex.analysis.TreeNode;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
 import com.hileco.cortex.instructions.stack.PUSH;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class KnownProcessor implements Processor {
     @Override
@@ -31,10 +29,9 @@ public class KnownProcessor implements Processor {
                         throw new IllegalStateException("Unknown cause for ProgramException", e);
                     }
                     var stack = programContext.getStack();
-                    List<Instruction> instructions = new ArrayList<>();
-                    for (var bytes : stack) {
-                        instructions.add(new PUSH(bytes));
-                    }
+                    var instructions = stack.stream()
+                            .map(PUSH::new)
+                            .collect(Collectors.toList());
                     // TODO: Replace the entire treeNode...
                 }));
     }

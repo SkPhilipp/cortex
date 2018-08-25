@@ -9,7 +9,6 @@ import com.hileco.cortex.instructions.stack.PUSH;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public enum FuzzProgram implements Chanced, Consumer<ProgramGeneratorContext> {
@@ -22,7 +21,7 @@ public enum FuzzProgram implements Chanced, Consumer<ProgramGeneratorContext> {
             context.currentBuilder().include(() -> new PUSH(context.randomBetween(0, Constants.LIMIT_SIZE_CALL_DATA).toByteArray()));
             context.currentBuilder().include(() -> new LOAD(ProgramStoreZone.CALL_DATA));
         });
-        List<BigInteger> functions = new ArrayList<>();
+        var functions = new ArrayList<BigInteger>();
         context.forRandom(1, Constants.LIMIT_INITIAL_FUNCTIONS, i -> functions.add(context.random()));
         functions.forEach(address -> {
             context.currentBuilder().include(() -> new PUSH(context.random().toByteArray()));

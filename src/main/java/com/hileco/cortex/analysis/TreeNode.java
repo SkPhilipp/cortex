@@ -1,9 +1,9 @@
 package com.hileco.cortex.analysis;
 
 import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.context.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.stack.SWAP;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 

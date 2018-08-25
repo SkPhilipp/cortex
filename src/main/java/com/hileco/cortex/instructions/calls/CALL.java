@@ -41,7 +41,7 @@ public class CALL implements Instruction {
             throw new ProgramException(program, CALL_RECIPIENT_MISSING);
         }
         var sourceAddress = program.getProgram().getAddress();
-        recipient.getTransfers().push(new Pair<BigInteger, BigInteger>(sourceAddress, valueTransferred));
+        recipient.getTransfers().push(new Pair<>(sourceAddress, valueTransferred));
         var newContext = new ProgramContext(recipient);
         var inputData = program.getMemory().read(inOffset.intValue(), inSize.intValue());
         newContext.getCallData().clear();

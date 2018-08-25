@@ -11,13 +11,12 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class KnownJumpIfProcessorTest {
 
     @Test
     public void testProcess() {
-        List<Processor> processors = new ArrayList<>();
+        var processors = new ArrayList<Processor>();
         processors.add(new ParameterProcessor());
         processors.add(new JumpTableProcessor());
         processors.add(new KnownJumpIfProcessor());
