@@ -20,15 +20,15 @@ public class ProcessContext {
     private int instructionLimit;
 
     public ProcessContext(ProgramContext... programContexts) {
-        programs = new LayeredStack<>();
+        this.programs = new LayeredStack<>();
         for (ProgramContext programContext : programContexts) {
-            programs.push(programContext);
+            this.programs.push(programContext);
         }
-        atlas = new LayeredMap<>();
-        stackLimit = Long.MAX_VALUE;
-        overflowLimit = NUMERICAL_LIMIT;
-        underflowLimit = NUMERICAL_LIMIT;
-        instructionsExecuted = 0;
-        instructionLimit = INSTRUCTION_LIMIT;
+        this.atlas = new LayeredMap<>();
+        this.stackLimit = Long.MAX_VALUE;
+        this.overflowLimit = NUMERICAL_LIMIT;
+        this.underflowLimit = NUMERICAL_LIMIT;
+        this.instructionsExecuted = 0;
+        this.instructionLimit = INSTRUCTION_LIMIT;
     }
 }

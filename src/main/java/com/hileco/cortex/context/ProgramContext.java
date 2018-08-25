@@ -21,14 +21,14 @@ public class ProgramContext {
     private LayeredBytes callData;
 
     public ProgramContext(Program program) {
-        instructionsExecuted = 0;
-        instructionPosition = 0;
-        instructionLimit = INSTRUCTION_LIMIT;
-        stack = new LayeredStack<>();
-        memory = new LayeredBytes();
-        callData = new LayeredBytes();
-        returnDataOffset = BigInteger.ZERO;
-        returnDataSize = BigInteger.ZERO;
+        this.instructionsExecuted = 0;
+        this.instructionPosition = 0;
+        this.instructionLimit = INSTRUCTION_LIMIT;
+        this.stack = new LayeredStack<>();
+        this.memory = new LayeredBytes();
+        this.callData = new LayeredBytes();
+        this.returnDataOffset = BigInteger.ZERO;
+        this.returnDataSize = BigInteger.ZERO;
         this.program = program;
     }
 }

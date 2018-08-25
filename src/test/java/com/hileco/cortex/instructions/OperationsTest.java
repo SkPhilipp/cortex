@@ -38,8 +38,8 @@ import java.util.function.BiConsumer;
 
 public class OperationsTest {
 
-    private <T extends Instruction> ProgramContext run(T instruction) throws ProgramException {
-        return run(instruction, (processContext, programContext) -> {
+    private <T extends Instruction> void run(T instruction) throws ProgramException {
+        this.run(instruction, (processContext, programContext) -> {
         });
     }
 
@@ -62,72 +62,72 @@ public class OperationsTest {
 
     @Test
     public void runPush() throws ProgramException {
-        run(new PUSH(new byte[]{127}));
+        this.run(new PUSH(new byte[]{127}));
     }
 
     @Test
     public void runPop() throws ProgramException {
-        run(new POP());
+        this.run(new POP());
     }
 
     @Test
     public void runSwap() throws ProgramException {
-        run(new SWAP(1, 2));
+        this.run(new SWAP(1, 2));
     }
 
     @Test
     public void runDuplicate() throws ProgramException {
-        run(new DUPLICATE(1));
+        this.run(new DUPLICATE(1));
     }
 
     @Test
     public void runEquals() throws ProgramException {
-        run(new EQUALS());
+        this.run(new EQUALS());
     }
 
     @Test
     public void runGreaterThan() throws ProgramException {
-        run(new GREATER_THAN());
+        this.run(new GREATER_THAN());
     }
 
     @Test
     public void runLessThan() throws ProgramException {
-        run(new LESS_THAN());
+        this.run(new LESS_THAN());
     }
 
     @Test
     public void runIsZero() throws ProgramException {
-        run(new IS_ZERO());
+        this.run(new IS_ZERO());
     }
 
     @Test
     public void runBitwiseOr() throws ProgramException {
-        run(new BITWISE_OR());
+        this.run(new BITWISE_OR());
     }
 
     @Test
     public void runBitwiseXor() throws ProgramException {
-        run(new BITWISE_XOR());
+        this.run(new BITWISE_XOR());
     }
 
     @Test
     public void runBitwiseAnd() throws ProgramException {
-        run(new BITWISE_AND());
+        this.run(new BITWISE_AND());
     }
 
     @Test
     public void runBitwiseNot() throws ProgramException {
-        run(new BITWISE_NOT());
+        this.run(new BITWISE_NOT());
     }
 
     @Test
     public void runAdd() throws ProgramException {
-        run(new ADD());
+        this.run(new ADD());
     }
 
     @Test
     public void runAddOverflowing() throws ProgramException {
-        ProgramContext result = run(new ADD(), (processContext, programContext) -> {
+        ProgramContext result = this.run(new ADD(), (processContext, programContext) -> {
             programContext.getStack().push(ProcessContext.NUMERICAL_LIMIT.toByteArray());
             programContext.getStack().push(BigInteger.TEN.toByteArray());
         });
@@ -136,17 +136,17 @@ public class OperationsTest {
 
     @Test
     public void runSubtract() throws ProgramException {
-        run(new SUBTRACT());
+        this.run(new SUBTRACT());
     }
 
     @Test
     public void runMultiply() throws ProgramException {
-        run(new MULTIPLY());
+        this.run(new MULTIPLY());
     }
 
     @Test
     public void runMultiplyOverflowing() throws ProgramException {
-        ProgramContext result = run(new MULTIPLY(), (processContext, programContext) -> {
+        ProgramContext result = this.run(new MULTIPLY(), (processContext, programContext) -> {
             programContext.getStack().push(ProcessContext.NUMERICAL_LIMIT.toByteArray());
             programContext.getStack().push(BigInteger.TEN.toByteArray());
         });
@@ -156,51 +156,51 @@ public class OperationsTest {
 
     @Test
     public void runDivide() throws ProgramException {
-        run(new DIVIDE());
+        this.run(new DIVIDE());
     }
 
     @Test
     public void runModulo() throws ProgramException {
-        run(new MODULO());
+        this.run(new MODULO());
     }
 
     @Test
     public void runHashSha512() throws ProgramException {
-        run(new HASH("SHA-512"));
+        this.run(new HASH("SHA-512"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void runHashUnsupported() throws ProgramException {
-        run(new HASH("Unsupported"));
+        this.run(new HASH("Unsupported"));
     }
 
     @Test(expected = ProgramException.class)
     public void runJump() throws ProgramException {
-        run(new JUMP());
+        this.run(new JUMP());
     }
 
     @Test
     public void runJumpDestination() throws ProgramException {
-        run(new JUMP_DESTINATION());
+        this.run(new JUMP_DESTINATION());
     }
 
     @Test(expected = ProgramException.class)
     public void runJumpIf() throws ProgramException {
-        run(new JUMP_IF());
+        this.run(new JUMP_IF());
     }
 
     @Test
     public void runExit() throws ProgramException {
-        run(new EXIT());
+        this.run(new EXIT());
     }
 
     @Test
     public void runLoad() throws ProgramException {
-        run(new LOAD(ProgramStoreZone.MEMORY));
+        this.run(new LOAD(ProgramStoreZone.MEMORY));
     }
 
     @Test
     public void runSave() throws ProgramException {
-        run(new SAVE(ProgramStoreZone.MEMORY));
+        this.run(new SAVE(ProgramStoreZone.MEMORY));
     }
 }

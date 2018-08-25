@@ -23,6 +23,7 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 public class CALL implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 6) {
@@ -50,18 +51,22 @@ public class CALL implements Instruction {
         process.getPrograms().push(newContext);
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Arrays.asList(0, 1, 2, 3, 4, 5);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
     }
 
+    @Override
     public String toString() {
         return "CALL";
     }

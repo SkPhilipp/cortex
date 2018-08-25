@@ -15,13 +15,14 @@ import java.math.BigInteger;
 import java.util.function.Consumer;
 
 public class KnownJumpIfProcessor implements Processor {
-    public void fully(TreeNode treeNode, Consumer<TreeNode> consumer) {
+    private void fully(TreeNode treeNode, Consumer<TreeNode> consumer) {
         consumer.accept(treeNode);
         for (TreeNode parameter : treeNode.getParameters()) {
-            fully(parameter, consumer);
+            this.fully(parameter, consumer);
         }
     }
 
+    @Override
     public void process(Tree tree) {
         tree.getTreeBlocks().forEach(treeBlock -> treeBlock.getTreeNodes().stream()
                 .filter(treeNode -> treeNode.isInstruction(JUMP_IF.class))
@@ -40,10 +41,10 @@ public class KnownJumpIfProcessor implements Processor {
                     }
                     byte[] result = programContext.getStack().peek();
                     if (new BigInteger(result).compareTo(BigInteger.ZERO) > 0) {
-                        fully(decidingNode, node -> node.getInstruction().set(new NOOP()));
+                        this.fully(decidingNode, node -> node.getInstruction().set(new NOOP()));
                         jumpNode.getInstruction().set(new JUMP());
                     } else {
-                        fully(jumpNode, node -> node.getInstruction().set(new NOOP()));
+                        this.fully(jumpNode, node -> node.getInstruction().set(new NOOP()));
                     }
                 }));
     }

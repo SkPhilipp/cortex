@@ -26,10 +26,6 @@ public enum TreeNodeType {
         }
     });
 
-    interface Formatter {
-        void format(TreeNode treeNode, StringBuilder stringBuilder, int offset);
-    }
-
     private Formatter formatter;
 
     TreeNodeType(Formatter formatter) {
@@ -38,7 +34,11 @@ public enum TreeNodeType {
 
     public String format(TreeNode treeNode) {
         StringBuilder stringBuilder = new StringBuilder();
-        formatter.format(treeNode, stringBuilder, 0);
+        this.formatter.format(treeNode, stringBuilder, 0);
         return stringBuilder.toString();
+    }
+
+    interface Formatter {
+        void format(TreeNode treeNode, StringBuilder stringBuilder, int offset);
     }
 }

@@ -8,12 +8,14 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 public class GREATER_THAN extends ConditionInstruction {
+    @Override
     public boolean innerExecute(byte[] left, byte[] right) {
         BigInteger leftAsBigInteger = new BigInteger(left);
         BigInteger rightAsBigInteger = new BigInteger(right);
         return leftAsBigInteger.compareTo(rightAsBigInteger) > 0;
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Arrays.asList(0, 1);
     }

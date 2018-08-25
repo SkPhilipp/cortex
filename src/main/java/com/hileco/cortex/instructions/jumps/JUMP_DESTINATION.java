@@ -11,9 +11,11 @@ import java.util.List;
 
 @EqualsAndHashCode
 public class JUMP_DESTINATION implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) {
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.emptyList();
     }
@@ -28,6 +30,7 @@ public class JUMP_DESTINATION implements Instruction {
         return Collections.emptyList();
     }
 
+    @Override
     public String toString() {
         return "JUMP_DESTINATION";
     }

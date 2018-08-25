@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 public class BITWISE_XOR extends BitInstruction {
+    @Override
     public byte innerExecute(byte left, byte right) {
         byte result = left;
         result ^= right;

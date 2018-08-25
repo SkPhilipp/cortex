@@ -2,7 +2,7 @@ package com.hileco.cortex.context.layer;
 
 import java.util.List;
 
-public interface StackApi<T, I extends StackApi<T, I>> extends List<T>{
+public interface StackApi<T, I extends StackApi<T, I>> extends List<T> {
 
     I copy();
 
@@ -10,6 +10,7 @@ public interface StackApi<T, I extends StackApi<T, I>> extends List<T>{
 
     T pop();
 
+    @Override
     T get(int index);
 
     void swap(int topOffsetLeft, int topOffsetRight);

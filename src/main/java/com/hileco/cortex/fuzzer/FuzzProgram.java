@@ -49,16 +49,8 @@ public enum FuzzProgram implements Chanced, Consumer<ProgramGeneratorContext> {
         context.randomFuzzFunction().accept(context);
     });
 
-    interface Constants {
-        int LIMIT_INITIAL_FUNCTIONS = 10;
-        int LIMIT_INITIAL_CALL_DATA_LOAD = 10;
-        int LIMIT_SIZE_CALL_DATA = 8192;
-        String PROGRAM_END_LABEL = "end";
-    }
-
-    private double chance;
     private final Consumer<ProgramGeneratorContext> implementation;
-
+    private double chance;
     FuzzProgram(double chance, Consumer<ProgramGeneratorContext> implementation) {
         this.chance = chance;
         this.implementation = implementation;
@@ -66,11 +58,18 @@ public enum FuzzProgram implements Chanced, Consumer<ProgramGeneratorContext> {
 
     @Override
     public double chance() {
-        return chance;
+        return this.chance;
     }
 
     @Override
     public void accept(ProgramGeneratorContext programGeneratorContext) {
-        implementation.accept(programGeneratorContext);
+        this.implementation.accept(programGeneratorContext);
+    }
+
+    interface Constants {
+        int LIMIT_INITIAL_FUNCTIONS = 10;
+        int LIMIT_INITIAL_CALL_DATA_LOAD = 10;
+        int LIMIT_SIZE_CALL_DATA = 8192;
+        String PROGRAM_END_LABEL = "end";
     }
 }

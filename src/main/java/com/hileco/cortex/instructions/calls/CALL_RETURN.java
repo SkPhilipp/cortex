@@ -21,6 +21,7 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 public class CALL_RETURN implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 2) {
@@ -40,18 +41,22 @@ public class CALL_RETURN implements Instruction {
         nextContext.getMemory().write(wOffset.intValue(), dataExpanded, wSize.intValue());
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Arrays.asList(0, 1);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
     }
 
+    @Override
     public String toString() {
         return "CALL_RETURN";
     }

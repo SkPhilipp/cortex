@@ -14,23 +14,12 @@ import java.util.stream.Collectors;
 @Value
 public class Table {
 
-    @Builder
-    @Value
-    public static class Column {
-        private final String header;
-        @Builder.Default
-        private final Color.Palette foreground = Color.Palette.DEFAULT;
-        @Builder.Default
-        private final Color.Palette background = Color.Palette.DEFAULT;
-        private final int width;
-    }
-
     private final List<Column> columns;
     @Builder.Default
     private List<List<String>> content = new ArrayList<>();
 
     public void row(Object... strings) {
-        content.add(Arrays
+        this.content.add(Arrays
                 .stream(strings)
                 .map(Objects::toString)
                 .collect(Collectors.toList()));
@@ -49,8 +38,7 @@ public class Table {
         return new String(chars);
     }
 
-
-    private String buildSeperator(char left, char middle, char right) {
+    private String buildSeparator(char left, char middle, char right) {
         StringBuilder entry = new StringBuilder();
         entry.append(Color.bg(Color.Palette.DEFAULT));
         entry.append(Color.fg(Color.Palette.DEFAULT));
@@ -73,10 +61,10 @@ public class Table {
         entry.append(Color.bg(Color.Palette.DEFAULT));
         entry.append(Color.fg(Color.Palette.DEFAULT));
         entry.append("│");
-        for (Column column : columns) {
+        for (Column column : this.columns) {
             entry.append(Color.bg(column.background));
             entry.append(Color.fg(column.foreground));
-            entry.append(toLength(column.header, column.width));
+            entry.append(this.toLength(column.header, column.width));
             entry.append(Color.bg(Color.Palette.DEFAULT));
             entry.append(Color.fg(Color.Palette.DEFAULT));
             entry.append("│");
@@ -89,12 +77,12 @@ public class Table {
         entry.append(Color.bg(Color.Palette.DEFAULT));
         entry.append(Color.fg(Color.Palette.DEFAULT));
         entry.append("│");
-        for (int i = 0; i < columns.size(); i++) {
+        for (int i = 0; i < this.columns.size(); i++) {
             String cell = i >= row.size() ? "" : row.get(i);
-            Column column = columns.get(i);
+            Column column = this.columns.get(i);
             entry.append(Color.bg(column.background));
             entry.append(Color.fg(column.foreground));
-            entry.append(toLength(cell, column.width));
+            entry.append(this.toLength(cell, column.width));
             entry.append(Color.bg(Color.Palette.DEFAULT));
             entry.append(Color.fg(Color.Palette.DEFAULT));
             entry.append("│");
@@ -104,20 +92,31 @@ public class Table {
 
     private List<String> toStrings() {
         final List<String> output = new ArrayList<>();
-        output.add(buildSeperator('┌', '┬', '┐'));
-        output.add(buildHeader());
-        output.add(buildSeperator('├', '┼', '┤'));
+        output.add(this.buildSeparator('┌', '┬', '┐'));
+        output.add(this.buildHeader());
+        output.add(this.buildSeparator('├', '┼', '┤'));
         for (List<String> row : this.content) {
-            output.add(buildRow(row));
+            output.add(this.buildRow(row));
         }
-        output.add(buildSeperator('└', '┴', '┘'));
+        output.add(this.buildSeparator('└', '┴', '┘'));
         return output;
     }
 
     public void write(PrintStream printStream) {
-        for (String string : toStrings()) {
+        for (String string : this.toStrings()) {
             printStream.println(string);
         }
         printStream.flush();
+    }
+
+    @Builder
+    @Value
+    public static class Column {
+        private final String header;
+        @Builder.Default
+        private final Color.Palette foreground = Color.Palette.DEFAULT;
+        @Builder.Default
+        private final Color.Palette background = Color.Palette.DEFAULT;
+        private final int width;
     }
 }

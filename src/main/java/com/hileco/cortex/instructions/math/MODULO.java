@@ -8,6 +8,7 @@ import java.math.BigInteger;
 
 @EqualsAndHashCode(callSuper = true)
 public class MODULO extends MathInstruction {
+    @Override
     public BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right) {
         return left.mod(right);
     }

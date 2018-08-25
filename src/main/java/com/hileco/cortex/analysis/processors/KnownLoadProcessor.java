@@ -19,6 +19,7 @@ public class KnownLoadProcessor implements Processor {
     private final Map<ProgramStoreZone, Map<BigInteger, ProgramData>> knownData;
     private final Set<ProgramDataSource> knownSources;
 
+    @Override
     public void process(Tree tree) {
         // TODO: Parameters could also be LOAD.
         tree.getTreeBlocks().forEach(treeBlock -> treeBlock.getTreeNodes().stream()
@@ -28,8 +29,8 @@ public class KnownLoadProcessor implements Processor {
                     LOAD load = (LOAD) treeNode.getInstruction().get();
                     PUSH push = (PUSH) treeNode.getParameters().get(0).getInstruction().get();
                     BigInteger address = new BigInteger(push.getBytes());
-                    ProgramData programData = knownData.getOrDefault(load.getProgramStoreZone(), Collections.emptyMap()).get(address);
-                    if (programData != null && knownSources.containsAll(programData.getSources())) {
+                    ProgramData programData = this.knownData.getOrDefault(load.getProgramStoreZone(), Collections.emptyMap()).get(address);
+                    if (programData != null && this.knownSources.containsAll(programData.getSources())) {
                         treeNode.getInstruction().set(new NOOP());
                         treeNode.getInstruction().set(new PUSH(programData.getContent()));
                     }

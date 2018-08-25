@@ -21,70 +21,70 @@ public class InstructionsBuilder {
     private Map<String, Integer> labelAddresses;
 
     public InstructionsBuilder() {
-        instructions = new ArrayList<>();
-        labelAddresses = new HashMap<>();
+        this.instructions = new ArrayList<>();
+        this.labelAddresses = new HashMap<>();
     }
 
     public void include(Supplier<Instruction> supplier) {
-        instructions.add(supplier);
+        this.instructions.add(supplier);
     }
 
     public void PUSH_LABEL(String name) {
-        include(() -> new PUSH(BigInteger.valueOf(labelAddresses.get(name)).toByteArray()));
+        this.include(() -> new PUSH(BigInteger.valueOf(this.labelAddresses.get(name)).toByteArray()));
     }
 
     public void MARK_LABEL(String name) {
-        if (labelAddresses.containsKey(name)) {
+        if (this.labelAddresses.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Name %s is already taken", name));
         }
-        labelAddresses.put(name, instructions.size());
-        include(JUMP_DESTINATION::new);
+        this.labelAddresses.put(name, this.instructions.size());
+        this.include(JUMP_DESTINATION::new);
     }
 
     public void LOOP(Consumer<InstructionsBuilder> loopBody) {
         final String startLabel = UUID.randomUUID().toString();
-        MARK_LABEL(startLabel);
+        this.MARK_LABEL(startLabel);
         loopBody.accept(this);
-        PUSH_LABEL(startLabel);
-        include(JUMP::new);
+        this.PUSH_LABEL(startLabel);
+        this.include(JUMP::new);
     }
 
     public void LOOP(Consumer<InstructionsBuilder> conditionBody, Consumer<InstructionsBuilder> loopBody) {
         final String startLabel = UUID.randomUUID().toString();
         final String endLabel = UUID.randomUUID().toString();
-        MARK_LABEL(startLabel);
+        this.MARK_LABEL(startLabel);
         conditionBody.accept(this);
-        include(IS_ZERO::new);
-        PUSH_LABEL(endLabel);
-        include(JUMP_IF::new);
+        this.include(IS_ZERO::new);
+        this.PUSH_LABEL(endLabel);
+        this.include(JUMP_IF::new);
         loopBody.accept(this);
-        PUSH_LABEL(startLabel);
-        include(JUMP::new);
-        MARK_LABEL(endLabel);
+        this.PUSH_LABEL(startLabel);
+        this.include(JUMP::new);
+        this.MARK_LABEL(endLabel);
     }
 
     public void IF(Consumer<InstructionsBuilder> condition, Consumer<InstructionsBuilder> content) {
         final String endLabel = UUID.randomUUID().toString();
         condition.accept(this);
-        include(IS_ZERO::new);
-        PUSH_LABEL(endLabel);
-        include(JUMP_IF::new);
+        this.include(IS_ZERO::new);
+        this.PUSH_LABEL(endLabel);
+        this.include(JUMP_IF::new);
         content.accept(this);
-        MARK_LABEL(endLabel);
+        this.MARK_LABEL(endLabel);
     }
 
     public int size() {
-        return instructions.size();
+        return this.instructions.size();
     }
 
     public List<Instruction> build() {
-        return instructions.stream()
+        return this.instructions.stream()
                 .map(Supplier::get)
                 .collect(Collectors.toList());
     }
 
     public void include(List<Instruction> others) {
-        others.forEach(instruction -> instructions.add(() -> instruction));
+        others.forEach(instruction -> this.instructions.add(() -> instruction));
     }
 
 }

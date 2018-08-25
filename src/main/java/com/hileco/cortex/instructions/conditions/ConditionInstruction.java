@@ -22,6 +22,7 @@ abstract class ConditionInstruction implements Instruction {
 
     abstract boolean innerExecute(byte[] left, byte[] right);
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 2) {
@@ -29,19 +30,22 @@ abstract class ConditionInstruction implements Instruction {
         }
         byte[] left = stack.pop();
         byte[] right = stack.pop();
-        boolean equals = innerExecute(left, right);
+        boolean equals = this.innerExecute(left, right);
         stack.push(equals ? TRUE.clone() : FALSE.clone());
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }
 
+    @Override
     public String toString() {
-        return getClass().getSimpleName();
+        return this.getClass().getSimpleName();
     }
 }

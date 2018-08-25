@@ -21,7 +21,7 @@ public class ProgramRunner {
 
     public ProgramRunner(ProcessContext processContext) {
         this.processContext = processContext;
-        table = Table.builder()
+        this.table = Table.builder()
                 .columns(Arrays.asList(
                         Table.Column.builder().header("#").foreground(RED).width(6).build(),
                         Table.Column.builder().header("size").foreground(CYAN).width(6).build(),
@@ -36,13 +36,13 @@ public class ProgramRunner {
 
     @SuppressWarnings("unchecked")
     public void run() throws ProgramException {
-        ProgramContext programContext = processContext.getPrograms().peek();
+        ProgramContext programContext = this.processContext.getPrograms().peek();
         while (programContext.getInstructionPosition() != programContext.getProgram().getInstructions().size()) {
             int currentInstructionPosition = programContext.getInstructionPosition();
             Instruction current = programContext.getProgram().getInstructions().get(currentInstructionPosition);
-            log(programContext, current);
-            current.execute(processContext, programContext);
-            programContext = processContext.getPrograms().peek();
+            this.log(programContext, current);
+            current.execute(this.processContext, programContext);
+            programContext = this.processContext.getPrograms().peek();
             if (programContext == null) {
                 break;
             }
@@ -53,19 +53,19 @@ public class ProgramRunner {
             if (programContext.getInstructionsExecuted() >= programContext.getInstructionLimit()) {
                 throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROGRAM_LEVEL);
             }
-            processContext.setInstructionsExecuted(processContext.getInstructionsExecuted() + 1);
-            if (processContext.getInstructionsExecuted() >= processContext.getInstructionLimit()) {
+            this.processContext.setInstructionsExecuted(this.processContext.getInstructionsExecuted() + 1);
+            if (this.processContext.getInstructionsExecuted() >= this.processContext.getInstructionLimit()) {
                 throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROCESS_LEVEL);
             }
         }
         if (TABLE_LOGGING_ENABLED) {
-            table.write(System.out);
+            this.table.write(System.out);
         }
     }
 
     private void log(ProgramContext programContext, Instruction instruction) {
         if (TABLE_LOGGING_ENABLED && !(instruction instanceof NOOP)) {
-            table.row(programContext.getInstructionPosition(),
+            this.table.row(programContext.getInstructionPosition(),
                     programContext.getStack().size(),
                     programContext.getStack().size() > 3 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 3)) : "",
                     programContext.getStack().size() > 2 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 2)) : "",

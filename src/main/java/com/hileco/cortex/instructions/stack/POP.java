@@ -16,6 +16,7 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 public class POP implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 1) {
@@ -24,18 +25,22 @@ public class POP implements Instruction {
         stack.pop();
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.singletonList(0);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }
 
+    @Override
     public String toString() {
         return "POP";
     }

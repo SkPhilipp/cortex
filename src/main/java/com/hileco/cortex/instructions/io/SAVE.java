@@ -21,6 +21,7 @@ public class SAVE extends IoInstruction {
         super(programStoreZone);
     }
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 2) {
@@ -31,7 +32,7 @@ public class SAVE extends IoInstruction {
         byte[] bytes = stack.pop();
         LayeredBytes layeredBytes;
 
-        ProgramStoreZone programStoreZone = getProgramStoreZone();
+        ProgramStoreZone programStoreZone = this.getProgramStoreZone();
         switch (programStoreZone) {
             case MEMORY:
                 layeredBytes = program.getMemory();
@@ -45,10 +46,12 @@ public class SAVE extends IoInstruction {
         layeredBytes.write(address.intValue(), bytes);
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Arrays.asList(0, 1);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }

@@ -14,24 +14,28 @@ import java.util.List;
 public class HALT implements Instruction {
     private ProgramException.Reason reason;
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        throw new ProgramException(program, reason);
+        throw new ProgramException(program, this.reason);
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.emptyList();
     }
 
     @Override
     public String toString() {
-        return String.format("HALT %s", reason);
+        return String.format("HALT %s", this.reason);
     }
 }

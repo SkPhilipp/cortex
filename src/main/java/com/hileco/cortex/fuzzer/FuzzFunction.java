@@ -45,13 +45,8 @@ public enum FuzzFunction implements Chanced, Consumer<ProgramGeneratorContext> {
         context.currentBuilder().include(() -> new SAVE(ProgramStoreZone.DISK));
     });
 
-    interface Constants {
-        int STACK_SWAP_UPPER_BOUND = 10;
-    }
-
-    private double chance;
     private final Consumer<ProgramGeneratorContext> implementation;
-
+    private double chance;
     FuzzFunction(double chance, Consumer<ProgramGeneratorContext> implementation) {
         this.chance = chance;
         this.implementation = implementation;
@@ -59,11 +54,15 @@ public enum FuzzFunction implements Chanced, Consumer<ProgramGeneratorContext> {
 
     @Override
     public double chance() {
-        return chance;
+        return this.chance;
     }
 
     @Override
     public void accept(ProgramGeneratorContext programGeneratorContext) {
-        implementation.accept(programGeneratorContext);
+        this.implementation.accept(programGeneratorContext);
+    }
+
+    interface Constants {
+        int STACK_SWAP_UPPER_BOUND = 10;
     }
 }

@@ -4,8 +4,8 @@ package com.hileco.cortex.instructions.stack;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.ProgramException;
 import lombok.Value;
 
 import java.math.BigInteger;
@@ -19,26 +19,31 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT
 public class PUSH implements Instruction {
     private byte[] bytes;
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        program.getStack().push(bytes);
+        program.getStack().push(this.bytes);
         if (program.getStack().size() > process.getStackLimit()) {
             throw new ProgramException(program, STACK_LIMIT_REACHED);
         }
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }
 
+    @Override
     public String toString() {
-        return String.format("PUSH %s", new BigInteger(bytes));
+        return String.format("PUSH %s", new BigInteger(this.bytes));
     }
 }

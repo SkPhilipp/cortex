@@ -19,6 +19,7 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 public abstract class BitInstruction implements Instruction {
     abstract byte innerExecute(byte left, byte right);
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 2) {
@@ -31,24 +32,28 @@ public abstract class BitInstruction implements Instruction {
         for (int i = 0; i < result.length; i++) {
             byte leftByte = i < left.length ? left[i] : 0;
             byte rightByte = i < right.length ? right[i] : 0;
-            result[i] = innerExecute(leftByte, rightByte);
+            result[i] = this.innerExecute(leftByte, rightByte);
         }
         stack.push(result);
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Arrays.asList(0, 1);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }
 
+    @Override
     public String toString() {
-        return getClass().getSimpleName();
+        return this.getClass().getSimpleName();
     }
 }

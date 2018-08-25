@@ -20,6 +20,7 @@ public class LOAD extends IoInstruction {
         super(programStoreZone);
     }
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 1) {
@@ -28,7 +29,7 @@ public class LOAD extends IoInstruction {
         byte[] addressBytes = stack.pop();
         BigInteger address = new BigInteger(addressBytes);
         LayeredBytes layeredBytes;
-        ProgramStoreZone programStoreZone = getProgramStoreZone();
+        ProgramStoreZone programStoreZone = this.getProgramStoreZone();
         switch (programStoreZone) {
             case MEMORY:
                 layeredBytes = program.getMemory();
@@ -49,10 +50,12 @@ public class LOAD extends IoInstruction {
         stack.push(bytes);
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.singletonList(0);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }

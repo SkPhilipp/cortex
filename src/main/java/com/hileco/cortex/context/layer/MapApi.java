@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface MapApi<K, V, I extends MapApi<K, V, I>> {
 
-    I  copy();
+    I copy();
 
     int size();
 

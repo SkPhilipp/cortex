@@ -46,6 +46,6 @@ public enum FuzzExpression implements Chanced {
 
     @Override
     public double chance() {
-        return chance;
+        return this.chance;
     }
 }

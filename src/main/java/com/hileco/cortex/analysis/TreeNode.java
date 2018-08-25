@@ -33,51 +33,52 @@ public class TreeNode {
     private List<TreeNode> parameters;
 
     public TreeNode() {
-        parameters = new ArrayList<>();
+        this.parameters = new ArrayList<>();
     }
 
+    @Override
     public String toString() {
-        return type.format(this);
+        return this.type.format(this);
     }
 
     private void addInstructionsByLine(List<Pair<Integer, AtomicReference<Instruction>>> list) {
-        if (type != INSTRUCTION) {
-            throw new IllegalStateException(String.format("Cannot convert type %s to instruction", type));
+        if (this.type != INSTRUCTION) {
+            throw new IllegalStateException(String.format("Cannot convert type %s to instruction", this.type));
         }
-        list.add(new Pair<>(line, instruction));
-        for (TreeNode parameter : parameters) {
+        list.add(new Pair<>(this.line, this.instruction));
+        for (TreeNode parameter : this.parameters) {
             parameter.addInstructionsByLine(list);
         }
     }
 
     public List<Instruction> toInstructions() {
         List<Pair<Integer, AtomicReference<Instruction>>> list = new ArrayList<>();
-        addInstructionsByLine(list);
+        this.addInstructionsByLine(list);
         list.sort(Comparator.comparingInt(Pair::getKey));
         return list.stream()
                 .map(pair -> pair.getValue().get())
                 .collect(Collectors.toList());
     }
 
-    public boolean hasParameters(Predicate<TreeNode> predicate) {
-        return parameters.stream().allMatch(predicate);
+    private boolean hasParameters(Predicate<TreeNode> predicate) {
+        return this.parameters.stream().allMatch(predicate);
     }
 
     public boolean hasParameter(int index, Predicate<TreeNode> predicate) {
-        return index < parameters.size() && predicate.test(parameters.get(index));
+        return index < this.parameters.size() && predicate.test(this.parameters.get(index));
     }
 
     public boolean isInstruction(Class<?>... classes) {
-        return type == INSTRUCTION && (classes.length == 0 || Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(instruction.get())));
+        return this.type == INSTRUCTION && (classes.length == 0 || Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(this.instruction.get())));
     }
 
     private boolean fully(Predicate<TreeNode> predicate) {
         return predicate.test(this)
-                && hasParameters(treeNode -> treeNode.fully(predicate));
+                && this.hasParameters(treeNode -> treeNode.fully(predicate));
     }
 
     public boolean isSelfContained() {
-        return fully(treeNode -> treeNode.isInstruction()
+        return this.fully(treeNode -> treeNode.isInstruction()
                 && SELF_CONTAINED_ZONES.containsAll(treeNode.getInstruction().get().getInstructionModifiers())
                 && !(treeNode.getInstruction().get() instanceof SWAP));
     }

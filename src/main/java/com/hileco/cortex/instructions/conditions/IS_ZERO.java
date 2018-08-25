@@ -14,6 +14,7 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @EqualsAndHashCode
 public class IS_ZERO implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) {
         LayeredStack<byte[]> stack = program.getStack();
         byte[] top = stack.pop();
@@ -27,14 +28,17 @@ public class IS_ZERO implements Instruction {
         stack.push(resultReference.clone());
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.singletonList(0);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }

@@ -11,21 +11,26 @@ import java.util.List;
 
 @EqualsAndHashCode
 public class NOOP implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) {
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.emptyList();
     }
 
+    @Override
     public String toString() {
         return "NOOP";
     }

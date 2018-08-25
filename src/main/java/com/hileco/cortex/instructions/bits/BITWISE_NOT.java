@@ -14,6 +14,7 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @EqualsAndHashCode
 public class BITWISE_NOT implements Instruction {
+    @Override
     public void execute(ProcessContext process, ProgramContext program) {
         LayeredStack<byte[]> stack = program.getStack();
         byte[] pop = stack.pop();
@@ -25,14 +26,17 @@ public class BITWISE_NOT implements Instruction {
         stack.push(result);
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Collections.singletonList(0);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }

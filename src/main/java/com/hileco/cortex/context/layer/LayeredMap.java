@@ -11,9 +11,9 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
     private Set<K> deletions;
 
     public LayeredMap() {
-        parent = null;
-        layer = new HashMap<>();
-        deletions = new HashSet<>();
+        this.parent = null;
+        this.layer = new HashMap<>();
+        this.deletions = new HashSet<>();
     }
 
     private LayeredMap(LayeredMap<K, V> parent, Map<K, V> layer, Set<K> deletions) {
@@ -22,74 +22,83 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
         this.deletions = deletions;
     }
 
+    @Override
     public LayeredMap<K, V> copy() {
-        if (layer.size() > 0 || deletions.size() > 0) {
-            parent = new LayeredMap<>(parent, layer, deletions);
-            layer = new HashMap<>();
-            deletions = new HashSet<>();
+        if (this.layer.size() > 0 || this.deletions.size() > 0) {
+            this.parent = new LayeredMap<>(this.parent, this.layer, this.deletions);
+            this.layer = new HashMap<>();
+            this.deletions = new HashSet<>();
         }
-        return new LayeredMap<>(parent, new HashMap<>(), new HashSet<>());
+        return new LayeredMap<>(this.parent, new HashMap<>(), new HashSet<>());
     }
 
+    @Override
     public int size() {
-        return keySet().size();
+        return this.keySet().size();
     }
 
+    @Override
     public boolean isEmpty() {
-        return layer.isEmpty() && (parent == null || parent.isEmpty());
+        return this.layer.isEmpty() && (this.parent == null || this.parent.isEmpty());
     }
 
+    @Override
     public boolean containsKey(K key) {
-        return layer.containsKey(key) || (parent != null && parent.containsKey(key) && !deletions.contains(key));
+        return this.layer.containsKey(key) || (this.parent != null && this.parent.containsKey(key) && !this.deletions.contains(key));
     }
 
+    @Override
     public V get(K key) {
-        if (layer.containsKey(key)) {
-            return layer.get(key);
+        if (this.layer.containsKey(key)) {
+            return this.layer.get(key);
         }
-        if (parent != null && !deletions.contains(key)) {
-            return parent.get(key);
+        if (this.parent != null && !this.deletions.contains(key)) {
+            return this.parent.get(key);
         }
         return null;
     }
 
+    @Override
     public V put(K key, V value) {
-        V previous = get(key);
-        deletions.remove(key);
-        layer.put(key, value);
+        V previous = this.get(key);
+        this.deletions.remove(key);
+        this.layer.put(key, value);
         return previous;
     }
 
     public <K2 extends K, V2 extends V> void merge(LayeredMap<K2, V2> map) {
         map.keySet().forEach(key -> {
             V2 value = map.get(key);
-            put(key, value);
+            this.put(key, value);
         });
     }
 
+    @Override
     public V remove(K key) {
-        V previous = get(key);
-        layer.remove(key);
-        if (parent != null && parent.containsKey(key)) {
-            deletions.add(key);
+        V previous = this.get(key);
+        this.layer.remove(key);
+        if (this.parent != null && this.parent.containsKey(key)) {
+            this.deletions.add(key);
         }
         return previous;
     }
 
+    @Override
     public void clear() {
-        parent = null;
-        layer.clear();
-        deletions.clear();
+        this.parent = null;
+        this.layer.clear();
+        this.deletions.clear();
     }
 
+    @Override
     public Set<K> keySet() {
         HashSet<K> keys = new HashSet<>();
-        if (parent != null) {
-            keys.addAll(parent.keySet());
+        if (this.parent != null) {
+            keys.addAll(this.parent.keySet());
         }
-        keys.addAll(layer.keySet());
-        if (parent != null) {
-            keys.removeAll(deletions);
+        keys.addAll(this.layer.keySet());
+        if (this.parent != null) {
+            keys.removeAll(this.deletions);
         }
         return keys;
     }
@@ -99,11 +108,11 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("LayeredMap{");
         stringBuilder.append("\n");
-        keySet().forEach(key -> {
+        this.keySet().forEach(key -> {
             stringBuilder.append("[");
             stringBuilder.append(key);
             stringBuilder.append("] = ");
-            stringBuilder.append(get(key));
+            stringBuilder.append(this.get(key));
             stringBuilder.append(",");
             stringBuilder.append("\n");
         });

@@ -22,25 +22,25 @@ public class Program {
 
     public Program(BigInteger address, List<Instruction> instructions) {
         this.address = address;
-        transfers = new LayeredStack<>();
+        this.transfers = new LayeredStack<>();
         this.instructions = instructions;
-        storage = new LayeredBytes();
+        this.storage = new LayeredBytes();
     }
 
     public BigInteger getAddress() {
-        if (address == null) {
+        if (this.address == null) {
             throw new IllegalStateException("This program does not have an address.");
         }
-        return address;
+        return this.address;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("        ┌───────────────────────────────────\n");
-        int size = instructions.size();
+        int size = this.instructions.size();
         for (int i = 0; i < size; i++) {
-            stringBuilder.append(String.format(" %06d │ %s\n", i, instructions.get(i)));
+            stringBuilder.append(String.format(" %06d │ %s\n", i, this.instructions.get(i)));
         }
         stringBuilder.append("        └───────────────────────────────────\n");
         return stringBuilder.toString();

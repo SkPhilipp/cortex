@@ -15,9 +15,9 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     private int size;
 
     public LayeredStack() {
-        parent = null;
-        layer = new HashMap<>();
-        size = 0;
+        this.parent = null;
+        this.layer = new HashMap<>();
+        this.size = 0;
     }
 
     private LayeredStack(LayeredStack<V> parent, Map<Integer, V> layer, int size) {
@@ -28,29 +28,29 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized LayeredStack<V> copy() {
-        if (layer.size() > 0 || size != parent.size) {
-            parent = new LayeredStack<>(parent, layer, size);
-            layer = new HashMap<>();
-            size = parent.size;
+        if (this.layer.size() > 0 || this.size != this.parent.size) {
+            this.parent = new LayeredStack<>(this.parent, this.layer, this.size);
+            this.layer = new HashMap<>();
+            this.size = this.parent.size;
         }
-        return new LayeredStack<>(parent, new HashMap<>(), parent.size);
+        return new LayeredStack<>(this.parent, new HashMap<>(), this.parent.size);
     }
 
     @Override
     public synchronized void push(V value) {
-        size++;
-        layer.put(size, value);
+        this.size++;
+        this.layer.put(this.size, value);
     }
 
     @Override
     public synchronized V pop() {
-        V removed = layer.remove(size);
-        size--;
+        V removed = this.layer.remove(this.size);
+        this.size--;
         return removed;
     }
 
     public synchronized V peek() {
-        return layer.get(size);
+        return this.layer.get(this.size);
     }
 
     private UnsupportedOperationException arbitraryModification() {
@@ -58,122 +58,60 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     }
 
     private synchronized void checkBounds(int index) {
-        if (size < index) {
-            throw new IndexOutOfBoundsException(String.format("Size %s < Index %s", size, index));
+        if (this.size < index) {
+            throw new IndexOutOfBoundsException(String.format("Size %s < Index %s", this.size, index));
         }
     }
 
     @Override
     public synchronized V get(int index) {
-        checkBounds(index);
-        if (layer.containsKey(index)) {
-            return layer.get(index);
+        this.checkBounds(index);
+        if (this.layer.containsKey(index)) {
+            return this.layer.get(index);
         } else {
-            if (parent == null) {
-                throw new IndexOutOfBoundsException(String.format("Size %s < Index %s", size, index));
+            if (this.parent == null) {
+                throw new IndexOutOfBoundsException(String.format("Size %s < Index %s", this.size, index));
             }
-            return parent.get(index);
+            return this.parent.get(index);
         }
     }
 
     @Override
     public synchronized void swap(int topOffsetLeft, int topOffsetRight) {
-        int indexA = size - topOffsetLeft;
-        int indexB = size - topOffsetRight;
-        checkBounds(indexA);
-        checkBounds(indexB);
-        V valueA = get(indexA);
-        V valueB = get(indexB);
-        layer.put(indexA, valueB);
-        layer.put(indexB, valueA);
+        int indexA = this.size - topOffsetLeft;
+        int indexB = this.size - topOffsetRight;
+        this.checkBounds(indexA);
+        this.checkBounds(indexB);
+        V valueA = this.get(indexA);
+        V valueB = this.get(indexB);
+        this.layer.put(indexA, valueB);
+        this.layer.put(indexB, valueA);
     }
 
     @Override
     public int size() {
-        return size;
+        return this.size;
     }
 
     @Override
     public synchronized boolean isEmpty() {
-        return layer.size() == 0 && (parent == null || parent.size == 0);
+        return this.layer.size() == 0 && (this.parent == null || this.parent.size == 0);
     }
 
     @Override
     public synchronized void duplicate(int topOffset) {
-        int index = size - topOffset;
-        checkBounds(index);
-        V value = get(index);
-        push(value);
+        int index = this.size - topOffset;
+        this.checkBounds(index);
+        V value = this.get(index);
+        this.push(value);
     }
 
     @Override
     public synchronized boolean contains(Object o) {
         if (o instanceof Integer) {
-            return layer.containsKey(o) || (parent != null && parent.contains(o));
+            return this.layer.containsKey(o) || (this.parent != null && this.parent.contains(o));
         } else {
             throw new IllegalArgumentException();
-        }
-    }
-
-    private class IndexedIterator implements ListIterator<V> {
-        private int index;
-
-        IndexedIterator(int index) {
-            this.index = index;
-        }
-
-        @Override
-        public synchronized boolean hasNext() {
-            return index <= size;
-        }
-
-        @Override
-        public synchronized V next() {
-            if (index > size) {
-                throw new NoSuchElementException();
-            }
-            V value = get(index);
-            index++;
-            return value;
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            return index > 0;
-        }
-
-        @Override
-        public V previous() {
-            if (index == 0) {
-                throw new NoSuchElementException();
-            }
-            index--;
-            return get(index);
-        }
-
-        @Override
-        public int nextIndex() {
-            return Math.min(index, size - 1);
-        }
-
-        @Override
-        public int previousIndex() {
-            return index - 1;
-        }
-
-        @Override
-        public void remove() {
-            throw arbitraryModification();
-        }
-
-        @Override
-        public void set(V v) {
-            throw arbitraryModification();
-        }
-
-        @Override
-        public void add(V v) {
-            throw arbitraryModification();
         }
     }
 
@@ -185,9 +123,9 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     @SuppressWarnings("unchecked")
     @Override
     public synchronized V[] toArray() {
-        Object[] objects = new Object[size];
-        for (int index = 0; index < size; index++) {
-            V value = get(index + 1);
+        Object[] objects = new Object[this.size];
+        for (int index = 0; index < this.size; index++) {
+            V value = this.get(index + 1);
             objects[index] = value;
         }
         return (V[]) objects;
@@ -196,11 +134,11 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     @SuppressWarnings("unchecked")
     @Override
     public synchronized <T> T[] toArray(T[] a) {
-        if (a.length < size) {
-            return (T[]) toArray();
+        if (a.length < this.size) {
+            return (T[]) this.toArray();
         } else {
             for (int index = 0; index < a.length; index++) {
-                V value = get(index + 1);
+                V value = this.get(index + 1);
                 a[index] = (T) value;
             }
             return a;
@@ -209,13 +147,13 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized boolean add(V v) {
-        push(v);
+        this.push(v);
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
@@ -231,38 +169,38 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public boolean addAll(int offset, Collection<? extends V> c) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
     public synchronized void clear() {
-        layer.clear();
-        size = 0;
+        this.layer.clear();
+        this.size = 0;
     }
 
     @Override
     public V set(int index, V element) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
     public void add(int index, V element) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
     public V remove(int index) {
-        throw arbitraryModification();
+        throw this.arbitraryModification();
     }
 
     @Override
@@ -298,7 +236,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
         if (index < 0) {
             throw new IndexOutOfBoundsException();
         }
-        if (index > size) {
+        if (index > this.size) {
             throw new IndexOutOfBoundsException();
         }
         return new IndexedIterator(index);
@@ -313,7 +251,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("LayeredStack{");
-        IndexedIterator iterator = iterator();
+        IndexedIterator iterator = this.iterator();
         while (iterator.hasNext()) {
             stringBuilder.append(iterator.next());
             if (iterator.hasNext()) {
@@ -327,14 +265,76 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         LayeredStack<?> that = (LayeredStack<?>) o;
-        return size == that.size &&
-                Arrays.equals(toArray(), that.toArray());
+        return this.size == that.size &&
+                Arrays.equals(this.toArray(), that.toArray());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash((Object[]) toArray());
+        return Objects.hash((Object[]) this.toArray());
+    }
+
+    private class IndexedIterator implements ListIterator<V> {
+        private int index;
+
+        IndexedIterator(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public synchronized boolean hasNext() {
+            return this.index <= LayeredStack.this.size;
+        }
+
+        @Override
+        public synchronized V next() {
+            if (this.index > LayeredStack.this.size) {
+                throw new NoSuchElementException();
+            }
+            V value = LayeredStack.this.get(this.index);
+            this.index++;
+            return value;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return this.index > 0;
+        }
+
+        @Override
+        public V previous() {
+            if (this.index == 0) {
+                throw new NoSuchElementException();
+            }
+            this.index--;
+            return LayeredStack.this.get(this.index);
+        }
+
+        @Override
+        public int nextIndex() {
+            return Math.min(this.index, LayeredStack.this.size - 1);
+        }
+
+        @Override
+        public int previousIndex() {
+            return this.index - 1;
+        }
+
+        @Override
+        public void remove() {
+            throw LayeredStack.this.arbitraryModification();
+        }
+
+        @Override
+        public void set(V v) {
+            throw LayeredStack.this.arbitraryModification();
+        }
+
+        @Override
+        public void add(V v) {
+            throw LayeredStack.this.arbitraryModification();
+        }
     }
 }

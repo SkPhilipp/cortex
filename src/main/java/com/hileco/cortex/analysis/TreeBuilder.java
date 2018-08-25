@@ -13,7 +13,7 @@ public class TreeBuilder {
     public Tree build(List<Instruction> instructions) {
         Tree tree = new Tree();
         tree.include(instructions);
-        processors.forEach(processor -> processor.process(tree));
+        this.processors.forEach(processor -> processor.process(tree));
         return tree;
     }
 }

@@ -35,11 +35,13 @@ public abstract class IoInstruction implements Instruction {
         }
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
-        return programZoneFor(programStoreZone);
+        return programZoneFor(this.programStoreZone);
     }
 
+    @Override
     public String toString() {
-        return String.format("%s %s", getClass().getSimpleName(), programStoreZone);
+        return String.format("%s %s", this.getClass().getSimpleName(), this.programStoreZone);
     }
 }

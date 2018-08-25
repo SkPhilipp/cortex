@@ -63,8 +63,8 @@ public class ProcessorFuzzTest {
                 List<Instruction> optimizedInstructions = treeBuilder.build(instructions).toInstructions();
                 generatedOptimized.put(program.getAddress(), new Program(program.getAddress(), optimizedInstructions));
             }
-            ProgramContext callerContext = executeAll(generated);
-            ProgramContext callerContextOptimized = executeAll(generatedOptimized);
+            ProgramContext callerContext = this.executeAll(generated);
+            ProgramContext callerContextOptimized = this.executeAll(generatedOptimized);
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getMemory(),
                     callerContextOptimized.getMemory());
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getProgram().getStorage(),
@@ -86,36 +86,36 @@ public class ProcessorFuzzTest {
 
     @Test
     public void fuzzTestExitTrimProcessor() {
-        fuzzTestProcessor(new ExitTrimProcessor());
+        this.fuzzTestProcessor(new ExitTrimProcessor());
     }
 
     @Test
     public void fuzzTestJumpIllegalProcessor() {
-        fuzzTestProcessor(new JumpIllegalProcessor());
+        this.fuzzTestProcessor(new JumpIllegalProcessor());
     }
 
     @Test
     public void fuzzTestJumpThreadingProcessor() {
-        fuzzTestProcessor(new JumpThreadingProcessor());
+        this.fuzzTestProcessor(new JumpThreadingProcessor());
     }
 
     @Test
     public void fuzzTestJumpUnreachableProcessor() {
-        fuzzTestProcessor(new JumpUnreachableProcessor());
+        this.fuzzTestProcessor(new JumpUnreachableProcessor());
     }
 
     @Test
     public void fuzzTestKnownJumpIfProcessor() {
-        fuzzTestProcessor(new KnownJumpIfProcessor());
+        this.fuzzTestProcessor(new KnownJumpIfProcessor());
     }
 
     @Test
     public void fuzzTestKnownLoadProcessor() {
-        fuzzTestProcessor(new KnownLoadProcessor(new HashMap<>(), new HashSet<>()));
+        this.fuzzTestProcessor(new KnownLoadProcessor(new HashMap<>(), new HashSet<>()));
     }
 
     @Test
     public void fuzzTestKnownProcessor() {
-        fuzzTestProcessor(new KnownProcessor());
+        this.fuzzTestProcessor(new KnownProcessor());
     }
 }

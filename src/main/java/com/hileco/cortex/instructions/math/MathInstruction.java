@@ -21,6 +21,7 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 abstract class MathInstruction implements Instruction {
     public abstract BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right);
 
+    @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         LayeredStack<byte[]> stack = program.getStack();
         if (stack.size() < 2) {
@@ -30,23 +31,27 @@ abstract class MathInstruction implements Instruction {
         byte[] right = stack.pop();
         BigInteger leftAsBigInteger = new BigInteger(left);
         BigInteger rightAsBigInteger = new BigInteger(right);
-        BigInteger result = innerExecute(process, program, leftAsBigInteger, rightAsBigInteger);
+        BigInteger result = this.innerExecute(process, program, leftAsBigInteger, rightAsBigInteger);
         stack.push(result.toByteArray());
     }
 
+    @Override
     public List<Integer> getStackTakes() {
         return Arrays.asList(0, 1);
     }
 
+    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
 
+    @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
     }
 
+    @Override
     public String toString() {
-        return getClass().getSimpleName();
+        return this.getClass().getSimpleName();
     }
 }

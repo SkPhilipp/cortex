@@ -1,10 +1,20 @@
 package com.hileco.cortex.instructions;
 
 import com.hileco.cortex.context.ProgramContext;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 @Value
+@EqualsAndHashCode(callSuper = true)
 public class ProgramException extends Exception {
+
+    private final ProgramContext programContext;
+    private final Reason reason;
+
+    @Override
+    public String getMessage() {
+        return String.format("%s: %s", this.reason.toString(), this.programContext.toString());
+    }
 
     public enum Reason {
         JUMP_TO_ILLEGAL_INSTRUCTION,
@@ -15,13 +25,5 @@ public class ProgramException extends Exception {
         RETURN_DATA_TOO_LARGE,
         STACK_TOO_FEW_ELEMENTS,
         CALL_RECIPIENT_MISSING
-    }
-
-    private final ProgramContext programContext;
-    private final Reason reason;
-
-    @Override
-    public String getMessage() {
-        return String.format("%s: %s", reason.toString(), programContext.toString());
     }
 }

@@ -21,18 +21,18 @@ public class ProgramGeneratorContext {
     private final Supplier<FuzzExpression> randomFuzzExpression;
 
     public ProgramGeneratorContext(long seed) {
-        instructionsBuilders = new LayeredStack<>();
-        atlas = new LayeredMap<>();
-        random = new Random(seed);
-        randomFuzzProgramLayout = of(FuzzProgram.values());
-        randomFuzzFunctionLayout = of(FuzzFunction.values());
-        randomFuzzExpression = of(FuzzExpression.values());
+        this.instructionsBuilders = new LayeredStack<>();
+        this.atlas = new LayeredMap<>();
+        this.random = new Random(seed);
+        this.randomFuzzProgramLayout = this.of(FuzzProgram.values());
+        this.randomFuzzFunctionLayout = this.of(FuzzFunction.values());
+        this.randomFuzzExpression = this.of(FuzzExpression.values());
     }
 
     private <T extends Chanced> Supplier<T> of(T[] types) {
         double total = Arrays.stream(types).mapToDouble(Chanced::chance).sum();
         return () -> {
-            double choice = random.nextDouble() * total;
+            double choice = this.random.nextDouble() * total;
             T selected = null;
             for (T type : types) {
                 selected = type;
@@ -46,47 +46,47 @@ public class ProgramGeneratorContext {
     }
 
     public BigInteger randomBetween(int minimum, int maximum) {
-        return BigInteger.valueOf(randomIntBetween(minimum, maximum));
+        return BigInteger.valueOf(this.randomIntBetween(minimum, maximum));
     }
 
     public BigInteger random() {
-        return BigInteger.valueOf(random.nextLong());
+        return BigInteger.valueOf(this.random.nextLong());
     }
 
     public int randomIntBetween(int minimum, int maximum) {
-        return random.nextInt(maximum - minimum) + minimum;
+        return this.random.nextInt(maximum - minimum) + minimum;
     }
 
     public void forRandom(int minimum, int maximum, IntConsumer consumer) {
-        int choice = randomIntBetween(minimum, maximum);
+        int choice = this.randomIntBetween(minimum, maximum);
         IntStream.range(minimum, choice + 1).forEach(consumer);
     }
 
     public LayeredMap<BigInteger, Program> atlas() {
-        return atlas;
+        return this.atlas;
     }
 
     public FuzzProgram randomFuzzProgram() {
-        return randomFuzzProgramLayout.get();
+        return this.randomFuzzProgramLayout.get();
     }
 
     public FuzzFunction randomFuzzFunction() {
-        return randomFuzzFunctionLayout.get();
+        return this.randomFuzzFunctionLayout.get();
     }
 
     public FuzzExpression randomFuzzExpression() {
-        return randomFuzzExpression.get();
+        return this.randomFuzzExpression.get();
     }
 
     public void pushBuilder(InstructionsBuilder value) {
-        instructionsBuilders.push(value);
+        this.instructionsBuilders.push(value);
     }
 
-    public InstructionsBuilder popBuilder() {
-        return instructionsBuilders.pop();
+    public void popBuilder() {
+        this.instructionsBuilders.pop();
     }
 
     public InstructionsBuilder currentBuilder() {
-        return instructionsBuilders.peek();
+        return this.instructionsBuilders.peek();
     }
 }

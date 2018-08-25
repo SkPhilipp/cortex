@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KnownProcessor implements Processor {
+    @Override
     public void process(Tree tree) {
         // TODO: Parameters could also be selfContained.
         tree.getTreeBlocks().forEach(treeBlock -> treeBlock.getTreeNodes().stream()

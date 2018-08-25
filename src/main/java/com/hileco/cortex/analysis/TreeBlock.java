@@ -19,12 +19,12 @@ public class TreeBlock {
     private List<AtomicReference<Instruction>> instructions;
 
     public TreeBlock() {
-        knownEntries = new HashSet<>();
-        knownExits = new HashSet<>();
-        potentialEntries = new HashSet<>();
-        potentialExits = new HashSet<>();
-        treeNodes = new ArrayList<>();
-        instructions = new ArrayList<>();
+        this.knownEntries = new HashSet<>();
+        this.knownExits = new HashSet<>();
+        this.potentialEntries = new HashSet<>();
+        this.potentialExits = new HashSet<>();
+        this.treeNodes = new ArrayList<>();
+        this.instructions = new ArrayList<>();
     }
 
     public void include(int lineOffset, List<AtomicReference<Instruction>> instructions) {
@@ -34,23 +34,24 @@ public class TreeBlock {
             treeNode.setLine(lineOffset + i);
             treeNode.setType(TreeNodeType.INSTRUCTION);
             treeNode.setInstruction(instructionReference);
-            treeNodes.add(treeNode);
+            this.treeNodes.add(treeNode);
         }
         this.instructions.addAll(instructions);
     }
 
     void append(TreeBlock other) {
-        knownEntries.addAll(other.knownEntries);
-        knownExits.addAll(other.knownExits);
-        potentialEntries.addAll(other.potentialEntries);
-        potentialExits.addAll(other.potentialExits);
-        treeNodes.addAll(other.treeNodes);
-        instructions.addAll(other.instructions);
+        this.knownEntries.addAll(other.knownEntries);
+        this.knownExits.addAll(other.knownExits);
+        this.potentialEntries.addAll(other.potentialEntries);
+        this.potentialExits.addAll(other.potentialExits);
+        this.treeNodes.addAll(other.treeNodes);
+        this.instructions.addAll(other.instructions);
     }
 
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (TreeNode treeNode : treeNodes) {
+        for (TreeNode treeNode : this.treeNodes) {
             stringBuilder.append(treeNode);
             stringBuilder.append('\n');
         }
@@ -58,10 +59,10 @@ public class TreeBlock {
     }
 
     public int countEntries() {
-        return knownEntries.size() + potentialEntries.size();
+        return this.knownEntries.size() + this.potentialEntries.size();
     }
 
     public int countExits() {
-        return knownExits.size() + potentialExits.size();
+        return this.knownExits.size() + this.potentialExits.size();
     }
 }
