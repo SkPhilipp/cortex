@@ -4,7 +4,6 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
 
@@ -16,20 +15,23 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode(callSuper = true)
 public class LOAD extends IoInstruction {
+
+    private static final int SIZE = 32;
+
     public LOAD(ProgramStoreZone programStoreZone) {
         super(programStoreZone);
     }
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 1) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        byte[] addressBytes = stack.pop();
-        BigInteger address = new BigInteger(addressBytes);
+        var addressBytes = stack.pop();
+        var address = new BigInteger(addressBytes);
         LayeredBytes layeredBytes;
-        ProgramStoreZone programStoreZone = this.getProgramStoreZone();
+        var programStoreZone = this.getProgramStoreZone();
         switch (programStoreZone) {
             case MEMORY:
                 layeredBytes = program.getMemory();
@@ -43,7 +45,7 @@ public class LOAD extends IoInstruction {
             default:
                 throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
         }
-        byte[] bytes = layeredBytes.read(address.intValue(), 32);
+        var bytes = layeredBytes.read(address.intValue(), SIZE);
         if (bytes == null) {
             throw new IllegalStateException(String.format("Loading empty data at %s:%s", programStoreZone, address.toString()));
         }

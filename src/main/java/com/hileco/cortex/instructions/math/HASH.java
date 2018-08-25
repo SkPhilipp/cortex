@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.math;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.Value;
@@ -23,8 +22,8 @@ public class HASH implements Instruction {
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance(this.hashMethod);
-            LayeredStack<byte[]> stack = program.getStack();
+            var messageDigest = MessageDigest.getInstance(this.hashMethod);
+            var stack = program.getStack();
             if (stack.size() < 1) {
                 throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
             }

@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.calls;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
@@ -23,21 +22,21 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 public class CALL_RETURN implements Instruction {
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        BigInteger offset = new BigInteger(stack.pop());
-        BigInteger size = new BigInteger(stack.pop());
+        var offset = new BigInteger(stack.pop());
+        var size = new BigInteger(stack.pop());
         process.getPrograms().pop();
-        ProgramContext nextContext = process.getPrograms().peek();
-        byte[] data = program.getMemory().read(offset.intValue(), size.intValue());
-        BigInteger wSize = nextContext.getReturnDataSize();
+        var nextContext = process.getPrograms().peek();
+        var data = program.getMemory().read(offset.intValue(), size.intValue());
+        var wSize = nextContext.getReturnDataSize();
         if (data.length > wSize.intValue()) {
             throw new ProgramException(program, RETURN_DATA_TOO_LARGE);
         }
-        byte[] dataExpanded = Arrays.copyOf(data, wSize.intValue());
-        BigInteger wOffset = nextContext.getReturnDataOffset();
+        var dataExpanded = Arrays.copyOf(data, wSize.intValue());
+        var wOffset = nextContext.getReturnDataOffset();
         nextContext.getMemory().write(wOffset.intValue(), dataExpanded, wSize.intValue());
     }
 

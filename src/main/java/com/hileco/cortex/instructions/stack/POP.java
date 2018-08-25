@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.stack;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
@@ -18,7 +17,7 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 public class POP implements Instruction {
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 1) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }

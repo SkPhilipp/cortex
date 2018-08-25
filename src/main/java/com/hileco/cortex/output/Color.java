@@ -5,12 +5,12 @@ public class Color {
     private static final char PREFIX = 27;
 
     public static String fg(Palette palette, String... outputs) {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         stringBuilder.append(PREFIX);
         stringBuilder.append("[")
                 .append(palette.foreground)
                 .append("m");
-        for (String output : outputs) {
+        for (var output : outputs) {
             stringBuilder.append(PREFIX);
             stringBuilder.append("[")
                     .append(palette.foreground)
@@ -21,12 +21,12 @@ public class Color {
     }
 
     public static String bg(Palette palette, String... outputs) {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         stringBuilder.append(PREFIX);
         stringBuilder.append("[")
                 .append(palette.background)
                 .append("m");
-        for (String output : outputs) {
+        for (var output : outputs) {
             stringBuilder.append(PREFIX);
             stringBuilder.append("[")
                     .append(palette.background)

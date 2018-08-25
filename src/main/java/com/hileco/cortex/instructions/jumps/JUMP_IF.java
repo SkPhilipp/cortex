@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.jumps;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
 
@@ -20,14 +19,14 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 public class JUMP_IF extends JumpingInstruction {
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        int nextInstructionPosition = new BigInteger(program.getStack().pop()).intValue();
-        byte[] top = stack.pop();
-        boolean isNonZero = false;
-        for (byte item : top) {
+        var nextInstructionPosition = new BigInteger(program.getStack().pop()).intValue();
+        var top = stack.pop();
+        var isNonZero = false;
+        for (var item : top) {
             if (item > 0) {
                 isNonZero = true;
             }

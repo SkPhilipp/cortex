@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 public class BITWISE_AND extends BitInstruction {
     @Override
     public byte innerExecute(byte left, byte right) {
-        byte result = left;
+        var result = left;
         result &= right;
         return result;
     }

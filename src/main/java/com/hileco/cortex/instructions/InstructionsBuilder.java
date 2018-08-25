@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class InstructionsBuilder {
-    private List<Supplier<Instruction>> instructions;
-    private Map<String, Integer> labelAddresses;
+    private final List<Supplier<Instruction>> instructions;
+    private final Map<String, Integer> labelAddresses;
 
     public InstructionsBuilder() {
         this.instructions = new ArrayList<>();
@@ -42,7 +42,7 @@ public class InstructionsBuilder {
     }
 
     public void LOOP(Consumer<InstructionsBuilder> loopBody) {
-        final String startLabel = UUID.randomUUID().toString();
+        final var startLabel = UUID.randomUUID().toString();
         this.MARK_LABEL(startLabel);
         loopBody.accept(this);
         this.PUSH_LABEL(startLabel);
@@ -50,8 +50,8 @@ public class InstructionsBuilder {
     }
 
     public void LOOP(Consumer<InstructionsBuilder> conditionBody, Consumer<InstructionsBuilder> loopBody) {
-        final String startLabel = UUID.randomUUID().toString();
-        final String endLabel = UUID.randomUUID().toString();
+        final var startLabel = UUID.randomUUID().toString();
+        final var endLabel = UUID.randomUUID().toString();
         this.MARK_LABEL(startLabel);
         conditionBody.accept(this);
         this.include(IS_ZERO::new);
@@ -64,7 +64,7 @@ public class InstructionsBuilder {
     }
 
     public void IF(Consumer<InstructionsBuilder> condition, Consumer<InstructionsBuilder> content) {
-        final String endLabel = UUID.randomUUID().toString();
+        final var endLabel = UUID.randomUUID().toString();
         condition.accept(this);
         this.include(IS_ZERO::new);
         this.PUSH_LABEL(endLabel);

@@ -24,7 +24,7 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
 
     @Override
     public LayeredMap<K, V> copy() {
-        if (this.layer.size() > 0 || this.deletions.size() > 0) {
+        if (!this.layer.isEmpty() || !this.deletions.isEmpty()) {
             this.parent = new LayeredMap<>(this.parent, this.layer, this.deletions);
             this.layer = new HashMap<>();
             this.deletions = new HashSet<>();
@@ -60,7 +60,7 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
 
     @Override
     public V put(K key, V value) {
-        V previous = this.get(key);
+        var previous = this.get(key);
         this.deletions.remove(key);
         this.layer.put(key, value);
         return previous;
@@ -68,14 +68,14 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
 
     public <K2 extends K, V2 extends V> void merge(LayeredMap<K2, V2> map) {
         map.keySet().forEach(key -> {
-            V2 value = map.get(key);
+            var value = map.get(key);
             this.put(key, value);
         });
     }
 
     @Override
     public V remove(K key) {
-        V previous = this.get(key);
+        var previous = this.get(key);
         this.layer.remove(key);
         if (this.parent != null && this.parent.containsKey(key)) {
             this.deletions.add(key);
@@ -105,7 +105,7 @@ public class LayeredMap<K, V> implements MapApi<K, V, LayeredMap<K, V>> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         stringBuilder.append("LayeredMap{");
         stringBuilder.append("\n");
         this.keySet().forEach(key -> {

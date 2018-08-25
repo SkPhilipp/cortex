@@ -38,7 +38,7 @@ public enum FuzzExpression implements Chanced {
 
     JUMP_ANYWHERE(1D);
 
-    private double chance;
+    private final double chance;
 
     FuzzExpression(double chance) {
         this.chance = chance;

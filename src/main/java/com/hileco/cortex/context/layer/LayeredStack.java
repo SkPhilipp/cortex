@@ -28,7 +28,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized LayeredStack<V> copy() {
-        if (this.layer.size() > 0 || this.size != this.parent.size) {
+        if (!this.layer.isEmpty() || this.size != this.parent.size) {
             this.parent = new LayeredStack<>(this.parent, this.layer, this.size);
             this.layer = new HashMap<>();
             this.size = this.parent.size;
@@ -44,7 +44,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized V pop() {
-        V removed = this.layer.remove(this.size);
+        var removed = this.layer.remove(this.size);
         this.size--;
         return removed;
     }
@@ -78,12 +78,12 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized void swap(int topOffsetLeft, int topOffsetRight) {
-        int indexA = this.size - topOffsetLeft;
-        int indexB = this.size - topOffsetRight;
+        var indexA = this.size - topOffsetLeft;
+        var indexB = this.size - topOffsetRight;
         this.checkBounds(indexA);
         this.checkBounds(indexB);
-        V valueA = this.get(indexA);
-        V valueB = this.get(indexB);
+        var valueA = this.get(indexA);
+        var valueB = this.get(indexB);
         this.layer.put(indexA, valueB);
         this.layer.put(indexB, valueA);
     }
@@ -95,14 +95,14 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized boolean isEmpty() {
-        return this.layer.size() == 0 && (this.parent == null || this.parent.size == 0);
+        return this.layer.isEmpty() && (this.parent == null || this.parent.size == 0);
     }
 
     @Override
     public synchronized void duplicate(int topOffset) {
-        int index = this.size - topOffset;
+        var index = this.size - topOffset;
         this.checkBounds(index);
-        V value = this.get(index);
+        var value = this.get(index);
         this.push(value);
     }
 
@@ -123,9 +123,9 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     @SuppressWarnings("unchecked")
     @Override
     public synchronized V[] toArray() {
-        Object[] objects = new Object[this.size];
-        for (int index = 0; index < this.size; index++) {
-            V value = this.get(index + 1);
+        var objects = new Object[this.size];
+        for (var index = 0; index < this.size; index++) {
+            var value = this.get(index + 1);
             objects[index] = value;
         }
         return (V[]) objects;
@@ -137,8 +137,8 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
         if (a.length < this.size) {
             return (T[]) this.toArray();
         } else {
-            for (int index = 0; index < a.length; index++) {
-                V value = this.get(index + 1);
+            for (var index = 0; index < a.length; index++) {
+                var value = this.get(index + 1);
                 a[index] = (T) value;
             }
             return a;
@@ -205,7 +205,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized int indexOf(Object o) {
-        IndexedIterator iterator = new IndexedIterator(1);
+        var iterator = new IndexedIterator(1);
         while (iterator.hasNext()) {
             if (Objects.equals(iterator.next(), o)) {
                 return iterator.index - 1;
@@ -216,8 +216,8 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public synchronized int lastIndexOf(Object o) {
-        IndexedIterator iterator = new IndexedIterator(1);
-        int match = -1;
+        var iterator = new IndexedIterator(1);
+        var match = -1;
         while (iterator.hasNext()) {
             if (Objects.equals(iterator.next(), o)) {
                 match = iterator.index - 1;
@@ -249,9 +249,9 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         stringBuilder.append("LayeredStack{");
-        IndexedIterator iterator = this.iterator();
+        var iterator = this.iterator();
         while (iterator.hasNext()) {
             stringBuilder.append(iterator.next());
             if (iterator.hasNext()) {
@@ -293,7 +293,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
             if (this.index > LayeredStack.this.size) {
                 throw new NoSuchElementException();
             }
-            V value = LayeredStack.this.get(this.index);
+            var value = LayeredStack.this.get(this.index);
             this.index++;
             return value;
         }

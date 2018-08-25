@@ -10,7 +10,7 @@ public class TreeTest {
 
     @Test
     public void test() {
-        Tree tree = new Tree();
+        var tree = new Tree();
         tree.include(Arrays.asList(
                 new JUMP_DESTINATION(),
                 new JUMP_DESTINATION(),

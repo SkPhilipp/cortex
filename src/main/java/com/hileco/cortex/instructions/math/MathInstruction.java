@@ -4,7 +4,6 @@ package com.hileco.cortex.instructions.math;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
@@ -23,15 +22,15 @@ abstract class MathInstruction implements Instruction {
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        byte[] left = stack.pop();
-        byte[] right = stack.pop();
-        BigInteger leftAsBigInteger = new BigInteger(left);
-        BigInteger rightAsBigInteger = new BigInteger(right);
-        BigInteger result = this.innerExecute(process, program, leftAsBigInteger, rightAsBigInteger);
+        var left = stack.pop();
+        var right = stack.pop();
+        var leftAsBigInteger = new BigInteger(left);
+        var rightAsBigInteger = new BigInteger(right);
+        var result = this.innerExecute(process, program, leftAsBigInteger, rightAsBigInteger);
         stack.push(result.toByteArray());
     }
 

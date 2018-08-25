@@ -26,9 +26,9 @@ public class Table {
     }
 
     private String toLength(String string, int length) {
-        char[] chars = new char[length];
-        int stringLength = string.length();
-        for (int i = 0; i < chars.length; i++) {
+        var chars = new char[length];
+        var stringLength = string.length();
+        for (var i = 0; i < chars.length; i++) {
             if (i < stringLength) {
                 chars[i] = string.charAt(i);
             } else {
@@ -39,16 +39,16 @@ public class Table {
     }
 
     private String buildSeparator(char left, char middle, char right) {
-        StringBuilder entry = new StringBuilder();
+        var entry = new StringBuilder();
         entry.append(Color.bg(Color.Palette.DEFAULT));
         entry.append(Color.fg(Color.Palette.DEFAULT));
         entry.append(left);
-        for (int i = 0; i < this.columns.size(); i++) {
+        for (var i = 0; i < this.columns.size(); i++) {
             if (i > 0) {
                 entry.append(middle);
             }
-            Column column = this.columns.get(i);
-            char[] chars = new char[column.width];
+            var column = this.columns.get(i);
+            var chars = new char[column.width];
             Arrays.fill(chars, '─');
             entry.append(chars);
         }
@@ -57,11 +57,11 @@ public class Table {
     }
 
     private String buildHeader() {
-        StringBuilder entry = new StringBuilder();
+        var entry = new StringBuilder();
         entry.append(Color.bg(Color.Palette.DEFAULT));
         entry.append(Color.fg(Color.Palette.DEFAULT));
         entry.append("│");
-        for (Column column : this.columns) {
+        for (var column : this.columns) {
             entry.append(Color.bg(column.background));
             entry.append(Color.fg(column.foreground));
             entry.append(this.toLength(column.header, column.width));
@@ -73,13 +73,13 @@ public class Table {
     }
 
     private String buildRow(List<String> row) {
-        StringBuilder entry = new StringBuilder();
+        var entry = new StringBuilder();
         entry.append(Color.bg(Color.Palette.DEFAULT));
         entry.append(Color.fg(Color.Palette.DEFAULT));
         entry.append("│");
-        for (int i = 0; i < this.columns.size(); i++) {
-            String cell = i >= row.size() ? "" : row.get(i);
-            Column column = this.columns.get(i);
+        for (var i = 0; i < this.columns.size(); i++) {
+            var cell = i >= row.size() ? "" : row.get(i);
+            var column = this.columns.get(i);
             entry.append(Color.bg(column.background));
             entry.append(Color.fg(column.foreground));
             entry.append(this.toLength(cell, column.width));
@@ -95,7 +95,7 @@ public class Table {
         output.add(this.buildSeparator('┌', '┬', '┐'));
         output.add(this.buildHeader());
         output.add(this.buildSeparator('├', '┼', '┤'));
-        for (List<String> row : this.content) {
+        for (var row : this.content) {
             output.add(this.buildRow(row));
         }
         output.add(this.buildSeparator('└', '┴', '┘'));
@@ -103,7 +103,7 @@ public class Table {
     }
 
     public void write(PrintStream printStream) {
-        for (String string : this.toStrings()) {
+        for (var string : this.toStrings()) {
             printStream.println(string);
         }
         printStream.flush();

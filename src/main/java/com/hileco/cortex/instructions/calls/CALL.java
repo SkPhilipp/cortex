@@ -1,13 +1,11 @@
 package com.hileco.cortex.instructions.calls;
 
 import com.hileco.cortex.context.ProcessContext;
-import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
+import com.hileco.cortex.context.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
-import javafx.util.Pair;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
@@ -25,27 +23,27 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 public class CALL implements Instruction {
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 6) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        BigInteger recipientAddress = new BigInteger(stack.pop());
-        BigInteger valueTransferred = new BigInteger(stack.pop());
-        BigInteger inOffset = new BigInteger(stack.pop());
-        BigInteger inSize = new BigInteger(stack.pop());
-        BigInteger outOffset = new BigInteger(stack.pop());
-        BigInteger outSize = new BigInteger(stack.pop());
+        var recipientAddress = new BigInteger(stack.pop());
+        var valueTransferred = new BigInteger(stack.pop());
+        var inOffset = new BigInteger(stack.pop());
+        var inSize = new BigInteger(stack.pop());
+        var outOffset = new BigInteger(stack.pop());
+        var outSize = new BigInteger(stack.pop());
 
         program.setReturnDataOffset(outOffset);
         program.setReturnDataSize(outSize);
-        Program recipient = process.getAtlas().get(recipientAddress);
+        var recipient = process.getAtlas().get(recipientAddress);
         if (recipient == null) {
             throw new ProgramException(program, CALL_RECIPIENT_MISSING);
         }
-        BigInteger sourceAddress = program.getProgram().getAddress();
-        recipient.getTransfers().push(new Pair<>(sourceAddress, valueTransferred));
-        ProgramContext newContext = new ProgramContext(recipient);
-        byte[] inputData = program.getMemory().read(inOffset.intValue(), inSize.intValue());
+        var sourceAddress = program.getProgram().getAddress();
+        recipient.getTransfers().push(new Pair<BigInteger, BigInteger>(sourceAddress, valueTransferred));
+        var newContext = new ProgramContext(recipient);
+        var inputData = program.getMemory().read(inOffset.intValue(), inSize.intValue());
         newContext.getCallData().clear();
         newContext.getCallData().write(0, inputData);
         process.getPrograms().push(newContext);

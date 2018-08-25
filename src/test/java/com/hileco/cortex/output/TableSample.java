@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class TableSample {
 
     public static void main(String[] args) {
-        Table table = Table.builder()
+        var table = Table.builder()
                 .columns(Arrays.asList(
                         Table.Column.builder().header("Column 1").foreground(Color.Palette.RED).width(8).build(),
                         Table.Column.builder().header("Column 2").foreground(Color.Palette.GREEN).width(8).build(),

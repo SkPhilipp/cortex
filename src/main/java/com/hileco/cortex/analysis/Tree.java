@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class Tree {
     @Getter
-    private List<TreeBlock> treeBlocks;
-    private List<AtomicReference<Instruction>> instructions;
+    private final List<TreeBlock> treeBlocks;
+    private final List<AtomicReference<Instruction>> instructions;
 
     public Tree() {
         this.treeBlocks = new ArrayList<>();
@@ -20,19 +20,19 @@ public class Tree {
     }
 
     private void includeAsTreeBlock(int line, List<AtomicReference<Instruction>> instructions) {
-        TreeBlock treeBlock = new TreeBlock();
+        var treeBlock = new TreeBlock();
         treeBlock.include(line, instructions);
         this.treeBlocks.add(treeBlock);
     }
 
     public void include(List<Instruction> instructions) {
         List<AtomicReference<Instruction>> blockInstructions = new ArrayList<>();
-        int currentBlock = 0;
-        int line = 0;
+        var currentBlock = 0;
+        var line = 0;
         while (line < instructions.size()) {
             AtomicReference<Instruction> instructionReference = new AtomicReference<>(instructions.get(line));
             if (instructionReference.get() instanceof JUMP_DESTINATION) {
-                if (blockInstructions.size() > 0) {
+                if (!blockInstructions.isEmpty()) {
                     this.includeAsTreeBlock(currentBlock, blockInstructions);
                     currentBlock = line;
                 }
@@ -42,13 +42,13 @@ public class Tree {
             this.instructions.add(instructionReference);
             line++;
         }
-        if (blockInstructions.size() > 0) {
+        if (!blockInstructions.isEmpty()) {
             this.includeAsTreeBlock(currentBlock, blockInstructions);
         }
     }
 
     private int indexOf(TreeBlock treeBlock) {
-        int index = this.treeBlocks.indexOf(treeBlock);
+        var index = this.treeBlocks.indexOf(treeBlock);
         if (index == -1) {
             throw new IllegalArgumentException();
         }
@@ -56,21 +56,21 @@ public class Tree {
     }
 
     public void mergeUpwards(TreeBlock treeBlock) {
-        int index = this.indexOf(treeBlock);
+        var index = this.indexOf(treeBlock);
         if (index == 0) {
             return;
         }
-        TreeBlock target = this.treeBlocks.get(index - 1);
+        var target = this.treeBlocks.get(index - 1);
         target.append(treeBlock);
         this.treeBlocks.remove(treeBlock);
     }
 
     public void mergeDownwards(TreeBlock treeBlock) {
-        int index = this.indexOf(treeBlock);
+        var index = this.indexOf(treeBlock);
         if (index + 1 >= this.treeBlocks.size()) {
             return;
         }
-        TreeBlock target = this.treeBlocks.get(index + 1);
+        var target = this.treeBlocks.get(index + 1);
         treeBlock.append(target);
         this.treeBlocks.remove(target);
     }
@@ -80,7 +80,7 @@ public class Tree {
     }
 
     public void replace(TreeBlock original, TreeBlock replacement) {
-        int index = this.indexOf(original);
+        var index = this.indexOf(original);
         this.treeBlocks.set(index, replacement);
     }
 
@@ -92,9 +92,9 @@ public class Tree {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         stringBuilder.append("        ┌───────────────────────────────────\n");
-        for (TreeBlock treeBlock : this.treeBlocks) {
+        for (var treeBlock : this.treeBlocks) {
             stringBuilder.append(treeBlock);
             stringBuilder.append("        │\n");
         }

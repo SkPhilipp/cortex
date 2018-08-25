@@ -30,11 +30,11 @@ public class ProgramGeneratorContext {
     }
 
     private <T extends Chanced> Supplier<T> of(T[] types) {
-        double total = Arrays.stream(types).mapToDouble(Chanced::chance).sum();
+        var total = Arrays.stream(types).mapToDouble(Chanced::chance).sum();
         return () -> {
-            double choice = this.random.nextDouble() * total;
+            var choice = this.random.nextDouble() * total;
             T selected = null;
-            for (T type : types) {
+            for (var type : types) {
                 selected = type;
                 choice = choice - type.chance();
                 if (choice <= 0) {
@@ -58,7 +58,7 @@ public class ProgramGeneratorContext {
     }
 
     public void forRandom(int minimum, int maximum, IntConsumer consumer) {
-        int choice = this.randomIntBetween(minimum, maximum);
+        var choice = this.randomIntBetween(minimum, maximum);
         IntStream.range(minimum, choice + 1).forEach(consumer);
     }
 

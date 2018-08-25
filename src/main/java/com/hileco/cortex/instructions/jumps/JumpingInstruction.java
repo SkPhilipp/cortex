@@ -5,8 +5,6 @@ import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS;
 import static com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION;
 
@@ -16,11 +14,11 @@ abstract class JumpingInstruction implements Instruction {
         if (nextInstructionPosition < 0) {
             throw new ProgramException(program, JUMP_OUT_OF_BOUNDS);
         }
-        List<Instruction> instructions = program.getProgram().getInstructions();
+        var instructions = program.getProgram().getInstructions();
         if (nextInstructionPosition >= instructions.size()) {
             throw new ProgramException(program, JUMP_OUT_OF_BOUNDS);
         }
-        Instruction instruction = instructions.get(nextInstructionPosition);
+        var instruction = instructions.get(nextInstructionPosition);
         if (!(instruction instanceof JUMP_DESTINATION)) {
             throw new ProgramException(program, JUMP_TO_ILLEGAL_INSTRUCTION);
         }

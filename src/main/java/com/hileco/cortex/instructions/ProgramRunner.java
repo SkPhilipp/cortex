@@ -36,11 +36,13 @@ public class ProgramRunner {
 
     @SuppressWarnings("unchecked")
     public void run() throws ProgramException {
-        ProgramContext programContext = this.processContext.getPrograms().peek();
+        var programContext = this.processContext.getPrograms().peek();
         while (programContext.getInstructionPosition() != programContext.getProgram().getInstructions().size()) {
-            int currentInstructionPosition = programContext.getInstructionPosition();
-            Instruction current = programContext.getProgram().getInstructions().get(currentInstructionPosition);
-            this.log(programContext, current);
+            var currentInstructionPosition = programContext.getInstructionPosition();
+            var current = programContext.getProgram().getInstructions().get(currentInstructionPosition);
+            if(TABLE_LOGGING_ENABLED ) {
+                this.log(programContext, current);
+            }
             current.execute(this.processContext, programContext);
             programContext = this.processContext.getPrograms().peek();
             if (programContext == null) {
@@ -64,13 +66,13 @@ public class ProgramRunner {
     }
 
     private void log(ProgramContext programContext, Instruction instruction) {
-        if (TABLE_LOGGING_ENABLED && !(instruction instanceof NOOP)) {
+        if (!(instruction instanceof NOOP)) {
             this.table.row(programContext.getInstructionPosition(),
                     programContext.getStack().size(),
                     programContext.getStack().size() > 3 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 3)) : "",
                     programContext.getStack().size() > 2 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 2)) : "",
                     programContext.getStack().size() > 1 ? new BigInteger(programContext.getStack().get(programContext.getStack().size() - 1)) : "",
-                    programContext.getStack().size() > 0 ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
+                    !programContext.getStack().isEmpty() ? new BigInteger(programContext.getStack().get(programContext.getStack().size())) : "",
                     instruction.toString());
         }
     }

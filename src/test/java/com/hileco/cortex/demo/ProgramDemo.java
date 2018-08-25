@@ -1,6 +1,5 @@
 package com.hileco.cortex.demo;
 
-import com.hileco.cortex.analysis.Tree;
 import com.hileco.cortex.analysis.TreeBuilder;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.context.Program;
@@ -14,17 +13,17 @@ import java.util.Arrays;
 public class ProgramDemo {
 
     public static void main(String[] args) {
-        TreeBuilder treeBuilder = new TreeBuilder(Arrays.asList(
+        var treeBuilder = new TreeBuilder(Arrays.asList(
                 new ParameterProcessor()
         ));
-        Program program = new Program(Arrays.asList(
+        var program = new Program(Arrays.asList(
                 new PUSH(BigInteger.valueOf(1234L).toByteArray()),
                 new PUSH(BigInteger.valueOf(5678L).toByteArray()),
                 new ADD(),
                 new PUSH(BigInteger.valueOf(2L).toByteArray()),
                 new MULTIPLY()
         ));
-        Tree tree = treeBuilder.build(program.getInstructions());
+        var tree = treeBuilder.build(program.getInstructions());
         System.out.println(program);
         System.out.println(tree);
     }

@@ -10,8 +10,8 @@ import java.util.List;
 public class GREATER_THAN extends ConditionInstruction {
     @Override
     public boolean innerExecute(byte[] left, byte[] right) {
-        BigInteger leftAsBigInteger = new BigInteger(left);
-        BigInteger rightAsBigInteger = new BigInteger(right);
+        var leftAsBigInteger = new BigInteger(left);
+        var rightAsBigInteger = new BigInteger(right);
         return leftAsBigInteger.compareTo(rightAsBigInteger) > 0;
     }
 

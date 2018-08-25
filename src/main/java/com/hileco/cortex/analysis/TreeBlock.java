@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 public class TreeBlock {
-    private Set<Integer> knownEntries;
-    private Set<Integer> knownExits;
-    private Set<Integer> potentialEntries;
-    private Set<Integer> potentialExits;
-    private List<TreeNode> treeNodes;
-    private List<AtomicReference<Instruction>> instructions;
+    private final Set<Integer> knownEntries;
+    private final Set<Integer> knownExits;
+    private final Set<Integer> potentialEntries;
+    private final Set<Integer> potentialExits;
+    private final List<TreeNode> treeNodes;
+    private final List<AtomicReference<Instruction>> instructions;
 
     public TreeBlock() {
         this.knownEntries = new HashSet<>();
@@ -28,9 +28,9 @@ public class TreeBlock {
     }
 
     public void include(int lineOffset, List<AtomicReference<Instruction>> instructions) {
-        for (int i = 0; i < instructions.size(); i++) {
-            AtomicReference<Instruction> instructionReference = instructions.get(i);
-            TreeNode treeNode = new TreeNode();
+        for (var i = 0; i < instructions.size(); i++) {
+            var instructionReference = instructions.get(i);
+            var treeNode = new TreeNode();
             treeNode.setLine(lineOffset + i);
             treeNode.setType(TreeNodeType.INSTRUCTION);
             treeNode.setInstruction(instructionReference);
@@ -50,8 +50,8 @@ public class TreeBlock {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (TreeNode treeNode : this.treeNodes) {
+        var stringBuilder = new StringBuilder();
+        for (var treeNode : this.treeNodes) {
             stringBuilder.append(treeNode);
             stringBuilder.append('\n');
         }

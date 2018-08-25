@@ -9,7 +9,6 @@ import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
 
 import java.math.BigInteger;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public enum FuzzFunction implements Chanced, Consumer<ProgramGeneratorContext> {
@@ -30,9 +29,9 @@ public enum FuzzFunction implements Chanced, Consumer<ProgramGeneratorContext> {
     }),
 
     CALL_LIBRARY(1D, context -> {
-        Set<BigInteger> choices = context.atlas().keySet();
+        var choices = context.atlas().keySet();
         if (!choices.isEmpty()) {
-            BigInteger address = (BigInteger) choices.toArray()[context.randomIntBetween(0, choices.size())];
+            var address = (BigInteger) choices.toArray()[context.randomIntBetween(0, choices.size())];
             context.currentBuilder().include(() -> new PUSH(BigInteger.ZERO.toByteArray()));
             context.currentBuilder().include(() -> new PUSH(address.toByteArray()));
             context.currentBuilder().include(CALL::new);
@@ -46,7 +45,7 @@ public enum FuzzFunction implements Chanced, Consumer<ProgramGeneratorContext> {
     });
 
     private final Consumer<ProgramGeneratorContext> implementation;
-    private double chance;
+    private final double chance;
     FuzzFunction(double chance, Consumer<ProgramGeneratorContext> implementation) {
         this.chance = chance;
         this.implementation = implementation;

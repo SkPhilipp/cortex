@@ -2,8 +2,8 @@ package com.hileco.cortex.context;
 
 import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.context.layer.LayeredStack;
+import com.hileco.cortex.context.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
-import javafx.util.Pair;
 import lombok.Value;
 
 import java.math.BigInteger;
@@ -36,10 +36,10 @@ public class Program {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         stringBuilder.append("        ┌───────────────────────────────────\n");
-        int size = this.instructions.size();
-        for (int i = 0; i < size; i++) {
+        var size = this.instructions.size();
+        for (var i = 0; i < size; i++) {
             stringBuilder.append(String.format(" %06d │ %s\n", i, this.instructions.get(i)));
         }
         stringBuilder.append("        └───────────────────────────────────\n");

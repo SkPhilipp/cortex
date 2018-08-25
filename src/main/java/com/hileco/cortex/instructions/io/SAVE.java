@@ -4,7 +4,6 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
 
@@ -23,16 +22,16 @@ public class SAVE extends IoInstruction {
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        byte[] addressBytes = stack.pop();
-        BigInteger address = new BigInteger(addressBytes);
-        byte[] bytes = stack.pop();
+        var addressBytes = stack.pop();
+        var address = new BigInteger(addressBytes);
+        var bytes = stack.pop();
         LayeredBytes layeredBytes;
 
-        ProgramStoreZone programStoreZone = this.getProgramStoreZone();
+        var programStoreZone = this.getProgramStoreZone();
         switch (programStoreZone) {
             case MEMORY:
                 layeredBytes = program.getMemory();

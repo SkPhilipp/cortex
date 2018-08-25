@@ -11,12 +11,12 @@ public class ProgramGenerator {
     private static final int LIMIT_INITIAL_PROGRAMS = 10;
 
     public LayeredMap<BigInteger, Program> generate(long seed) {
-        ProgramGeneratorContext context = new ProgramGeneratorContext(seed);
+        var context = new ProgramGeneratorContext(seed);
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS, i -> {
             context.pushBuilder(new InstructionsBuilder());
             context.randomFuzzProgram().accept(context);
-            BigInteger address = context.random();
-            Program generated = new Program(address, context.currentBuilder().build());
+            var address = context.random();
+            var generated = new Program(address, context.currentBuilder().build());
             context.atlas().put(address, generated);
             context.popBuilder();
         });

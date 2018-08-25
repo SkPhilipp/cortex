@@ -4,10 +4,11 @@ import java.util.Arrays;
 
 public class LayeredBytes {
 
+    public static final int DEFAULT_TOTAL_SIZE = 8192;
     private byte[] bytes;
 
     public LayeredBytes() {
-        this.bytes = new byte[8192];
+        this.bytes = new byte[DEFAULT_TOTAL_SIZE];
     }
 
     public byte[] read(int offset, int length) {
@@ -15,7 +16,7 @@ public class LayeredBytes {
     }
 
     public void clear() {
-        this.bytes = new byte[8192];
+        this.bytes = new byte[DEFAULT_TOTAL_SIZE];
     }
 
     public void write(int offset, byte[] bytesToWrite) {
@@ -39,7 +40,7 @@ public class LayeredBytes {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        LayeredBytes that = (LayeredBytes) o;
+        var that = (LayeredBytes) o;
         return Arrays.equals(this.bytes, that.bytes);
     }
 

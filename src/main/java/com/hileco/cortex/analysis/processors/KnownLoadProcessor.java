@@ -26,10 +26,10 @@ public class KnownLoadProcessor implements Processor {
                 .filter(treeNode -> treeNode.isInstruction(LOAD.class))
                 .filter(treeNode -> treeNode.hasParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
                 .forEach(treeNode -> {
-                    LOAD load = (LOAD) treeNode.getInstruction().get();
-                    PUSH push = (PUSH) treeNode.getParameters().get(0).getInstruction().get();
-                    BigInteger address = new BigInteger(push.getBytes());
-                    ProgramData programData = this.knownData.getOrDefault(load.getProgramStoreZone(), Collections.emptyMap()).get(address);
+                    var load = (LOAD) treeNode.getInstruction().get();
+                    var push = (PUSH) treeNode.getParameters().get(0).getInstruction().get();
+                    var address = new BigInteger(push.getBytes());
+                    var programData = this.knownData.getOrDefault(load.getProgramStoreZone(), Collections.emptyMap()).get(address);
                     if (programData != null && this.knownSources.containsAll(programData.getSources())) {
                         treeNode.getInstruction().set(new NOOP());
                         treeNode.getInstruction().set(new PUSH(programData.getContent()));

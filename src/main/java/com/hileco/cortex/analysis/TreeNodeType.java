@@ -4,7 +4,7 @@ public enum TreeNodeType {
 
     UNKNOWN((treeNode, stringBuilder, offset) -> {
         stringBuilder.append(" ?????? │");
-        for (int i = 0; i < offset; i++) {
+        for (var i = 0; i < offset; i++) {
             stringBuilder.append(' ');
         }
         stringBuilder.append(' ');
@@ -12,28 +12,28 @@ public enum TreeNodeType {
     }),
     INSTRUCTION((treeNode, stringBuilder, offset) -> {
         stringBuilder.append(String.format(" %06d │", treeNode.getLine()));
-        for (int i = 0; i < offset; i++) {
+        for (var i = 0; i < offset; i++) {
             stringBuilder.append(' ');
         }
         stringBuilder.append(' ');
         stringBuilder.append(treeNode.getInstruction().toString().trim());
         if (!treeNode.getParameters().isEmpty()) {
             stringBuilder.append(' ');
-            for (TreeNode parameter : treeNode.getParameters()) {
+            for (var parameter : treeNode.getParameters()) {
                 stringBuilder.append('\n');
                 parameter.getType().formatter.format(parameter, stringBuilder, offset + 2);
             }
         }
     });
 
-    private Formatter formatter;
+    private final Formatter formatter;
 
     TreeNodeType(Formatter formatter) {
         this.formatter = formatter;
     }
 
     public String format(TreeNode treeNode) {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         this.formatter.format(treeNode, stringBuilder, 0);
         return stringBuilder.toString();
     }

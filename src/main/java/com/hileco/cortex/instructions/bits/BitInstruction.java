@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.bits;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;
@@ -21,15 +20,15 @@ public abstract class BitInstruction implements Instruction {
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
-        LayeredStack<byte[]> stack = program.getStack();
+        var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        byte[] left = stack.pop();
-        byte[] right = stack.pop();
-        byte[] result = new byte[Math.max(left.length, right.length)];
+        var left = stack.pop();
+        var right = stack.pop();
+        var result = new byte[Math.max(left.length, right.length)];
 
-        for (int i = 0; i < result.length; i++) {
+        for (var i = 0; i < result.length; i++) {
             byte leftByte = i < left.length ? left[i] : 0;
             byte rightByte = i < right.length ? right[i] : 0;
             result[i] = this.innerExecute(leftByte, rightByte);

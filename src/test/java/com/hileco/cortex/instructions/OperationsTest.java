@@ -4,7 +4,6 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
 import com.hileco.cortex.instructions.bits.BITWISE_OR;
@@ -45,17 +44,17 @@ public class OperationsTest {
 
     private <T extends Instruction> ProgramContext run(T instruction, BiConsumer<ProcessContext, ProgramContext> customSetup) throws
             ProgramException {
-        Program program = new Program(Collections.singletonList(instruction));
-        ProgramContext programContext = new ProgramContext(program);
-        LayeredStack<byte[]> stack = programContext.getStack();
+        var program = new Program(Collections.singletonList(instruction));
+        var programContext = new ProgramContext(program);
+        var stack = programContext.getStack();
         stack.push(new byte[]{5});
         stack.push(new byte[]{6});
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
         programContext.getMemory().write(8, new byte[]{0x56, 0x78});
-        ProcessContext processContext = new ProcessContext(programContext);
+        var processContext = new ProcessContext(programContext);
         customSetup.accept(processContext, programContext);
-        ProgramRunner programRunner = new ProgramRunner(processContext);
+        var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         return programContext;
     }
@@ -127,7 +126,7 @@ public class OperationsTest {
 
     @Test
     public void runAddOverflowing() throws ProgramException {
-        ProgramContext result = this.run(new ADD(), (processContext, programContext) -> {
+        var result = this.run(new ADD(), (processContext, programContext) -> {
             programContext.getStack().push(ProcessContext.NUMERICAL_LIMIT.toByteArray());
             programContext.getStack().push(BigInteger.TEN.toByteArray());
         });
@@ -146,11 +145,11 @@ public class OperationsTest {
 
     @Test
     public void runMultiplyOverflowing() throws ProgramException {
-        ProgramContext result = this.run(new MULTIPLY(), (processContext, programContext) -> {
+        var result = this.run(new MULTIPLY(), (processContext, programContext) -> {
             programContext.getStack().push(ProcessContext.NUMERICAL_LIMIT.toByteArray());
             programContext.getStack().push(BigInteger.TEN.toByteArray());
         });
-        BigInteger expected = ProcessContext.NUMERICAL_LIMIT.multiply(BigInteger.TEN).mod(ProcessContext.NUMERICAL_LIMIT.add(BigInteger.ONE));
+        var expected = ProcessContext.NUMERICAL_LIMIT.multiply(BigInteger.TEN).mod(ProcessContext.NUMERICAL_LIMIT.add(BigInteger.ONE));
         Assert.assertArrayEquals(expected.toByteArray(), result.getStack().pop());
     }
 

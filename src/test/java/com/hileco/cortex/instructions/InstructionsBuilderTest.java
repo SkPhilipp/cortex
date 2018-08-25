@@ -21,7 +21,7 @@ public class InstructionsBuilderTest {
 
     @Test
     public void testJump() throws ProgramException {
-        Program program = new Program(BigInteger.ZERO, Arrays.asList(
+        var program = new Program(BigInteger.ZERO, Arrays.asList(
                 new PUSH(new byte[]{123}),
                 new PUSH(new byte[]{123}),
                 new EQUALS(),
@@ -34,9 +34,9 @@ public class InstructionsBuilderTest {
                 new NOOP(),
                 new JUMP_DESTINATION()
         ));
-        ProgramContext programContext = new ProgramContext(program);
-        ProcessContext processContext = new ProcessContext(programContext);
-        ProgramRunner programRunner = new ProgramRunner(processContext);
+        var programContext = new ProgramContext(program);
+        var processContext = new ProcessContext(programContext);
+        var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
         Assert.assertEquals(6, programContext.getInstructionsExecuted());
@@ -44,7 +44,7 @@ public class InstructionsBuilderTest {
 
     @Test
     public void testNoJump() throws ProgramException {
-        Program program = new Program(BigInteger.ZERO, Arrays.asList(
+        var program = new Program(BigInteger.ZERO, Arrays.asList(
                 new PUSH(new byte[]{123}),
                 new PUSH(new byte[]{124}),
                 new EQUALS(),
@@ -57,9 +57,9 @@ public class InstructionsBuilderTest {
                 new NOOP(),
                 new JUMP_DESTINATION()
         ));
-        ProgramContext programContext = new ProgramContext(program);
-        ProcessContext processContext = new ProcessContext(programContext);
-        ProgramRunner programRunner = new ProgramRunner(processContext);
+        var programContext = new ProgramContext(program);
+        var processContext = new ProcessContext(programContext);
+        var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionsExecuted());
@@ -67,7 +67,7 @@ public class InstructionsBuilderTest {
 
     @Test
     public void testLoop() throws ProgramException {
-        Program program = new Program(BigInteger.ZERO, Arrays.asList(
+        var program = new Program(BigInteger.ZERO, Arrays.asList(
                 new PUSH(new byte[]{0}),
                 new JUMP_DESTINATION(),
                 new PUSH(new byte[]{1}),
@@ -79,9 +79,9 @@ public class InstructionsBuilderTest {
                 new PUSH(BigInteger.valueOf(1L).toByteArray()),
                 new JUMP_IF()
         ));
-        ProgramContext programContext = new ProgramContext(program);
-        ProcessContext processContext = new ProcessContext(programContext);
-        ProgramRunner programRunner = new ProgramRunner(processContext);
+        var programContext = new ProgramContext(program);
+        var processContext = new ProcessContext(programContext);
+        var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
         Assert.assertEquals(((program.getInstructions().size() - 1) * 256) + 1, programContext.getInstructionsExecuted());

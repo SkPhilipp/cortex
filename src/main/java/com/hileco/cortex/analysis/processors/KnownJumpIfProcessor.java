@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class KnownJumpIfProcessor implements Processor {
     private void fully(TreeNode treeNode, Consumer<TreeNode> consumer) {
         consumer.accept(treeNode);
-        for (TreeNode parameter : treeNode.getParameters()) {
+        for (var parameter : treeNode.getParameters()) {
             this.fully(parameter, consumer);
         }
     }
@@ -29,17 +29,17 @@ public class KnownJumpIfProcessor implements Processor {
                 .filter(treeNode -> treeNode.hasParameter(0, TreeNode::isSelfContained))
                 .filter(treeNode -> treeNode.hasParameter(1, TreeNode::isSelfContained))
                 .forEach(jumpNode -> {
-                    TreeNode decidingNode = jumpNode.getParameters().get(1);
-                    Program program = new Program(BigInteger.ZERO, decidingNode.toInstructions());
-                    ProgramContext programContext = new ProgramContext(program);
-                    ProcessContext processContext = new ProcessContext(programContext);
-                    ProgramRunner programRunner = new ProgramRunner(processContext);
+                    var decidingNode = jumpNode.getParameters().get(1);
+                    var program = new Program(BigInteger.ZERO, decidingNode.toInstructions());
+                    var programContext = new ProgramContext(program);
+                    var processContext = new ProcessContext(programContext);
+                    var programRunner = new ProgramRunner(processContext);
                     try {
                         programRunner.run();
                     } catch (ProgramException e) {
                         throw new IllegalStateException("Unknown cause for ProgramException", e);
                     }
-                    byte[] result = programContext.getStack().peek();
+                    var result = programContext.getStack().peek();
                     if (new BigInteger(result).compareTo(BigInteger.ZERO) > 0) {
                         this.fully(decidingNode, node -> node.getInstruction().set(new NOOP()));
                         jumpNode.getInstruction().set(new JUMP());

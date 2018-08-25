@@ -20,7 +20,7 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 @AllArgsConstructor
 @EqualsAndHashCode
 public abstract class IoInstruction implements Instruction {
-    private ProgramStoreZone programStoreZone;
+    private final ProgramStoreZone programStoreZone;
 
     private static List<ProgramZone> programZoneFor(ProgramStoreZone programStoreZone) {
         switch (programStoreZone) {

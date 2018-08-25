@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.bits;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import lombok.EqualsAndHashCode;
 
@@ -14,13 +13,16 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @EqualsAndHashCode
 public class BITWISE_NOT implements Instruction {
+
+    private static final byte CLEAR = 127;
+
     @Override
     public void execute(ProcessContext process, ProgramContext program) {
-        LayeredStack<byte[]> stack = program.getStack();
-        byte[] pop = stack.pop();
-        byte[] result = new byte[pop.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = 127;
+        var stack = program.getStack();
+        var pop = stack.pop();
+        var result = new byte[pop.length];
+        for (var i = 0; i < result.length; i++) {
+            result[i] = CLEAR;
             result[i] ^= pop[i];
         }
         stack.push(result);

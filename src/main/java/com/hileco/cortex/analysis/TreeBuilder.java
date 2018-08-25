@@ -11,7 +11,7 @@ public class TreeBuilder {
     private List<Processor> processors;
 
     public Tree build(List<Instruction> instructions) {
-        Tree tree = new Tree();
+        var tree = new Tree();
         tree.include(instructions);
         this.processors.forEach(processor -> processor.process(tree));
         return tree;

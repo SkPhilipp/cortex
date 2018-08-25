@@ -30,7 +30,7 @@ public class TreeNode {
     private AtomicReference<Instruction> instruction;
     @Setter
     private Integer line;
-    private List<TreeNode> parameters;
+    private final List<TreeNode> parameters;
 
     public TreeNode() {
         this.parameters = new ArrayList<>();
@@ -46,7 +46,7 @@ public class TreeNode {
             throw new IllegalStateException(String.format("Cannot convert type %s to instruction", this.type));
         }
         list.add(new Pair<>(this.line, this.instruction));
-        for (TreeNode parameter : this.parameters) {
+        for (var parameter : this.parameters) {
             parameter.addInstructionsByLine(list);
         }
     }

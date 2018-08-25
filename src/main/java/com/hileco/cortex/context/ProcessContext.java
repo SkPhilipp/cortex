@@ -21,7 +21,7 @@ public class ProcessContext {
 
     public ProcessContext(ProgramContext... programContexts) {
         this.programs = new LayeredStack<>();
-        for (ProgramContext programContext : programContexts) {
+        for (var programContext : programContexts) {
             this.programs.push(programContext);
         }
         this.atlas = new LayeredMap<>();
