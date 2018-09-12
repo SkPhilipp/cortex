@@ -20,6 +20,7 @@ class Z3DemoTest {
      */
     public static void main(String[] args) {
         var context = new Context();
+        var start = System.currentTimeMillis();
         var callData0Symbol = context.mkSymbol(CALL_DATA_0);
         var callData0 = context.mkIntConst(callData0Symbol);
         var callDataPlusTen = context.mkAdd(callData0, context.mkInt(10));
@@ -29,11 +30,13 @@ class Z3DemoTest {
         solver.add(fullExpression);
         solver.check();
         var model = solver.getModel();
-        var constants = Arrays.stream(model.getConstDecls())
+        var constantFunctionDeclaration = Arrays.stream(model.getConstDecls())
                 .filter(funcDecl -> CALL_DATA_0.equals(funcDecl.getName().toString()))
                 .findAny()
                 .orElseThrow();
-        var result = ((IntNum) model.getConstInterp(constants)).getInt();
+        var result = ((IntNum) model.getConstInterp(constantFunctionDeclaration)).getInt();
+        System.out.println(System.currentTimeMillis() - start);
+        System.out.println(result);
         System.out.println(((result + 10) % 0xffffff < 10));
     }
 }
