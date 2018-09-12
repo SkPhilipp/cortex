@@ -11,7 +11,7 @@ import static com.hileco.cortex.constraints.Expression.reference;
 import static com.hileco.cortex.constraints.Expression.value;
 import static com.hileco.cortex.constraints.Reference.Type.CALL_DATA;
 
-class ConstraintDemoTest {
+class ConstraintDemo {
 
     /**
      * "Solve for ((call_data[0] + 10) % 0xffffff < 10)" implemented.
