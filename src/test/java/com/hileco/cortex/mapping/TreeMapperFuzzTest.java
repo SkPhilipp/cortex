@@ -15,7 +15,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Set;
 
 public class TreeMapperFuzzTest {
 
@@ -49,7 +49,7 @@ public class TreeMapperFuzzTest {
                 var tree = treeBuilder.build(instructions);
                 var treeMapping = treeMapper.map(tree);
                 Assert.assertEquals(instructions.size(), treeMapping.getLineMapping().size());
-                jumpsMapped += treeMapping.getJumpMappings().values().stream().mapToInt(Map::size).sum();
+                jumpsMapped += treeMapping.getJumpMapping().values().stream().mapToInt(Set::size).sum();
             }
         }
         Assert.assertTrue(jumpsMapped / LIMIT_RUNS > EXPECTED_MINIMUM_AVERAGE_JUMPS_MAPPED);

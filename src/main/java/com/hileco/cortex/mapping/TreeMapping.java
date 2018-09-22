@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class TreeMapping {
-    private final Map<TreeBlock, Map<Integer, Set<Integer>>> jumpMappings;
+    private final Map<Integer, Set<Integer>> jumpMapping;
     private final Map<Integer, TreeBlock> lineMapping;
 
     public TreeMapping() {
-        this.jumpMappings = new HashMap<>();
+        this.jumpMapping = new HashMap<>();
         this.lineMapping = new HashMap<>();
     }
 
@@ -20,14 +20,13 @@ public class TreeMapping {
         this.lineMapping.put(key, value);
     }
 
-    public void putJumpMapping(TreeBlock key, Integer source, Integer target) {
-        this.jumpMappings.computeIfAbsent(key, ignore -> new HashMap<>())
-                .computeIfAbsent(source, ignore -> new HashSet<>())
+    public void putJumpMapping(Integer source, Integer target) {
+        this.jumpMapping.computeIfAbsent(source, ignore -> new HashSet<>())
                 .add(target);
     }
 
-    public Map<TreeBlock, Map<Integer, Set<Integer>>> getJumpMappings() {
-        return this.jumpMappings;
+    public Map<Integer, Set<Integer>> getJumpMapping() {
+        return this.jumpMapping;
     }
 
     public Map<Integer, TreeBlock> getLineMapping() {

@@ -38,12 +38,9 @@ public class TreeMapperDemo {
         var treeMapping = treeMapper.map(tree);
         System.out.println(program);
         System.out.println(tree);
-        treeMapping.getJumpMappings()
-                .forEach((treeBlock, jumpMapping) -> {
-                    System.out.println(String.format(" (%04d)", treeBlock.getTreeNodes().get(0).getLine()));
-                    jumpMapping.forEach((source, targets) -> targets.forEach(target -> {
-                        System.out.println(String.format("- %04d --> %04d", source, target));
-                    }));
-                });
+        treeMapping.getJumpMapping().forEach((source, targets) -> {
+            System.out.println(String.format("%04d", source));
+            targets.forEach(target -> System.out.println(String.format(" --> %04d", target)));
+        });
     }
 }
