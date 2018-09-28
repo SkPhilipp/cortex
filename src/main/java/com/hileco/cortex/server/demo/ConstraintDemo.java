@@ -1,7 +1,10 @@
-package com.hileco.cortex.demo;
+package com.hileco.cortex.server.demo;
 
 import com.hileco.cortex.constraints.Reference;
 import com.hileco.cortex.constraints.Solver;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 import static com.hileco.cortex.constraints.Expression.Type.ADD;
 import static com.hileco.cortex.constraints.Expression.Type.LESS_THAN;
@@ -11,12 +14,14 @@ import static com.hileco.cortex.constraints.Expression.reference;
 import static com.hileco.cortex.constraints.Expression.value;
 import static com.hileco.cortex.constraints.Reference.Type.CALL_DATA;
 
-class ConstraintDemo {
+public class ConstraintDemo implements Route {
 
     /**
      * "Solve for ((call_data[0] + 10) % 0xffffff < 10)" implemented.
      */
-    public static void main(String[] args) {
+    @Override
+    public Object handle(Request request, Response response) {
+        response.type("");
         var expression = operation(LESS_THAN,
                 operation(MODULO,
                         operation(ADD,
@@ -25,7 +30,6 @@ class ConstraintDemo {
                         value(0xffffffL)),
                 value(10L));
         var solver = new Solver();
-        var solution = solver.solve(expression);
-        System.out.println(solution);
+        return solver.solve(expression);
     }
 }

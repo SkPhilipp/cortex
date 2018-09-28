@@ -1,4 +1,4 @@
-package com.hileco.cortex.demo;
+package com.hileco.cortex.server.demo;
 
 import com.hileco.cortex.analysis.TreeBuilder;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
@@ -6,13 +6,17 @@ import com.hileco.cortex.context.Program;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.MULTIPLY;
 import com.hileco.cortex.instructions.stack.PUSH;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 
-public class ProgramDemo {
+public class ProgramDemo implements Route {
 
-    public static void main(String[] args) {
+    @Override
+    public Object handle(Request request, Response response) {
         var treeBuilder = new TreeBuilder(Arrays.asList(
                 new ParameterProcessor()
         ));
@@ -24,7 +28,6 @@ public class ProgramDemo {
                 new MULTIPLY()
         ));
         var tree = treeBuilder.build(program.getInstructions());
-        System.out.println(program);
-        System.out.println(tree);
+        return String.valueOf(program) + '\n' + tree;
     }
 }
