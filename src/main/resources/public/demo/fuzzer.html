@@ -8,7 +8,9 @@
 			<a href="/">CORTEX</a>
 		</h1>
 		<script>
-			fetch('/api/demo/fuzzer.json?seed=0')
+			let urlParams = new URLSearchParams(window.location.search);
+			let seed = urlParams.get('seed');
+			fetch('/api/demo/fuzzer.json?seed=' + seed)
 				.then(function(response) {
 					return response.json();
 				})
