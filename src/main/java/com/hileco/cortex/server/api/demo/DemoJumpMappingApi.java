@@ -1,4 +1,4 @@
-package com.hileco.cortex.server.demo;
+package com.hileco.cortex.server.api.demo;
 
 import com.hileco.cortex.analysis.TreeBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
@@ -14,18 +14,19 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
-public class TreeMapperDemo implements Route {
+public class DemoJumpMappingApi implements Route {
 
-    private static final String SEED = "0";
     private static final String PARAM_SEED = "seed";
 
     @Override
     public Object handle(Request request, Response response) {
-        var seed = Long.parseLong(request.queryParamOrDefault(PARAM_SEED, SEED));
+        var seed = Long.parseLong(request.queryParams(PARAM_SEED));
         var treeBuilder = new TreeBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new JumpTableProcessor(),
@@ -42,10 +43,9 @@ public class TreeMapperDemo implements Route {
         var tree = treeBuilder.build(program.getInstructions());
         var treeMapper = new TreeMapper();
         var treeMapping = treeMapper.map(tree);
-        var stringBuilder = new StringBuilder();
-        stringBuilder.append(program);
-        stringBuilder.append('\n');
+        var jumpMapping = new ArrayList<String>();
         treeMapping.getJumpMapping().forEach((source, targets) -> {
+            var stringBuilder = new StringBuilder();
             stringBuilder.append(String.format("%04d", source));
             stringBuilder.append('\n');
             targets.forEach(target -> {
@@ -53,7 +53,9 @@ public class TreeMapperDemo implements Route {
                 stringBuilder.append('\n');
 
             });
+            jumpMapping.add(stringBuilder.toString());
         });
-        return stringBuilder.toString();
+        return Map.of("program", program.toString(),
+                      "jumpMapping", jumpMapping);
     }
 }

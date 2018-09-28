@@ -1,4 +1,4 @@
-package com.hileco.cortex.server.demo;
+package com.hileco.cortex.server.api.demo;
 
 import com.hileco.cortex.analysis.TreeBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
@@ -16,18 +16,19 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
-public class PathingDemo implements Route {
+public class DemoPathingApi implements Route {
 
-    private static final String SEED = "0";
     private static final String PARAM_SEED = "seed";
 
     @Override
     public Object handle(Request request, Response response) {
-        var seed = Long.parseLong(request.queryParamOrDefault(PARAM_SEED, SEED));
+        var seed = Long.parseLong(request.queryParams(PARAM_SEED));
         var treeBuilder = new TreeBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new JumpTableProcessor(),
@@ -44,12 +45,11 @@ public class PathingDemo implements Route {
         var tree = treeBuilder.build(program.getInstructions());
         var treeMapper = new TreeMapper();
         var treeMapping = treeMapper.map(tree);
-        var stringBuilder = new StringBuilder();
-        stringBuilder.append(program);
-        stringBuilder.append('\n');
         var pathIterator = new PathIterator(treeMapping, 1);
         var instructions = tree.toInstructions();
+        var paths = new ArrayList<String>();
         pathIterator.forEachRemaining(integers -> {
+            var stringBuilder = new StringBuilder();
             stringBuilder.append("        ┌───────────────────────────────────");
             stringBuilder.append('\n');
             for (var i = 0; i < integers.size() - 1; i++) {
@@ -73,8 +73,9 @@ public class PathingDemo implements Route {
             stringBuilder.append(String.format(" %06d │ %s", current, instruction));
             stringBuilder.append('\n');
             stringBuilder.append("        └───────────────────────────────────");
-            stringBuilder.append('\n');
+            paths.add(stringBuilder.toString());
         });
-        return stringBuilder.toString();
+        return Map.of("program", program.toString(),
+                      "paths", paths);
     }
 }

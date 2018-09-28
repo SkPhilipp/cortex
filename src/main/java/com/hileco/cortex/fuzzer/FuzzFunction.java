@@ -46,6 +46,7 @@ public enum FuzzFunction implements Chanced, Consumer<ProgramGeneratorContext> {
 
     private final Consumer<ProgramGeneratorContext> implementation;
     private final double chance;
+
     FuzzFunction(double chance, Consumer<ProgramGeneratorContext> implementation) {
         this.chance = chance;
         this.implementation = implementation;

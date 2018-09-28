@@ -2,24 +2,15 @@ package com.hileco.cortex.constraints;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class Expression {
-    public enum Type {
-        ADD,
-        SUBTRACT,
-        MULTIPLY,
-        DIVIDE,
-        LESS_THAN,
-        GREATER_THAN,
-        EQUAL_TO,
-        NOT_EQUAL_TO,
-        OR,
-        AND,
-        MODULO,
-        HASH,
-        REFERENCE,
-        VALUE
-    }
+    private Type type;
+    private Expression left;
+    private Expression right;
+    private Reference reference;
+    private Long constant;
 
     private Expression(Type type, Expression left, Expression right, Reference reference, Long constant) {
         this.type = type;
@@ -41,9 +32,57 @@ public class Expression {
         return new Expression(Type.VALUE, null, null, null, constant);
     }
 
-    private Type type;
-    private Expression left;
-    private Expression right;
-    private Reference reference;
-    private Long constant;
+    @Override
+    public String toString() {
+        switch (this.type) {
+            case ADD:
+            case SUBTRACT:
+            case MULTIPLY:
+            case DIVIDE:
+            case LESS_THAN:
+            case GREATER_THAN:
+            case EQUAL_TO:
+            case NOT_EQUAL_TO:
+            case OR:
+            case AND:
+            case MODULO:
+                return String.format("(%s %s %s)", this.left, this.type, this.right);
+            case HASH:
+                return String.format("%s(%s)", this.type, this.left);
+            case REFERENCE:
+                return Objects.toString(this.reference);
+            case VALUE:
+                return Objects.toString(this.constant);
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    public enum Type {
+        ADD("+"),
+        SUBTRACT("-"),
+        MULTIPLY("*"),
+        DIVIDE("/"),
+        LESS_THAN("<"),
+        GREATER_THAN(">"),
+        EQUAL_TO("=="),
+        NOT_EQUAL_TO("!="),
+        OR("||"),
+        AND("&&"),
+        MODULO("%"),
+        HASH("HASH"),
+        REFERENCE("REFERENCE"),
+        VALUE("VALUE");
+
+        private final String representation;
+
+        Type(String representation) {
+            this.representation = representation;
+        }
+
+        @Override
+        public String toString() {
+            return this.representation;
+        }
+    }
 }

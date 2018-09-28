@@ -1,27 +1,46 @@
 package com.hileco.cortex.server;
 
-import com.hileco.cortex.server.demo.ConstraintDemo;
-import com.hileco.cortex.server.demo.FuzzerTreeDemo;
-import com.hileco.cortex.server.demo.PathingDemo;
-import com.hileco.cortex.server.demo.ProgramDemo;
-import com.hileco.cortex.server.demo.TreeMapperDemo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.hileco.cortex.server.api.demo.DemoConstraintApi;
+import com.hileco.cortex.server.api.demo.DemoFuzzerApi;
+import com.hileco.cortex.server.api.demo.DemoJumpMappingApi;
+import com.hileco.cortex.server.api.demo.DemoOptimizerApi;
+import com.hileco.cortex.server.api.demo.DemoPathingApi;
+import com.hileco.cortex.server.api.docs.DocsInstructionsListApi;
+import spark.ResponseTransformer;
 
+import static spark.Spark.after;
 import static spark.Spark.get;
 import static spark.Spark.path;
+import static spark.Spark.staticFileLocation;
 
 public class CortexServer {
+
+    private static final ObjectMapper OBJECT_MAPPER;
+    private static final ResponseTransformer JSON;
+
+    static {
+        OBJECT_MAPPER = new ObjectMapper();
+        OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+        OBJECT_MAPPER.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        JSON = OBJECT_MAPPER::writeValueAsString;
+    }
+
     public static void main(String[] args) {
-        path("/demo", () -> {
-            get("/constraints", new TextRoute(new ConstraintDemo()));
-            get("/fuzzer", new TextRoute(new FuzzerTreeDemo()));
-            get("/pathing", new TextRoute(new PathingDemo()));
-            get("/program", new TextRoute(new ProgramDemo()));
-            get("/jump-mapping", new TextRoute(new TreeMapperDemo()));
+        staticFileLocation("/public");
+        path("/api", () -> {
+            path("/demo", () -> {
+                get("/constraints.json", new DemoConstraintApi(), JSON);
+                get("/fuzzer.json", new DemoFuzzerApi(), JSON);
+                get("/pathing.json", new DemoPathingApi(), JSON);
+                get("/program.json", new DemoOptimizerApi(), JSON);
+                get("/jump-mapping.json", new DemoJumpMappingApi(), JSON);
+            });
+            path("/docs", () -> {
+                get("/instructions.json", new DocsInstructionsListApi(), JSON);
+            });
         });
-        get("/", (req, res) -> "<a href='/demo/constraints'>/demo/constraints</a>\n" +
-                "<a href='/demo/fuzzer'>/demo/fuzzer</a>\n" +
-                "<a href='/demo/pathing'>/demo/pathing</a>\n" +
-                "<a href='/demo/program'>/demo/program</a>\n" +
-                "<a href='/demo/jump-mapping'>/demo/jump-mapping</a>\n");
+        after((request, response) -> response.type("application/json"));
     }
 }

@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="/css/style.css" />
+	</head>
+	<body>
+		<h1>
+			<a href="/">CORTEX</a>
+		</h1>
+		<script>
+			fetch('/api/demo/program.json')
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(json) {
+					document.getElementById("api-program").textContent = json["program"];
+					document.getElementById("api-tree").textContent = json["tree"];
+					document.getElementById("api-optimized-tree").textContent = json["optimizedTree"];
+				});
+		</script>
+		<h2>Program</h2>
+		<pre id="api-program"></pre>
+		<h2>Tree (Standard)</h2>
+		<pre id="api-tree"></pre>
+		<h2>Tree (Optimized)</h2>
+		<pre id="api-optimized-tree"></pre>
+	</body>
+</html>

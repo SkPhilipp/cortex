@@ -64,20 +64,20 @@ public class ProcessorFuzzTest {
             var callerContext = this.executeAll(generated);
             var callerContextOptimized = this.executeAll(generatedOptimized);
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getMemory(),
-                    callerContextOptimized.getMemory());
+                                callerContextOptimized.getMemory());
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getProgram().getStorage(),
-                    callerContextOptimized.getProgram().getStorage());
+                                callerContextOptimized.getProgram().getStorage());
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.getProgram().getTransfers(),
-                    callerContextOptimized.getProgram().getTransfers());
+                                callerContextOptimized.getProgram().getTransfers());
             for (var address : generated.keySet()) {
                 var standard = generated.get(address);
                 var optimized = generatedOptimized.get(address);
                 Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
-                        standard.getStorage(),
-                        optimized.getStorage());
+                                    standard.getStorage(),
+                                    optimized.getStorage());
                 Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
-                        standard.getTransfers(),
-                        optimized.getTransfers());
+                                    standard.getTransfers(),
+                                    optimized.getTransfers());
             }
         }
     }

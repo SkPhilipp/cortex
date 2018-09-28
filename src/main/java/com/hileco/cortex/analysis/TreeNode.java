@@ -23,14 +23,13 @@ import static com.hileco.cortex.analysis.TreeNodeType.INSTRUCTION;
 @Getter
 public class TreeNode {
     private static final Set<ProgramZone> SELF_CONTAINED_ZONES = new HashSet<>(Collections.singleton(ProgramZone.STACK));
-
+    private final List<TreeNode> parameters;
     @Setter
     private TreeNodeType type;
     @Setter
     private AtomicReference<Instruction> instruction;
     @Setter
     private Integer line;
-    private final List<TreeNode> parameters;
 
     public TreeNode() {
         this.parameters = new ArrayList<>();
