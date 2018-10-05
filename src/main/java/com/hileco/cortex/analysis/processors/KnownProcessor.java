@@ -1,7 +1,7 @@
 package com.hileco.cortex.analysis.processors;
 
-import com.hileco.cortex.analysis.Tree;
-import com.hileco.cortex.analysis.TreeNode;
+import com.hileco.cortex.analysis.Graph;
+import com.hileco.cortex.analysis.GraphNode;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
 
 public class KnownProcessor implements Processor {
 
-    private void noopDownwards(TreeNode treeNode) {
-        treeNode.getInstruction().set(new NOOP());
-        treeNode.getParameters().forEach(this::noopDownwards);
+    private void noopDownwards(GraphNode graphNode) {
+        graphNode.getInstruction().set(new NOOP());
+        graphNode.getParameters().forEach(this::noopDownwards);
     }
 
     @Override
-    public void process(Tree tree) {
+    public void process(Graph graph) {
         // TODO: Parameters could also be selfContained.
-        tree.getTreeBlocks().forEach(treeBlock -> treeBlock.getTreeNodes().stream()
-                .filter(TreeNode::isSelfContained)
-                .forEach(treeNode -> {
-                    var program = new Program(BigInteger.ZERO, treeNode.toInstructions());
+        graph.getGraphBlocks().forEach(graphBlock -> graphBlock.getGraphNodes().stream()
+                .filter(GraphNode::isSelfContained)
+                .forEach(graphNode -> {
+                    var program = new Program(BigInteger.ZERO, graphNode.toInstructions());
                     var programContext = new ProgramContext(program);
                     var processContext = new ProcessContext(programContext);
                     var programRunner = new ProgramRunner(processContext);
@@ -40,10 +40,10 @@ public class KnownProcessor implements Processor {
                             .map(PUSH::new)
                             .collect(Collectors.toList());
                     if (instructions.size() == 1) {
-                        treeNode.getInstruction().set(instructions.get(0));
-                        treeNode.getParameters().forEach(this::noopDownwards);
+                        graphNode.getInstruction().set(instructions.get(0));
+                        graphNode.getParameters().forEach(this::noopDownwards);
                     }
-                    // TODO: Replace the entire treeNode also when more instructions are available...
+                    // TODO: Replace the entire graphNode also when more instructions are available...
                 }));
     }
 }

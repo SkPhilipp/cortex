@@ -14,15 +14,15 @@
 				})
 				.then(function(json) {
 					document.getElementById("api-program").textContent = json["program"];
-					document.getElementById("api-tree").textContent = json["tree"];
-					document.getElementById("api-optimized-tree").textContent = json["optimizedTree"];
+					document.getElementById("api-graph").textContent = json["graph"];
+					document.getElementById("api-optimized-graph").textContent = json["optimizedGraph"];
 				});
 		</script>
 		<h2>Program</h2>
 		<pre id="api-program"></pre>
-		<h2>Tree (Standard)</h2>
-		<pre id="api-tree"></pre>
-		<h2>Tree (Optimized)</h2>
-		<pre id="api-optimized-tree"></pre>
+		<h2>Graph (Standard)</h2>
+		<pre id="api-graph"></pre>
+		<h2>Graph (Optimized)</h2>
+		<pre id="api-optimized-graph"></pre>
 	</body>
 </html>

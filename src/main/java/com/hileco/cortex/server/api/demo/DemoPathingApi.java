@@ -1,6 +1,6 @@
 package com.hileco.cortex.server.api.demo;
 
-import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
 import com.hileco.cortex.analysis.processors.JumpTableProcessor;
@@ -29,7 +29,7 @@ public class DemoPathingApi implements Route {
     @Override
     public Object handle(Request request, Response response) {
         var seed = Long.parseLong(request.queryParams(PARAM_SEED));
-        var treeBuilder = new TreeBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new JumpTableProcessor(),
                 new ExitTrimProcessor(),
@@ -42,11 +42,11 @@ public class DemoPathingApi implements Route {
         var generated = programGenerator.generate(seed);
         var first = generated.keySet().iterator().next();
         var program = generated.get(first);
-        var tree = treeBuilder.build(program.getInstructions());
+        var graph = graphBuilder.build(program.getInstructions());
         var treeMapper = new TreeMapper();
-        var treeMapping = treeMapper.map(tree);
+        var treeMapping = treeMapper.map(graph);
         var pathIterator = new PathIterator(treeMapping, 1);
-        var instructions = tree.toInstructions();
+        var instructions = graph.toInstructions();
         var paths = new ArrayList<String>();
         pathIterator.forEachRemaining(integers -> {
             var stringBuilder = new StringBuilder();

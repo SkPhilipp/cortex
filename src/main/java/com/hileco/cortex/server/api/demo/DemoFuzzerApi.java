@@ -1,6 +1,6 @@
 package com.hileco.cortex.server.api.demo;
 
-import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.analysis.processors.Processor;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
@@ -21,13 +21,13 @@ public class DemoFuzzerApi implements Route {
         var seed = Long.parseLong(request.queryParams(PARAM_SEED));
         List<Processor> processors = new ArrayList<>();
         processors.add(new ParameterProcessor());
-        var treeBuilder = new TreeBuilder(processors);
+        var graphBuilder = new GraphBuilder(processors);
         var programGenerator = new ProgramGenerator();
         var generated = programGenerator.generate(seed);
         var first = generated.keySet().iterator().next();
         var program = generated.get(first);
-        var tree = treeBuilder.build(program.getInstructions());
+        var graph = graphBuilder.build(program.getInstructions());
         return Map.of("program", program.toString(),
-                      "tree", tree.toString());
+                      "graph", graph.toString());
     }
 }

@@ -10,49 +10,49 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
-public class TreeBlock {
+public class GraphBlock {
     private final Set<Integer> knownEntries;
     private final Set<Integer> knownExits;
     private final Set<Integer> potentialEntries;
     private final Set<Integer> potentialExits;
-    private final List<TreeNode> treeNodes;
+    private final List<GraphNode> graphNodes;
     private final List<AtomicReference<Instruction>> instructions;
 
-    public TreeBlock() {
+    public GraphBlock() {
         this.knownEntries = new HashSet<>();
         this.knownExits = new HashSet<>();
         this.potentialEntries = new HashSet<>();
         this.potentialExits = new HashSet<>();
-        this.treeNodes = new ArrayList<>();
+        this.graphNodes = new ArrayList<>();
         this.instructions = new ArrayList<>();
     }
 
     public void include(int lineOffset, List<AtomicReference<Instruction>> instructions) {
         for (var i = 0; i < instructions.size(); i++) {
             var instructionReference = instructions.get(i);
-            var treeNode = new TreeNode();
-            treeNode.setLine(lineOffset + i);
-            treeNode.setType(TreeNodeType.INSTRUCTION);
-            treeNode.setInstruction(instructionReference);
-            this.treeNodes.add(treeNode);
+            var graphNode = new GraphNode();
+            graphNode.setLine(lineOffset + i);
+            graphNode.setType(GraphNodeType.INSTRUCTION);
+            graphNode.setInstruction(instructionReference);
+            this.graphNodes.add(graphNode);
         }
         this.instructions.addAll(instructions);
     }
 
-    void append(TreeBlock other) {
+    void append(GraphBlock other) {
         this.knownEntries.addAll(other.knownEntries);
         this.knownExits.addAll(other.knownExits);
         this.potentialEntries.addAll(other.potentialEntries);
         this.potentialExits.addAll(other.potentialExits);
-        this.treeNodes.addAll(other.treeNodes);
+        this.graphNodes.addAll(other.graphNodes);
         this.instructions.addAll(other.instructions);
     }
 
     @Override
     public String toString() {
         var stringBuilder = new StringBuilder();
-        for (var treeNode : this.treeNodes) {
-            stringBuilder.append(treeNode);
+        for (var graphNode : this.graphNodes) {
+            stringBuilder.append(graphNode);
             stringBuilder.append('\n');
         }
         return stringBuilder.toString();

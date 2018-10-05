@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis.processors;
 
-import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
@@ -42,7 +42,7 @@ public class ProcessorFuzzTest {
      * of generated programs, comparing for any differences in call results, storage, or transfers.
      */
     private void fuzzTestProcessor(Processor processor) {
-        var treeBuilder = new TreeBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new JumpTableProcessor(),
                 processor
@@ -58,7 +58,7 @@ public class ProcessorFuzzTest {
             for (var address : generatedOptimized.keySet()) {
                 var program = generatedOptimized.get(address);
                 var instructions = program.getInstructions();
-                var optimizedInstructions = treeBuilder.build(instructions).toInstructions();
+                var optimizedInstructions = graphBuilder.build(instructions).toInstructions();
                 generatedOptimized.put(program.getAddress(), new Program(program.getAddress(), optimizedInstructions));
             }
             var callerContext = this.executeAll(generated);

@@ -1,8 +1,8 @@
 package com.hileco.cortex.analysis;
 
-public enum TreeNodeType {
+public enum GraphNodeType {
 
-    UNKNOWN((treeNode, stringBuilder, offset) -> {
+    UNKNOWN((graphNode, stringBuilder, offset) -> {
         stringBuilder.append(" ?????? │");
         for (var i = 0; i < offset; i++) {
             stringBuilder.append(' ');
@@ -10,16 +10,16 @@ public enum TreeNodeType {
         stringBuilder.append(' ');
         stringBuilder.append("????");
     }),
-    INSTRUCTION((treeNode, stringBuilder, offset) -> {
-        stringBuilder.append(String.format(" %06d │", treeNode.getLine()));
+    INSTRUCTION((graphNode, stringBuilder, offset) -> {
+        stringBuilder.append(String.format(" %06d │", graphNode.getLine()));
         for (var i = 0; i < offset; i++) {
             stringBuilder.append(' ');
         }
         stringBuilder.append(' ');
-        stringBuilder.append(treeNode.getInstruction().toString().trim());
-        if (!treeNode.getParameters().isEmpty()) {
+        stringBuilder.append(graphNode.getInstruction().toString().trim());
+        if (!graphNode.getParameters().isEmpty()) {
             stringBuilder.append(' ');
-            for (var parameter : treeNode.getParameters()) {
+            for (var parameter : graphNode.getParameters()) {
                 stringBuilder.append('\n');
                 parameter.getType().formatter.format(parameter, stringBuilder, offset + 2);
             }
@@ -28,17 +28,17 @@ public enum TreeNodeType {
 
     private final Formatter formatter;
 
-    TreeNodeType(Formatter formatter) {
+    GraphNodeType(Formatter formatter) {
         this.formatter = formatter;
     }
 
-    public String format(TreeNode treeNode) {
+    public String format(GraphNode graphNode) {
         var stringBuilder = new StringBuilder();
-        this.formatter.format(treeNode, stringBuilder, 0);
+        this.formatter.format(graphNode, stringBuilder, 0);
         return stringBuilder.toString();
     }
 
     interface Formatter {
-        void format(TreeNode treeNode, StringBuilder stringBuilder, int offset);
+        void format(GraphNode graphNode, StringBuilder stringBuilder, int offset);
     }
 }

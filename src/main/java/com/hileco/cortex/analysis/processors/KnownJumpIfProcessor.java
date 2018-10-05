@@ -1,7 +1,7 @@
 package com.hileco.cortex.analysis.processors;
 
-import com.hileco.cortex.analysis.Tree;
-import com.hileco.cortex.analysis.TreeNode;
+import com.hileco.cortex.analysis.Graph;
+import com.hileco.cortex.analysis.GraphNode;
 import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
@@ -15,19 +15,19 @@ import java.math.BigInteger;
 import java.util.function.Consumer;
 
 public class KnownJumpIfProcessor implements Processor {
-    private void fully(TreeNode treeNode, Consumer<TreeNode> consumer) {
-        consumer.accept(treeNode);
-        for (var parameter : treeNode.getParameters()) {
+    private void fully(GraphNode graphNode, Consumer<GraphNode> consumer) {
+        consumer.accept(graphNode);
+        for (var parameter : graphNode.getParameters()) {
             this.fully(parameter, consumer);
         }
     }
 
     @Override
-    public void process(Tree tree) {
-        tree.getTreeBlocks().forEach(treeBlock -> treeBlock.getTreeNodes().stream()
-                .filter(treeNode -> treeNode.isInstruction(JUMP_IF.class))
-                .filter(treeNode -> treeNode.hasParameter(0, TreeNode::isSelfContained))
-                .filter(treeNode -> treeNode.hasParameter(1, TreeNode::isSelfContained))
+    public void process(Graph graph) {
+        graph.getGraphBlocks().forEach(graphBlock -> graphBlock.getGraphNodes().stream()
+                .filter(graphNode -> graphNode.isInstruction(JUMP_IF.class))
+                .filter(graphNode -> graphNode.hasParameter(0, GraphNode::isSelfContained))
+                .filter(graphNode -> graphNode.hasParameter(1, GraphNode::isSelfContained))
                 .forEach(jumpNode -> {
                     var decidingNode = jumpNode.getParameters().get(1);
                     var program = new Program(BigInteger.ZERO, decidingNode.toInstructions());

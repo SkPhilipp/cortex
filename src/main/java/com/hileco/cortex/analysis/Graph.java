@@ -9,20 +9,20 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class Tree {
+public class Graph {
     @Getter
-    private final List<TreeBlock> treeBlocks;
+    private final List<GraphBlock> graphBlocks;
     private final List<AtomicReference<Instruction>> instructions;
 
-    public Tree() {
-        this.treeBlocks = new ArrayList<>();
+    public Graph() {
+        this.graphBlocks = new ArrayList<>();
         this.instructions = new ArrayList<>();
     }
 
-    private void includeAsTreeBlock(int line, List<AtomicReference<Instruction>> instructions) {
-        var treeBlock = new TreeBlock();
-        treeBlock.include(line, instructions);
-        this.treeBlocks.add(treeBlock);
+    private void includeAsBlock(int line, List<AtomicReference<Instruction>> instructions) {
+        var block = new GraphBlock();
+        block.include(line, instructions);
+        this.graphBlocks.add(block);
     }
 
     public void include(List<Instruction> instructions) {
@@ -33,7 +33,7 @@ public class Tree {
             AtomicReference<Instruction> instructionReference = new AtomicReference<>(instructions.get(line));
             if (instructionReference.get() instanceof JUMP_DESTINATION) {
                 if (!blockInstructions.isEmpty()) {
-                    this.includeAsTreeBlock(currentBlock, blockInstructions);
+                    this.includeAsBlock(currentBlock, blockInstructions);
                     currentBlock = line;
                 }
                 blockInstructions.clear();
@@ -43,45 +43,45 @@ public class Tree {
             line++;
         }
         if (!blockInstructions.isEmpty()) {
-            this.includeAsTreeBlock(currentBlock, blockInstructions);
+            this.includeAsBlock(currentBlock, blockInstructions);
         }
     }
 
-    private int indexOf(TreeBlock treeBlock) {
-        var index = this.treeBlocks.indexOf(treeBlock);
+    private int indexOf(GraphBlock graphBlock) {
+        var index = this.graphBlocks.indexOf(graphBlock);
         if (index == -1) {
             throw new IllegalArgumentException();
         }
         return index;
     }
 
-    public void mergeUpwards(TreeBlock treeBlock) {
-        var index = this.indexOf(treeBlock);
+    public void mergeUpwards(GraphBlock graphBlock) {
+        var index = this.indexOf(graphBlock);
         if (index == 0) {
             return;
         }
-        var target = this.treeBlocks.get(index - 1);
-        target.append(treeBlock);
-        this.treeBlocks.remove(treeBlock);
+        var target = this.graphBlocks.get(index - 1);
+        target.append(graphBlock);
+        this.graphBlocks.remove(graphBlock);
     }
 
-    public void mergeDownwards(TreeBlock treeBlock) {
-        var index = this.indexOf(treeBlock);
-        if (index + 1 >= this.treeBlocks.size()) {
+    public void mergeDownwards(GraphBlock graphBlock) {
+        var index = this.indexOf(graphBlock);
+        if (index + 1 >= this.graphBlocks.size()) {
             return;
         }
-        var target = this.treeBlocks.get(index + 1);
-        treeBlock.append(target);
-        this.treeBlocks.remove(target);
+        var target = this.graphBlocks.get(index + 1);
+        graphBlock.append(target);
+        this.graphBlocks.remove(target);
     }
 
-    public void remove(TreeBlock treeBlock) {
-        this.treeBlocks.remove(treeBlock);
+    public void remove(GraphBlock graphBlock) {
+        this.graphBlocks.remove(graphBlock);
     }
 
-    public void replace(TreeBlock original, TreeBlock replacement) {
+    public void replace(GraphBlock original, GraphBlock replacement) {
         var index = this.indexOf(original);
-        this.treeBlocks.set(index, replacement);
+        this.graphBlocks.set(index, replacement);
     }
 
     public List<Instruction> toInstructions() {
@@ -94,8 +94,8 @@ public class Tree {
     public String toString() {
         var stringBuilder = new StringBuilder();
         stringBuilder.append("        ┌───────────────────────────────────\n");
-        for (var treeBlock : this.treeBlocks) {
-            stringBuilder.append(treeBlock);
+        for (var graphBlock : this.graphBlocks) {
+            stringBuilder.append(graphBlock);
             stringBuilder.append("        │\n");
         }
         stringBuilder.append("        └───────────────────────────────────\n");

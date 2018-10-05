@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis.processors;
 
-import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.instructions.debug.NOOP;
 import com.hileco.cortex.instructions.jumps.JUMP;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
@@ -20,15 +20,15 @@ public class KnownJumpIfProcessorTest {
         processors.add(new ParameterProcessor());
         processors.add(new JumpTableProcessor());
         processors.add(new KnownJumpIfProcessor());
-        var treeBuilder = new TreeBuilder(processors);
+        var graphBuilder = new GraphBuilder(processors);
 
-        var processed = treeBuilder.build(Arrays.asList(
+        var processed = graphBuilder.build(Arrays.asList(
                 new PUSH(BigInteger.ONE.toByteArray()),
                 new PUSH(BigInteger.TEN.toByteArray()),
                 new JUMP_IF()
         ));
 
-        var expected = treeBuilder.build(Arrays.asList(
+        var expected = graphBuilder.build(Arrays.asList(
                 new NOOP(),
                 new PUSH(BigInteger.TEN.toByteArray()),
                 new JUMP()

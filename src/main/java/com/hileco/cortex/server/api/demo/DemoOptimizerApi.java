@@ -1,6 +1,6 @@
 package com.hileco.cortex.server.api.demo;
 
-import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
 import com.hileco.cortex.analysis.processors.JumpTableProcessor;
@@ -26,10 +26,10 @@ public class DemoOptimizerApi implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        var treeBuilder = new TreeBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor()
         ));
-        var optimizedTreeBuilder = new TreeBuilder(Arrays.asList(
+        var optimizedGraphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new JumpTableProcessor(),
                 new ExitTrimProcessor(),
@@ -45,10 +45,10 @@ public class DemoOptimizerApi implements Route {
                 new PUSH(BigInteger.valueOf(2L).toByteArray()),
                 new MULTIPLY()
         ));
-        var tree = treeBuilder.build(program.getInstructions());
-        var optimizedTree = optimizedTreeBuilder.build(program.getInstructions());
+        var graph = graphBuilder.build(program.getInstructions());
+        var optimizedGraph = optimizedGraphBuilder.build(program.getInstructions());
         return Map.of("program", program.toString(),
-                      "tree", tree.toString(),
-                      "optimizedTree", optimizedTree.toString());
+                      "graph", graph.toString(),
+                      "optimizedGraph", optimizedGraph.toString());
     }
 }

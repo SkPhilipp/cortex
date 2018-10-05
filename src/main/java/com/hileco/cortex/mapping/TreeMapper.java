@@ -1,9 +1,9 @@
 package com.hileco.cortex.mapping;
 
-import com.hileco.cortex.analysis.Tree;
-import com.hileco.cortex.analysis.TreeBlock;
-import com.hileco.cortex.analysis.TreeNode;
-import com.hileco.cortex.analysis.TreeNodeType;
+import com.hileco.cortex.analysis.Graph;
+import com.hileco.cortex.analysis.GraphBlock;
+import com.hileco.cortex.analysis.GraphNode;
+import com.hileco.cortex.analysis.GraphNodeType;
 import com.hileco.cortex.instructions.jumps.EXIT;
 import com.hileco.cortex.instructions.jumps.JUMP;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
@@ -17,68 +17,68 @@ public class TreeMapper {
 
     private static final Set<Class<?>> JUMPS = Set.of(JUMP.class, JUMP_IF.class);
 
-    private void mapLinesToBlocksForNode(TreeMapping treeMapping, TreeBlock treeBlock, TreeNode treeNode) {
-        var line = treeNode.getLine();
+    private void mapLinesToBlocksForNode(TreeMapping treeMapping, GraphBlock graphBlock, GraphNode graphNode) {
+        var line = graphNode.getLine();
         if (line != null) {
-            treeMapping.putLineMapping(line, treeBlock);
+            treeMapping.putLineMapping(line, graphBlock);
         }
-        var parameters = treeNode.getParameters();
+        var parameters = graphNode.getParameters();
         if (parameters != null) {
-            parameters.forEach(parameter -> this.mapLinesToBlocksForNode(treeMapping, treeBlock, parameter));
+            parameters.forEach(parameter -> this.mapLinesToBlocksForNode(treeMapping, graphBlock, parameter));
         }
     }
 
-    private void mapLinesToBlocks(TreeMapping treeMapping, List<TreeBlock> treeBlocks) {
-        treeBlocks.forEach(treeBlock -> treeBlock.getTreeNodes().forEach(treeNode -> this.mapLinesToBlocksForNode(treeMapping, treeBlock, treeNode)));
+    private void mapLinesToBlocks(TreeMapping treeMapping, List<GraphBlock> graphBlocks) {
+        graphBlocks.forEach(graphBlock -> graphBlock.getGraphNodes().forEach(graphNode -> this.mapLinesToBlocksForNode(treeMapping, graphBlock, graphNode)));
     }
 
-    private void mapJumpsToBlocks(TreeMapping treeMapping, List<TreeBlock> treeBlocks) {
-        treeBlocks.forEach(treeBlock -> treeBlock.getTreeNodes()
+    private void mapJumpsToBlocks(TreeMapping treeMapping, List<GraphBlock> graphBlocks) {
+        graphBlocks.forEach(treeBlock -> treeBlock.getGraphNodes()
                 .stream()
-                .filter(treeNode -> treeNode.getType() == TreeNodeType.INSTRUCTION)
-                .filter(treeNode -> JUMPS.contains(treeNode.getInstruction().get().getClass()))
-                .filter(treeNode -> treeNode.hasParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
-                .forEach(treeNode -> {
-                    var targetPushInstruction = (PUSH) treeNode.getParameters().get(0).getInstruction().get();
+                .filter(graphNode -> graphNode.getType() == GraphNodeType.INSTRUCTION)
+                .filter(graphNode -> JUMPS.contains(graphNode.getInstruction().get().getClass()))
+                .filter(graphNode -> graphNode.hasParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
+                .forEach(graphNode -> {
+                    var targetPushInstruction = (PUSH) graphNode.getParameters().get(0).getInstruction().get();
                     var target = new BigInteger(targetPushInstruction.getBytes()).intValue();
-                    treeMapping.putJumpMapping(treeNode.getLine(), target);
+                    treeMapping.putJumpMapping(graphNode.getLine(), target);
                 }));
     }
 
-    private void mapBlocksToBlocks(TreeMapping treeMapping, List<TreeBlock> treeBlocks) {
-        var treeBlocksLimit = treeBlocks.size();
-        if (treeBlocksLimit >= 2) {
-            for (var i = 0; i < treeBlocksLimit - 1; i++) {
-                var a = treeBlocks.get(i).getTreeNodes();
-                var b = treeBlocks.get(i + 1).getTreeNodes();
+    private void mapBlocksToBlocks(TreeMapping treeMapping, List<GraphBlock> graphBlocks) {
+        var graphBlocksLimit = graphBlocks.size();
+        if (graphBlocksLimit >= 2) {
+            for (var i = 0; i < graphBlocksLimit - 1; i++) {
+                var a = graphBlocks.get(i).getGraphNodes();
+                var b = graphBlocks.get(i + 1).getGraphNodes();
                 if (!a.isEmpty()
                         && !b.isEmpty()
-                        && a.stream().noneMatch(treeNode -> treeNode.isInstruction(EXIT.class, JUMP.class))) {
+                        && a.stream().noneMatch(graphNode -> graphNode.isInstruction(EXIT.class, JUMP.class))) {
                     treeMapping.putJumpMapping(a.get(0).getLine(), b.get(0).getLine());
                 }
             }
         }
     }
 
-    private void mapBlocksToJumps(TreeMapping treeMapping, List<TreeBlock> treeBlocks) {
-        treeBlocks.forEach(treeBlock -> {
-            var treeNodes = treeBlock.getTreeNodes();
-            if (!treeNodes.isEmpty()) {
-                var treeBlockStart = treeNodes.get(0).getLine();
-                treeNodes.stream()
-                        .filter(treeNode -> JUMPS.contains(treeNode.getInstruction().get().getClass()))
-                        .forEach(treeNode -> treeMapping.putJumpMapping(treeBlockStart, treeNode.getLine()));
+    private void mapBlocksToJumps(TreeMapping treeMapping, List<GraphBlock> graphBlocks) {
+        graphBlocks.forEach(graphBlock -> {
+            var graphNodes = graphBlock.getGraphNodes();
+            if (!graphNodes.isEmpty()) {
+                var graphBlockStart = graphNodes.get(0).getLine();
+                graphNodes.stream()
+                        .filter(graphNode -> JUMPS.contains(graphNode.getInstruction().get().getClass()))
+                        .forEach(graphNode -> treeMapping.putJumpMapping(graphBlockStart, graphNode.getLine()));
             }
         });
     }
 
-    public TreeMapping map(Tree tree) {
+    public TreeMapping map(Graph graph) {
         var treeMapping = new TreeMapping();
-        var treeBlocks = tree.getTreeBlocks();
-        this.mapLinesToBlocks(treeMapping, treeBlocks);
-        this.mapJumpsToBlocks(treeMapping, treeBlocks);
-        this.mapBlocksToJumps(treeMapping, treeBlocks);
-        this.mapBlocksToBlocks(treeMapping, treeBlocks);
+        var graphBlocks = graph.getGraphBlocks();
+        this.mapLinesToBlocks(treeMapping, graphBlocks);
+        this.mapJumpsToBlocks(treeMapping, graphBlocks);
+        this.mapBlocksToJumps(treeMapping, graphBlocks);
+        this.mapBlocksToBlocks(treeMapping, graphBlocks);
         return treeMapping;
     }
 }

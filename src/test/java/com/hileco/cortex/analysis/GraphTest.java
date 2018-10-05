@@ -6,16 +6,16 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-public class TreeTest {
+public class GraphTest {
 
     @Test
     public void test() {
-        var tree = new Tree();
-        tree.include(Arrays.asList(
+        var graph = new Graph();
+        graph.include(Arrays.asList(
                 new JUMP_DESTINATION(),
                 new JUMP_DESTINATION(),
                 new JUMP_DESTINATION()
         ));
-        Assert.assertEquals(3, tree.getTreeBlocks().size());
+        Assert.assertEquals(3, graph.getGraphBlocks().size());
     }
 }

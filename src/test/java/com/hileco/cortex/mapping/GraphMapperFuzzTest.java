@@ -1,6 +1,6 @@
 package com.hileco.cortex.mapping;
 
-import com.hileco.cortex.analysis.TreeBuilder;
+import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
 import com.hileco.cortex.analysis.processors.JumpTableProcessor;
@@ -17,14 +17,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TreeMapperFuzzTest {
+public class GraphMapperFuzzTest {
 
     private static final int EXPECTED_MINIMUM_AVERAGE_JUMPS_MAPPED = 10;
     private static final int LIMIT_RUNS = 50;
 
     @Test
     public void testTreeMapper() {
-        var treeBuilder = new TreeBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new JumpTableProcessor(),
                 new ExitTrimProcessor(),
@@ -46,8 +46,8 @@ public class TreeMapperFuzzTest {
             for (var address : generatedOptimized.keySet()) {
                 var program = generatedOptimized.get(address);
                 var instructions = program.getInstructions();
-                var tree = treeBuilder.build(instructions);
-                var treeMapping = treeMapper.map(tree);
+                var graph = graphBuilder.build(instructions);
+                var treeMapping = treeMapper.map(graph);
                 Assert.assertEquals(instructions.size(), treeMapping.getLineMapping().size());
                 jumpsMapped += treeMapping.getJumpMapping().values().stream().mapToInt(Set::size).sum();
             }

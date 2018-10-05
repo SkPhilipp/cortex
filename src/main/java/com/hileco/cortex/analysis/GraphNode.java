@@ -18,20 +18,20 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.hileco.cortex.analysis.TreeNodeType.INSTRUCTION;
+import static com.hileco.cortex.analysis.GraphNodeType.INSTRUCTION;
 
 @Getter
-public class TreeNode {
+public class GraphNode {
     private static final Set<ProgramZone> SELF_CONTAINED_ZONES = new HashSet<>(Collections.singleton(ProgramZone.STACK));
-    private final List<TreeNode> parameters;
+    private final List<GraphNode> parameters;
     @Setter
-    private TreeNodeType type;
+    private GraphNodeType type;
     @Setter
     private AtomicReference<Instruction> instruction;
     @Setter
     private Integer line;
 
-    public TreeNode() {
+    public GraphNode() {
         this.parameters = new ArrayList<>();
     }
 
@@ -59,11 +59,11 @@ public class TreeNode {
                 .collect(Collectors.toList());
     }
 
-    private boolean hasParameters(Predicate<TreeNode> predicate) {
+    private boolean hasParameters(Predicate<GraphNode> predicate) {
         return this.parameters.stream().allMatch(predicate);
     }
 
-    public boolean hasParameter(int index, Predicate<TreeNode> predicate) {
+    public boolean hasParameter(int index, Predicate<GraphNode> predicate) {
         return index < this.parameters.size() && predicate.test(this.parameters.get(index));
     }
 
@@ -71,14 +71,14 @@ public class TreeNode {
         return this.type == INSTRUCTION && (classes.length == 0 || Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(this.instruction.get())));
     }
 
-    private boolean fully(Predicate<TreeNode> predicate) {
+    private boolean fully(Predicate<GraphNode> predicate) {
         return predicate.test(this)
-                && this.hasParameters(treeNode -> treeNode.fully(predicate));
+                && this.hasParameters(graphNode -> graphNode.fully(predicate));
     }
 
     public boolean isSelfContained() {
-        return this.fully(treeNode -> treeNode.isInstruction()
-                && SELF_CONTAINED_ZONES.containsAll(treeNode.getInstruction().get().getInstructionModifiers())
-                && !(treeNode.getInstruction().get() instanceof SWAP));
+        return this.fully(graphNode -> graphNode.isInstruction()
+                && SELF_CONTAINED_ZONES.containsAll(graphNode.getInstruction().get().getInstructionModifiers())
+                && !(graphNode.getInstruction().get() instanceof SWAP));
     }
 }
