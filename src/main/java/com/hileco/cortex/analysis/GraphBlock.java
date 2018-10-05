@@ -10,11 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @Getter
 public class GraphBlock {
     private final List<GraphNode> graphNodes;
-    private final List<AtomicReference<Instruction>> instructions;
 
     public GraphBlock() {
         this.graphNodes = new ArrayList<>();
-        this.instructions = new ArrayList<>();
     }
 
     public void include(int lineOffset, List<AtomicReference<Instruction>> instructions) {
@@ -26,12 +24,10 @@ public class GraphBlock {
             graphNode.setInstruction(instructionReference);
             this.graphNodes.add(graphNode);
         }
-        this.instructions.addAll(instructions);
     }
 
     void append(GraphBlock other) {
         this.graphNodes.addAll(other.graphNodes);
-        this.instructions.addAll(other.instructions);
     }
 
     @Override
