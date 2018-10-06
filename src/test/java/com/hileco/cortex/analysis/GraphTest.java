@@ -10,8 +10,7 @@ public class GraphTest {
 
     @Test
     public void test() {
-        var graph = new Graph();
-        graph.include(Arrays.asList(
+        var graph = new Graph(Arrays.asList(
                 new JUMP_DESTINATION(),
                 new JUMP_DESTINATION(),
                 new JUMP_DESTINATION()

@@ -3,7 +3,6 @@ package com.hileco.cortex.mapping;
 import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphBlock;
 import com.hileco.cortex.analysis.GraphNode;
-import com.hileco.cortex.analysis.GraphNodeType;
 import com.hileco.cortex.instructions.jumps.EXIT;
 import com.hileco.cortex.instructions.jumps.JUMP;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
@@ -11,6 +10,7 @@ import com.hileco.cortex.instructions.stack.PUSH;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class TreeMapper {
@@ -22,10 +22,9 @@ public class TreeMapper {
         if (line != null) {
             treeMapping.putLineMapping(line, graphBlock);
         }
-        var parameters = graphNode.getParameters();
-        if (parameters != null) {
-            parameters.forEach(parameter -> this.mapLinesToBlocksForNode(treeMapping, graphBlock, parameter));
-        }
+        graphNode.getParameters().stream()
+                .filter(Objects::nonNull)
+                .forEach(parameter -> this.mapLinesToBlocksForNode(treeMapping, graphBlock, parameter));
     }
 
     private void mapLinesToBlocks(TreeMapping treeMapping, List<GraphBlock> graphBlocks) {
@@ -35,9 +34,8 @@ public class TreeMapper {
     private void mapJumpsToBlocks(TreeMapping treeMapping, List<GraphBlock> graphBlocks) {
         graphBlocks.forEach(treeBlock -> treeBlock.getGraphNodes()
                 .stream()
-                .filter(graphNode -> graphNode.getType() == GraphNodeType.INSTRUCTION)
                 .filter(graphNode -> JUMPS.contains(graphNode.getInstruction().get().getClass()))
-                .filter(graphNode -> graphNode.hasParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
+                .filter(graphNode -> graphNode.hasOneParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
                 .forEach(graphNode -> {
                     var targetPushInstruction = (PUSH) graphNode.getParameters().get(0).getInstruction().get();
                     var target = new BigInteger(targetPushInstruction.getBytes()).intValue();

@@ -24,7 +24,7 @@ public class KnownLoadProcessor implements Processor {
         // TODO: Parameters could also be LOAD.
         graph.getGraphBlocks().forEach(graphBlock -> graphBlock.getGraphNodes().stream()
                 .filter(graphNode -> graphNode.isInstruction(LOAD.class))
-                .filter(graphNode -> graphNode.hasParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
+                .filter(graphNode -> graphNode.hasOneParameter(0, parameter -> parameter.isInstruction(PUSH.class)))
                 .forEach(graphNode -> {
                     var load = (LOAD) graphNode.getInstruction().get();
                     var push = (PUSH) graphNode.getParameters().get(0).getInstruction().get();

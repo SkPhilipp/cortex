@@ -26,8 +26,7 @@ public class KnownJumpIfProcessor implements Processor {
     public void process(Graph graph) {
         graph.getGraphBlocks().forEach(graphBlock -> graphBlock.getGraphNodes().stream()
                 .filter(graphNode -> graphNode.isInstruction(JUMP_IF.class))
-                .filter(graphNode -> graphNode.hasParameter(0, GraphNode::isSelfContained))
-                .filter(graphNode -> graphNode.hasParameter(1, GraphNode::isSelfContained))
+                .filter(graphNode -> graphNode.hasOneParameter(1, GraphNode::isSelfContained))
                 .forEach(jumpNode -> {
                     var decidingNode = jumpNode.getParameters().get(1);
                     var program = new Program(BigInteger.ZERO, decidingNode.toInstructions());

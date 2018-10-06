@@ -1,5 +1,6 @@
 package com.hileco.cortex.analysis;
 
+import com.hileco.cortex.analysis.edges.Edge;
 import com.hileco.cortex.instructions.Instruction;
 import lombok.Getter;
 
@@ -10,9 +11,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @Getter
 public class GraphBlock {
     private final List<GraphNode> graphNodes;
+    private final List<Edge> edges;
 
     public GraphBlock() {
         this.graphNodes = new ArrayList<>();
+        this.edges = new ArrayList<>();
     }
 
     public void include(int lineOffset, List<AtomicReference<Instruction>> instructions) {
@@ -20,7 +23,6 @@ public class GraphBlock {
             var instructionReference = instructions.get(i);
             var graphNode = new GraphNode();
             graphNode.setLine(lineOffset + i);
-            graphNode.setType(GraphNodeType.INSTRUCTION);
             graphNode.setInstruction(instructionReference);
             this.graphNodes.add(graphNode);
         }

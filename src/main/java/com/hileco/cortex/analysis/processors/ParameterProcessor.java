@@ -2,26 +2,27 @@ package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphNode;
+import com.hileco.cortex.analysis.edges.EdgeParameterConsumer;
+import com.hileco.cortex.analysis.edges.EdgeParameters;
 import com.hileco.cortex.context.layer.LayeredStack;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.SWAP;
 
-import static com.hileco.cortex.analysis.GraphNodeType.INSTRUCTION;
-import static com.hileco.cortex.analysis.GraphNodeType.UNKNOWN;
+import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class ParameterProcessor implements Processor {
+
     @Override
     public void process(Graph graph) {
         graph.getGraphBlocks().forEach(graphBlock -> {
             LayeredStack<GraphNode> stack = new LayeredStack<>();
             var graphNodes = graphBlock.getGraphNodes();
-            for (var node = 0; node < graphNodes.size(); node++) {
-                var graphNode = graphNodes.get(node);
+            for (var graphNode : graphNodes) {
                 var instruction = graphNode.getInstruction().get();
-                if (graphNode.getType() != INSTRUCTION
-                        || instruction instanceof JUMP_DESTINATION
-                        || instruction instanceof SWAP) {
+                if (instruction instanceof JUMP_DESTINATION || instruction instanceof SWAP) {
                     stack.clear();
                     continue;
                 }
@@ -30,19 +31,23 @@ public class ParameterProcessor implements Processor {
                     stack.push(graphNode);
                     continue;
                 }
-                var stackTakes = instruction.getStackTakes();
-                var limit = stack.size();
-                for (var i = 0; i < stackTakes.size(); i++) {
-                    GraphNode parameter;
-                    if (i < limit) {
-                        parameter = stack.pop();
-                        node--;
-                    } else {
-                        parameter = new GraphNode();
-                        parameter.setType(UNKNOWN);
+                var stackTakes = instruction.getStackTakes().size();
+                if (stackTakes > 0) {
+                    var parameters = new ArrayList<GraphNode>();
+                    var stackSize = stack.size();
+                    var totalMissing = stackTakes - stackSize;
+                    for (var i = 0; i < totalMissing; i++) {
+                        parameters.add(null);
                     }
-                    graphNode.getParameters().add(parameter);
-                    graphNodes.remove(parameter);
+                    var remainingMissing = Math.min(stackTakes, stackTakes - totalMissing);
+                    for (var i = 0; i < remainingMissing; i++) {
+                        var parameter = stack.get(stackSize - i);
+                        parameter.getEdges().add(new EdgeParameterConsumer(graphNode));
+                        parameters.add(parameter);
+                    }
+                    Collections.reverse(parameters);
+                    graphNode.getEdges().add(new EdgeParameters(parameters));
+                    stack.clear();
                 }
                 if (!instruction.getStackAdds().isEmpty()) {
                     stack.push(graphNode);

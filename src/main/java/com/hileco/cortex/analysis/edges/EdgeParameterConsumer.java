@@ -3,9 +3,9 @@ package com.hileco.cortex.analysis.edges;
 import com.hileco.cortex.analysis.GraphNode;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
 public class EdgeParameterConsumer implements Edge {
-    private List<GraphNode> graphNodes;
+    public static final EdgeUtility<EdgeParameterConsumer> UTIL = new EdgeUtility<>(EdgeParameterConsumer.class);
+
+    private GraphNode graphNode;
 }

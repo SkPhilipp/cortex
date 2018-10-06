@@ -1,5 +1,7 @@
 package com.hileco.cortex.analysis;
 
+import com.hileco.cortex.analysis.edges.Edge;
+import com.hileco.cortex.analysis.edges.EdgeParameters;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
@@ -9,6 +11,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -18,36 +21,26 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.hileco.cortex.analysis.GraphNodeType.INSTRUCTION;
-
+@Setter
 @Getter
 public class GraphNode {
     private static final Set<ProgramZone> SELF_CONTAINED_ZONES = new HashSet<>(Collections.singleton(ProgramZone.STACK));
-    private final List<GraphNode> parameters;
-    @Setter
-    private GraphNodeType type;
-    @Setter
     private AtomicReference<Instruction> instruction;
-    @Setter
     private Integer line;
+    private final ArrayList<Edge> edges;
 
     public GraphNode() {
-        this.parameters = new ArrayList<>();
-    }
-
-    @Override
-    public String toString() {
-        return this.type.format(this);
+        this.edges = new ArrayList<>();
     }
 
     private void addInstructionsByLine(List<Pair<Integer, AtomicReference<Instruction>>> list) {
-        if (this.type != INSTRUCTION) {
-            throw new IllegalStateException(String.format("Cannot convert type %s to instruction", this.type));
-        }
         list.add(new Pair<>(this.line, this.instruction));
-        for (var parameter : this.parameters) {
-            parameter.addInstructionsByLine(list);
-        }
+        this.edges.stream()
+                .filter(edge -> edge.getClass() == EdgeParameters.class)
+                .map(edge -> (EdgeParameters) edge)
+                .map(EdgeParameters::getGraphNodes)
+                .flatMap(Collection::stream)
+                .forEach(node -> node.addInstructionsByLine(list));
     }
 
     public List<Instruction> toInstructions() {
@@ -60,25 +53,74 @@ public class GraphNode {
     }
 
     private boolean hasParameters(Predicate<GraphNode> predicate) {
-        return this.parameters.stream().allMatch(predicate);
+        return this.edges.stream()
+                .filter(edge -> edge.getClass() == EdgeParameters.class)
+                .map(edge -> (EdgeParameters) edge)
+                .flatMap(edgeParameters -> edgeParameters.getGraphNodes().stream())
+                .allMatch(predicate);
     }
 
-    public boolean hasParameter(int index, Predicate<GraphNode> predicate) {
-        return index < this.parameters.size() && predicate.test(this.parameters.get(index));
+    public List<GraphNode> getParameters() {
+        return this.edges.stream()
+                .filter(edge -> edge.getClass() == EdgeParameters.class)
+                .map(edge -> (EdgeParameters) edge)
+                .map(EdgeParameters::getGraphNodes)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    public boolean hasOneParameter(int index, Predicate<GraphNode> predicate) {
+        var nodes = this.edges.stream()
+                .filter(edge -> edge.getClass() == EdgeParameters.class)
+                .map(edge -> (EdgeParameters) edge)
+                .map(edge -> edge.getGraphNodes().get(index))
+                .collect(Collectors.toList());
+        return nodes.size() == 1 && nodes.stream().allMatch(predicate);
     }
 
     public boolean isInstruction(Class<?>... classes) {
-        return this.type == INSTRUCTION && (classes.length == 0 || Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(this.instruction.get())));
+        return Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(this.instruction.get()));
     }
 
     private boolean fully(Predicate<GraphNode> predicate) {
         return predicate.test(this)
-                && this.hasParameters(graphNode -> graphNode.fully(predicate));
+                && this.hasParameters(graphNode -> graphNode != null && graphNode.fully(predicate));
     }
 
     public boolean isSelfContained() {
-        return this.fully(graphNode -> graphNode.isInstruction()
-                && SELF_CONTAINED_ZONES.containsAll(graphNode.getInstruction().get().getInstructionModifiers())
+        // TODO: And ensure that all child parameter do not have multiple parameter-consumers
+        return this.fully(graphNode -> SELF_CONTAINED_ZONES.containsAll(graphNode.getInstruction().get().getInstructionModifiers())
                 && !(graphNode.getInstruction().get() instanceof SWAP));
+    }
+
+    @Override
+    public String toString() {
+        var stringBuilder = new StringBuilder();
+        this.format(this, stringBuilder, 0);
+        return stringBuilder.toString();
+    }
+
+    public void format(GraphNode graphNode, StringBuilder stringBuilder, int offset) {
+        if (graphNode != null) {
+            stringBuilder.append(String.format(" %06d │", graphNode.getLine()));
+        } else {
+            stringBuilder.append("        │");
+        }
+        for (var i = 0; i < offset; i++) {
+            stringBuilder.append(' ');
+        }
+        stringBuilder.append(' ');
+        if (graphNode != null) {
+            stringBuilder.append(graphNode.getInstruction().toString().trim());
+            if (!graphNode.getParameters().isEmpty()) {
+                stringBuilder.append(' ');
+                for (var parameter : graphNode.getParameters()) {
+                    stringBuilder.append('\n');
+                    this.format(parameter, stringBuilder, offset + 2);
+                }
+            }
+        } else {
+            stringBuilder.append("?");
+        }
     }
 }

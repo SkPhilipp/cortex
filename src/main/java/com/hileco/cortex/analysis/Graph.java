@@ -12,39 +12,37 @@ import java.util.stream.Collectors;
 public class Graph {
     @Getter
     private final List<GraphBlock> graphBlocks;
-    private final List<AtomicReference<Instruction>> instructions;
 
     public Graph() {
         this.graphBlocks = new ArrayList<>();
-        this.instructions = new ArrayList<>();
+    }
+
+    public Graph(List<Instruction> instructions) {
+        this();
+        var block = new ArrayList<AtomicReference<Instruction>>();
+        var currentBlockLine = 0;
+        var currentLine = 0;
+        while (currentLine < instructions.size()) {
+            AtomicReference<Instruction> instructionReference = new AtomicReference<>(instructions.get(currentLine));
+            if (instructionReference.get() instanceof JUMP_DESTINATION) {
+                if (!block.isEmpty()) {
+                    this.includeAsBlock(currentBlockLine, block);
+                    currentBlockLine = currentLine;
+                }
+                block.clear();
+            }
+            block.add(instructionReference);
+            currentLine++;
+        }
+        if (!block.isEmpty()) {
+            this.includeAsBlock(currentBlockLine, block);
+        }
     }
 
     private void includeAsBlock(int line, List<AtomicReference<Instruction>> instructions) {
         var block = new GraphBlock();
         block.include(line, instructions);
         this.graphBlocks.add(block);
-    }
-
-    public void include(List<Instruction> instructions) {
-        List<AtomicReference<Instruction>> blockInstructions = new ArrayList<>();
-        var currentBlock = 0;
-        var line = 0;
-        while (line < instructions.size()) {
-            AtomicReference<Instruction> instructionReference = new AtomicReference<>(instructions.get(line));
-            if (instructionReference.get() instanceof JUMP_DESTINATION) {
-                if (!blockInstructions.isEmpty()) {
-                    this.includeAsBlock(currentBlock, blockInstructions);
-                    currentBlock = line;
-                }
-                blockInstructions.clear();
-            }
-            blockInstructions.add(instructionReference);
-            this.instructions.add(instructionReference);
-            line++;
-        }
-        if (!blockInstructions.isEmpty()) {
-            this.includeAsBlock(currentBlock, blockInstructions);
-        }
     }
 
     private int indexOf(GraphBlock graphBlock) {
@@ -85,8 +83,9 @@ public class Graph {
     }
 
     public List<Instruction> toInstructions() {
-        return this.instructions.stream()
-                .map(AtomicReference::get)
+        return this.graphBlocks.stream()
+                .flatMap(graphBlock -> graphBlock.getGraphNodes().stream())
+                .map(graphNode -> graphNode.getInstruction().get())
                 .collect(Collectors.toList());
     }
 
