@@ -1,9 +1,10 @@
 package com.hileco.cortex.mapping;
 
 import com.hileco.cortex.analysis.GraphBuilder;
+import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
+import com.hileco.cortex.analysis.processors.FlowProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
-import com.hileco.cortex.analysis.processors.JumpTableProcessor;
 import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
 import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
@@ -26,15 +27,14 @@ public class GraphMapperFuzzTest {
     public void testTreeMapper() {
         var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
-                new JumpTableProcessor(),
+                new FlowProcessor(),
                 new ExitTrimProcessor(),
                 new JumpIllegalProcessor(),
                 new KnownJumpIfProcessor(),
                 new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
-                new KnownProcessor()
+                new KnownProcessor(),
+                new FlowProcessor()
         ));
-
-        var treeMapper = new TreeMapper();
 
         var seed = System.currentTimeMillis() * LIMIT_RUNS;
         var runs = 0;
@@ -47,9 +47,9 @@ public class GraphMapperFuzzTest {
                 var program = generatedOptimized.get(address);
                 var instructions = program.getInstructions();
                 var graph = graphBuilder.build(instructions);
-                var treeMapping = treeMapper.map(graph);
-                Assert.assertEquals(instructions.size(), treeMapping.getLineMapping().size());
-                jumpsMapped += treeMapping.getJumpMapping().values().stream().mapToInt(Set::size).sum();
+                var edgeFlowMapping = graph.getEdges().stream().flatMap(EdgeFlowMapping.UTIL::filter).findAny().get();
+                Assert.assertEquals(instructions.size(), edgeFlowMapping.getLineMapping().size());
+                jumpsMapped += edgeFlowMapping.getJumpMapping().values().stream().mapToInt(Set::size).sum();
             }
         }
         Assert.assertTrue(jumpsMapped / LIMIT_RUNS > EXPECTED_MINIMUM_AVERAGE_JUMPS_MAPPED);

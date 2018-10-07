@@ -18,7 +18,6 @@ public class KnownJumpIfProcessorTest {
     public void testProcess() {
         var processors = new ArrayList<Processor>();
         processors.add(new ParameterProcessor());
-        processors.add(new JumpTableProcessor());
         processors.add(new KnownJumpIfProcessor());
         var graphBuilder = new GraphBuilder(processors);
 

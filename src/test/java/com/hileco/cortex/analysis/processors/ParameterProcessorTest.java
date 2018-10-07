@@ -3,6 +3,8 @@ package com.hileco.cortex.analysis.processors;
 import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer;
 import com.hileco.cortex.analysis.edges.EdgeParameters;
+import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
 import com.hileco.cortex.instructions.stack.PUSH;
 import org.junit.Assert;
@@ -31,5 +33,21 @@ public class ParameterProcessorTest {
         var edgeParametersOptional = EdgeParameters.UTIL.findAny(graphNodes.get(2));
         Assert.assertTrue(edgeParametersOptional.isPresent());
         Assert.assertEquals(2, edgeParametersOptional.get().getGraphNodes().size());
+    }
+
+    @Test
+    public void testMultipleConsumers() {
+        var processors = new ArrayList<Processor>();
+        processors.add(new ParameterProcessor());
+        var graphBuilder = new GraphBuilder(processors);
+        var graph = graphBuilder.build(Arrays.asList(
+                new PUSH(BigInteger.valueOf(2358L).toByteArray()),
+                new LOAD(ProgramStoreZone.CALL_DATA),
+                new PUSH(BigInteger.valueOf(7209L).toByteArray()),
+                new LOAD(ProgramStoreZone.CALL_DATA)
+        ));
+        var graphBlocks = graph.getGraphBlocks();
+        var graphNodes = graphBlocks.get(0).getGraphNodes();
+
     }
 }

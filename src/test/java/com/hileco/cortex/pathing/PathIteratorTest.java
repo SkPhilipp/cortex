@@ -1,6 +1,6 @@
 package com.hileco.cortex.pathing;
 
-import com.hileco.cortex.mapping.TreeMapping;
+import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,16 +21,16 @@ public class PathIteratorTest {
             {OFFSET * 50, OFFSET * 51, OFFSET * 52, OFFSET * 53, OFFSET * 54, OFFSET * 55, OFFSET * 56, OFFSET * 57, OFFSET * 58, OFFSET * 59}
     };
 
-    private TreeMapping generateMapping() {
-        var treeMapping = new TreeMapping();
+    private EdgeFlowMapping generateMapping() {
+        var edgeFlowMapping = new EdgeFlowMapping();
         for (var i = 0; i < PathIteratorTest.MAPPING_90M.length - 1; i++) {
             for (var source : PathIteratorTest.MAPPING_90M[i]) {
                 for (var target : PathIteratorTest.MAPPING_90M[i + 1]) {
-                    treeMapping.putJumpMapping(source, target);
+                    edgeFlowMapping.putJumpMapping(source, target);
                 }
             }
         }
-        return treeMapping;
+        return edgeFlowMapping;
     }
 
     @Test

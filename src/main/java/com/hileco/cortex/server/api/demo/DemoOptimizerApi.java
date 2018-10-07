@@ -3,7 +3,7 @@ package com.hileco.cortex.server.api.demo;
 import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
-import com.hileco.cortex.analysis.processors.JumpTableProcessor;
+import com.hileco.cortex.analysis.processors.FlowProcessor;
 import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
 import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
@@ -31,7 +31,7 @@ public class DemoOptimizerApi implements Route {
         ));
         var optimizedGraphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
-                new JumpTableProcessor(),
+                new FlowProcessor(),
                 new ExitTrimProcessor(),
                 new JumpIllegalProcessor(),
                 new KnownJumpIfProcessor(),

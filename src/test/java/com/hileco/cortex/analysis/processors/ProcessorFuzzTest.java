@@ -44,7 +44,7 @@ public class ProcessorFuzzTest {
     private void fuzzTestProcessor(Processor processor) {
         var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
-                new JumpTableProcessor(),
+                new FlowProcessor(),
                 processor
         ));
 

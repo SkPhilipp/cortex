@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Setter
 @Getter
@@ -78,8 +79,16 @@ public class GraphNode {
         return nodes.size() == 1 && nodes.stream().allMatch(predicate);
     }
 
+    private boolean isInstruction(Stream<Class<?>> classes) {
+        return classes.anyMatch(aClass -> aClass.isInstance(this.instruction.get()));
+    }
+
+    public boolean isInstruction(Collection<Class<?>> classes) {
+        return this.isInstruction(classes.stream());
+    }
+
     public boolean isInstruction(Class<?>... classes) {
-        return Arrays.stream(classes).anyMatch(aClass -> aClass.isInstance(this.instruction.get()));
+        return this.isInstruction(Arrays.stream(classes));
     }
 
     private boolean fully(Predicate<GraphNode> predicate) {

@@ -1,16 +1,16 @@
 package com.hileco.cortex.server.api.demo;
 
 import com.hileco.cortex.analysis.GraphBuilder;
+import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
-import com.hileco.cortex.analysis.processors.JumpTableProcessor;
+import com.hileco.cortex.analysis.processors.FlowProcessor;
 import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
 import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
-import com.hileco.cortex.mapping.TreeMapper;
 import com.hileco.cortex.pathing.PathIterator;
 import spark.Request;
 import spark.Response;
@@ -31,21 +31,23 @@ public class DemoPathingApi implements Route {
         var seed = Long.parseLong(request.queryParams(PARAM_SEED));
         var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
-                new JumpTableProcessor(),
+                new FlowProcessor(),
                 new ExitTrimProcessor(),
                 new JumpIllegalProcessor(),
                 new KnownJumpIfProcessor(),
                 new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
-                new KnownProcessor()
+                new KnownProcessor(),
+                new FlowProcessor()
         ));
         var programGenerator = new ProgramGenerator();
         var generated = programGenerator.generate(seed);
         var first = generated.keySet().iterator().next();
         var program = generated.get(first);
         var graph = graphBuilder.build(program.getInstructions());
-        var treeMapper = new TreeMapper();
-        var treeMapping = treeMapper.map(graph);
-        var pathIterator = new PathIterator(treeMapping, 1);
+        var edgeFlowMapping = graph.getEdges().stream()
+                .flatMap(EdgeFlowMapping.UTIL::filter)
+                .findAny().get();
+        var pathIterator = new PathIterator(edgeFlowMapping, 1);
         var instructions = graph.toInstructions();
         var paths = new ArrayList<String>();
         pathIterator.forEachRemaining(integers -> {

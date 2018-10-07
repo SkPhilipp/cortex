@@ -1,5 +1,6 @@
 package com.hileco.cortex.analysis;
 
+import com.hileco.cortex.analysis.edges.Edge;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import lombok.Getter;
@@ -12,9 +13,12 @@ import java.util.stream.Collectors;
 public class Graph {
     @Getter
     private final List<GraphBlock> graphBlocks;
+    @Getter
+    private final List<Edge> edges;
 
     public Graph() {
         this.graphBlocks = new ArrayList<>();
+        this.edges = new ArrayList<>();
     }
 
     public Graph(List<Instruction> instructions) {

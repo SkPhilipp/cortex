@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphNode;
 import lombok.Value;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Value
 public class EdgeUtility<T extends Edge> {
@@ -20,5 +21,12 @@ public class EdgeUtility<T extends Edge> {
         return (Optional<T>) graphNode.getEdges().stream()
                 .filter(this.edgeClass::isInstance)
                 .findAny();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Stream<T> filter(Edge edge) {
+        return Stream.of(edge)
+                .filter(this.edgeClass::isInstance)
+                .map(filtered -> (T) filtered);
     }
 }
