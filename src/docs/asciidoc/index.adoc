@@ -1,0 +1,88 @@
+= Cortex
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+== Instructions
+
+Example request using cURL:
+
+include::{snippets}/demo-instructions/curl-request.adoc[]
+
+Response body:
+
+include::{snippets}/demo-instructions/response-body.adoc[]
+
+Response fields:
+
+include::{snippets}/demo-instructions/response-fields.adoc[]
+
+== Program
+
+Example request using cURL:
+
+include::{snippets}/demo-program/curl-request.adoc[]
+
+Response body:
+
+include::{snippets}/demo-program/response-body.adoc[]
+
+Response fields:
+
+include::{snippets}/demo-program/response-fields.adoc[]
+
+== Fuzzer
+
+Example request using cURL:
+
+include::{snippets}/demo-fuzzer/curl-request.adoc[]
+
+Response body:
+
+include::{snippets}/demo-fuzzer/response-body.adoc[]
+
+Response fields:
+
+include::{snippets}/demo-fuzzer/response-fields.adoc[]
+
+== Constraints
+
+Example request using cURL:
+
+include::{snippets}/demo-constraints/curl-request.adoc[]
+
+Response body:
+
+include::{snippets}/demo-constraints/response-body.adoc[]
+
+Response fields:
+
+include::{snippets}/demo-constraints/response-fields.adoc[]
+
+== Jump Mapping
+
+Example request using cURL:
+
+include::{snippets}/demo-jump-mapping/curl-request.adoc[]
+
+Response body:
+
+include::{snippets}/demo-jump-mapping/response-body.adoc[]
+
+Response fields:
+
+include::{snippets}/demo-jump-mapping/response-fields.adoc[]
+
+== Pathing
+
+Example request using cURL:
+
+include::{snippets}/demo-pathing/curl-request.adoc[]
+
+Response body:
+
+include::{snippets}/demo-pathing/response-body.adoc[]
+
+Response fields:
+
+include::{snippets}/demo-pathing/response-fields.adoc[]

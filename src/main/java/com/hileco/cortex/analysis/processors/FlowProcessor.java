@@ -125,5 +125,7 @@ public class FlowProcessor implements Processor {
             var graphBlockEnd = graphBlocks.get(graphBlocks.size() - 1);
             graphBlockEnd.getEdges().add(new EdgeFlow(EdgeFlowType.PROGRAM_END, null));
         }
+
+        graph.getEdges().add(graphEdge);
     }
 }

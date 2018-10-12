@@ -1,9 +1,9 @@
-package com.hileco.cortex.server.api.demo;
+package com.hileco.cortex.server.api;
 
 import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
-import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
 import com.hileco.cortex.analysis.processors.FlowProcessor;
+import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
 import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
 import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
@@ -12,9 +12,11 @@ import com.hileco.cortex.context.Program;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.MULTIPLY;
 import com.hileco.cortex.instructions.stack.PUSH;
-import spark.Request;
-import spark.Response;
-import spark.Route;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.server.HandlerFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -22,10 +24,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class DemoOptimizerApi implements Route {
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
+
+public class DemoOptimizerApi implements HandlerFunction<ServerResponse> {
 
     @Override
-    public Object handle(Request request, Response response) {
+    public Mono<ServerResponse> handle(ServerRequest request) {
         var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor()
         ));
@@ -47,8 +51,9 @@ public class DemoOptimizerApi implements Route {
         ));
         var graph = graphBuilder.build(program.getInstructions());
         var optimizedGraph = optimizedGraphBuilder.build(program.getInstructions());
-        return Map.of("program", program.toString(),
-                      "graph", graph.toString(),
-                      "optimizedGraph", optimizedGraph.toString());
+        return status(HttpStatus.OK)
+                .syncBody(Map.of("program", program.toString(),
+                                 "graph", graph.toString(),
+                                 "optimizedGraph", optimizedGraph.toString()));
     }
 }

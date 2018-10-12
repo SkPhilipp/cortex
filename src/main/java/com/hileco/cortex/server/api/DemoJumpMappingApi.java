@@ -1,4 +1,4 @@
-package com.hileco.cortex.server.api.demo;
+package com.hileco.cortex.server.api;
 
 import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
@@ -10,9 +10,11 @@ import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
-import spark.Request;
-import spark.Response;
-import spark.Route;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.server.HandlerFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,13 +22,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class DemoJumpMappingApi implements Route {
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
+
+public class DemoJumpMappingApi implements HandlerFunction<ServerResponse> {
 
     private static final String PARAM_SEED = "seed";
 
     @Override
-    public Object handle(Request request, Response response) {
-        var seed = Long.parseLong(request.queryParams(PARAM_SEED));
+    public Mono<ServerResponse> handle(ServerRequest request) {
+        var seed = Long.parseLong(request.queryParam(PARAM_SEED).orElse("0"));
         var graphBuilder = new GraphBuilder(Arrays.asList(
                 new ParameterProcessor(),
                 new FlowProcessor(),
@@ -56,7 +60,8 @@ public class DemoJumpMappingApi implements Route {
                     });
                     jumpMapping.add(stringBuilder.toString());
                 }));
-        return Map.of("program", program.toString(),
-                      "jumpMapping", jumpMapping);
+        return status(HttpStatus.OK)
+                .syncBody(Map.of("program", program.toString(),
+                                 "jumpMapping", jumpMapping));
     }
 }

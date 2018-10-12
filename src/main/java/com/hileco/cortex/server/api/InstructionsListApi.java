@@ -1,4 +1,4 @@
-package com.hileco.cortex.server.api.docs;
+package com.hileco.cortex.server.api;
 
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
@@ -29,15 +29,19 @@ import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import spark.Request;
-import spark.Response;
-import spark.Route;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.server.HandlerFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DocsInstructionsListApi implements Route {
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
+
+public class InstructionsListApi implements HandlerFunction<ServerResponse> {
 
     private static final Instruction[] INSTRUCTIONS = {
             new PUSH(null),
@@ -80,16 +84,13 @@ public class DocsInstructionsListApi implements Route {
         private List<Integer> provides;
     }
 
-    private Representation convert(Instruction instruction) {
-        return new Representation(instruction.getClass().getSimpleName(),
-                                  instruction.getStackTakes(),
-                                  instruction.getStackAdds());
-    }
-
     @Override
-    public Object handle(Request request, Response response) {
-        return Arrays.stream(INSTRUCTIONS)
-                .map(this::convert)
-                .collect(Collectors.toList());
+    public Mono<ServerResponse> handle(ServerRequest request) {
+        return status(HttpStatus.OK)
+                .syncBody(Arrays.stream(INSTRUCTIONS)
+                                  .map(instruction -> new Representation(instruction.getClass().getSimpleName(),
+                                                                         instruction.getStackTakes(),
+                                                                         instruction.getStackAdds()))
+                                  .collect(Collectors.toList()));
     }
 }
