@@ -96,12 +96,10 @@ public class Graph {
     @Override
     public String toString() {
         var stringBuilder = new StringBuilder();
-        stringBuilder.append("        ┌───────────────────────────────────\n");
         for (var graphBlock : this.graphBlocks) {
             stringBuilder.append(graphBlock);
-            stringBuilder.append("        │\n");
+            stringBuilder.append("\n");
         }
-        stringBuilder.append("        └───────────────────────────────────\n");
         return stringBuilder.toString();
     }
 }

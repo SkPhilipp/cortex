@@ -52,8 +52,8 @@ public class DemoOptimizerApi implements HandlerFunction<ServerResponse> {
         var graph = graphBuilder.build(program.getInstructions());
         var optimizedGraph = optimizedGraphBuilder.build(program.getInstructions());
         return status(HttpStatus.OK)
-                .syncBody(Map.of("program", program.toString(),
-                                 "graph", graph.toString(),
-                                 "optimizedGraph", optimizedGraph.toString()));
+                .syncBody(Map.of("program", program.toString().split("\n"),
+                                 "graph", graph.toString().split("\n"),
+                                 "optimizedGraph", optimizedGraph.toString().split("\n")));
     }
 }

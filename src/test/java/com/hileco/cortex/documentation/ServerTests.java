@@ -76,10 +76,10 @@ public class ServerTests {
     @Test
     public void documentDemoOptimizer() {
         this.webTestClient.get()
-                .uri("/api/demo/program.json")
+                .uri("/api/demo/optimizer.json")
                 .exchange()
                 .expectBody()
-                .consumeWith(document("demo-program", responseFields(
+                .consumeWith(document("demo-optimizer", responseFields(
                         fieldWithPath("optimizedGraph").description("The graph representation of the program, post-optimization."),
                         fieldWithPath("graph").description("The graph representation of the program."),
                         fieldWithPath("program").description("The program itself.")

@@ -37,12 +37,10 @@ public class Program {
     @Override
     public String toString() {
         var stringBuilder = new StringBuilder();
-        stringBuilder.append("        ┌───────────────────────────────────\n");
         var size = this.instructions.size();
         for (var i = 0; i < size; i++) {
-            stringBuilder.append(String.format(" %06d │ %s\n", i, this.instructions.get(i)));
+            stringBuilder.append(String.format("[%03d] %s\n", i, this.instructions.get(i)));
         }
-        stringBuilder.append("        └───────────────────────────────────\n");
         return stringBuilder.toString();
     }
 }

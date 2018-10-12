@@ -12,8 +12,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.ipc.netty.http.server.HttpServer;
@@ -37,13 +41,35 @@ public class Server {
         OBJECT_MAPPER.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
+
+    @Bean
+    public Jackson2JsonEncoder jackson2JsonEncoder() {
+        return new Jackson2JsonEncoder(OBJECT_MAPPER);
+    }
+
+    @Bean
+    public Jackson2JsonDecoder jackson2JsonDecoder() {
+        return new Jackson2JsonDecoder(OBJECT_MAPPER);
+    }
+
+    @Bean
+    public WebFluxConfigurer webFluxConfigurer(Jackson2JsonEncoder encoder, Jackson2JsonDecoder decoder) {
+        return new WebFluxConfigurer() {
+            @Override
+            public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
+                configurer.defaultCodecs().jackson2JsonEncoder(encoder);
+                configurer.defaultCodecs().jackson2JsonDecoder(decoder);
+            }
+        };
+    }
+
     @Bean
     public RouterFunction<ServerResponse> routerFunction() {
         return route(GET("/"), (request) -> ServerResponse.temporaryRedirect(URI.create("/index.html")).build())
                 .and(route(GET("/api/demo/constraints.json"), new DemoConstraintApi()))
                 .and(route(GET("/api/demo/fuzzer.json"), new DemoFuzzerApi()))
                 .and(route(GET("/api/demo/pathing.json"), new DemoPathingApi()))
-                .and(route(GET("/api/demo/program.json"), new DemoOptimizerApi()))
+                .and(route(GET("/api/demo/optimizer.json"), new DemoOptimizerApi()))
                 .and(route(GET("/api/demo/jump-mapping.json"), new DemoJumpMappingApi()))
                 .and(route(GET("/api/demo/instructions.json"), new InstructionsListApi()))
                 .and(resources("/**", new ClassPathResource("static/docs/")));

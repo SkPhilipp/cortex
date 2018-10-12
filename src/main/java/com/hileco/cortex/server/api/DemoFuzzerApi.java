@@ -32,7 +32,7 @@ public class DemoFuzzerApi implements HandlerFunction<ServerResponse> {
         var program = generated.get(first);
         var graph = graphBuilder.build(program.getInstructions());
         return status(HttpStatus.OK)
-                .syncBody(Map.of("program", program.toString(),
-                                 "graph", graph.toString()));
+                .syncBody(Map.of("program", program.toString().split("\n"),
+                                 "graph", graph.toString().split("\n")));
     }
 }

@@ -16,11 +16,12 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.status;
 
@@ -46,22 +47,16 @@ public class DemoJumpMappingApi implements HandlerFunction<ServerResponse> {
         var first = generated.keySet().iterator().next();
         var program = generated.get(first);
         var graph = graphBuilder.build(program.getInstructions());
-        var jumpMapping = new ArrayList<String>();
+        var jumpMapping = new HashMap<Integer, Set<Integer>>();
         graph.getEdges().stream()
                 .flatMap(EdgeFlowMapping.UTIL::filter)
                 .forEach(edge -> edge.getJumpMapping().forEach((source, targets) -> {
-                    var stringBuilder = new StringBuilder();
-                    stringBuilder.append(String.format("%04d", source));
-                    stringBuilder.append('\n');
-                    targets.forEach(target -> {
-                        stringBuilder.append(String.format(" --> %04d", target));
-                        stringBuilder.append('\n');
-
-                    });
-                    jumpMapping.add(stringBuilder.toString());
+                    var joiner = new StringJoiner(", ");
+                    targets.forEach(target -> joiner.add(target.toString()));
+                    jumpMapping.put(source, targets);
                 }));
         return status(HttpStatus.OK)
-                .syncBody(Map.of("program", program.toString(),
+                .syncBody(Map.of("program", program.toString().split("\n"),
                                  "jumpMapping", jumpMapping));
     }
 }

@@ -111,9 +111,9 @@ public class GraphNode {
 
     public void format(GraphNode graphNode, StringBuilder stringBuilder, int offset) {
         if (graphNode != null) {
-            stringBuilder.append(String.format(" %06d │", graphNode.getLine()));
+            stringBuilder.append(String.format("[%03d]", graphNode.getLine()));
         } else {
-            stringBuilder.append("        │");
+            stringBuilder.append("     ");
         }
         for (var i = 0; i < offset; i++) {
             stringBuilder.append(' ');
@@ -122,7 +122,6 @@ public class GraphNode {
         if (graphNode != null) {
             stringBuilder.append(graphNode.getInstruction().toString().trim());
             if (!graphNode.getParameters().isEmpty()) {
-                stringBuilder.append(' ');
                 for (var parameter : graphNode.getParameters()) {
                     stringBuilder.append('\n');
                     this.format(parameter, stringBuilder, offset + 2);

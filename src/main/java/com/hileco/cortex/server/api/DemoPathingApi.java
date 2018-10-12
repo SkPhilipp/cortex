@@ -55,33 +55,29 @@ public class DemoPathingApi implements HandlerFunction<ServerResponse> {
         var paths = new ArrayList<String>();
         pathIterator.forEachRemaining(integers -> {
             var stringBuilder = new StringBuilder();
-            stringBuilder.append("        ┌───────────────────────────────────");
-            stringBuilder.append('\n');
             for (var i = 0; i < integers.size() - 1; i++) {
                 var current = integers.get(i);
                 var next = integers.get(i + 1);
                 var instruction = instructions.get(current);
                 if (current == 1 || instruction instanceof JUMP_DESTINATION) {
-                    stringBuilder.append(String.format("        │ %% %d through %d", current, next));
                     stringBuilder.append('\n');
                     for (int index = current; index <= next; index++) {
                         instruction = instructions.get(index);
-                        stringBuilder.append(String.format(" %06d │ %s", index, instruction));
+                        stringBuilder.append(String.format("[%03d] %s", index, instruction));
                         stringBuilder.append('\n');
                     }
                 }
             }
             var current = integers.get(integers.size() - 1);
             var instruction = instructions.get(current);
-            stringBuilder.append("        │ % ending block");
-            stringBuilder.append('\n');
-            stringBuilder.append(String.format(" %06d │ %s", current, instruction));
-            stringBuilder.append('\n');
-            stringBuilder.append("        └───────────────────────────────────");
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append('\n');
+            }
+            stringBuilder.append(String.format("[%03d] %s", current, instruction));
             paths.add(stringBuilder.toString());
         });
         return status(HttpStatus.OK)
-                .syncBody(Map.of("program", program.toString(),
+                .syncBody(Map.of("program", program.toString().split("\n"),
                                  "paths", paths));
     }
 }
