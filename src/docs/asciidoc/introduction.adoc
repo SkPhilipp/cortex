@@ -4,6 +4,7 @@ Cortex is a system to analyse software, find desired paths within them & move th
 
 === Components
 
+[cols="3,10"]
 |====
 | Component | Purpose
 | Context | Virtual environment within which instructions may be executed.
@@ -20,6 +21,7 @@ Cortex is a system to analyse software, find desired paths within them & move th
 
 === Terminology
 
+[cols="3,10"]
 |====
 | Name | Definition
 | unknown | An unconstrained value.

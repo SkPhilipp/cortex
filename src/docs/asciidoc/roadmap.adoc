@@ -89,15 +89,16 @@ The condition of `08. jump_if` is contained within the same program tree node, i
 
 The process described in the prevous paragraph must be repeated until all knowable inputs are part of the constraint. The full constraint is expanded as follows:
 
+[cols="1,2,5,5"]
 |====
-| Line | Instruction    | Constraint                                                          | Reasoning
-| 08.  | jump_if        | `                                                  stack[0]   == 0` | to not jump, `stack[0]` must be 0
-| 06.  | greater_than   | `( stack[0] >                                      stack[1] ) == 0` | `stack[0]` becomes `stack[0] > stack[1]`
-| 05.  | push 10        | `(      10  >                                      stack[0] ) == 0` | `stack[0]` becomes 10
-| 04.  | add            | `(      10  > ( stack[0] +           stack[1]  ) % 0xffffff ) == 0` | `stack[0]` becomes `( stack[0] + stack[1] ) % 0xffffff`
-| 03.  | push 10        | `(      10  > (      10  +           stack[0]  ) % 0xffffff ) == 0` | `stack[0]` becomes 10
-| 02.  | load call_data | `(      10  > (      10  + call_data[stack[0]] ) % 0xffffff ) == 0` | `stack[0]` becomes `load ( call_data , stack[1] )`
-| 01.  | push 0         | `(      10  > (      10  +       call_data[0]  ) % 0xffffff ) == 0` | `stack[0]` becomes 0
+| Line | Instruction    | Constraint | Reasoning
+| 08.  | jump_if        | `stack[0] == 0` | to not jump, `stack[0]` must be 0
+| 06.  | greater_than   | `(stack[0] > stack[1]) == 0` | `stack[0]` = `stack[0] > stack[1]`
+| 05.  | push 10        | `(10 > stack[0]) == 0` | `stack[0]` = 10
+| 04.  | add            | `(10 > (stack[0] + stack[1]) % 0xffffff) == 0` | `stack[0]` = `( stack[0] + stack[1] ) % 0xffffff`
+| 03.  | push 10        | `(10 > (10 + stack[0]) % 0xffffff) == 0` | `stack[0]` = 10
+| 02.  | load call_data | `(10 > (10 + call_data[stack[0]]) % 0xffffff) == 0` | `stack[0]` = `load ( call_data , stack[1] )`
+| 01.  | push 0         | `(10 > (10 + call_data[0]) % 0xffffff) == 0` | `stack[0]` = 0
 |====
 
 `stack[N]` notations are relative to the instruction being processed.

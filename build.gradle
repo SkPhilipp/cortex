@@ -72,10 +72,3 @@ task run(type: JavaExec) {
     main = "-jar"
     args jar.archivePath
 }
-
-task deploy(type: Exec) {
-    dependsOn build
-    dependsOn test
-    dependsOn asciidoctor
-    commandLine 'bash', './server-deploy.sh'
-}
