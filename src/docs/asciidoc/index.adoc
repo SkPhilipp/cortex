@@ -4,52 +4,8 @@
 :source-highlighter: highlightjs
 :toc: left
 
-== Demonstrations
+include::introduction.adoc[]
 
-=== Instructions
+include::roadmap.adoc[]
 
-include::{snippets}/demo-instructions/curl-request.adoc[]
-
-include::{snippets}/demo-instructions/response-body.adoc[]
-
-include::{snippets}/demo-instructions/response-fields.adoc[]
-
-=== Optimizer
-
-include::{snippets}/demo-optimizer/curl-request.adoc[]
-
-include::{snippets}/demo-optimizer/response-body.adoc[]
-
-include::{snippets}/demo-optimizer/response-fields.adoc[]
-
-=== Fuzzer
-
-include::{snippets}/demo-fuzzer/curl-request.adoc[]
-
-include::{snippets}/demo-fuzzer/response-body.adoc[]
-
-include::{snippets}/demo-fuzzer/response-fields.adoc[]
-
-=== Constraints
-
-include::{snippets}/demo-constraints/curl-request.adoc[]
-
-include::{snippets}/demo-constraints/response-body.adoc[]
-
-include::{snippets}/demo-constraints/response-fields.adoc[]
-
-=== Jump Mapping
-
-include::{snippets}/demo-jump-mapping/curl-request.adoc[]
-
-include::{snippets}/demo-jump-mapping/response-body.adoc[]
-
-include::{snippets}/demo-jump-mapping/response-fields.adoc[]
-
-=== Pathing
-
-include::{snippets}/demo-pathing/curl-request.adoc[]
-
-include::{snippets}/demo-pathing/response-body.adoc[]
-
-include::{snippets}/demo-pathing/response-fields.adoc[]
+include::demonstrations.adoc[]
