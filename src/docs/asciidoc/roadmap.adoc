@@ -4,7 +4,9 @@
 
 The following sample program can be fully interpreted, it will be referenced throughout this document.
 
-```text
+[source]
+.example, instructions view
+----
 01. push 0
 02. load call_data
 03. push 10
@@ -18,13 +20,15 @@ The following sample program can be fully interpreted, it will be referenced thr
 11. push 1
 12. noop
 13. jump_destination
-```
+----
 
 === Tree
 
 A representation of the program tree of the sample might look as such;
 
-```text
+[source]
+.example, tree view
+----
 01. push 0
 02. load call_data
 03. push 10
@@ -40,7 +44,7 @@ A representation of the program tree of the sample might look as such;
      |_________________/
      |
 13. jump_destination
-```
+----
 
 === Target Finding
 
@@ -53,13 +57,15 @@ Initial strategies for implementation:
 
 The jump table for the sample program would be:
 
-```text
+[source]
+.example, jump mapping
+----
 START --> 01 through 08 (conditional)
 01 through 08 (conditional)--> 09 through 12
 01 through 08 (conditional)--> 13
 09 through 12 --> 13
 13 --> END
-```
+----
 
 Initial strategies for implementation:
 - Mapping START to the first block
@@ -130,15 +136,14 @@ This path can be validated as being possible, with our current implementation, t
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction
 * Constraint solving should provide feedback to the path generator, examples;
-  * may exclude impossible paths after evaluating constraints
-  * may want exclude paths ahead of time based on known data
+  - may exclude impossible paths after evaluating constraints
+  - may want exclude paths ahead of time based on known data
 * Constraint solving might want to precompute every block's exit
-  * This allows for building constraint composites instead of rebuilding them based on instructions
-* Conversion of Tree Nodes to Constraints, given Constraints.
-  Could every Instruction be represented as one function, with variable offsets?
-  for `ADD:    offset, context -> context.add_constraint("stack[offset] = (stack[offset + 1] + stack[offset + 2]) % overflow_limit")`
-  for `EQUALS: offset, context -> context.add_constraint("stack[offset] = stack[offset + 1] == stack[offset + 2]")`
-  for `PUSH:   offset, context -> context.add_constraint("stack[offset] = push_value")`
+  - This allows for building constraint composites instead of rebuilding them based on instructions
+* Conversion of Tree Nodes to Constraints, given Constraints.  Could every Instruction be represented as one function, with variable offsets?
+  - for `ADD:    offset, context -> context.add_constraint("stack[offset] = (stack[offset + 1] + stack[offset + 2]) % overflow_limit")`
+  - for `EQUALS: offset, context -> context.add_constraint("stack[offset] = stack[offset + 1] == stack[offset + 2]")`
+  - for `PUSH:   offset, context -> context.add_constraint("stack[offset] = push_value")`
 
 === Payload Generator (Local)
 
@@ -160,16 +165,15 @@ These issues will eventually land on the roadmap, they are however currently not
 === Fuzzer
 
 * Fuzzer should output a Tree-format of instruction types to be generated. This would allow it to generate more realistic programs in which
-
   instructions can be written which reliably reference variables, mapped data, and functions which have not been defined
 
 * Additional dynamic constructs for:
-  * Loops, using `ProgramBuilder.LOOP(...)`
-  * Switches, using `ProgramBuilder.IF(...)`
-  * Direct mapping; using `SAVE` & `LOAD` & `SWAP` to move rotate stack elements using memory
-  * Conditions; basic `JUMP_IF` wrapping
-  * Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
-  * Invalid instructions; ex: `JUMP` out of bounds
+  - Loops, using `ProgramBuilder.LOOP(...)`
+  - Switches, using `ProgramBuilder.IF(...)`
+  - Direct mapping; using `SAVE` & `LOAD` & `SWAP` to move rotate stack elements using memory
+  - Conditions; basic `JUMP_IF` wrapping
+  - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
+  - Invalid instructions; ex: `JUMP` out of bounds
 
 === Instructions
 
@@ -180,7 +184,6 @@ These issues will eventually land on the roadmap, they are however currently not
 === Context Layers
 
 * Make interitable-thread-local layers; All layers are split when a new thread is created. This could allow for easy branching of all layers without having to manually manage them
-
   Could also use this thread-local mechanic to have multiple threads run on the same context, and only some branching
 
 * Implement branching LayeredBytes
