@@ -2,7 +2,7 @@
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
-:toc:
+:toc: left
 
 == Demonstrations
 
