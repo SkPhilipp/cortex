@@ -60,11 +60,11 @@ The jump table for the sample program would be:
 [source]
 .example, jump mapping
 ----
-START --> 01 through 08 (conditional)
-01 through 08 (conditional)--> 09 through 12
-01 through 08 (conditional)--> 13
-09 through 12 --> 13
-13 --> END
+START [PROGRAM_START]> 01 through 08 (conditional)
+01 through 08 [INSTRUCTION_JUMP_IF]> 09 through 12
+01 through 08 [INSTRUCTION_JUMP_IF]> 13
+09 through 12 [BLOCK_END]> 13
+13 [PROGRAM_END]> END
 ----
 
 Initial strategies for implementation:
