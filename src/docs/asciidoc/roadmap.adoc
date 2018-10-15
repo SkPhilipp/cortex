@@ -22,12 +22,12 @@ The following sample program can be fully interpreted, it will be referenced thr
 13. jump_destination
 ----
 
-=== Tree
+=== Graph
 
-A representation of the program tree of the sample might look as such;
+A representation of the program graph of the sample might look as such;
 
 [source]
-.example, tree view
+.example, graph view
 ----
 01. push 0
 02. load call_data
@@ -48,7 +48,7 @@ A representation of the program tree of the sample might look as such;
 
 === Target Finding
 
-The target finding strategy for the sample program could be `node.type == INSTRUCTION && node.instruction instanceof NOOP.class`, indicating the instruction at line 12 is the target. Implicitly indicating the program tree node of operations 09 through 12 must be reached to reach the target instruction.
+The target finding strategy for the sample program could be `node.type == INSTRUCTION && node.instruction instanceof NOOP.class`, indicating the instruction at line 12 is the target. Implicitly indicating the program graph node of operations 09 through 12 must be reached to reach the target instruction.
 
 Initial strategies for implementation:
 - Adding only `node.type == INSTRUCTION && node.instruction instanceof CALL.class` where its destination and amount parameter are dynamic.
@@ -74,7 +74,7 @@ Initial strategies for implementation:
 
 === Path Finding
 
-This would use the jump table to find the path to the program tree node of operations 09 through 12.
+This would use the jump table to find the path to the program graph node of operations 09 through 12.
 
 The only possible path is `START --> 01 through 08 (conditional)--> 09 through 12 --> 13 --> END`.
 
@@ -85,7 +85,7 @@ Initial strategies for implementation:
 
 The condition to travel the only available path is to make `08. jump_if` not perform a jump, meaning the condition of `08. jump_if` must be 0. Thus, the following constraint can be inferred: `stack[1] == 0` (With "`stack[1]`" indicating the stack element 1 position from the top of the stack, with the stack state relative to the instruction.
 
-The condition of `08. jump_if` is contained within the same program tree node, if not, it would have to somehow be inferred from the path taken. In this case however, it is known that the condition is `05. greater_than`, transforming the constraint into `( stack[0] > stack[1] ) == 0`
+The condition of `08. jump_if` is contained within the same program graph node, if not, it would have to somehow be inferred from the path taken. In this case however, it is known that the condition is `05. greater_than`, transforming the constraint into `( stack[0] > stack[1] ) == 0`
 
 The process described in the prevous paragraph must be repeated until all knowable inputs are part of the constraint. The full constraint is expanded as follows:
 
@@ -133,7 +133,7 @@ This path can be validated as being possible, with our current implementation, t
 * Cache or rainbow-table of instructions to their respective constraints & ideally their solution
 * Constraint-based complexity estimation to solve a node
 * Integration with Program Fuzzer
-* Constraint solving mechanism; to convert a given a tree representation along with its execution context, known variables (& ranges) to all possible outcomes
+* Constraint solving mechanism; to convert a given a graph representation along with its execution context, known variables (& ranges) to all possible outcomes
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction
 * Constraint solving should provide feedback to the path generator, examples;
