@@ -1,0 +1,104 @@
+
+00. push 1
+01. load call_data
+02. push 2
+03. load call_data
+04. push 20
+05. jump_if
+    --
+20. jump_destination
+21. push 10
+22. push 20
+23. add
+24. equals
+25. push 40
+26. jump_if
+    --
+40. jump_destination
+41. push 0
+42. push 0
+43. push 0
+44. push 0
+45. push 1
+46. push 0xOURADDRESS
+47. call
+
+targeting 47 without any constraints
+evaluating path 00~05 -> 20~26 -> 40~47
+
+instructions reversed
+47. call
+46. push 0xOURADDRESS
+45. push 1
+44. push 0
+43. push 0
+42. push 0
+41. push 0
+40. jump_destination
+26. jump_if
+25. push 40
+24. equals
+23. add
+22. push 20
+21. push 10
+20. jump_destination
+05. jump_if
+04. push 20
+03. load call_data
+02. push 2
+01. load call_data
+00. push 1
+
+the initial solution could have some sort of "parameter-stack" wich instructions
+ which are waiting for parameters so they can add them to their constraint(s)
+ this parameter-stack is simply a stack of variables which are waiting to be assigned
+ a value. the value could be anything such as a function containing referencing other
+ new parameter bound variables, or simply static value
+
+the initial solution mainly adds constraints to parameters of instructions, for example
+ to make sure a jump_if performs a jump, it's condition parameter must be >= 1;
+ this is simply a constraint, which can be formulated as (using line 05 as an example):
+  "jump_if@05.condition >= 1"
+
+47. call has no constraints, stack size requirement >= 6 ; parameter stack [ call@47.address, call@47.amount, call@47.?, call@47.?, call@47.?, call@47.? ]
+46. push has no constraints, fills parameter 6 of call, ...
+40. jump_destination has no constraints, parameter stack [ ]
+26. jump_if has constraint "jump_if@26.condition >= 1", stack size requirement >= 2
+25. push 40 has no constraints, fills parameter jump_if@26.address
+24. equals has no constraints, fills parameter jump_if@26.condition which has a constraint
+           composite constraint is "(equals@24.left == equals@24.right) >= 1"
+23. add has no constraints, fills parameter equals@24.left which has a constraint
+        composite constraint is "((add@23.left + add@23.rigtht) == equals@24.right) >= 1"
+22. push 20 has no constraints, fills parameter add@23.left which has a constraint
+             composite constraint is "((20 + add@23.rigtht) == equals@24.right) >= 1"
+21. push 10 has no constraints, fills parameter add@23.right which has a constraint
+             composite constraint is "((20 + 10) == equals@24.right) >= 1"
+20. jump_destination has no constraints, fills no parameters
+05. jump_if has constraint "jump_if@05.condition >= 1"
+04. push 20 has no constraints, fills parameter jump_if@05.address
+03. load call_data has no constraints, fills parameter jump_if@.condition,
+                   composite constraint is "call_data[load@03.address]>= 1"
+02. push 2 has no constraints, fills parameter load@03.address,
+           composite constraint is "call_data[2] >= 1"
+01. load call_data has no constraints, fills parameter equals@24.right,
+           composite constraint is "((20 + 10) == call_data[load@01.address]) >= 1"
+00. push 1 has no constraints, fills parameter load@01.address,
+           composite constraint is "((20 + 10) == call_data[1]) >= 1"
+
+resulting constraints for entire block:
+- call_data[2] >= 1
+- ((20 + 10) == call_data[1]) >= 1
+
+solution:
+- call_data[2] = 1
+- call_data[1] = 30
+
+notes:
+- this solution would also work when going over the same block multiple times;
+  track how many times an instruction has been accessed and make the parameter stack reference
+  this amount; instruction would then generate a new variable "name", containing the
+  instruction type, line number and times accessed.
+- this solution also applies to blocks generically and allows for building composite constraints,
+  at any point in the above reversing a cutoff point could be made which defines the composite constraint
+  up to that point. by cutting off at the start of a block, essentially a block-constraint is built.
+
