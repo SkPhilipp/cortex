@@ -1,54 +1,4 @@
 
-00. push 1
-01. load call_data
-02. push 2
-03. load call_data
-04. push 20
-05. jump_if
-    --
-20. jump_destination
-21. push 10
-22. push 20
-23. add
-24. equals
-25. push 40
-26. jump_if
-    --
-40. jump_destination
-41. push 0
-42. push 0
-43. push 0
-44. push 0
-45. push 1
-46. push 0xOURADDRESS
-47. call
-
-targeting 47 without any constraints
-evaluating path 00~05 -> 20~26 -> 40~47
-
-instructions reversed
-47. call
-46. push 0xOURADDRESS
-45. push 1
-44. push 0
-43. push 0
-42. push 0
-41. push 0
-40. jump_destination
-26. jump_if
-25. push 40
-24. equals
-23. add
-22. push 20
-21. push 10
-20. jump_destination
-05. jump_if
-04. push 20
-03. load call_data
-02. push 2
-01. load call_data
-00. push 1
-
 the initial solution could have some sort of "parameter-stack" wich instructions
  which are waiting for parameters so they can add them to their constraint(s)
  this parameter-stack is simply a stack of variables which are waiting to be assigned
@@ -101,4 +51,22 @@ notes:
 - this solution also applies to blocks generically and allows for building composite constraints,
   at any point in the above reversing a cutoff point could be made which defines the composite constraint
   up to that point. by cutting off at the start of a block, essentially a block-constraint is built.
+
+Now that it is possible to generate constraints / data flow analysis for a list of instructions, what can we do with it..?
+
+Notes:
+- Remove "PROGRAM_" from PROGRAM_START and PROGRAM_END
+- Solve DUP and SWAP (Shouldn't be too complicated given the current solution; For DUP however this does likely mean that the "parameter stack" must be able to contain multiple parameters per entry in the stack)
+
+Terminology:
+- Path: Multiple subpaths which flow through eachother, for example START -> 00~05 -> 20~26 -> END
+- Subpath: Traversing through a block from its start to one of its exits (ie end of the block, or one of the control flow instructions such as JUMP_IF)
+
+Composite Constraints:
+- Generate for every block's end (Meaning every path through a block has a Composite Constraint)
+- Generate for longer paths
+- Eliminating impossible paths (Some composite constraints of longer paths or even single block paths may be always unsolvable)
+- Cache Composite Constraints anywhere, allowing for Composite Constraints and solutions to be reused across executions
+- Sophisticated Data Flow analysis (Ie verify whether a composite constraint touches given program zones [MEMORY, DISK, CALL_DATA, others?])
+  This could also be implemented as a GraphProcessor
 
