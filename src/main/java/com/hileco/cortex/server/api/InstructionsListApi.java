@@ -1,6 +1,7 @@
 package com.hileco.cortex.server.api;
 
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.StackParameter;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
 import com.hileco.cortex.instructions.bits.BITWISE_OR;
@@ -80,7 +81,7 @@ public class InstructionsListApi implements HandlerFunction<ServerResponse> {
     @AllArgsConstructor
     private static class Representation {
         private String name;
-        private List<Integer> takes;
+        private List<String> takes;
         private List<Integer> provides;
     }
 
@@ -89,7 +90,7 @@ public class InstructionsListApi implements HandlerFunction<ServerResponse> {
         return status(HttpStatus.OK)
                 .syncBody(Arrays.stream(INSTRUCTIONS)
                                   .map(instruction -> new Representation(instruction.getClass().getSimpleName(),
-                                                                         instruction.getStackTakes(),
+                                                                         instruction.getStackParameters().stream().map(StackParameter::getName).collect(Collectors.toList()),
                                                                          instruction.getStackAdds()))
                                   .collect(Collectors.toList()));
     }
