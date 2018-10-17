@@ -32,11 +32,6 @@ public class IS_ZERO implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Collections.singletonList(0);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }

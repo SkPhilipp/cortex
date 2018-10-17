@@ -16,11 +16,6 @@ public class NOOP implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return List.of();
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return List.of();
     }

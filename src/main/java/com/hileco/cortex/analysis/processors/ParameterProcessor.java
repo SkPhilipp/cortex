@@ -31,7 +31,7 @@ public class ParameterProcessor implements Processor {
                     stack.push(graphNode);
                     continue;
                 }
-                var stackTakes = instruction.getStackTakes().size();
+                var stackTakes = instruction.getStackParameters().size();
                 if (stackTakes > 0) {
                     var parameters = new ArrayList<GraphNode>();
                     var stackSize = stack.size();

@@ -136,6 +136,7 @@ This path can be validated as being possible, with our current implementation, t
 * Constraint solving mechanism; to convert a given a graph representation along with its execution context, known variables (& ranges) to all possible outcomes
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction
+* Processor for removing SWAPs whose left and right parameter are equal
 * Constraint solving should provide feedback to the path generator, examples;
   - may exclude impossible paths after evaluating constraints
   - may want exclude paths ahead of time based on known data
