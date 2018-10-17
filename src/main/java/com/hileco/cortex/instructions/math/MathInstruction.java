@@ -18,10 +18,10 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 abstract class MathInstruction implements Instruction {
-    public abstract BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right);
-
     public static final StackParameter LEFT = new StackParameter("left", 0);
     public static final StackParameter RIGHT = new StackParameter("right", 1);
+
+    public abstract BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right);
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {

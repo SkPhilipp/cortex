@@ -19,9 +19,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.status;
@@ -30,10 +30,10 @@ public class DemoOptimizerApi implements HandlerFunction<ServerResponse> {
 
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
-        var graphBuilder = new GraphBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(List.of(
                 new ParameterProcessor()
         ));
-        var optimizedGraphBuilder = new GraphBuilder(Arrays.asList(
+        var optimizedGraphBuilder = new GraphBuilder(List.of(
                 new ParameterProcessor(),
                 new FlowProcessor(),
                 new ExitTrimProcessor(),
@@ -42,7 +42,7 @@ public class DemoOptimizerApi implements HandlerFunction<ServerResponse> {
                 new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
                 new KnownProcessor()
         ));
-        var program = new Program(Arrays.asList(
+        var program = new Program(List.of(
                 new PUSH(BigInteger.valueOf(1234L).toByteArray()),
                 new PUSH(BigInteger.valueOf(5678L).toByteArray()),
                 new ADD(),

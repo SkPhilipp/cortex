@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class KnownJumpIfProcessorTest {
 
@@ -21,13 +21,13 @@ public class KnownJumpIfProcessorTest {
         processors.add(new KnownJumpIfProcessor());
         var graphBuilder = new GraphBuilder(processors);
 
-        var processed = graphBuilder.build(Arrays.asList(
+        var processed = graphBuilder.build(List.of(
                 new PUSH(BigInteger.ONE.toByteArray()),
                 new PUSH(BigInteger.TEN.toByteArray()),
                 new JUMP_IF()
         ));
 
-        var expected = graphBuilder.build(Arrays.asList(
+        var expected = graphBuilder.build(List.of(
                 new NOOP(),
                 new PUSH(BigInteger.TEN.toByteArray()),
                 new JUMP()

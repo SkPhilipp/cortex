@@ -16,9 +16,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -32,7 +32,7 @@ public class DemoJumpMappingApi implements HandlerFunction<ServerResponse> {
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
         var seed = Long.parseLong(request.queryParam(PARAM_SEED).orElse("0"));
-        var graphBuilder = new GraphBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(List.of(
                 new ParameterProcessor(),
                 new FlowProcessor(),
                 new ExitTrimProcessor(),

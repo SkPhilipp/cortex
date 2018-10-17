@@ -17,13 +17,12 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 abstract class ConditionInstruction implements Instruction {
+    public static final StackParameter LEFT = new StackParameter("left", 0);
+    public static final StackParameter RIGHT = new StackParameter("right", 1);
     static final byte[] TRUE = {1};
     static final byte[] FALSE = {0};
 
     abstract boolean innerExecute(byte[] left, byte[] right);
-
-    public static final StackParameter LEFT = new StackParameter("left", 0);
-    public static final StackParameter RIGHT = new StackParameter("right", 1);
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {

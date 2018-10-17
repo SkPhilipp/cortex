@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class ParameterProcessorTest {
 
@@ -21,7 +21,7 @@ public class ParameterProcessorTest {
         var processors = new ArrayList<Processor>();
         processors.add(new ParameterProcessor());
         var graphBuilder = new GraphBuilder(processors);
-        var graph = graphBuilder.build(Arrays.asList(
+        var graph = graphBuilder.build(List.of(
                 new PUSH(BigInteger.ONE.toByteArray()),
                 new PUSH(BigInteger.TEN.toByteArray()),
                 new JUMP_IF()
@@ -40,7 +40,7 @@ public class ParameterProcessorTest {
         var processors = new ArrayList<Processor>();
         processors.add(new ParameterProcessor());
         var graphBuilder = new GraphBuilder(processors);
-        var graph = graphBuilder.build(Arrays.asList(
+        var graph = graphBuilder.build(List.of(
                 new PUSH(BigInteger.valueOf(2358L).toByteArray()),
                 new LOAD(ProgramStoreZone.CALL_DATA),
                 new PUSH(BigInteger.valueOf(7209L).toByteArray()),

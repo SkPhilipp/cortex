@@ -8,8 +8,6 @@ import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
@@ -43,12 +41,12 @@ public class JUMP_IF extends JumpingInstruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public List<ProgramZone> getInstructionModifiers() {
-        return Arrays.asList(STACK, INSTRUCTION_POSITION);
+        return List.of(STACK, INSTRUCTION_POSITION);
     }
 
     @Override

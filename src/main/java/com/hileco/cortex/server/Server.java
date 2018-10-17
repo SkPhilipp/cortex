@@ -41,6 +41,12 @@ public class Server {
         OBJECT_MAPPER.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
+    public static void main(String[] args) {
+        var routerFunction = new AnnotationConfigApplicationContext(Server.class).getBean(RouterFunction.class);
+        var adapter = new ReactorHttpHandlerAdapter(toHttpHandler(routerFunction));
+        var httpServer = HttpServer.create(PORT);
+        httpServer.startAndAwait(adapter);
+    }
 
     @Bean
     public Jackson2JsonEncoder jackson2JsonEncoder() {
@@ -73,12 +79,5 @@ public class Server {
                 .and(route(GET("/api/demo/jump-mapping.json"), new DemoJumpMappingApi()))
                 .and(route(GET("/api/demo/instructions.json"), new InstructionsListApi()))
                 .and(resources("/**", new ClassPathResource("static/docs/")));
-    }
-
-    public static void main(String[] args) {
-        var routerFunction = new AnnotationConfigApplicationContext(Server.class).getBean(RouterFunction.class);
-        var adapter = new ReactorHttpHandlerAdapter(toHttpHandler(routerFunction));
-        var httpServer = HttpServer.create(PORT);
-        httpServer.startAndAwait(adapter);
     }
 }

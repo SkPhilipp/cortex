@@ -13,9 +13,9 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class ProcessorFuzzTest {
 
@@ -42,7 +42,7 @@ public class ProcessorFuzzTest {
      * of generated programs, comparing for any differences in call results, storage, or transfers.
      */
     private void fuzzTestProcessor(Processor processor) {
-        var graphBuilder = new GraphBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(List.of(
                 new ParameterProcessor(),
                 new FlowProcessor(),
                 processor

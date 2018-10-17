@@ -8,7 +8,6 @@ import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.StackParameter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class SWAP implements Instruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Arrays.asList(this.right.getPosition(), this.left.getPosition());
+        return List.of(this.right.getPosition(), this.left.getPosition());
     }
 
     @Override

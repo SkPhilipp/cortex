@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.hileco.cortex.context.ProgramZone.CALL_DATA;
@@ -25,11 +24,11 @@ public abstract class IoInstruction implements Instruction {
     private static List<ProgramZone> programZoneFor(ProgramStoreZone programStoreZone) {
         switch (programStoreZone) {
             case MEMORY:
-                return Arrays.asList(STACK, MEMORY);
+                return List.of(STACK, MEMORY);
             case DISK:
-                return Arrays.asList(STACK, DISK);
+                return List.of(STACK, DISK);
             case CALL_DATA:
-                return Arrays.asList(STACK, CALL_DATA);
+                return List.of(STACK, CALL_DATA);
             default:
                 throw new IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone));
         }

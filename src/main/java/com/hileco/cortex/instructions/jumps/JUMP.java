@@ -31,7 +31,7 @@ public class JUMP extends JumpingInstruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override

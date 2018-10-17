@@ -26,9 +26,9 @@ import java.util.stream.Stream;
 @Getter
 public class GraphNode {
     private static final Set<ProgramZone> SELF_CONTAINED_ZONES = new HashSet<>(Collections.singleton(ProgramZone.STACK));
+    private final ArrayList<Edge> edges;
     private AtomicReference<Instruction> instruction;
     private Integer line;
-    private final ArrayList<Edge> edges;
 
     public GraphNode() {
         this.edges = new ArrayList<>();

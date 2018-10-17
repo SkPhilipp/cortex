@@ -19,7 +19,7 @@ public class EXIT implements Instruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override

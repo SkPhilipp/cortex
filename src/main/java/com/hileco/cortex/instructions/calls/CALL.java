@@ -10,8 +10,6 @@ import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.hileco.cortex.context.ProgramZone.MEMORY;
@@ -60,12 +58,12 @@ public class CALL implements Instruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public List<ProgramZone> getInstructionModifiers() {
-        return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
+        return List.of(STACK, PROGRAM_CONTEXT, MEMORY);
     }
 
     @Override

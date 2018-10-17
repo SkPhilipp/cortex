@@ -9,7 +9,6 @@ import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
@@ -51,7 +50,7 @@ public class SAVE extends IoInstruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override

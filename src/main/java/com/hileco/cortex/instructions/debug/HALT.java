@@ -8,7 +8,6 @@ import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.StackParameter;
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.List;
 
 @Value
@@ -22,22 +21,22 @@ public class HALT implements Instruction {
 
     @Override
     public List<Integer> getStackTakes() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public List<ProgramZone> getInstructionModifiers() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public List<StackParameter> getStackParameters() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override

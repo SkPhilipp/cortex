@@ -13,9 +13,9 @@ import com.hileco.cortex.fuzzer.ProgramGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class GraphMapperFuzzTest {
@@ -25,7 +25,7 @@ public class GraphMapperFuzzTest {
 
     @Test
     public void testTreeMapper() {
-        var graphBuilder = new GraphBuilder(Arrays.asList(
+        var graphBuilder = new GraphBuilder(List.of(
                 new ParameterProcessor(),
                 new FlowProcessor(),
                 new ExitTrimProcessor(),

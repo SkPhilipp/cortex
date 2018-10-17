@@ -77,14 +77,6 @@ public class InstructionsListApi implements HandlerFunction<ServerResponse> {
             new SUBTRACT()
     };
 
-    @Data
-    @AllArgsConstructor
-    private static class Representation {
-        private String name;
-        private List<String> takes;
-        private List<Integer> provides;
-    }
-
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
         return status(HttpStatus.OK)
@@ -93,5 +85,13 @@ public class InstructionsListApi implements HandlerFunction<ServerResponse> {
                                                                          instruction.getStackParameters().stream().map(StackParameter::getName).collect(Collectors.toList()),
                                                                          instruction.getStackAdds()))
                                   .collect(Collectors.toList()));
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class Representation {
+        private String name;
+        private List<String> takes;
+        private List<Integer> provides;
     }
 }

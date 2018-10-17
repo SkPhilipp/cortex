@@ -3,7 +3,6 @@ package com.hileco.cortex.instructions.conditions;
 import lombok.EqualsAndHashCode;
 
 import java.util.Arrays;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 public class EQUALS extends ConditionInstruction {

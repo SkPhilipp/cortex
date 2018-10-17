@@ -7,7 +7,6 @@ import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
-import java.util.Collections;
 import java.util.List;
 
 @EqualsAndHashCode
@@ -18,12 +17,12 @@ public class JUMP_DESTINATION implements Instruction {
 
     @Override
     public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public List<ProgramZone> getInstructionModifiers() {
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override

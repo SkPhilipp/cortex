@@ -15,13 +15,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.util.List;
 
 public class InstructionsBuilderTest {
 
     @Test
     public void testJump() throws ProgramException {
-        var program = new Program(BigInteger.ZERO, Arrays.asList(
+        var program = new Program(BigInteger.ZERO, List.of(
                 new PUSH(new byte[]{123}),
                 new PUSH(new byte[]{123}),
                 new EQUALS(),
@@ -44,7 +44,7 @@ public class InstructionsBuilderTest {
 
     @Test
     public void testNoJump() throws ProgramException {
-        var program = new Program(BigInteger.ZERO, Arrays.asList(
+        var program = new Program(BigInteger.ZERO, List.of(
                 new PUSH(new byte[]{123}),
                 new PUSH(new byte[]{124}),
                 new EQUALS(),
@@ -67,7 +67,7 @@ public class InstructionsBuilderTest {
 
     @Test
     public void testLoop() throws ProgramException {
-        var program = new Program(BigInteger.ZERO, Arrays.asList(
+        var program = new Program(BigInteger.ZERO, List.of(
                 new PUSH(new byte[]{0}),
                 new JUMP_DESTINATION(),
                 new PUSH(new byte[]{1}),

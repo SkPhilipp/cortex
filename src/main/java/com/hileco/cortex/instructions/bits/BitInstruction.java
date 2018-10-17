@@ -16,10 +16,10 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 public abstract class BitInstruction implements Instruction {
-    abstract byte innerExecute(byte left, byte right);
-
     public static final StackParameter LEFT = new StackParameter("left", 0);
     public static final StackParameter RIGHT = new StackParameter("right", 1);
+
+    abstract byte innerExecute(byte left, byte right);
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
