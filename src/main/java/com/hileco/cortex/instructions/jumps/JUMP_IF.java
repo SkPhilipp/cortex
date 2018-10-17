@@ -4,6 +4,7 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
@@ -17,6 +18,10 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode(callSuper = true)
 public class JUMP_IF extends JumpingInstruction {
+
+    public static final StackParameter ADDRESS = new StackParameter("address", 0);
+    public static final StackParameter CONDITION = new StackParameter("condition", 1);
+
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
@@ -37,11 +42,6 @@ public class JUMP_IF extends JumpingInstruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
@@ -49,6 +49,11 @@ public class JUMP_IF extends JumpingInstruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Arrays.asList(STACK, INSTRUCTION_POSITION);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(ADDRESS, CONDITION);
     }
 
     @Override

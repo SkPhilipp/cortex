@@ -5,10 +5,10 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +16,10 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode(callSuper = true)
 public class SAVE extends IoInstruction {
+
+    public static final StackParameter ADDRESS = new StackParameter("address", 0);
+    public static final StackParameter BYTES = new StackParameter("bytes", 1);
+
     public SAVE(ProgramStoreZone programStoreZone) {
         super(programStoreZone);
     }
@@ -46,12 +50,12 @@ public class SAVE extends IoInstruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1);
+    public List<Integer> getStackAdds() {
+        return Collections.emptyList();
     }
 
     @Override
-    public List<Integer> getStackAdds() {
-        return Collections.emptyList();
+    public List<StackParameter> getStackParameters() {
+        return List.of(ADDRESS, BYTES);
     }
 }

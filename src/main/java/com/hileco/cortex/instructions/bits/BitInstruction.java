@@ -5,9 +5,9 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +17,9 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 @EqualsAndHashCode
 public abstract class BitInstruction implements Instruction {
     abstract byte innerExecute(byte left, byte right);
+
+    public static final StackParameter LEFT = new StackParameter("left", 0);
+    public static final StackParameter RIGHT = new StackParameter("right", 1);
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
@@ -37,11 +40,6 @@ public abstract class BitInstruction implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
@@ -54,5 +52,10 @@ public abstract class BitInstruction implements Instruction {
     @Override
     public String toString() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(LEFT, RIGHT);
     }
 }

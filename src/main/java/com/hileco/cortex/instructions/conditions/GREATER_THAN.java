@@ -14,9 +14,4 @@ public class GREATER_THAN extends ConditionInstruction {
         var rightAsBigInteger = new BigInteger(right);
         return leftAsBigInteger.compareTo(rightAsBigInteger) > 0;
     }
-
-    @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1);
-    }
 }

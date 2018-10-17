@@ -5,6 +5,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.Value;
 
 import java.util.Collections;
@@ -31,6 +32,11 @@ public class HALT implements Instruction {
 
     @Override
     public List<ProgramZone> getInstructionModifiers() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
         return Collections.emptyList();
     }
 

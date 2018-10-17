@@ -6,6 +6,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.Value;
 
 import java.math.BigInteger;
@@ -28,11 +29,6 @@ public class PUSH implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
@@ -40,6 +36,11 @@ public class PUSH implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of();
     }
 
     @Override

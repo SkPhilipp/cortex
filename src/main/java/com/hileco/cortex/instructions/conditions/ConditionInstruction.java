@@ -6,6 +6,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
@@ -20,6 +21,9 @@ abstract class ConditionInstruction implements Instruction {
     static final byte[] FALSE = {0};
 
     abstract boolean innerExecute(byte[] left, byte[] right);
+
+    public static final StackParameter LEFT = new StackParameter("left", 0);
+    public static final StackParameter RIGHT = new StackParameter("right", 1);
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
@@ -46,5 +50,10 @@ abstract class ConditionInstruction implements Instruction {
     @Override
     public String toString() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(LEFT, RIGHT);
     }
 }

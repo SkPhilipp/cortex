@@ -6,7 +6,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
-import lombok.Value;
+import com.hileco.cortex.instructions.StackParameter;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,25 +15,23 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
-@Value
 public class DUPLICATE implements Instruction {
-    private int topOffset;
+    private final StackParameter input;
+
+    public DUPLICATE(int topOffset) {
+        this.input = new StackParameter("input", topOffset);
+    }
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
-        if (stack.size() <= this.topOffset) {
+        if (stack.size() <= this.input.getPosition()) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        stack.duplicate(this.topOffset);
+        stack.duplicate(this.input.getPosition());
         if (stack.size() > process.getStackLimit()) {
             throw new ProgramException(program, STACK_LIMIT_REACHED);
         }
-    }
-
-    @Override
-    public List<Integer> getStackTakes() {
-        return Collections.singletonList(this.topOffset);
     }
 
     @Override
@@ -47,7 +45,12 @@ public class DUPLICATE implements Instruction {
     }
 
     @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(this.input);
+    }
+
+    @Override
     public String toString() {
-        return String.format("DUPLICATE %d", this.topOffset);
+        return String.format("DUPLICATE %d", this.input.getPosition());
     }
 }

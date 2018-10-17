@@ -5,6 +5,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
@@ -20,6 +21,10 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 public class CALL_RETURN implements Instruction {
+
+    public static final StackParameter OFFSET = new StackParameter("size", 0);
+    public static final StackParameter SIZE = new StackParameter("offset", 1);
+
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
@@ -41,11 +46,6 @@ public class CALL_RETURN implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
@@ -53,6 +53,11 @@ public class CALL_RETURN implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(OFFSET, SIZE);
     }
 
     @Override

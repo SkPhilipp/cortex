@@ -5,6 +5,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
@@ -15,6 +16,8 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode(callSuper = true)
 public class LOAD extends IoInstruction {
+
+    public static final StackParameter ADDRESS = new StackParameter("address", 0);
 
     private static final int SIZE = 32;
 
@@ -53,13 +56,13 @@ public class LOAD extends IoInstruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Collections.singletonList(0);
+    public List<Integer> getStackAdds() {
+        return Collections.singletonList(-1);
     }
 
     @Override
-    public List<Integer> getStackAdds() {
-        return Collections.singletonList(-1);
+    public List<StackParameter> getStackParameters() {
+        return List.of(ADDRESS);
     }
 }
 

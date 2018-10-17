@@ -5,6 +5,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.Value;
 
 import java.security.MessageDigest;
@@ -17,6 +18,9 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @Value
 public class HASH implements Instruction {
+
+    public static final StackParameter INPUT = new StackParameter("input", 0);
+
     private String hashMethod;
 
     @Override
@@ -35,11 +39,6 @@ public class HASH implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Collections.singletonList(0);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
@@ -47,6 +46,11 @@ public class HASH implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(INPUT);
     }
 
     @Override

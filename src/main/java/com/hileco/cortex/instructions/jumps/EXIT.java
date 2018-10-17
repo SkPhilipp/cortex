@@ -4,6 +4,7 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
@@ -17,11 +18,6 @@ public class EXIT implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
@@ -29,6 +25,11 @@ public class EXIT implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(ProgramZone.PROGRAM_CONTEXT);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of();
     }
 
     @Override

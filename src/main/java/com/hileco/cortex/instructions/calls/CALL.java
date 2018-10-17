@@ -6,6 +6,7 @@ import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
@@ -21,6 +22,14 @@ import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_F
 
 @EqualsAndHashCode
 public class CALL implements Instruction {
+
+    public static final StackParameter RECIPIENT_ADDRESS = new StackParameter("recipientAddress", 0);
+    public static final StackParameter VALUE_TRANSFERRED = new StackParameter("valueTransferred", 1);
+    public static final StackParameter IN_OFFSET = new StackParameter("inOffset", 2);
+    public static final StackParameter IN_SIZE = new StackParameter("inSize", 3);
+    public static final StackParameter OUT_OFFSET = new StackParameter("outOffset", 4);
+    public static final StackParameter OUT_SIZE = new StackParameter("outSize", 5);
+
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
@@ -50,11 +59,6 @@ public class CALL implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1, 2, 3, 4, 5);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.emptyList();
     }
@@ -62,6 +66,11 @@ public class CALL implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Arrays.asList(STACK, PROGRAM_CONTEXT, MEMORY);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(RECIPIENT_ADDRESS, VALUE_TRANSFERRED, IN_OFFSET, IN_SIZE, OUT_OFFSET, OUT_SIZE);
     }
 
     @Override

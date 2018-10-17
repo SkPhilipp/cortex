@@ -6,7 +6,7 @@ import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
-import lombok.Value;
+import com.hileco.cortex.instructions.StackParameter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,28 +15,27 @@ import java.util.List;
 import static com.hileco.cortex.context.ProgramZone.STACK;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
-@Value
 public class SWAP implements Instruction {
-    private int topOffsetLeft;
-    private int topOffsetRight;
+    private final StackParameter left;
+    private final StackParameter right;
+
+    public SWAP(int topOffsetLeft, int topOffsetRight) {
+        this.left = new StackParameter("left", topOffsetLeft);
+        this.right = new StackParameter("right", topOffsetRight);
+    }
 
     @Override
     public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
-        if (stack.size() <= this.topOffsetLeft || stack.size() <= this.topOffsetRight) {
+        if (stack.size() <= this.left.getPosition() || stack.size() <= this.right.getPosition()) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);
         }
-        stack.swap(this.topOffsetLeft, this.topOffsetRight);
-    }
-
-    @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(this.topOffsetLeft, this.topOffsetRight);
+        stack.swap(this.left.getPosition(), this.right.getPosition());
     }
 
     @Override
     public List<Integer> getStackAdds() {
-        return Arrays.asList(this.topOffsetRight, this.topOffsetLeft);
+        return Arrays.asList(this.right.getPosition(), this.left.getPosition());
     }
 
     @Override
@@ -45,7 +44,12 @@ public class SWAP implements Instruction {
     }
 
     @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(this.left, this.right);
+    }
+
+    @Override
     public String toString() {
-        return String.format("SWAP %d %d", this.topOffsetLeft, this.topOffsetRight);
+        return String.format("SWAP %d %d", this.left.getPosition(), this.right.getPosition());
     }
 }

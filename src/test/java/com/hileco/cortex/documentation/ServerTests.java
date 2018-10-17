@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
@@ -92,7 +93,7 @@ public class ServerTests {
                 .uri("/api/demo/jump-mapping.json")
                 .exchange()
                 .expectBody()
-                .consumeWith(document("demo-jump-mapping", responseFields(
+                .consumeWith(document("demo-jump-mapping", relaxedResponseFields(
                         fieldWithPath("jumpMapping").description("The list of all possible paths through the program."),
                         fieldWithPath("program").description("The program itself.")
                 )));

@@ -4,6 +4,7 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
@@ -13,6 +14,8 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @EqualsAndHashCode
 public class BITWISE_NOT implements Instruction {
+
+    public static final StackParameter INPUT = new StackParameter("input", 0);
 
     private static final byte CLEAR = 127;
 
@@ -29,11 +32,6 @@ public class BITWISE_NOT implements Instruction {
     }
 
     @Override
-    public List<Integer> getStackTakes() {
-        return Collections.singletonList(0);
-    }
-
-    @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);
     }
@@ -41,6 +39,11 @@ public class BITWISE_NOT implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(INPUT);
     }
 
     @Override

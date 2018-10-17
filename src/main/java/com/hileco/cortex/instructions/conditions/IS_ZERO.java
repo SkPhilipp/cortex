@@ -4,6 +4,7 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
@@ -13,6 +14,9 @@ import static com.hileco.cortex.context.ProgramZone.STACK;
 
 @EqualsAndHashCode
 public class IS_ZERO implements Instruction {
+
+    public static final StackParameter INPUT = new StackParameter("input", 0);
+
     @Override
     public void execute(ProcessContext process, ProgramContext program) {
         var stack = program.getStack();
@@ -40,6 +44,11 @@ public class IS_ZERO implements Instruction {
     @Override
     public List<ProgramZone> getInstructionModifiers() {
         return Collections.singletonList(STACK);
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
+        return List.of(INPUT);
     }
 
     @Override

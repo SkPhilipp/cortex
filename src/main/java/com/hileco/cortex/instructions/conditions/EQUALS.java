@@ -11,9 +11,4 @@ public class EQUALS extends ConditionInstruction {
     public boolean innerExecute(byte[] left, byte[] right) {
         return Arrays.equals(left, right);
     }
-
-    @Override
-    public List<Integer> getStackTakes() {
-        return Arrays.asList(0, 1);
-    }
 }

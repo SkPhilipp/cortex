@@ -4,6 +4,7 @@ import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
@@ -27,6 +28,11 @@ public class NOOP implements Instruction {
 
     @Override
     public List<ProgramZone> getInstructionModifiers() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<StackParameter> getStackParameters() {
         return Collections.emptyList();
     }
 
