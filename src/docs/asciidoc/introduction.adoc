@@ -43,4 +43,6 @@ Cortex is a system to analyse software, find desired paths within them & move th
 | constrained | A value which has constraints applied to it. An high-level example of this is: `if(x < 3) { win(x) }`.  Within the body of the `if` statement, `x` has a constraint of `x < 3`.
 | known | A value which can be determined ahead of time. An example of this is the current time. Known values include constraint-inferred values; An integer value with constraints `0 < value < 2` is known to be `1`, as it can only be `1`.
 | self-contained | A node part of a graph which can be full precomputed ahead of time.
+| subpath | An entry in the program flow mapping.
+| path | Subpaths joined together. For example: ">START> 00~05 >JUMP_IF:1> 20~26 >END>"
 |====

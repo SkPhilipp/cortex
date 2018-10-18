@@ -111,6 +111,7 @@ This path can be validated as being possible, with our current implementation, t
 
 === Graph
 
+* Remove "PROGRAM_" from "PROGRAM_START" and "PROGRAM_END".
 * Visualization of Graph with a focus on Flow using  http://graphstream-project.org/doc/Tutorials/Graph-Visualisation/ (See: Ida Pro)
 * Complete implementation of all current processors (JumpThreadingProcessor as well as JumpUnreachableProcessor currently do not function well)
 * Working testcases of processors
@@ -129,6 +130,13 @@ This path can be validated as being possible, with our current implementation, t
 
 === Constraint System
 
+* Implement functionality for instruction-bound constraint Expressions as described in Reversing-Solved.xlsx. (Example: a "(JUMP_IF@23.CONDITION >= 1)")
+* Implement functionality to composite constraint Expression from a list of non-SAVE/SWAP/DUP instructions and instruction-level constraints.
+* Implement handling DUP instructions in composite constraint Expressions.
+* Implement handling SWAP instructions in composite constraint Expressions.
+* Implement a processor which generates composite constraint Expressions for every subpath and bind it to the Graph.
+* Implement a processor which eliminates impossible paths based on composite constraint Expressions.
+* Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Minimal implementation which infers constraints on data, able to create compositions of constraints required to reach a GraphNode
 * Cache or rainbow-table of instructions to their respective constraints & ideally their solution
 * Constraint-based complexity estimation to solve a node
