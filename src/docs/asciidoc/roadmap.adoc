@@ -53,18 +53,18 @@ The target finding strategy for the sample program could be `node.type == INSTRU
 Initial strategies for implementation:
 - Adding only `node.type == INSTRUCTION && node.instruction instanceof CALL.class` where its destination and amount parameter are dynamic.
 
-=== Jump Mapping
+=== Flow Mapping
 
-The jump table for the sample program would be:
+The jump mapping representation for the sample program would be:
 
 [source]
 .example, jump mapping
 ----
-START [PROGRAM_START]> 01 through 08 (conditional)
-01 through 08 [INSTRUCTION_JUMP_IF]> 09 through 12
-01 through 08 [INSTRUCTION_JUMP_IF]> 13
-09 through 12 [BLOCK_END]> 13
-13 [PROGRAM_END]> END
+              START               01 through 08
+01 through 08 INSTRUCTION_JUMP_IF 09 through 12
+01 through 08 INSTRUCTION_JUMP_IF 13
+09 through 12 BLOCK_END           13
+           13 END
 ----
 
 Initial strategies for implementation:
@@ -76,7 +76,7 @@ Initial strategies for implementation:
 
 This would use the jump table to find the path to the program graph node of operations 09 through 12.
 
-The only possible path is `START --> 01 through 08 (conditional)--> 09 through 12 --> 13 --> END`.
+The only possible path is `START 01 through 08 INSTRUCTION_JUMP_IF 09 through 12 BLOCK_END 13 END`.
 
 Initial strategies for implementation:
 - Computing all permutations of the jump mapping, excluding loops
@@ -125,7 +125,6 @@ This path can be validated as being possible, with our current implementation, t
 
 === Pathing System
 
-* Path finding mechanism based on the Graph model
 * Path finding mechanism should account for large amounts of loops
 
 === Constraint System
@@ -137,7 +136,6 @@ This path can be validated as being possible, with our current implementation, t
 * Implement a processor which generates composite constraint Expressions for every subpath and bind it to the Graph.
 * Implement a processor which eliminates impossible paths based on composite constraint Expressions.
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
-* Minimal implementation which infers constraints on data, able to create compositions of constraints required to reach a GraphNode
 * Cache or rainbow-table of instructions to their respective constraints & ideally their solution
 * Constraint-based complexity estimation to solve a node
 * Integration with Program Fuzzer
@@ -150,7 +148,7 @@ This path can be validated as being possible, with our current implementation, t
   - may want exclude paths ahead of time based on known data
 * Constraint solving might want to precompute every block's exit
   - This allows for building constraint composites instead of rebuilding them based on instructions
-* Conversion of Tree Nodes to Constraints, given Constraints.  Could every Instruction be represented as one function, with variable offsets?
+* Conversion of Graph Nodes to Constraints, given Constraints.  Could every Instruction be represented as one function, with variable offsets?
   - for `ADD:    offset, context -> context.add_constraint("stack[offset] = (stack[offset + 1] + stack[offset + 2]) % overflow_limit")`
   - for `EQUALS: offset, context -> context.add_constraint("stack[offset] = stack[offset + 1] == stack[offset + 2]")`
   - for `PUSH:   offset, context -> context.add_constraint("stack[offset] = push_value")`
@@ -195,11 +193,10 @@ These issues will eventually land on the roadmap, they are however currently not
 
 * Make interitable-thread-local layers; All layers are split when a new thread is created. This could allow for easy branching of all layers without having to manually manage them
   Could also use this thread-local mechanic to have multiple threads run on the same context, and only some branching
-
 * Implement branching LayeredBytes
 * Support branching for all context types
 
-=== Jump Mapping
+=== Flow Mapping
 
 * Strategy mapping blocks containing an EXIT or conditional EXIT to END
 
