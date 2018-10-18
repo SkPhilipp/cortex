@@ -26,8 +26,8 @@ Cortex is a system to analyse software, find desired paths within them & move th
 | Instructions | Forms programs, which may be executed within a context.
 | Graph | Representation of instructions, usable for analysis. Graphs contain optimizations which simplify analysis.
 | Fuzzer | Generates random programs, used in automated testing of optimizations.
-| Jump Mapper | Maps out the transitions between nodes of a graph, which are later used to find a path to a targeted state.
-| Target Finder | Finds a instructions which may be used to move a program into a desired state.
+| Flow Mapper | Maps out the transitions between nodes of a graph, which are later used to find a path to a targeted state.
+| Target Finder | Finds instructions which may be used to move a program into a desired state.
 | Path Finder | Finds technically possible paths to targeted instructions.
 | Validator | Finds out which paths to a targeted instruction can feasibly be reached and provides the conditions and inputs needed to move programs to the desired state.
 | Attacker | Actively tries to move given programs to a desired state.

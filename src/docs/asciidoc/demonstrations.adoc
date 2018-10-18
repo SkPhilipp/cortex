@@ -33,7 +33,7 @@ include::{snippets}/demo-constraints/response-body.adoc[]
 
 include::{snippets}/demo-constraints/response-fields.adoc[]
 
-=== Jump Mapping
+=== Flow Mapping
 
 include::{snippets}/demo-jump-mapping/curl-request.adoc[]
 

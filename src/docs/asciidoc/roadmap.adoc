@@ -55,10 +55,10 @@ Initial strategies for implementation:
 
 === Flow Mapping
 
-The jump mapping representation for the sample program would be:
+The flow mapping representation for the sample program would be:
 
 [source]
-.example, jump mapping
+.example, flow mapping
 ----
               START               01 through 08
 01 through 08 INSTRUCTION_JUMP_IF 09 through 12
@@ -74,12 +74,12 @@ Initial strategies for implementation:
 
 === Path Finding
 
-This would use the jump table to find the path to the program graph node of operations 09 through 12.
+Uses the flow mapping to find the path to the program graph node of operations 09 through 12.
 
 The only possible path is `START 01 through 08 INSTRUCTION_JUMP_IF 09 through 12 BLOCK_END 13 END`.
 
 Initial strategies for implementation:
-- Computing all permutations of the jump mapping, excluding loops
+- Computing all permutations of the flow mapping, excluding loops
 
 === Path Validation & Input Building
 
