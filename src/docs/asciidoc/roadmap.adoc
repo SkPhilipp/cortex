@@ -148,11 +148,9 @@ This path can be validated as being possible, with our current implementation, t
   - may want exclude paths ahead of time based on known data
 * Constraint solving might want to precompute every block's exit
   - This allows for building constraint composites instead of rebuilding them based on instructions
-* Conversion of Graph Nodes to Constraints, given Constraints.  Could every Instruction be represented as one function, with variable offsets?
-  - for `ADD:    offset, context -> context.add_constraint("stack[offset] = (stack[offset + 1] + stack[offset + 2]) % overflow_limit")`
-  - for `EQUALS: offset, context -> context.add_constraint("stack[offset] = stack[offset + 1] == stack[offset + 2]")`
-  - for `PUSH:   offset, context -> context.add_constraint("stack[offset] = push_value")`
-* Interactive API which consumes instructions and constraints to build full constraint expressions.
+* Interactive API which consumes instructions and constraints to build full constraint expressions
+* Implementing overflow as part of Expression building
+
 
 === Payload Generator (Local)
 
