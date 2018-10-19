@@ -152,6 +152,7 @@ This path can be validated as being possible, with our current implementation, t
   - for `ADD:    offset, context -> context.add_constraint("stack[offset] = (stack[offset + 1] + stack[offset + 2]) % overflow_limit")`
   - for `EQUALS: offset, context -> context.add_constraint("stack[offset] = stack[offset + 1] == stack[offset + 2]")`
   - for `PUSH:   offset, context -> context.add_constraint("stack[offset] = push_value")`
+* Interactive API which consumes instructions and constraints to build full constraint expressions.
 
 === Payload Generator (Local)
 
