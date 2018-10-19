@@ -2,8 +2,10 @@ package com.hileco.cortex.constraints;
 
 import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.constraints.expressions.Operation2Expression;
+import com.hileco.cortex.constraints.expressions.ReferenceExpression;
 import com.hileco.cortex.constraints.expressions.ValueExpression;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.MODULO;
 import com.hileco.cortex.instructions.math.MULTIPLY;
@@ -73,6 +75,12 @@ public class ExpressionBuilder {
             var pushInstruction = (PUSH) instruction;
             var value = new BigInteger(pushInstruction.getBytes());
             expression = ValueExpression.value(value.longValue());
+        }
+        if (instruction instanceof LOAD) {
+            var loadInstruction = (LOAD) instruction;
+            var referenceExpression = ReferenceExpression.reference(loadInstruction.getProgramStoreZone(), null);
+            this.bind(LOAD.ADDRESS.getPosition(), referenceExpression::setAddress);
+            expression = referenceExpression;
         }
         for (var stackAdd : stackAdds) {
             this.release(stackAdd, expression);

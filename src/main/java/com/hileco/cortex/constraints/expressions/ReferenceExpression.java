@@ -1,5 +1,6 @@
 package com.hileco.cortex.constraints.expressions;
 
+import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import lombok.AllArgsConstructor;
@@ -9,17 +10,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class ReferenceExpression implements Expression {
 
-    public enum ReferenceType {
-        STACK,
-        MEMORY,
-        DISK,
-        CALL_DATA
-    }
-
-    private ReferenceType type;
+    private ProgramStoreZone type;
     private Expression address;
 
-    public static ReferenceExpression reference(ReferenceType type, Expression address) {
+    public static ReferenceExpression reference(ProgramStoreZone type, Expression address) {
         return new ReferenceExpression(type, address);
     }
 

@@ -7,9 +7,9 @@ import org.junit.Test;
 import static com.hileco.cortex.constraints.expressions.Operation2Expression.Type2.ADD;
 import static com.hileco.cortex.constraints.expressions.Operation2Expression.Type2.LESS_THAN;
 import static com.hileco.cortex.constraints.expressions.Operation2Expression.Type2.MODULO;
-import static com.hileco.cortex.constraints.expressions.ReferenceExpression.ReferenceType.CALL_DATA;
 import static com.hileco.cortex.constraints.expressions.ReferenceExpression.reference;
 import static com.hileco.cortex.constraints.expressions.ValueExpression.value;
+import static com.hileco.cortex.context.data.ProgramStoreZone.CALL_DATA;
 
 public class SolverTest {
 
