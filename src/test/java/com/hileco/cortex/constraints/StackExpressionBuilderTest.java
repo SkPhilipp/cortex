@@ -42,4 +42,11 @@ public class StackExpressionBuilderTest {
         Assert.assertEquals("CALL_DATA[10]", builder.getCurrentExpression().toString());
     }
 
+    @Test
+    public void testMissing() {
+        var builder = new StackExpressionBuilder();
+        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
+        builder.addInstruction(new SUBTRACT());
+        Assert.assertEquals("(123 - STACK[0])", builder.getCurrentExpression().toString());
+    }
 }
