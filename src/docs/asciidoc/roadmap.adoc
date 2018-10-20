@@ -128,8 +128,6 @@ This path can be validated as being possible, with our current implementation, t
 
 === Constraint System
 
-* Implement functionality for instruction-bound constraint Expressions as described in Reversing-Solved.xlsx. (Example: a "(JUMP_IF@23.CONDITION >= 1)")
-* Implement functionality to composite constraint Expression from a list of non-SAVE/SWAP/DUP instructions and instruction-level constraints.
 * Implement handling DUP instructions in composite constraint Expressions.
 * Implement handling SWAP instructions in composite constraint Expressions.
 * Implement a processor which generates composite constraint Expressions for every subpath and bind it to the Graph.

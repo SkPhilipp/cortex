@@ -1,7 +1,6 @@
 package com.hileco.cortex.constraints;
 
 import com.hileco.cortex.constraints.expressions.Expression;
-import com.hileco.cortex.constraints.expressions.ReferenceExpression;
 import com.hileco.cortex.constraints.expressions.ReferenceMapping;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
@@ -15,8 +14,8 @@ import java.util.stream.Collectors;
 
 public class Solver implements ReferenceMapping {
 
-    private final Map<ReferenceExpression, String> referencesForward;
-    private final Map<String, ReferenceExpression> referencesBackward;
+    private final Map<Expression.Reference, String> referencesForward;
+    private final Map<String, Expression.Reference> referencesBackward;
 
     public Solver() {
         this.referencesForward = new HashMap<>();
@@ -26,7 +25,7 @@ public class Solver implements ReferenceMapping {
     public Solution solve(Expression expression) {
         var context = new Context();
         var solver = context.mkSolver();
-        solver.add((BoolExpr) expression.build(context, this));
+        solver.add((BoolExpr) expression.asZ3Expr(context, this));
         var status = solver.check();
         var model = solver.getModel();
         var constants = Arrays.stream(model.getConstDecls())
@@ -37,12 +36,12 @@ public class Solver implements ReferenceMapping {
     }
 
     @Override
-    public Map<ReferenceExpression, String> getReferencesForward() {
+    public Map<Expression.Reference, String> getReferencesForward() {
         return this.referencesForward;
     }
 
     @Override
-    public Map<String, ReferenceExpression> getReferencesBackward() {
+    public Map<String, Expression.Reference> getReferencesBackward() {
         return this.referencesBackward;
     }
 }

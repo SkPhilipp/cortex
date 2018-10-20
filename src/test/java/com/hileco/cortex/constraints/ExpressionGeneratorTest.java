@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 
-public class StackExpressionBuilderTest {
+public class ExpressionGeneratorTest {
 
     @Test
     public void testParameterized() {
-        var builder = new StackExpressionBuilder();
+        var builder = new ExpressionGenerator();
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new SUBTRACT());
@@ -23,7 +23,7 @@ public class StackExpressionBuilderTest {
 
     @Test
     public void testPop() {
-        var builder = new StackExpressionBuilder();
+        var builder = new ExpressionGenerator();
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new PUSH(BigInteger.valueOf(1L).toByteArray()));
         builder.addInstruction(new POP());
@@ -36,7 +36,7 @@ public class StackExpressionBuilderTest {
 
     @Test
     public void testReferences() {
-        var builder = new StackExpressionBuilder();
+        var builder = new ExpressionGenerator();
         builder.addInstruction(new PUSH(BigInteger.valueOf(10L).toByteArray()));
         builder.addInstruction(new LOAD(ProgramStoreZone.CALL_DATA));
         Assert.assertEquals("CALL_DATA[10]", builder.getCurrentExpression().toString());
@@ -44,7 +44,7 @@ public class StackExpressionBuilderTest {
 
     @Test
     public void testMissing() {
-        var builder = new StackExpressionBuilder();
+        var builder = new ExpressionGenerator();
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new SUBTRACT());
         Assert.assertEquals("(123 - STACK[0])", builder.getCurrentExpression().toString());
