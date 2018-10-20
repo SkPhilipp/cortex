@@ -117,13 +117,13 @@ public class FlowProcessor implements Processor {
         // map program start
         if (graphBlocksLimit > 0) {
             var graphBlockStart = graphBlocks.get(graphBlocks.size() - 1);
-            graphBlockStart.getEdges().add(new EdgeFlow(EdgeFlowType.PROGRAM_START, null));
+            graphBlockStart.getEdges().add(new EdgeFlow(EdgeFlowType.START, null));
         }
 
         // map program ends
         if (graphBlocksLimit > 0) {
             var graphBlockEnd = graphBlocks.get(graphBlocks.size() - 1);
-            graphBlockEnd.getEdges().add(new EdgeFlow(EdgeFlowType.PROGRAM_END, null));
+            graphBlockEnd.getEdges().add(new EdgeFlow(EdgeFlowType.END, null));
         }
 
         graph.getEdges().add(graphEdge);

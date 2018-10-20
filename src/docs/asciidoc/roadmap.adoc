@@ -111,7 +111,6 @@ This path can be validated as being possible, with our current implementation, t
 
 === Graph
 
-* Remove "PROGRAM_" from "PROGRAM_START" and "PROGRAM_END".
 * Visualization of Graph with a focus on Flow using  http://graphstream-project.org/doc/Tutorials/Graph-Visualisation/ (See: Ida Pro)
 * Complete implementation of all current processors (JumpThreadingProcessor as well as JumpUnreachableProcessor currently do not function well)
 * Working testcases of processors

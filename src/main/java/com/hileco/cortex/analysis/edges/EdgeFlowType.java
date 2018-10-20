@@ -2,8 +2,8 @@ package com.hileco.cortex.analysis.edges;
 
 public enum EdgeFlowType {
     BLOCK_END,
-    PROGRAM_START,
-    PROGRAM_END,
+    START,
+    END,
     INSTRUCTION_CALL,
     INSTRUCTION_CALL_RETURN,
     INSTRUCTION_JUMP_IF,
