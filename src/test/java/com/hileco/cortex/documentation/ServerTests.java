@@ -11,6 +11,9 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
@@ -100,15 +103,25 @@ public class ServerTests {
     }
 
     @Test
-    public void documentDemoInstructionsList() {
+    public void documentInstructionsList() {
         this.webTestClient.get()
-                .uri("/api/demo/instructions.json")
+                .uri("/api/instructions/list.json")
                 .exchange()
                 .expectBody()
-                .consumeWith(document("demo-instructions", responseFields(
+                .consumeWith(document("instructions-list", responseFields(
                         fieldWithPath("[].name").description("The instruction's name."),
                         fieldWithPath("[].takes").description("The stack positions which are inputs to the instruction."),
                         fieldWithPath("[].provides").description("The stack positions which are modified by the instruction.")
                 )));
+    }
+
+    @Test
+    public void documentInstructionsConstraints() {
+        this.webTestClient.post()
+                .uri("/api/instructions/constraints.json")
+                .body(Mono.just(List.of("PUSH 0", "LOAD CALL_DATA", "PUSH 10", "EQUALS")), List.class)
+                .exchange()
+                .expectBody()
+                .consumeWith(document("instructions-constraints"));
     }
 }

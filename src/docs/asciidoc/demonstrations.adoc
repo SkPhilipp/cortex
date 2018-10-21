@@ -1,13 +1,23 @@
 
-== Demonstrations
+== Instructions API
 
-=== Instructions
+=== List
 
-include::{snippets}/demo-instructions/curl-request.adoc[]
+include::{snippets}/instructions-list/curl-request.adoc[]
 
-include::{snippets}/demo-instructions/response-body.adoc[]
+include::{snippets}/instructions-list/response-body.adoc[]
 
-include::{snippets}/demo-instructions/response-fields.adoc[]
+include::{snippets}/instructions-list/response-fields.adoc[]
+
+=== Constraint Expression
+
+include::{snippets}/instructions-constraints/curl-request.adoc[]
+
+include::{snippets}/instructions-constraints/request-body.adoc[]
+
+include::{snippets}/instructions-constraints/response-body.adoc[]
+
+== Demonstrations API
 
 === Optimizer
 

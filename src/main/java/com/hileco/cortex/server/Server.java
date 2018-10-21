@@ -2,12 +2,16 @@ package com.hileco.cortex.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.server.api.DemoConstraintApi;
 import com.hileco.cortex.server.api.DemoFuzzerApi;
 import com.hileco.cortex.server.api.DemoJumpMappingApi;
 import com.hileco.cortex.server.api.DemoOptimizerApi;
 import com.hileco.cortex.server.api.DemoPathingApi;
+import com.hileco.cortex.server.api.InstructionsConstraintsApi;
 import com.hileco.cortex.server.api.InstructionsListApi;
+import com.hileco.cortex.server.parsing.InstructionDeserializer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +29,7 @@ import reactor.ipc.netty.http.server.HttpServer;
 import java.net.URI;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.resources;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.RouterFunctions.toHttpHandler;
@@ -34,11 +39,15 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.t
 public class Server {
 
     private static final int PORT = 8080;
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER;
 
     static {
+        var module = new SimpleModule();
+        module.addDeserializer(Instruction.class, new InstructionDeserializer());
+        OBJECT_MAPPER = new ObjectMapper();
         OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
         OBJECT_MAPPER.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        OBJECT_MAPPER.registerModule(module);
     }
 
     public static void main(String[] args) {
@@ -77,7 +86,8 @@ public class Server {
                 .and(route(GET("/api/demo/pathing.json"), new DemoPathingApi()))
                 .and(route(GET("/api/demo/optimizer.json"), new DemoOptimizerApi()))
                 .and(route(GET("/api/demo/jump-mapping.json"), new DemoJumpMappingApi()))
-                .and(route(GET("/api/demo/instructions.json"), new InstructionsListApi()))
+                .and(route(GET("/api/instructions/list.json"), new InstructionsListApi()))
+                .and(route(POST("/api/instructions/constraints.json"), new InstructionsConstraintsApi()))
                 .and(resources("/**", new ClassPathResource("static/docs/")));
     }
 }

@@ -24,14 +24,14 @@ public class ExpressionGeneratorTest {
     @Test
     public void testPop() {
         var builder = new ExpressionGenerator();
-        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
+        builder.addInstruction(new PUSH(BigInteger.valueOf(321L).toByteArray()));
         builder.addInstruction(new PUSH(BigInteger.valueOf(1L).toByteArray()));
         builder.addInstruction(new POP());
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new PUSH(BigInteger.valueOf(1L).toByteArray()));
         builder.addInstruction(new POP());
         builder.addInstruction(new SUBTRACT());
-        Assert.assertEquals("(123 - 123)", builder.getCurrentExpression().toString());
+        Assert.assertEquals("(123 - 321)", builder.getCurrentExpression().toString());
     }
 
     @Test
