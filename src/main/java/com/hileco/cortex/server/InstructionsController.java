@@ -1,5 +1,6 @@
-package com.hileco.cortex.server.api;
+package com.hileco.cortex.server;
 
+import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.StackParameter;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
@@ -30,20 +31,20 @@ import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.server.HandlerFunction;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Mono;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.status;
-
-public class InstructionsListApi implements HandlerFunction<ServerResponse> {
-
+@RestController
+@RequestMapping("/api/instructions")
+public class InstructionsController {
     private static final Instruction[] INSTRUCTIONS = {
             new PUSH(null),
             new POP(),
@@ -77,21 +78,40 @@ public class InstructionsListApi implements HandlerFunction<ServerResponse> {
             new SUBTRACT()
     };
 
-    @Override
-    public Mono<ServerResponse> handle(ServerRequest request) {
-        return status(HttpStatus.OK)
-                .syncBody(Arrays.stream(INSTRUCTIONS)
-                                  .map(instruction -> new Representation(instruction.getClass().getSimpleName(),
-                                                                         instruction.getStackParameters().stream().map(StackParameter::getName).collect(Collectors.toList()),
-                                                                         instruction.getStackAdds()))
-                                  .collect(Collectors.toList()));
-    }
-
     @Data
     @AllArgsConstructor
     private static class Representation {
         private String name;
         private List<String> takes;
         private List<Integer> provides;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class ConstraintsRequest {
+        private List<Instruction> instructions;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class ConstraintsResponse {
+        private String expression;
+    }
+
+    @GetMapping("/list.json")
+    public ResponseEntity<List<Representation>> list() {
+        var collect = Arrays.stream(INSTRUCTIONS)
+                .map(instruction -> new Representation(instruction.getClass().getSimpleName(),
+                                                       instruction.getStackParameters().stream().map(StackParameter::getName).collect(Collectors.toList()),
+                                                       instruction.getStackAdds()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
+    }
+
+    @PostMapping("/constraints.json")
+    public ConstraintsResponse constraints(@RequestBody ConstraintsRequest request) {
+        var builder = new ExpressionGenerator();
+        request.getInstructions().forEach(builder::addInstruction);
+        return new ConstraintsResponse(builder.getCurrentExpression().toString());
     }
 }
