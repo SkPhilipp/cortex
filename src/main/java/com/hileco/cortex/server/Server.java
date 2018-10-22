@@ -3,7 +3,9 @@ package com.hileco.cortex.server;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.server.parsing.ExpressionSerializer;
 import com.hileco.cortex.server.parsing.InstructionDeserializer;
 import com.hileco.cortex.server.parsing.InstructionSerializer;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +22,7 @@ public class Server {
     static {
         var module = new SimpleModule();
         module.addSerializer(Instruction.class, new InstructionSerializer());
+        module.addSerializer(Expression.class, new ExpressionSerializer());
         module.addDeserializer(Instruction.class, new InstructionDeserializer());
         OBJECT_MAPPER = new ObjectMapper();
         OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);

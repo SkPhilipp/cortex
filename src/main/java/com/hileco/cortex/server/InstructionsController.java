@@ -1,6 +1,18 @@
 package com.hileco.cortex.server;
 
+import com.hileco.cortex.analysis.GraphBuilder;
+import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
+import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
+import com.hileco.cortex.analysis.processors.FlowProcessor;
+import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
+import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
+import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
+import com.hileco.cortex.analysis.processors.KnownProcessor;
+import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.ExpressionGenerator;
+import com.hileco.cortex.constraints.Solver;
+import com.hileco.cortex.context.Program;
+import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.StackParameter;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
@@ -29,23 +41,31 @@ import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
+import com.hileco.cortex.pathing.PathIterator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/instructions")
 public class InstructionsController {
+
     private static final Instruction[] INSTRUCTIONS = {
             new PUSH(null),
             new POP(),
@@ -79,6 +99,16 @@ public class InstructionsController {
             new SUBTRACT()
     };
 
+    private static final GraphBuilder GRAPH_BUILDER = new GraphBuilder(List.of(
+            new ParameterProcessor(),
+            new FlowProcessor(),
+            new ExitTrimProcessor(),
+            new JumpIllegalProcessor(),
+            new KnownJumpIfProcessor(),
+            new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
+            new KnownProcessor()
+    ));
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -91,31 +121,97 @@ public class InstructionsController {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    static class ConstraintsRequest {
+    static class ProgramRequest {
         private List<Instruction> instructions;
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class ConstraintsResponse {
-        private String expression;
-    }
-
-    @GetMapping("/list.json")
-    public ResponseEntity<List<Representation>> list() {
-        var collect = Arrays.stream(INSTRUCTIONS)
+    @GetMapping("/list")
+    public Map list() {
+        return Map.of("instructions", Arrays.stream(INSTRUCTIONS)
                 .map(instruction -> new Representation(instruction.getClass().getSimpleName(),
                                                        instruction.getStackParameters().stream().map(StackParameter::getName).collect(Collectors.toList()),
                                                        instruction.getStackAdds()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(collect);
+                .collect(Collectors.toList()));
     }
 
-    @PostMapping("/constraints.json")
-    public ConstraintsResponse constraints(@RequestBody ConstraintsRequest request) {
+    @PostMapping("/constraints")
+    public Map constraints(@RequestBody ProgramRequest request) {
         var builder = new ExpressionGenerator();
         request.getInstructions().forEach(builder::addInstruction);
-        return new ConstraintsResponse(builder.getCurrentExpression().toString());
+        return Map.of("expression", builder.getCurrentExpression());
+    }
+
+    @GetMapping("/fuzzer")
+    public Map fuzzer(@RequestParam(value = "seed", defaultValue = "0") Integer seed) {
+        var programGenerator = new ProgramGenerator();
+        var generated = programGenerator.generate(seed);
+        var first = generated.keySet().iterator().next();
+        var program = generated.get(first);
+        return Map.of("instructions", program.getInstructions());
+    }
+
+    @PostMapping("/optimizer")
+    public Map optimizer(@RequestBody ProgramRequest request) {
+        var program = new Program(request.getInstructions());
+        var optimizedGraph = GRAPH_BUILDER.build(program.getInstructions());
+        return Map.of("instructions", optimizedGraph.toInstructions());
+    }
+
+    @PostMapping("/flow-mapping")
+    public Map flowMapping(@RequestBody ProgramRequest request) {
+        var graph = GRAPH_BUILDER.build(request.getInstructions());
+        var flowMapping = new HashMap<Integer, Set<Integer>>();
+        graph.getEdges().stream()
+                .flatMap(EdgeFlowMapping.UTIL::filter)
+                .forEach(edge -> edge.getJumpMapping().forEach((source, targets) -> {
+                    var joiner = new StringJoiner(", ");
+                    targets.forEach(target -> joiner.add(target.toString()));
+                    flowMapping.put(source, targets);
+                }));
+        return Map.of("flowMapping", flowMapping);
+    }
+
+    @PostMapping("/solve")
+    public Map solve(@RequestBody ProgramRequest request) {
+        var builder = new ExpressionGenerator();
+        request.getInstructions().forEach(builder::addInstruction);
+        var solver = new Solver();
+        return Map.of("expression", builder.getCurrentExpression(),
+                      "solution", solver.solve(builder.getCurrentExpression()).toString());
+    }
+
+    @PostMapping("/pathing")
+    public Map pathing(@RequestBody ProgramRequest request) {
+        var graph = GRAPH_BUILDER.build(request.getInstructions());
+        var edgeFlowMapping = graph.getEdges().stream()
+                .flatMap(EdgeFlowMapping.UTIL::filter)
+                .findAny().get();
+        var pathIterator = new PathIterator(edgeFlowMapping, 1);
+        var instructions = graph.toInstructions();
+        var paths = new ArrayList<String>();
+        pathIterator.forEachRemaining(integers -> {
+            var stringBuilder = new StringBuilder();
+            for (var i = 0; i < integers.size() - 1; i++) {
+                var current = integers.get(i);
+                var next = integers.get(i + 1);
+                var instruction = instructions.get(current);
+                if (current == 1 || instruction instanceof JUMP_DESTINATION) {
+                    stringBuilder.append('\n');
+                    for (int index = current; index <= next; index++) {
+                        instruction = instructions.get(index);
+                        stringBuilder.append(String.format("[%03d] %s", index, instruction));
+                        stringBuilder.append('\n');
+                    }
+                }
+            }
+            var current = integers.get(integers.size() - 1);
+            var instruction = instructions.get(current);
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append('\n');
+            }
+            stringBuilder.append(String.format("[%03d] %s", current, instruction));
+            paths.add(stringBuilder.toString());
+        });
+        return Map.of("paths", paths);
     }
 }
