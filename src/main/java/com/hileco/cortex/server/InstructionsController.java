@@ -31,6 +31,7 @@ import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,7 @@ public class InstructionsController {
     };
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     private static class Representation {
         private String name;
@@ -87,12 +89,14 @@ public class InstructionsController {
     }
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     static class ConstraintsRequest {
         private List<Instruction> instructions;
     }
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     static class ConstraintsResponse {
         private String expression;

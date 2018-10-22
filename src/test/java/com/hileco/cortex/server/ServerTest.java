@@ -113,14 +113,11 @@ public class ServerTest {
                 new PUSH(BigInteger.valueOf(10).toByteArray()),
                 new EQUALS()
         ));
-        var content = this.objectMapper.writeValueAsString(instructions);
-        var request = this.objectMapper.readValue(content, InstructionsController.ConstraintsRequest.class);
         this.mockMvc.perform(post("/api/instructions/constraints.json")
-                                     .content(content))
-                .andDo(document("instructions-constraints"))
-                .andDo(result -> {
-                    System.out.println(result.getResponse().getContentAsString());
-                    System.out.println();
-                });
+                                     .contentType("application/json")
+                                     .content(this.objectMapper.writeValueAsString(instructions)))
+                .andDo(document("instructions-constraints", responseFields(
+                        fieldWithPath("expression").description("The top constraint expression.")
+                )));
     }
 }
