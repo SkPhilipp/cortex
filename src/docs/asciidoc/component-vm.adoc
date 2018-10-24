@@ -1,0 +1,30 @@
+== Virtual Machine
+
+=== Description
+
+The Cortex virtual machine is a component in which executables using the Cortex instruction set can be executed. The full instruction set is documented by the APIs below.
+The main purpose of the virtual machine and instruction set is to be able to define and simulate behaviour of compiled smart contracts,
+such as those available on the Ethereum or Bitcoin blockchains.
+
+Notably, Virtual Machines also support the following;
+- Snapshots; storing and loading a Virtual Machine to and from disk
+- Branching and Rollbacks; a Virtual Machine can be copied entirely with nearly no memory overhead; for example to explore different execution paths
+
+=== Examples
+
+// Executing some basic instructions and its resulting output
+
+// Performing a CALL and its resulting output
+
+=== APIs
+
+// Per-instruction-type description and functionality
+
+include::{snippets}/instructions-list/curl-request.adoc[]
+
+include::{snippets}/instructions-list/response-body.adoc[]
+
+include::{snippets}/instructions-list/response-fields.adoc[]
+
+// Execute API
+

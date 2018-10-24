@@ -1,0 +1,28 @@
+== Attacks
+
+=== Description
+
+// Explain area is largely in development
+// Explain example scenarios using actual Cortex programs
+// Explain expected path-finding: bruteforcing approach, path validation. path elimination
+//                                refer to Coverage-Guided Fuzzing
+//                                refer to Graph Flow analysis
+// Explain Target-finding ( Targets being instructions used to move a program into a desired state. )
+// Explain "Attacker" (offline & online)
+// Example of block constraints | data flow composed into a composite constraint
+// Example of path to a CALL & a solution found
+
+=== APIs
+
+=== Path-finding
+
+include::{snippets}/instructions-pathing/curl-request.adoc[]
+
+include::{snippets}/instructions-pathing/request-body.adoc[]
+
+include::{snippets}/instructions-pathing/request-fields.adoc[]
+
+include::{snippets}/instructions-pathing/response-body.adoc[]
+
+include::{snippets}/instructions-pathing/response-fields.adoc[]
+

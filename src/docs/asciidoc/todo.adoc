@@ -1,0 +1,11 @@
+- Global configuration for Spring Rest Docs (url, port, headers)
+- Generic input functionality for Spring Rest Docs (based on JSON documents)
+- Base test or Extension for Spring Rest Docs
+- Implement GraphSerializer
+- Implement EdgeSerializer
+- Endpoint for retrieving a program Graph
+- Implement ExpressionDeserializer
+- Endpoint for Expression to Solution
+- Endpoint for Instruction to Expression (Note; deviates from Instruction + Constraint to Expression and Solution; as this is not feasible currently; requires line-bound instructions)
+- Rename Context to VirtualMachine
+- Endpoint for executing instructions

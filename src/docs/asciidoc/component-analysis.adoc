@@ -1,0 +1,73 @@
+== Analysis
+
+=== Description
+
+Analysis within Cortex is a process in which instructions are converted to a Graph, which during analysis is enriched with additional details represented as Edges.
+An Edge is be any information bound either to the Graph or from the Graph to instructions or blocks of instructions.
+
+Notable example of Graph Edges adding information and optimization passes can be found in the paragraphs below.
+
+Take for example the following instructions:
+
+// Example of PUSH PUSH MULTIPLY HASH
+
+// Explain the future Graph and Edges approach with Known data & Known Constraints (ie 2018 <= DATE <= 2020)
+
+=== Processors
+
+// Ideally briefly describe each processor using documentation table from a test
+
+=== Optimizing Processors
+
+// Explain the purpose of optimization
+
+// Example of PUSH PUSH MULTIPLY HASH
+
+// Explain the future Graph and Edges approach with Known data & Known Constraints (ie 2018 <= DATE <= 2020)
+
+=== Flow Processors
+
+// Explain control flow
+
+// Test Example of visualized control flow:
+
+[source]
+.example of control flow mapping
+----
+              START               01 through 08
+01 through 08 INSTRUCTION_JUMP_IF 09 through 12
+01 through 08 INSTRUCTION_JUMP_IF 13
+09 through 12 BLOCK_END           13
+           13 END
+----
+
+// Test example of describing all control flow types
+
+=== APIs
+
+// Showcase optimization API
+
+include::{snippets}/instructions-optimizer/curl-request.adoc[]
+
+include::{snippets}/instructions-optimizer/request-body.adoc[]
+
+include::{snippets}/instructions-optimizer/request-fields.adoc[]
+
+include::{snippets}/instructions-optimizer/response-body.adoc[]
+
+include::{snippets}/instructions-optimizer/response-fields.adoc[]
+
+// Showcase new graph edge visualization API
+
+// Showcase flow mapping API
+
+include::{snippets}/instructions-flow-mapping/curl-request.adoc[]
+
+include::{snippets}/instructions-flow-mapping/request-body.adoc[]
+
+include::{snippets}/instructions-flow-mapping/request-fields.adoc[]
+
+include::{snippets}/instructions-flow-mapping/response-body.adoc[]
+
+include::{snippets}/instructions-flow-mapping/response-fields.adoc[]
+

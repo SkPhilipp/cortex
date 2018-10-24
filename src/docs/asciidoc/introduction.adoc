@@ -1,0 +1,16 @@
+[source]
+```
+                         cortex      ,
+              ,-.       _,---._ __  / \
+             /  )    .-'       `./ /   \
+            (  (   ,'            `/    /|
+             \  `-"             \'\   / |
+              `.              ,  \ \ /  |
+               /`.          ,'-`----Y   |
+              (            ;        |   '
+              |  ,-.    ,-'         |  /
+              |  | (   |     eth    | /
+              )  |  \  `.___________|/
+```
+
+Cortex is a system to analyse software, find desired paths within them & move them to a desired state. The project consists of the following components:
