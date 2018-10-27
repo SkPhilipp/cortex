@@ -1,5 +1,8 @@
 == Roadmap
 
+=== Instructions
+* There currently exists an issue where any value SAVE'd smaller than the LOAD'd default size is left-aligned in its LOAD space during SAVE.
+
 === Graph
 
 * Visualization of Graph with a focus on Flow using  http://graphstream-project.org/doc/Tutorials/Graph-Visualisation/ (See: Ida Pro)

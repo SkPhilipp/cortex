@@ -11,9 +11,13 @@ import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.constraints.Solver;
+import com.hileco.cortex.context.ProcessContext;
 import com.hileco.cortex.context.Program;
+import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.ProgramException;
+import com.hileco.cortex.instructions.ProgramRunner;
 import com.hileco.cortex.instructions.StackParameter;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
@@ -52,6 +56,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -139,6 +144,16 @@ public class InstructionsController {
         var builder = new ExpressionGenerator();
         request.getInstructions().forEach(builder::addInstruction);
         return Map.of("expression", builder.getCurrentExpression());
+    }
+
+    @PostMapping("/execute")
+    public Map execute(@RequestBody ProgramRequest request) throws ProgramException {
+        var program = new Program(BigInteger.ZERO, request.getInstructions());
+        var programContext = new ProgramContext(program);
+        var processContext = new ProcessContext(programContext);
+        var programRunner = new ProgramRunner(processContext);
+        programRunner.run();
+        return Map.of("stack", programContext.getStack());
     }
 
     @GetMapping("/fuzzer")

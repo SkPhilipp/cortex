@@ -5,6 +5,9 @@ import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.conditions.EQUALS;
 import com.hileco.cortex.instructions.conditions.LESS_THAN;
 import com.hileco.cortex.instructions.io.LOAD;
+import com.hileco.cortex.instructions.io.SAVE;
+import com.hileco.cortex.instructions.jumps.JUMP;
+import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.MODULO;
 import com.hileco.cortex.instructions.math.MULTIPLY;
@@ -26,6 +29,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import static com.hileco.cortex.context.data.ProgramStoreZone.CALL_DATA;
+import static com.hileco.cortex.context.data.ProgramStoreZone.MEMORY;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -65,6 +69,49 @@ public class ServerTest {
                         fieldWithPath("instructions[].name").description("The instruction's name."),
                         fieldWithPath("instructions[].takes").description("The stack positions which are inputs to the instruction."),
                         fieldWithPath("instructions[].provides").description("The stack positions which are modified by the instruction.")
+                )));
+    }
+
+    @Test
+    public void documentExecute() throws Exception {
+        this.mockMvc.perform(post("/api/instructions/execute")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
+                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
+                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
+                                             new ADD()
+                                     )))))
+                .andDo(document("instructions-execute-1", requestFields(
+                        fieldWithPath("instructions").description("The instructions of the program.")
+                ), responseFields(
+                        fieldWithPath("stack").description("The stack of the virtual machine after program execution.")
+                )));
+        this.mockMvc.perform(post("/api/instructions/execute")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
+                                             new PUSH(BigInteger.valueOf(3).toByteArray()),
+                                             new JUMP(),
+                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
+                                             new JUMP_DESTINATION()
+                                     )))))
+                .andDo(document("instructions-execute-2", requestFields(
+                        fieldWithPath("instructions").description("The instructions of the program.")
+                ), responseFields(
+                        fieldWithPath("stack").description("The stack of the virtual machine after program execution.")
+                )));
+        this.mockMvc.perform(post("/api/instructions/execute")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
+                                             new PUSH(new BigInteger("10032157633811666223373963209218291332868453566459764444214480010939495088128").toByteArray()),
+                                             new PUSH(BigInteger.valueOf(1234).toByteArray()),
+                                             new SAVE(MEMORY),
+                                             new PUSH(BigInteger.valueOf(1234).toByteArray()),
+                                             new LOAD(MEMORY)
+                                     )))))
+                .andDo(document("instructions-execute-3", requestFields(
+                        fieldWithPath("instructions").description("The instructions of the program.")
+                ), responseFields(
+                        fieldWithPath("stack").description("The stack of the virtual machine after program execution.")
                 )));
     }
 

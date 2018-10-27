@@ -13,4 +13,7 @@
               )  |  \  `.___________|/
 ```
 
-Cortex is a system to analyse software, find desired paths within them & move them to a desired state. The project consists of the following components:
+Blockchain-based programs ("smart contracts") open up new attack surfaces. Their compiled code must be small, and public. Their storage space must be
+publicly readable, and every interaction with them must be recoded.
+
+Cortex aims to be the system to analyse such software, find desired paths within them & even move them to such desired states.

@@ -2,23 +2,30 @@
 
 === Description
 
-The Cortex virtual machine is a component in which executables using the Cortex instruction set can be executed. The full instruction set is documented by the APIs below.
-The main purpose of the virtual machine and instruction set is to be able to define and simulate behaviour of compiled smart contracts,
+The Cortex virtual machine can execute Cortex instruction set compatible programs.
+The virtual machine and instruction set are used to define and simulate behaviour of compiled smart contracts,
 such as those available on the Ethereum or Bitcoin blockchains.
 
-Notably, Virtual Machines also support the following;
-- Snapshots; storing and loading a Virtual Machine to and from disk
-- Branching and Rollbacks; a Virtual Machine can be copied entirely with nearly no memory overhead; for example to explore different execution paths
+Notably, the virtual machine also supports the following;
 
-=== Examples
-
-// Executing some basic instructions and its resulting output
-
-// Performing a CALL and its resulting output
+- Snapshots; storing and loading a virtual machine at any point to and from disk
+- Branching and Rollbacks; virtual machines can be copied in-memory at almost no memory cost
 
 === APIs
 
-// Per-instruction-type description and functionality
+==== Instructions Execute
+
+include::{snippets}/instructions-execute-1/curl-request.adoc[]
+
+include::{snippets}/instructions-execute-1/request-body.adoc[]
+
+include::{snippets}/instructions-execute-1/request-fields.adoc[]
+
+include::{snippets}/instructions-execute-1/response-body.adoc[]
+
+include::{snippets}/instructions-execute-1/response-fields.adoc[]
+
+==== Instructions List
 
 include::{snippets}/instructions-list/curl-request.adoc[]
 
@@ -26,5 +33,16 @@ include::{snippets}/instructions-list/response-body.adoc[]
 
 include::{snippets}/instructions-list/response-fields.adoc[]
 
-// Execute API
+=== Examples
 
+include::{snippets}/instructions-execute-1/curl-request.adoc[]
+
+include::{snippets}/instructions-execute-1/response-body.adoc[]
+
+include::{snippets}/instructions-execute-2/curl-request.adoc[]
+
+include::{snippets}/instructions-execute-2/response-body.adoc[]
+
+include::{snippets}/instructions-execute-3/curl-request.adoc[]
+
+include::{snippets}/instructions-execute-3/response-body.adoc[]
