@@ -9,8 +9,6 @@ The analysis process is split into separate pieces known as processors.
 A processor receives the graph and can make any modification to it, such as adding edges.
 These edges can then be used by the next processors to further update the graph.
 
-The following paragraphs describe notable types of processors.
-
 === Optimizing Processors
 
 Optimizing processors analyse a program's data flow, looking for optimizations which can be done at
@@ -30,27 +28,7 @@ Performing analysis on these instructions with optimization enabled yields the f
 
 include::{snippets}/instructions-optimizer/response-body.adoc[]
 
-=== Flow Processors
-
-// Explain control flow
-
-// Test Example of visualized control flow:
-
-[source]
-.example of control flow mapping
-----
-              START               01 through 08
-01 through 08 INSTRUCTION_JUMP_IF 09 through 12
-01 through 08 INSTRUCTION_JUMP_IF 13
-09 through 12 BLOCK_END           13
-           13 END
-----
-
-// Test example of describing all control flow types
-
 === APIs
-
-// Showcase optimization API
 
 include::{snippets}/instructions-optimizer/curl-request.adoc[]
 
@@ -61,10 +39,6 @@ include::{snippets}/instructions-optimizer/request-fields.adoc[]
 include::{snippets}/instructions-optimizer/response-body.adoc[]
 
 include::{snippets}/instructions-optimizer/response-fields.adoc[]
-
-// Showcase new graph edge visualization API
-
-// Showcase flow mapping API
 
 include::{snippets}/instructions-flow-mapping/curl-request.adoc[]
 
