@@ -2,15 +2,12 @@
 
 === Description
 
-The Cortex Fuzzer can generate random programs, which are generally used to verify correctness of other components.
+The fuzzer can generate random programs, which are generally used to verify correctness of other components.
 
 === APIs
-
-// Add current fuzzer API
 
 include::{snippets}/instructions-fuzzer/curl-request.adoc[]
 
 include::{snippets}/instructions-fuzzer/response-body.adoc[]
 
 include::{snippets}/instructions-fuzzer/response-fields.adoc[]
-

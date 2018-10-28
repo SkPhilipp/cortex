@@ -2,28 +2,33 @@
 
 === Description
 
-Analysis within Cortex is a process in which instructions are converted to a Graph, which during analysis is enriched with additional details represented as Edges.
-An Edge is be any information bound either to the Graph or from the Graph to instructions or blocks of instructions.
+Analysis within Cortex is a process in which instructions are converted to a graph. Such a graph
+contains edges, which represent additional information, generally linked to one or more instructions.
 
-Notable example of Graph Edges adding information and optimization passes can be found in the paragraphs below.
+The analysis process is split into separate pieces known as processors.
+A processor receives the graph and can make any modification to it, such as adding edges.
+These edges can then be used by the next processors to further update the graph.
 
-Take for example the following instructions:
-
-// Example of PUSH PUSH MULTIPLY HASH
-
-// Explain the future Graph and Edges approach with Known data & Known Constraints (ie 2018 <= DATE <= 2020)
-
-=== Processors
-
-// Ideally briefly describe each processor using documentation table from a test
+The following paragraphs describe notable types of processors.
 
 === Optimizing Processors
 
-// Explain the purpose of optimization
+Optimizing processors analyse a program's data flow, looking for optimizations which can be done at
+instruction level. These optimizations should however not modify the program's behaviour in any way.
+Optimizations made make it easier to further process the graph; they are not specifically meant
+to make a program faster. (Althrough this commonly happens as a side effect).
 
-// Example of PUSH PUSH MULTIPLY HASH
+For example, when a value can be known ahead of time to always be certain values (or within a certain range),
+an optimizing processor can take this information and possibly eliminate instructions.
 
-// Explain the future Graph and Edges approach with Known data & Known Constraints (ie 2018 <= DATE <= 2020)
+A basic example of this, is the following "self-contained" set of instrunctions.
+Here, the instructions do not have any external dependencies, always yielding the same result.
+
+include::{snippets}/instructions-optimizer/request-body.adoc[]
+
+Performing analysis on these instructions with optimization enabled yields the following result;
+
+include::{snippets}/instructions-optimizer/response-body.adoc[]
 
 === Flow Processors
 
