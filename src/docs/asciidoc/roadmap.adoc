@@ -3,7 +3,7 @@
 === Infrastructure
 * Deployment of Cortex Service to Kubernetes
 * Deployment of Cortex Documentation to Kubernetes
-
+* Check out GraphQL as API
 
 === Instructions
 * There currently exists an issue where any value SAVE'd smaller than the LOAD'd default size is left-aligned in its LOAD space during SAVE.
