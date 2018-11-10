@@ -5,8 +5,6 @@
 
 include::_links.adoc[]
 
-=== Description
-
 Analysis within Cortex is a process in which instructions are converted to a graph. Such a graph
 contains edges, which represent additional information, generally linked to one or more instructions.
 

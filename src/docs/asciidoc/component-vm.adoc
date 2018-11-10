@@ -5,16 +5,11 @@
 
 include::_links.adoc[]
 
-=== Description
-
 The Cortex virtual machine can execute Cortex instruction set compatible programs.
 The virtual machine and instruction set are used to define and simulate behaviour of compiled smart contracts,
 such as those available on the Ethereum or Bitcoin blockchains.
 
-Notably, the virtual machine also supports the following;
-
-- Snapshots; storing and loading a virtual machine at any point to and from disk
-- Branching and Rollbacks; virtual machines can be copied in-memory at almost no memory cost
+Notably, the virtual machine also supports snapshots, and in-memory copies at near-zero memory cost.
 
 === APIs
 
@@ -28,15 +23,7 @@ include::{snippets}/instructions-execute-1/response-body.adoc[]
 
 include::{snippets}/instructions-execute-1/response-fields.adoc[]
 
-==== Instructions List
-
-include::{snippets}/instructions-list/http-request.adoc[]
-
-include::{snippets}/instructions-list/response-body.adoc[]
-
-include::{snippets}/instructions-list/response-fields.adoc[]
-
-=== Examples
+===== Examples
 
 include::{snippets}/instructions-execute-1/http-request.adoc[]
 
@@ -49,3 +36,11 @@ include::{snippets}/instructions-execute-2/response-body.adoc[]
 include::{snippets}/instructions-execute-3/http-request.adoc[]
 
 include::{snippets}/instructions-execute-3/response-body.adoc[]
+
+==== Instructions List
+
+include::{snippets}/instructions-list/http-request.adoc[]
+
+include::{snippets}/instructions-list/response-body.adoc[]
+
+include::{snippets}/instructions-list/response-fields.adoc[]

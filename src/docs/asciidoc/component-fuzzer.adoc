@@ -5,8 +5,6 @@
 
 include::_links.adoc[]
 
-=== Description
-
 The fuzzer can generate random programs, which are generally used to verify correctness of other components.
 
 === APIs
