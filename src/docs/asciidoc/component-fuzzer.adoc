@@ -1,4 +1,9 @@
-== Fuzzer
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:nofooter:
+
+include::_links.adoc[]
 
 === Description
 
@@ -6,7 +11,7 @@ The fuzzer can generate random programs, which are generally used to verify corr
 
 === APIs
 
-include::{snippets}/instructions-fuzzer/curl-request.adoc[]
+include::{snippets}/instructions-fuzzer/http-request.adoc[]
 
 include::{snippets}/instructions-fuzzer/response-body.adoc[]
 

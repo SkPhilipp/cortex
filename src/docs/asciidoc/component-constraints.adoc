@@ -1,4 +1,9 @@
-== Constraints
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:nofooter:
+
+include::_links.adoc[]
 
 === Description
 
@@ -52,9 +57,7 @@ This path can be validated as being possible, with our current implementation, t
 
 // Showcase instruction to constraint parsing endpoint
 
-include::{snippets}/instructions-constraints/curl-request.adoc[]
-
-include::{snippets}/instructions-constraints/request-body.adoc[]
+include::{snippets}/instructions-constraints/http-request.adoc[]
 
 include::{snippets}/instructions-constraints/request-fields.adoc[]
 
@@ -65,9 +68,7 @@ include::{snippets}/instructions-constraints/response-fields.adoc[]
 // Showcase instruction + constraint to solution parsing endpoint
 // Showcase expression to solution endpoint
 
-include::{snippets}/instructions-solve/curl-request.adoc[]
-
-include::{snippets}/instructions-solve/request-body.adoc[]
+include::{snippets}/instructions-solve/http-request.adoc[]
 
 include::{snippets}/instructions-solve/request-fields.adoc[]
 

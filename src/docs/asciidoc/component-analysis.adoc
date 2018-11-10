@@ -1,4 +1,9 @@
-== Analysis
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:nofooter:
+
+include::_links.adoc[]
 
 === Description
 
@@ -30,9 +35,7 @@ include::{snippets}/instructions-optimizer/response-body.adoc[]
 
 === APIs
 
-include::{snippets}/instructions-optimizer/curl-request.adoc[]
-
-include::{snippets}/instructions-optimizer/request-body.adoc[]
+include::{snippets}/instructions-optimizer/http-request.adoc[]
 
 include::{snippets}/instructions-optimizer/request-fields.adoc[]
 
@@ -40,9 +43,7 @@ include::{snippets}/instructions-optimizer/response-body.adoc[]
 
 include::{snippets}/instructions-optimizer/response-fields.adoc[]
 
-include::{snippets}/instructions-flow-mapping/curl-request.adoc[]
-
-include::{snippets}/instructions-flow-mapping/request-body.adoc[]
+include::{snippets}/instructions-flow-mapping/http-request.adoc[]
 
 include::{snippets}/instructions-flow-mapping/request-fields.adoc[]
 

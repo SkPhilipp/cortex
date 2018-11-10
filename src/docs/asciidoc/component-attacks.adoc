@@ -1,4 +1,9 @@
-== Attacks
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:nofooter:
+
+include::_links.adoc[]
 
 === Description
 
@@ -16,9 +21,7 @@
 
 === Path-finding
 
-include::{snippets}/instructions-pathing/curl-request.adoc[]
-
-include::{snippets}/instructions-pathing/request-body.adoc[]
+include::{snippets}/instructions-pathing/http-request.adoc[]
 
 include::{snippets}/instructions-pathing/request-fields.adoc[]
 

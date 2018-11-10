@@ -1,4 +1,9 @@
-== Virtual Machine
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:nofooter:
+
+include::_links.adoc[]
 
 === Description
 
@@ -15,9 +20,7 @@ Notably, the virtual machine also supports the following;
 
 ==== Instructions Execute
 
-include::{snippets}/instructions-execute-1/curl-request.adoc[]
-
-include::{snippets}/instructions-execute-1/request-body.adoc[]
+include::{snippets}/instructions-execute-1/http-request.adoc[]
 
 include::{snippets}/instructions-execute-1/request-fields.adoc[]
 
@@ -27,7 +30,7 @@ include::{snippets}/instructions-execute-1/response-fields.adoc[]
 
 ==== Instructions List
 
-include::{snippets}/instructions-list/curl-request.adoc[]
+include::{snippets}/instructions-list/http-request.adoc[]
 
 include::{snippets}/instructions-list/response-body.adoc[]
 
@@ -35,14 +38,14 @@ include::{snippets}/instructions-list/response-fields.adoc[]
 
 === Examples
 
-include::{snippets}/instructions-execute-1/curl-request.adoc[]
+include::{snippets}/instructions-execute-1/http-request.adoc[]
 
 include::{snippets}/instructions-execute-1/response-body.adoc[]
 
-include::{snippets}/instructions-execute-2/curl-request.adoc[]
+include::{snippets}/instructions-execute-2/http-request.adoc[]
 
 include::{snippets}/instructions-execute-2/response-body.adoc[]
 
-include::{snippets}/instructions-execute-3/curl-request.adoc[]
+include::{snippets}/instructions-execute-3/http-request.adoc[]
 
 include::{snippets}/instructions-execute-3/response-body.adoc[]

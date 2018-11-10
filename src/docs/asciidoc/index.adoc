@@ -1,19 +1,27 @@
-= Cortex
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
-:toc: left
+:nofooter:
 
-include::introduction.adoc[]
+include::_links.adoc[]
 
-include::component-vm.adoc[]
+[source]
+```
+                         cortex      ,
+              ,-.       _,---._ __  / \
+             /  )    .-'       `./ /   \
+            (  (   ,'            `/    /|
+             \  `-"             \'\   / |
+              `.              ,  \ \ /  |
+               /`.          ,'-`----Y   |
+              (            ;        |   '
+              |  ,-.    ,-'         |  /
+              |  | (   |     eth    | /
+              )  |  \  `.___________|/
+```
 
-include::component-fuzzer.adoc[]
-
-include::component-analysis.adoc[]
-
-include::component-constraints.adoc[]
-
-include::component-attacks.adoc[]
-
-include::roadmap.adoc[]
+Blockchain-based programs ("smart contracts") open up new attack surfaces.
+Their executables must be small in size, and public.
+Their storage space is publicly readable, and every interaction with them is recorded.
+Cortex aims to be the system to analyse such software,
+find desired paths within them & even move them to such desired states.
