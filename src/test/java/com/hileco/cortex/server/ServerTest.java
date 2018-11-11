@@ -34,6 +34,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -58,7 +60,14 @@ public class ServerTest {
     public void setup() {
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(this.context)
-                .apply(documentationConfiguration(this.restDocumentation))
+                .apply(documentationConfiguration(this.restDocumentation)
+                               .operationPreprocessors()
+                               .withRequestDefaults(
+                                       modifyUris()
+                                               .scheme("https")
+                                               .host("cortex")
+                                               .removePort(),
+                                       removeHeaders("Content-Length", "Content-Type", "Host")))
                 .build();
     }
 

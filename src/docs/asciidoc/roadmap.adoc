@@ -6,13 +6,8 @@
 include::_links.adoc[]
 
 === General
-* Global configuration for Spring Rest Docs (url, port, headers)
-* Generic JSON documenting functionality which mimics Spring Rest Docs
-* JUnit rule or extension for providing documentation-relevant classes
 * Implement ExpressionDeserializer
 * Endpoint for Expression to Solution
-* Endpoint for Instruction to Expression
-   (Note; deviates from Instruction + Constraint to Expression and Solution; as this is not feasible currently; requires line-bound instructions)
 * Rename Context to VirtualMachine
 * Endpoint for executing instructions
 
