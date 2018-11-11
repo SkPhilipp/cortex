@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Build Application & Documentation
+./gradlew clean build
+
 # Deploy Application
 ssh cortex@cortex "pkill -f java"
 scp ./build/libs/cortex.jar cortex@cortex:cortex.jar

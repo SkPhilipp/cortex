@@ -1,6 +1,7 @@
 include::_links.adoc[]
 
 === Instructions
+
 * There currently exists an issue where any value SAVE'd smaller than the LOAD'd default size is left-aligned in its LOAD space during SAVE.
 
 === Graph
