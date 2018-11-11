@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.math;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
@@ -24,7 +24,7 @@ public class HASH implements Instruction {
     private String hashMethod;
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
+    public void execute(VirtualMachine process, ProgramContext program) throws ProgramException {
         try {
             var messageDigest = MessageDigest.getInstance(this.hashMethod);
             var stack = program.getStack();

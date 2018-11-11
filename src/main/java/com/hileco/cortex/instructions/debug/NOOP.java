@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.debug;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class NOOP implements Instruction {
     @Override
-    public void execute(ProcessContext process, ProgramContext program) {
+    public void execute(VirtualMachine process, ProgramContext program) {
     }
 
     @Override

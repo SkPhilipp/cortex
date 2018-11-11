@@ -20,7 +20,7 @@ public class KnownJumpIfProcessor implements Processor {
 //                    var decidingNode = jumpNode.getParameters().get(1);
 //                    var program = new Program(BigInteger.ZERO, decidingNode.toInstructions());
 //                    var programContext = new ProgramContext(program);
-//                    var processContext = new ProcessContext(programContext);
+//                    var processContext = new VirtualMachine(programContext);
 //                    var programRunner = new ProgramRunner(processContext);
 //                    try {
 //                        programRunner.run();

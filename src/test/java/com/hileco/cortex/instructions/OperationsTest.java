@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
@@ -42,7 +42,7 @@ public class OperationsTest {
         });
     }
 
-    private <T extends Instruction> ProgramContext run(T instruction, BiConsumer<ProcessContext, ProgramContext> customSetup) throws
+    private <T extends Instruction> ProgramContext run(T instruction, BiConsumer<VirtualMachine, ProgramContext> customSetup) throws
             ProgramException {
         var program = new Program(Collections.singletonList(instruction));
         var programContext = new ProgramContext(program);
@@ -52,7 +52,7 @@ public class OperationsTest {
         stack.push(new byte[]{7});
         stack.push(new byte[]{8});
         programContext.getMemory().write(8, new byte[]{0x56, 0x78});
-        var processContext = new ProcessContext(programContext);
+        var processContext = new VirtualMachine(programContext);
         customSetup.accept(processContext, programContext);
         var programRunner = new ProgramRunner(processContext);
         programRunner.run();
@@ -127,7 +127,7 @@ public class OperationsTest {
     @Test
     public void runAddOverflowing() throws ProgramException {
         var result = this.run(new ADD(), (processContext, programContext) -> {
-            programContext.getStack().push(ProcessContext.NUMERICAL_LIMIT.toByteArray());
+            programContext.getStack().push(VirtualMachine.NUMERICAL_LIMIT.toByteArray());
             programContext.getStack().push(BigInteger.TEN.toByteArray());
         });
         Assert.assertArrayEquals(BigInteger.valueOf(9).toByteArray(), result.getStack().pop());
@@ -146,10 +146,10 @@ public class OperationsTest {
     @Test
     public void runMultiplyOverflowing() throws ProgramException {
         var result = this.run(new MULTIPLY(), (processContext, programContext) -> {
-            programContext.getStack().push(ProcessContext.NUMERICAL_LIMIT.toByteArray());
+            programContext.getStack().push(VirtualMachine.NUMERICAL_LIMIT.toByteArray());
             programContext.getStack().push(BigInteger.TEN.toByteArray());
         });
-        var expected = ProcessContext.NUMERICAL_LIMIT.multiply(BigInteger.TEN).mod(ProcessContext.NUMERICAL_LIMIT.add(BigInteger.ONE));
+        var expected = VirtualMachine.NUMERICAL_LIMIT.multiply(BigInteger.TEN).mod(VirtualMachine.NUMERICAL_LIMIT.add(BigInteger.ONE));
         Assert.assertArrayEquals(expected.toByteArray(), result.getStack().pop());
     }
 

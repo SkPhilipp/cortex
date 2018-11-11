@@ -7,7 +7,7 @@ import lombok.Data;
 import java.math.BigInteger;
 
 @Data
-public class ProcessContext {
+public class VirtualMachine {
     public static final int INSTRUCTION_LIMIT = 1_000_000;
     public static final BigInteger NUMERICAL_LIMIT = new BigInteger(new byte[]{2}).pow(256).subtract(BigInteger.ONE);
 
@@ -19,7 +19,7 @@ public class ProcessContext {
     private int instructionsExecuted;
     private int instructionLimit;
 
-    public ProcessContext(ProgramContext... programContexts) {
+    public VirtualMachine(ProgramContext... programContexts) {
         this.programs = new LayeredStack<>();
         for (var programContext : programContexts) {
             this.programs.push(programContext);

@@ -11,7 +11,7 @@ import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.constraints.Solver;
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
@@ -150,7 +150,7 @@ public class InstructionsController {
     public Map execute(@RequestBody ProgramRequest request) throws ProgramException {
         var program = new Program(BigInteger.ZERO, request.getInstructions());
         var programContext = new ProgramContext(program);
-        var processContext = new ProcessContext(programContext);
+        var processContext = new VirtualMachine(programContext);
         var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         return Map.of("stack", programContext.getStack());
@@ -192,7 +192,7 @@ public class InstructionsController {
         request.getInstructions().forEach(builder::addInstruction);
         var solver = new Solver();
         return Map.of("expression", builder.getCurrentExpression(),
-                      "solution", solver.solve(builder.getCurrentExpression()).toString());
+                      "solution", solver.solve(builder.getCurrentExpression()));
     }
 
     @PostMapping("/pathing")

@@ -1,24 +1,24 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.instructions.ProgramException.Reason;
 
 public class ProgramRunner {
 
-    private final ProcessContext processContext;
+    private final VirtualMachine virtualMachine;
 
-    public ProgramRunner(ProcessContext processContext) {
-        this.processContext = processContext;
+    public ProgramRunner(VirtualMachine virtualMachine) {
+        this.virtualMachine = virtualMachine;
     }
 
     @SuppressWarnings("unchecked")
     public void run() throws ProgramException {
-        var programContext = this.processContext.getPrograms().peek();
+        var programContext = this.virtualMachine.getPrograms().peek();
         while (programContext.getInstructionPosition() != programContext.getProgram().getInstructions().size()) {
             var currentInstructionPosition = programContext.getInstructionPosition();
             var current = programContext.getProgram().getInstructions().get(currentInstructionPosition);
-            current.execute(this.processContext, programContext);
-            programContext = this.processContext.getPrograms().peek();
+            current.execute(this.virtualMachine, programContext);
+            programContext = this.virtualMachine.getPrograms().peek();
             if (programContext == null) {
                 break;
             }
@@ -29,8 +29,8 @@ public class ProgramRunner {
             if (programContext.getInstructionsExecuted() >= programContext.getInstructionLimit()) {
                 throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROGRAM_LEVEL);
             }
-            this.processContext.setInstructionsExecuted(this.processContext.getInstructionsExecuted() + 1);
-            if (this.processContext.getInstructionsExecuted() >= this.processContext.getInstructionLimit()) {
+            this.virtualMachine.setInstructionsExecuted(this.virtualMachine.getInstructionsExecuted() + 1);
+            if (this.virtualMachine.getInstructionsExecuted() >= this.virtualMachine.getInstructionLimit()) {
                 throw new ProgramException(programContext, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROCESS_LEVEL);
             }
         }

@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.bits;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
@@ -20,7 +20,7 @@ public class BITWISE_NOT implements Instruction {
     private static final byte CLEAR = 127;
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) {
+    public void execute(VirtualMachine process, ProgramContext program) {
         var stack = program.getStack();
         var pop = stack.pop();
         var result = new byte[pop.length];

@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.conditions.EQUALS;
@@ -35,7 +35,7 @@ public class InstructionsBuilderTest {
                 new JUMP_DESTINATION()
         ));
         var programContext = new ProgramContext(program);
-        var processContext = new ProcessContext(programContext);
+        var processContext = new VirtualMachine(programContext);
         var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
@@ -58,7 +58,7 @@ public class InstructionsBuilderTest {
                 new JUMP_DESTINATION()
         ));
         var programContext = new ProgramContext(program);
-        var processContext = new ProcessContext(programContext);
+        var processContext = new VirtualMachine(programContext);
         var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());
@@ -80,7 +80,7 @@ public class InstructionsBuilderTest {
                 new JUMP_IF()
         ));
         var programContext = new ProgramContext(program);
-        var processContext = new ProcessContext(programContext);
+        var processContext = new VirtualMachine(programContext);
         var programRunner = new ProgramRunner(processContext);
         programRunner.run();
         Assert.assertEquals(program.getInstructions().size(), programContext.getInstructionPosition());

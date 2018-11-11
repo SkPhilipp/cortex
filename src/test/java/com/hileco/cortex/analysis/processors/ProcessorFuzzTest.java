@@ -1,7 +1,7 @@
 package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.analysis.GraphBuilder;
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.layer.LayeredMap;
@@ -27,7 +27,7 @@ public class ProcessorFuzzTest {
         for (var programAddress : atlas.keySet()) {
             var program = atlas.get(programAddress);
             var programContext = new ProgramContext(program);
-            var processContext = new ProcessContext(callerContext, programContext);
+            var processContext = new VirtualMachine(callerContext, programContext);
             try {
                 var programRunner = new ProgramRunner(processContext);
                 programRunner.run();

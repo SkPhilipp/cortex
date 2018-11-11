@@ -1,7 +1,7 @@
 package com.hileco.cortex.instructions.math;
 
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
@@ -21,10 +21,10 @@ abstract class MathInstruction implements Instruction {
     public static final StackParameter LEFT = new StackParameter("left", 0);
     public static final StackParameter RIGHT = new StackParameter("right", 1);
 
-    public abstract BigInteger innerExecute(ProcessContext process, ProgramContext program, BigInteger left, BigInteger right);
+    public abstract BigInteger innerExecute(VirtualMachine process, ProgramContext program, BigInteger left, BigInteger right);
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
+    public void execute(VirtualMachine process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);

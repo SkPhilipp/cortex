@@ -1,3 +1,5 @@
+:stylesheet: boot-darkly.css
+
 = Cortex
 
 link:index.html[Introduction] /

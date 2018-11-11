@@ -1,7 +1,7 @@
 package com.hileco.cortex.instructions.stack;
 
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
@@ -21,7 +21,7 @@ public class PUSH implements Instruction {
     private byte[] bytes;
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
+    public void execute(VirtualMachine process, ProgramContext program) throws ProgramException {
         program.getStack().push(this.bytes);
         if (program.getStack().size() > process.getStackLimit()) {
             throw new ProgramException(program, STACK_LIMIT_REACHED);

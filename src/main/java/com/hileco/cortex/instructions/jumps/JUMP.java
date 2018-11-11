@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.jumps;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.ProgramException;
@@ -20,7 +20,7 @@ public class JUMP extends JumpingInstruction {
     public static final StackParameter ADDRESS = new StackParameter("address", 0);
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
+    public void execute(VirtualMachine process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
         if (stack.size() < 1) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);

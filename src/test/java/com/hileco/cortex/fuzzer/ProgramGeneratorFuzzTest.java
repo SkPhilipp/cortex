@@ -1,6 +1,6 @@
 package com.hileco.cortex.fuzzer;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
@@ -31,7 +31,7 @@ public class ProgramGeneratorFuzzTest {
                     var program = generated.get(programAddress);
                     var callerContext = new ProgramContext(caller);
                     var programContext = new ProgramContext(program);
-                    var processContext = new ProcessContext(callerContext, programContext);
+                    var processContext = new VirtualMachine(callerContext, programContext);
                     var programRunner = new ProgramRunner(processContext);
                     programRunner.run();
                 } catch (ProgramException e) {

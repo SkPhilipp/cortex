@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.io;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.context.layer.LayeredBytes;
@@ -24,7 +24,7 @@ public class SAVE extends IoInstruction {
     }
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
+    public void execute(VirtualMachine process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
         if (stack.size() < 2) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);

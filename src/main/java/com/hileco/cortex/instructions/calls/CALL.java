@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.calls;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.context.layer.Pair;
@@ -29,7 +29,7 @@ public class CALL implements Instruction {
     public static final StackParameter OUT_SIZE = new StackParameter("outSize", 5);
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) throws ProgramException {
+    public void execute(VirtualMachine process, ProgramContext program) throws ProgramException {
         var stack = program.getStack();
         if (stack.size() < 6) {
             throw new ProgramException(program, STACK_TOO_FEW_ELEMENTS);

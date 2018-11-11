@@ -3,7 +3,7 @@ package com.hileco.cortex.analysis.processors;
 import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphNode;
 import com.hileco.cortex.analysis.edges.EdgeParameters;
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.instructions.ProgramException;
@@ -41,7 +41,7 @@ public class KnownProcessor implements Processor {
                 .forEach(graphNode -> {
                     var program = new Program(BigInteger.ZERO, graphNode.toInstructions());
                     var programContext = new ProgramContext(program);
-                    var processContext = new ProcessContext(programContext);
+                    var processContext = new VirtualMachine(programContext);
                     var programRunner = new ProgramRunner(processContext);
                     try {
                         programRunner.run();

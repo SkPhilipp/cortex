@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.conditions;
 
-import com.hileco.cortex.context.ProcessContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.ProgramContext;
 import com.hileco.cortex.context.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
@@ -18,7 +18,7 @@ public class IS_ZERO implements Instruction {
     public static final StackParameter INPUT = new StackParameter("input", 0);
 
     @Override
-    public void execute(ProcessContext process, ProgramContext program) {
+    public void execute(VirtualMachine process, ProgramContext program) {
         var stack = program.getStack();
         var top = stack.pop();
         var isZero = true;

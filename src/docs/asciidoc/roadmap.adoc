@@ -5,12 +5,6 @@
 
 include::_links.adoc[]
 
-=== General
-* Implement ExpressionDeserializer
-* Endpoint for Expression to Solution
-* Rename Context to VirtualMachine
-* Endpoint for executing instructions
-
 === Infrastructure
 * Deployment of Cortex Service to Kubernetes
 * Deployment of Cortex Documentation to Kubernetes
