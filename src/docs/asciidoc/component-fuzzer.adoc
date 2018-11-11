@@ -1,8 +1,3 @@
-:doctype: book
-:icons: font
-:source-highlighter: highlightjs
-:nofooter:
-
 include::_links.adoc[]
 
 The fuzzer can generate random programs, which are generally used to verify correctness of other components.

@@ -1,3 +1,7 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:nofooter:
 :stylesheet: boot-darkly.css
 
 = Cortex

@@ -1,8 +1,3 @@
-:doctype: book
-:icons: font
-:source-highlighter: highlightjs
-:nofooter:
-
 include::_links.adoc[]
 
 Analysis within Cortex is a process in which instructions are converted to a graph. Such a graph
