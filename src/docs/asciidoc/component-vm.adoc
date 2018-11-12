@@ -20,10 +20,6 @@ include::{snippets}/instructions-execute-1/response-fields.adoc[]
 
 ===== Examples
 
-include::{snippets}/instructions-execute-1/http-request.adoc[]
-
-include::{snippets}/instructions-execute-1/response-body.adoc[]
-
 include::{snippets}/instructions-execute-2/http-request.adoc[]
 
 include::{snippets}/instructions-execute-2/response-body.adoc[]
