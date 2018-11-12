@@ -235,14 +235,14 @@ public class ServerTest {
 
     @Test
     public void documentVisualize() throws Exception {
+        var programGenerator = new ProgramGenerator();
+        var generated = programGenerator.generate(FUZZER_SEED);
+        var first = generated.keySet().iterator().next();
+        var program = generated.get(first);
+        var request = new InstructionsController.ProgramRequest(program.getInstructions());
         this.mockMvc.perform(post("/api/instructions/visualize")
                                      .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
-                                             new PUSH(BigInteger.valueOf(3).toByteArray()),
-                                             new JUMP(),
-                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
-                                             new JUMP_DESTINATION()
-                                     )))))
+                                     .content(this.objectMapper.writeValueAsString(request)))
                 .andDo(document("instructions-visualize", requestFields(
                         fieldWithPath("instructions").description("The instructions of the program.")
                 ), operation -> {
