@@ -44,3 +44,8 @@ include::{snippets}/instructions-flow-mapping/response-body.adoc[]
 
 include::{snippets}/instructions-flow-mapping/response-fields.adoc[]
 
+include::{snippets}/instructions-visualize/http-request.adoc[]
+
+include::{snippets}/instructions-visualize/request-fields.adoc[]
+
+include::{snippets}/instructions-visualize/response-file.adoc[]

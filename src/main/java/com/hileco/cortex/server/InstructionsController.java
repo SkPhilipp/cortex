@@ -11,9 +11,9 @@ import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.constraints.Solver;
-import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.context.Program;
 import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.context.VirtualMachine;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
@@ -46,9 +46,12 @@ import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
 import com.hileco.cortex.pathing.PathIterator;
+import com.hileco.cortex.visual.VisualGraph;
+import guru.nidi.graphviz.engine.Format;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,6 +59,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -228,5 +233,15 @@ public class InstructionsController {
             paths.add(stringBuilder.toString());
         });
         return Map.of("paths", paths);
+    }
+
+    @PostMapping(value = "/visualize", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] visualize(@RequestBody ProgramRequest request) throws IOException {
+        var graph = GRAPH_BUILDER.build(request.getInstructions());
+        var visualGraph = new VisualGraph();
+        visualGraph.map(graph);
+        var outputStream = new ByteArrayOutputStream();
+        visualGraph.getVizGraph().render(Format.PNG).toOutputStream(outputStream);
+        return outputStream.toByteArray();
     }
 }

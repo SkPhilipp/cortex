@@ -10,7 +10,6 @@ import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.SWAP;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class ParameterProcessor implements Processor {
@@ -45,7 +44,6 @@ public class ParameterProcessor implements Processor {
                         parameter.getEdges().add(new EdgeParameterConsumer(graphNode));
                         parameters.add(parameter);
                     }
-                    Collections.reverse(parameters);
                     graphNode.getEdges().add(new EdgeParameters(parameters));
                     stack.clear();
                 }

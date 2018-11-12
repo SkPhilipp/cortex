@@ -20,12 +20,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 
 import static com.hileco.cortex.context.data.ProgramStoreZone.CALL_DATA;
@@ -203,9 +208,11 @@ public class ServerTest {
                                      .content(this.objectMapper.writeValueAsString(request)))
                 .andDo(document("instructions-solve", requestFields(
                         fieldWithPath("instructions").description("The instructions of the program.")
-                ), responseFields(
+                ), relaxedResponseFields(
                         fieldWithPath("expression").description("The mathematical representation."),
-                        fieldWithPath("solution").description("The suggested solution.")
+                        fieldWithPath("solution").description("The suggested solution."),
+                        fieldWithPath("solution.possibleValues").description("Possible values part of the solution."),
+                        fieldWithPath("solution.solvable").description("Whether a solution is technically possible.")
                 )));
     }
 
@@ -224,5 +231,31 @@ public class ServerTest {
                 ), responseFields(
                         fieldWithPath("paths").description("The list of all possible paths.")
                 )));
+    }
+
+    @Test
+    public void documentVisualize() throws Exception {
+        this.mockMvc.perform(post("/api/instructions/visualize")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
+                                             new PUSH(BigInteger.valueOf(3).toByteArray()),
+                                             new JUMP(),
+                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
+                                             new JUMP_DESTINATION()
+                                     )))))
+                .andDo(document("instructions-visualize", requestFields(
+                        fieldWithPath("instructions").description("The instructions of the program.")
+                ), operation -> {
+                    var context = (RestDocumentationContext) operation.getAttributes().get(RestDocumentationContext.class.getName());
+                    var path = Paths.get(context.getOutputDirectory().getAbsolutePath(), operation.getName(), "response-file.adoc");
+                    var outputStream = new ByteArrayOutputStream();
+                    outputStream.write("++++\n".getBytes());
+                    outputStream.write("<img src=\"data:image/png;base64,".getBytes());
+                    outputStream.write(Base64.getEncoder().encode(operation.getResponse().getContent()));
+                    outputStream.write("\"/>\n".getBytes());
+                    outputStream.write("++++\n".getBytes());
+                    Files.createDirectories(path.getParent());
+                    Files.write(path, outputStream.toByteArray());
+                }));
     }
 }

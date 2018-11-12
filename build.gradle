@@ -32,6 +32,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.microsoft.z3:z3:4.7.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+    compile 'guru.nidi:graphviz-java:0.7.0'
     compileOnly 'org.projectlombok:lombok:1.18.2'
     testCompile 'junit:junit:4.12'
     testCompile "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.2.RELEASE"
