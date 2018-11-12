@@ -28,6 +28,8 @@ include::{snippets}/instructions-optimizer/response-body.adoc[]
 
 === APIs
 
+==== Optimizer
+
 include::{snippets}/instructions-optimizer/http-request.adoc[]
 
 include::{snippets}/instructions-optimizer/request-fields.adoc[]
@@ -36,6 +38,8 @@ include::{snippets}/instructions-optimizer/response-body.adoc[]
 
 include::{snippets}/instructions-optimizer/response-fields.adoc[]
 
+==== Flow Mapping
+
 include::{snippets}/instructions-flow-mapping/http-request.adoc[]
 
 include::{snippets}/instructions-flow-mapping/request-fields.adoc[]
@@ -43,6 +47,8 @@ include::{snippets}/instructions-flow-mapping/request-fields.adoc[]
 include::{snippets}/instructions-flow-mapping/response-body.adoc[]
 
 include::{snippets}/instructions-flow-mapping/response-fields.adoc[]
+
+==== Visualization
 
 include::{snippets}/instructions-visualize/http-request.adoc[]
 

@@ -50,7 +50,7 @@ This path can be validated as being possible, with our current implementation, t
 
 === APIs
 
-// Showcase instruction to constraint parsing endpoint
+==== Constraint Interring
 
 include::{snippets}/instructions-constraints/http-request.adoc[]
 
@@ -59,6 +59,8 @@ include::{snippets}/instructions-constraints/request-fields.adoc[]
 include::{snippets}/instructions-constraints/response-body.adoc[]
 
 include::{snippets}/instructions-constraints/response-fields.adoc[]
+
+==== Constraint Solving
 
 // Showcase instruction + constraint to solution parsing endpoint
 // Showcase expression to solution endpoint

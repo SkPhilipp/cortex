@@ -4,6 +4,8 @@ The fuzzer can generate random programs, which are generally used to verify corr
 
 === APIs
 
+==== Fuzzer
+
 include::{snippets}/instructions-fuzzer/http-request.adoc[]
 
 include::{snippets}/instructions-fuzzer/response-body.adoc[]

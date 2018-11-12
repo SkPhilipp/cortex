@@ -6,7 +6,6 @@ include::_links.adoc[]
 
 === Graph
 
-* Visualization of Graph with a focus on Flow using  http://graphstream-project.org/doc/Tutorials/Graph-Visualisation/ (See: Ida Pro)
 * Complete implementation of all current processors (JumpThreadingProcessor as well as JumpUnreachableProcessor currently do not function well)
 * Working testcases of processors
 * Processor to replace successive LOADs with DUP, where possible

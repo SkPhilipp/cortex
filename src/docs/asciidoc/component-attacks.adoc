@@ -14,7 +14,7 @@ WARNING: This documentation page is incomplete and under construction.
 
 === APIs
 
-=== Path-finding
+==== Path-finding
 
 include::{snippets}/instructions-pathing/http-request.adoc[]
 
