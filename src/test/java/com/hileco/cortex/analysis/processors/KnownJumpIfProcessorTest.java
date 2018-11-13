@@ -9,17 +9,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 public class KnownJumpIfProcessorTest {
 
     @Test
     public void testProcess() {
-        var processors = new ArrayList<Processor>();
-        processors.add(new ParameterProcessor());
-        processors.add(new KnownJumpIfProcessor());
-        var graphBuilder = new GraphBuilder(processors);
+        var graphBuilder = new GraphBuilder(List.of(
+                new ParameterProcessor(),
+                new KnownJumpIfProcessor()
+
+        ));
 
         var processed = graphBuilder.build(List.of(
                 new PUSH(BigInteger.ONE.toByteArray()),
