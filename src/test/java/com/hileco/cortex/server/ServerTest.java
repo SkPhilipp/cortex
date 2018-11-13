@@ -50,7 +50,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 @SpringBootTest(classes = Server.class)
 public class ServerTest {
 
-    private static final int FUZZER_SEED = 0;
+    private static final int FUZZER_SEED = 2;
 
     @Rule
     public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
@@ -149,7 +149,7 @@ public class ServerTest {
 
     @Test
     public void documentFuzzer() throws Exception {
-        this.mockMvc.perform(get("/api/instructions/fuzzer?seed=0"))
+        this.mockMvc.perform(get("/api/instructions/fuzzer?seed=" + FUZZER_SEED))
                 .andDo(document("instructions-fuzzer", responseFields(
                         fieldWithPath("instructions").description("The instructions of the generated program.")
                 )));
