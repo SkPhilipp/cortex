@@ -6,7 +6,7 @@ include::_links.adoc[]
 
 === Graph
 
-* Complete implementation of all current processors (JumpThreadingProcessor as well as JumpUnreachableProcessor currently do not function well)
+* Implementation of JumpThreadingProcessor
 * Working testcases of processors
 * Processor to replace successive LOADs with DUP, where possible
 * Processor to inline instructions from one program into another

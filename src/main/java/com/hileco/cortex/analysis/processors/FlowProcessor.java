@@ -62,7 +62,7 @@ public class FlowProcessor implements Processor {
         graphBlocks.forEach(graphBlock -> graphBlock.getGraphNodes()
                 .forEach(graphNode -> this.mapLinesToBlocksForNode(graphEdge, graphBlock, graphNode)));
 
-        // map create edge for flow instructions
+        // other flow instructions
         graphBlocks.forEach(graphBlock -> graphBlock.getGraphNodes().forEach(graphNode -> {
             if (graphNode.isInstruction(FLOW_CLASSES_OTHERS)) {
                 var instructionClass = graphNode.getInstruction().get().getClass();

@@ -1,5 +1,6 @@
 package com.hileco.cortex.analysis.edges;
 
+import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphNode;
 import lombok.Value;
 
@@ -19,6 +20,13 @@ public class EdgeUtility<T extends Edge> {
     @SuppressWarnings("unchecked")
     public Optional<T> findAny(GraphNode graphNode) {
         return (Optional<T>) graphNode.getEdges().stream()
+                .filter(this.edgeClass::isInstance)
+                .findAny();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Optional<T> findAny(Graph graph) {
+        return (Optional<T>) graph.getEdges().stream()
                 .filter(this.edgeClass::isInstance)
                 .findAny();
     }
