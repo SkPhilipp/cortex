@@ -49,19 +49,19 @@ public class VisualGraph {
 
     private void map(EdgeFlowMapping edgeFlowMapping) {
         var nodeMapping = new HashMap<Node, ArrayList<Link>>();
-        edgeFlowMapping.getJumpMapping().forEach((source, targets) -> {
+        edgeFlowMapping.getFlowsFromSource().forEach((source, flows) -> {
             var sourceVizNode = this.vizNodeMapping.get(source);
-            var vizLinkSources = nodeMapping.computeIfAbsent(sourceVizNode, ignored -> new ArrayList<>());
-            targets.forEach(target -> {
-                var targetVizNode = this.vizNodeMapping.get(target);
-                if (!sourceVizNode.equals(targetVizNode)) {
-                    vizLinkSources.add(between(port(source.toString()), targetVizNode.port(target.toString(), Compass.WEST)));
+            flows.forEach(flow -> {
+                if (flow.getTarget() != null) {
+                    var vizLinkSources = nodeMapping.computeIfAbsent(sourceVizNode, ignored -> new ArrayList<>());
+                    var targetVizNode = this.vizNodeMapping.get(flow.getTarget());
+                    if (!sourceVizNode.equals(targetVizNode)) {
+                        vizLinkSources.add(between(port(source.toString()), targetVizNode.port(flow.getTarget().toString(), Compass.WEST)));
+                    }
                 }
             });
         });
-        nodeMapping.forEach((node, links) -> {
-            this.vizGraph = this.vizGraph.with(node.link(links.toArray(new Link[0])));
-        });
+        nodeMapping.forEach((node, links) -> this.vizGraph = this.vizGraph.with(node.link(links.toArray(new Link[0]))));
     }
 
     public void map(Graph graph) {

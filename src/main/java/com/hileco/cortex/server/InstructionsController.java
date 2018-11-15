@@ -1,6 +1,7 @@
 package com.hileco.cortex.server;
 
 import com.hileco.cortex.analysis.GraphBuilder;
+import com.hileco.cortex.analysis.edges.EdgeFlow;
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.FlowProcessor;
@@ -68,6 +69,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -183,10 +185,10 @@ public class InstructionsController {
         var flowMapping = new HashMap<Integer, Set<Integer>>();
         graph.getEdges().stream()
                 .flatMap(EdgeFlowMapping.UTIL::filter)
-                .forEach(edge -> edge.getJumpMapping().forEach((source, targets) -> {
+                .forEach(edge -> edge.getFlowsFromSource().forEach((source, flows) -> {
                     var joiner = new StringJoiner(", ");
-                    targets.forEach(target -> joiner.add(target.toString()));
-                    flowMapping.put(source, targets);
+                    flows.forEach(flow -> joiner.add(Objects.toString(flow.getTarget())));
+                    flowMapping.put(source, flows.stream().map(EdgeFlow::getTarget).collect(Collectors.toSet()));
                 }));
         return Map.of("flowMapping", flowMapping);
     }

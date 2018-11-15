@@ -1,6 +1,7 @@
 package com.hileco.cortex.analysis.edges;
 
 public enum EdgeFlowType {
+    BLOCK_PART,
     BLOCK_END,
     START,
     END,

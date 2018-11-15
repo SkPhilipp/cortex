@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.hileco.cortex.analysis.edges.EdgeFlowType.BLOCK_PART;
 import static com.hileco.cortex.analysis.edges.EdgeFlowType.INSTRUCTION_CALL;
 import static com.hileco.cortex.analysis.edges.EdgeFlowType.INSTRUCTION_CALL_RETURN;
 import static com.hileco.cortex.analysis.edges.EdgeFlowType.INSTRUCTION_EXIT;
@@ -67,7 +68,9 @@ public class FlowProcessor implements Processor {
             if (graphNode.isInstruction(FLOW_CLASSES_OTHERS)) {
                 var instructionClass = graphNode.getInstruction().get().getClass();
                 var edgeFlowType = FLOW_TYPE_MAPPING.get(instructionClass);
-                graphNode.getEdges().add(new EdgeFlow(edgeFlowType, null));
+                var edgeFlow = new EdgeFlow(edgeFlowType, graphNode.getLine(), null);
+                graphNode.getEdges().add(edgeFlow);
+                graphEdge.map(edgeFlow);
             }
         }));
 
@@ -79,9 +82,10 @@ public class FlowProcessor implements Processor {
                 .forEach(graphNode -> {
                     var targetPushInstruction = (PUSH) graphNode.getParameters().get(0).getInstruction().get();
                     var target = new BigInteger(targetPushInstruction.getBytes()).intValue();
-                    graphEdge.putJumpMapping(graphNode.getLine(), target);
                     var edgeFlowType = FLOW_TYPE_MAPPING.get(graphNode.getInstruction().get().getClass());
-                    graphNode.getEdges().add(new EdgeFlow(edgeFlowType, target));
+                    var edgeFlow = new EdgeFlow(edgeFlowType, graphNode.getLine(), target);
+                    graphNode.getEdges().add(edgeFlow);
+                    graphEdge.map(edgeFlow);
                 }));
 
         // map blocks to jumps
@@ -91,7 +95,10 @@ public class FlowProcessor implements Processor {
                 var graphBlockStart = graphNodes.get(0).getLine();
                 graphNodes.stream()
                         .filter(graphNode -> graphNode.isInstruction(FLOW_CLASSES_JUMPS))
-                        .forEach(graphNode -> graphEdge.putJumpMapping(graphBlockStart, graphNode.getLine()));
+                        .forEach(graphNode -> {
+                            var edgeFlow = new EdgeFlow(BLOCK_PART, graphBlockStart, graphNode.getLine());
+                            graphEdge.map(edgeFlow);
+                        });
             }
         });
 
@@ -108,22 +115,27 @@ public class FlowProcessor implements Processor {
                         && graphNodesA.stream().noneMatch(graphNode -> graphNode.isInstruction(GUARANTEED_ENDS))) {
                     var graphNodeA = graphNodesA.get(0);
                     var graphNodeB = graphNodesB.get(0);
-                    graphEdge.putJumpMapping(graphNodeA.getLine(), graphNodeB.getLine());
-                    graphBlockA.getEdges().add(new EdgeFlow(EdgeFlowType.BLOCK_END, graphNodeB.getLine()));
+                    var edgeFlow = new EdgeFlow(EdgeFlowType.BLOCK_END, graphNodeA.getLine(), graphNodeB.getLine());
+                    graphEdge.map(edgeFlow);
+                    graphBlockA.getEdges().add(edgeFlow);
                 }
             }
         }
 
         // map program start
         if (graphBlocksLimit > 0) {
-            var graphBlockStart = graphBlocks.get(graphBlocks.size() - 1);
-            graphBlockStart.getEdges().add(new EdgeFlow(EdgeFlowType.START, null));
+            var graphBlockStart = graphBlocks.get(0);
+            var edgeFlow = new EdgeFlow(EdgeFlowType.START, null, 0);
+            graphBlockStart.getEdges().add(edgeFlow);
+            graphEdge.map(edgeFlow);
         }
 
         // map program ends
         if (graphBlocksLimit > 0) {
             var graphBlockEnd = graphBlocks.get(graphBlocks.size() - 1);
-            graphBlockEnd.getEdges().add(new EdgeFlow(EdgeFlowType.END, null));
+            var edgeFlow = new EdgeFlow(EdgeFlowType.END, graph.toInstructions().size(), null);
+            graphBlockEnd.getEdges().add(edgeFlow);
+            graphEdge.map(edgeFlow);
         }
 
         graph.getEdges().add(graphEdge);

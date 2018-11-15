@@ -1,5 +1,6 @@
 package com.hileco.cortex.pathing;
 
+import com.hileco.cortex.analysis.edges.EdgeFlow;
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 
 import java.util.ArrayList;
@@ -42,9 +43,9 @@ public class PathIterator implements Iterator<List<Integer>> {
 
     private void traverseDown() {
         var bottom = this.bottom();
-        while (bottom != null && this.edgeFlowMapping.getJumpMapping().containsKey(bottom.peek())) {
-            var targets = this.edgeFlowMapping.getJumpMapping().get(bottom.peek());
-            this.state.add(new PeekingIterator<>(targets));
+        while (bottom != null && this.edgeFlowMapping.getFlowsFromSource().containsKey(bottom.peek())) {
+            var flows = this.edgeFlowMapping.getFlowsFromSource().get(bottom.peek());
+            this.state.add(new PeekingIterator<>(flows.stream().map(EdgeFlow::getTarget).collect(Collectors.toSet())));
             bottom = this.bottom();
         }
     }

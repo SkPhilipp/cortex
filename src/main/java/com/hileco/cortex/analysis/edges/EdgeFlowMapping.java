@@ -12,11 +12,13 @@ import java.util.Set;
 public class EdgeFlowMapping implements Edge {
     public static final EdgeUtility<EdgeFlowMapping> UTIL = new EdgeUtility<>(EdgeFlowMapping.class);
 
-    private final Map<Integer, Set<Integer>> jumpMapping;
+    private final Map<Integer, Set<EdgeFlow>> flowsFromSource;
+    private final Map<Integer, Set<EdgeFlow>> flowsToTarget;
     private final Map<Integer, GraphBlock> lineMapping;
 
     public EdgeFlowMapping() {
-        this.jumpMapping = new HashMap<>();
+        this.flowsFromSource = new HashMap<>();
+        this.flowsToTarget = new HashMap<>();
         this.lineMapping = new HashMap<>();
     }
 
@@ -24,8 +26,12 @@ public class EdgeFlowMapping implements Edge {
         this.lineMapping.put(key, value);
     }
 
-    public void putJumpMapping(Integer source, Integer target) {
-        this.jumpMapping.computeIfAbsent(source, ignore -> new HashSet<>())
-                .add(target);
+    public void map(EdgeFlow edgeFlow) {
+        if (edgeFlow.getSource() != null) {
+            this.flowsFromSource.computeIfAbsent(edgeFlow.getSource(), ignore -> new HashSet<>()).add(edgeFlow);
+        }
+        if (edgeFlow.getTarget() != null) {
+            this.flowsToTarget.computeIfAbsent(edgeFlow.getTarget(), ignore -> new HashSet<>()).add(edgeFlow);
+        }
     }
 }

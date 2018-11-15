@@ -9,5 +9,6 @@ public class EdgeFlow implements Edge {
     public static final EdgeUtility<EdgeFlow> UTIL = new EdgeUtility<>(EdgeFlow.class);
 
     private EdgeFlowType type;
+    private Integer source;
     private Integer target;
 }

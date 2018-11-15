@@ -47,9 +47,9 @@ public class GraphMapperFuzzTest {
                 var program = generatedOptimized.get(address);
                 var instructions = program.getInstructions();
                 var graph = graphBuilder.build(instructions);
-                var edgeFlowMapping = graph.getEdges().stream().flatMap(EdgeFlowMapping.UTIL::filter).findAny().get();
+                var edgeFlowMapping = EdgeFlowMapping.UTIL.findAny(graph).get();
                 Assert.assertEquals(instructions.size(), edgeFlowMapping.getLineMapping().size());
-                jumpsMapped += edgeFlowMapping.getJumpMapping().values().stream().mapToInt(Set::size).sum();
+                jumpsMapped += edgeFlowMapping.getFlowsFromSource().values().stream().mapToInt(Set::size).sum();
             }
         }
         Assert.assertTrue(jumpsMapped / LIMIT_RUNS > EXPECTED_MINIMUM_AVERAGE_JUMPS_MAPPED);
