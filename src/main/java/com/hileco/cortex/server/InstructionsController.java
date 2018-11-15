@@ -46,7 +46,7 @@ import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
-import com.hileco.cortex.pathing.PathIterator;
+import com.hileco.cortex.pathing.FlowIterator;
 import com.hileco.cortex.visual.VisualGraph;
 import guru.nidi.graphviz.engine.Format;
 import lombok.AllArgsConstructor;
@@ -71,7 +71,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @RestController
@@ -182,13 +181,11 @@ public class InstructionsController {
     @PostMapping("/flow-mapping")
     public Map flowMapping(@RequestBody ProgramRequest request) {
         var graph = GRAPH_BUILDER.build(request.getInstructions());
-        var flowMapping = new HashMap<Integer, Set<Integer>>();
+        var flowMapping = new HashMap<String, Set<Integer>>();
         graph.getEdges().stream()
                 .flatMap(EdgeFlowMapping.UTIL::filter)
                 .forEach(edge -> edge.getFlowsFromSource().forEach((source, flows) -> {
-                    var joiner = new StringJoiner(", ");
-                    flows.forEach(flow -> joiner.add(Objects.toString(flow.getTarget())));
-                    flowMapping.put(source, flows.stream().map(EdgeFlow::getTarget).collect(Collectors.toSet()));
+                    flowMapping.put(Objects.toString(source), flows.stream().map(EdgeFlow::getTarget).collect(Collectors.toSet()));
                 }));
         return Map.of("flowMapping", flowMapping);
     }
@@ -205,35 +202,12 @@ public class InstructionsController {
     @PostMapping("/pathing")
     public Map pathing(@RequestBody ProgramRequest request) {
         var graph = GRAPH_BUILDER.build(request.getInstructions());
-        var edgeFlowMapping = graph.getEdges().stream()
-                .flatMap(EdgeFlowMapping.UTIL::filter)
-                .findAny().get();
-        var pathIterator = new PathIterator(edgeFlowMapping, 1);
-        var instructions = graph.toInstructions();
+        var edgeFlowMapping = EdgeFlowMapping.UTIL.findAny(graph).get();
+        var flowIterator = new FlowIterator(edgeFlowMapping);
         var paths = new ArrayList<String>();
-        pathIterator.forEachRemaining(integers -> {
-            var stringBuilder = new StringBuilder();
-            for (var i = 0; i < integers.size() - 1; i++) {
-                var current = integers.get(i);
-                var next = integers.get(i + 1);
-                var instruction = instructions.get(current);
-                if (current == 1 || instruction instanceof JUMP_DESTINATION) {
-                    stringBuilder.append('\n');
-                    for (int index = current; index <= next; index++) {
-                        instruction = instructions.get(index);
-                        stringBuilder.append(String.format("[%03d] %s", index, instruction));
-                        stringBuilder.append('\n');
-                    }
-                }
-            }
-            var current = integers.get(integers.size() - 1);
-            var instruction = instructions.get(current);
-            if (stringBuilder.length() > 0) {
-                stringBuilder.append('\n');
-            }
-            stringBuilder.append(String.format("[%03d] %s", current, instruction));
-            paths.add(stringBuilder.toString());
-        });
+        flowIterator.forEachRemaining(edgeFlows -> paths.add(edgeFlows.stream()
+                                                                     .map(edgeFlow -> String.format(" --> %d", edgeFlow.getTarget()))
+                                                                     .collect(Collectors.joining())));
         return Map.of("paths", paths);
     }
 

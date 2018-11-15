@@ -27,11 +27,7 @@ public class EdgeFlowMapping implements Edge {
     }
 
     public void map(EdgeFlow edgeFlow) {
-        if (edgeFlow.getSource() != null) {
-            this.flowsFromSource.computeIfAbsent(edgeFlow.getSource(), ignore -> new HashSet<>()).add(edgeFlow);
-        }
-        if (edgeFlow.getTarget() != null) {
-            this.flowsToTarget.computeIfAbsent(edgeFlow.getTarget(), ignore -> new HashSet<>()).add(edgeFlow);
-        }
+        this.flowsFromSource.computeIfAbsent(edgeFlow.getSource(), ignore -> new HashSet<>()).add(edgeFlow);
+        this.flowsToTarget.computeIfAbsent(edgeFlow.getTarget(), ignore -> new HashSet<>()).add(edgeFlow);
     }
 }
