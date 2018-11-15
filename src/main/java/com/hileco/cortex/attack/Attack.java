@@ -11,11 +11,16 @@ import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
+import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.calls.CALL;
 import com.hileco.cortex.pathing.FlowIterator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Attack {
@@ -30,6 +35,7 @@ public class Attack {
     ));
 
     private static final long FUZZER_SEED = 2;
+    private static final Set<EdgeFlowType> BLOCK_TO_END_TYPES = Set.of(EdgeFlowType.BLOCK_PART, EdgeFlowType.BLOCK_END, EdgeFlowType.END);
 
     public static void main(String[] args) {
         var programGenerator = new ProgramGenerator();
@@ -42,22 +48,21 @@ public class Attack {
             var flowIterator = new FlowIterator(edgeFlowMapping);
             flowIterator.forEachRemaining(edgeFlows -> {
                 var path = edgeFlows.stream()
-                        .map(edgeFlow -> String.format(" (%s)--> %s", edgeFlow.getType(), edgeFlow.getTarget()))
+                        .map(edgeFlow -> String.format("(%s)--> %s ", edgeFlow.getType(), edgeFlow.getTarget()))
                         .collect(Collectors.joining());
-                System.out.println("---------------------------------------");
-                System.out.println(path);
-                System.out.println("---------------------------------------");
+                var pathInstructions = new ArrayList<Instruction>();
                 edgeFlows.stream()
-                        .filter(edgeFlow -> edgeFlow.getType() == EdgeFlowType.BLOCK_PART
-                                || edgeFlow.getType() == EdgeFlowType.BLOCK_END
-                                || edgeFlow.getType() == EdgeFlowType.END)
-                        .map(edgeFlow -> String.format("PARTS FROM %s TO %s", edgeFlow.getSource(), edgeFlow.getTarget()))
-                        .forEach(System.out::println);
-                System.out.println();
-                System.out.println();
-                System.out.println();
+                        .filter(edgeFlow -> BLOCK_TO_END_TYPES.contains(edgeFlow.getType()))
+                        .forEach(edgeFlow -> {
+                            var source = edgeFlow.getSource();
+                            var target = Optional.ofNullable(edgeFlow.getTarget()).orElse(instructions.size() - 1);
+                            pathInstructions.addAll(instructions.subList(source, target + 1));
+                        });
+                var containsCall = pathInstructions.stream().anyMatch(instruction -> CALL.class.equals(instruction.getClass()));
+                if (containsCall) {
+                    System.out.println(path);
+                }
             });
         });
     }
-
 }

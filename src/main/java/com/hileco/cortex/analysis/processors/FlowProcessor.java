@@ -64,15 +64,22 @@ public class FlowProcessor implements Processor {
                 .forEach(graphNode -> this.mapLinesToBlocksForNode(graphEdge, graphBlock, graphNode)));
 
         // other flow instructions
-        graphBlocks.forEach(graphBlock -> graphBlock.getGraphNodes().forEach(graphNode -> {
-            if (graphNode.isInstruction(FLOW_CLASSES_OTHERS)) {
-                var instructionClass = graphNode.getInstruction().get().getClass();
-                var edgeFlowType = FLOW_TYPE_MAPPING.get(instructionClass);
-                var edgeFlow = new EdgeFlow(edgeFlowType, graphNode.getLine(), null);
-                graphNode.getEdges().add(edgeFlow);
-                graphEdge.map(edgeFlow);
-            }
-        }));
+        graphBlocks.forEach(graphBlock -> graphBlock.getGraphNodes()
+                .stream()
+                .filter(graphNode -> graphNode.isInstruction(FLOW_CLASSES_OTHERS))
+                .forEach(graphNode -> {
+                    var blockStart = graphBlock.getGraphNodes().get(0).getLine();
+                    var instructionClass = graphNode.getInstruction().get().getClass();
+                    var edgeFlowType = FLOW_TYPE_MAPPING.get(instructionClass);
+                    var edgeFlow = new EdgeFlow(edgeFlowType, graphNode.getLine(), null);
+                    graphNode.getEdges().add(edgeFlow);
+                    graphEdge.map(edgeFlow);
+                    if (graphNode.isInstruction(GUARANTEED_ENDS)) {
+                        var blockPartEdgeFlow = new EdgeFlow(BLOCK_PART, blockStart, graphNode.getLine());
+                        graphNode.getEdges().add(blockPartEdgeFlow);
+                        graphEdge.map(blockPartEdgeFlow);
+                    }
+                }));
 
         // map jumps to blocks
         graphBlocks.forEach(graphBlock -> graphBlock.getGraphNodes()
