@@ -24,13 +24,13 @@ public class FlowIterator implements Iterator<List<EdgeFlow>> {
     }
 
     public FlowIterator(EdgeFlowMapping edgeFlowMapping) {
-        this(edgeFlowMapping, new EdgeFlow(EdgeFlowType.START, null, null));
+        this(edgeFlowMapping, new EdgeFlow(EdgeFlowType.START, null, 0));
     }
 
     private void initialize() {
         if (this.children == null) {
             var childrenEdgeFlows = this.edgeFlowMapping.getFlowsFromSource().get(this.edgeFlow.getTarget());
-            if (childrenEdgeFlows == null) {
+            if (childrenEdgeFlows == null || this.edgeFlow.getTarget() == null) {
                 childrenEdgeFlows = Collections.emptySet();
             }
             this.children = childrenEdgeFlows.stream()

@@ -6,6 +6,7 @@ include::_links.adoc[]
 
 === Graph
 
+* Implementation of fallthrough block start to ends mapping as described in FlowProcessor#116 through #118
 * Implementation of JumpThreadingProcessor
 * Working testcases of processors
 * Processor to replace successive LOADs with DUP, where possible

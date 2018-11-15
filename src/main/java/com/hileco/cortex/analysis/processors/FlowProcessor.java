@@ -113,6 +113,9 @@ public class FlowProcessor implements Processor {
                 if (!graphNodesA.isEmpty()
                         && !graphNodesB.isEmpty()
                         && graphNodesA.stream().noneMatch(graphNode -> graphNode.isInstruction(GUARANTEED_ENDS))) {
+                    // TODO: Don't map blocks to block here; instead if a block contains no guaranteed ends
+                    // TODO:   it should inherit all the mappings of the next block, continuing until either
+                    // TODO:   the last block is reached or a block is found which does contain a guaranteed end
                     var graphNodeA = graphNodesA.get(0);
                     var graphNodeB = graphNodesB.get(0);
                     var edgeFlow = new EdgeFlow(EdgeFlowType.BLOCK_END, graphNodeA.getLine(), graphNodeB.getLine());
@@ -130,12 +133,15 @@ public class FlowProcessor implements Processor {
             graphEdge.map(edgeFlow);
         }
 
-        // map program ends
+        // map the last block's start to the program end (if such end is possible)
         if (graphBlocksLimit > 0) {
             var graphBlockEnd = graphBlocks.get(graphBlocks.size() - 1);
-            var edgeFlow = new EdgeFlow(EdgeFlowType.END, graph.toInstructions().size(), null);
-            graphBlockEnd.getEdges().add(edgeFlow);
-            graphEdge.map(edgeFlow);
+            if (graphBlockEnd.getGraphNodes().stream().noneMatch(graphNode -> graphNode.isInstruction(GUARANTEED_ENDS))) {
+                var graphNode = graphBlockEnd.getGraphNodes().get(0);
+                var edgeFlow = new EdgeFlow(EdgeFlowType.END, graphNode.getLine(), null);
+                graphBlockEnd.getEdges().add(edgeFlow);
+                graphEdge.map(edgeFlow);
+            }
         }
 
         graph.getEdges().add(graphEdge);
