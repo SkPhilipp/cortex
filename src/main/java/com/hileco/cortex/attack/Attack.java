@@ -11,18 +11,20 @@ import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
 import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
+import com.hileco.cortex.constraints.ExpressionGenerator;
+import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.calls.CALL;
+import com.hileco.cortex.instructions.jumps.JUMP_IF;
 import com.hileco.cortex.pathing.FlowIterator;
-import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Attack {
     private static final GraphBuilder GRAPH_BUILDER = new GraphBuilder(List.of(
@@ -34,22 +36,6 @@ public class Attack {
             new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
             new KnownProcessor()
     ));
-
-    @Value
-    private static final class Flow {
-        private int line;
-        private EdgeFlow edgeFlow;
-        private Instruction instruction;
-
-        @Override
-        public String toString() {
-            return String.format("%04d | %04d --> %04d | %s",
-                                 this.line,
-                                 this.edgeFlow.getSource(),
-                                 this.edgeFlow.getTarget(),
-                                 this.instruction);
-        }
-    }
 
     private static final long FUZZER_SEED = 2;
     private static final Set<EdgeFlowType> BLOCK_TO_END_TYPES = Set.of(EdgeFlowType.BLOCK_PART, EdgeFlowType.BLOCK_END, EdgeFlowType.END);
@@ -65,9 +51,11 @@ public class Attack {
         var flowIterator = new FlowIterator(edgeFlowMapping);
         flowIterator.forEachRemaining(edgeFlows -> {
             if (containsTarget(instructions, edgeFlows)) {
-                attackPath(instructions, edgeFlows);
+                var expression = attackPath(instructions, edgeFlows);
+                System.out.println(expression);
             }
         });
+        System.out.flush();
     }
 
     private static boolean containsTarget(List<Instruction> instructions, List<EdgeFlow> edgeFlows) {
@@ -82,12 +70,9 @@ public class Attack {
                 });
     }
 
-    private static void attackPath(List<Instruction> instructions, List<EdgeFlow> edgeFlows) {
-        var path = edgeFlows.stream()
-                .map(edgeFlow -> String.format("(%s)--> %s ", edgeFlow.getType(), edgeFlow.getTarget()))
-                .collect(Collectors.joining());
-        System.out.println(path);
-        System.out.println("     |----------------");
+    private static Expression attackPath(List<Instruction> instructions, List<EdgeFlow> edgeFlows) {
+        var expressionGenerator = new ExpressionGenerator();
+        var conditions = new ArrayList<Expression>();
         for (var i = 0; i < edgeFlows.size(); i++) {
             var edgeFlow = edgeFlows.get(i);
             var edgeFlowNextAvailable = i + 1 < edgeFlows.size();
@@ -97,18 +82,19 @@ public class Attack {
                 var target = Optional.ofNullable(edgeFlow.getTarget()).orElse(instructions.size() - 1);
                 for (var j = source; j <= target; j++) {
                     var instruction = instructions.get(j);
-                    var flow = new Flow(j, edgeFlow, instruction);
-                    System.out.println(flow);
-                    if (target.equals(j) && edgeFlowNextAvailable) {
-                        System.out.println(String.format("     | %04d ~~> %04d | << USING %s >>",
-                                                         edgeFlowNext.getSource(),
-                                                         edgeFlowNext.getTarget(),
-                                                         edgeFlowNext.getType()));
+                    if (instruction instanceof JUMP_IF) {
+                        var isLastOfBlock = target.equals(j);
+                        var isNextBlockJumpIf = edgeFlowNextAvailable && EdgeFlowType.INSTRUCTION_JUMP_IF == edgeFlowNext.getType();
+                        var expression = expressionGenerator.viewExpression(JUMP_IF.CONDITION.getPosition());
+                        if (!(isLastOfBlock && isNextBlockJumpIf)) {
+                            expression = new Expression.Not(expression);
+                        }
+                        conditions.add(expression);
                     }
+                    expressionGenerator.addInstruction(instruction);
                 }
             }
         }
-        System.out.println("     |----------------");
-        System.out.println();
+        return new Expression.And(conditions);
     }
 }

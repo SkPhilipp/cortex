@@ -2,6 +2,7 @@ package com.hileco.cortex.constraints;
 
 import com.hileco.cortex.context.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.io.LOAD;
+import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.SUBTRACT;
 import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
@@ -48,5 +49,18 @@ public class ExpressionGeneratorTest {
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new SUBTRACT());
         Assert.assertEquals("(123 - STACK[0])", builder.getCurrentExpression().toString());
+    }
+
+    @Test
+    public void testMultipleExpressions() {
+        var builder = new ExpressionGenerator();
+        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
+        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
+        builder.addInstruction(new ADD());
+        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
+        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
+        builder.addInstruction(new SUBTRACT());
+        Assert.assertEquals("(123 - 123)", builder.viewExpression(0).toString());
+        Assert.assertEquals("(456 + 456)", builder.viewExpression(1).toString());
     }
 }

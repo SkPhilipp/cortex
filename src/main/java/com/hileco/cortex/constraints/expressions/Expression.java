@@ -1,12 +1,15 @@
 package com.hileco.cortex.constraints.expressions;
 
 import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface Expression {
     Expr asZ3Expr(Context context, ReferenceMapping referenceMapping);
@@ -128,6 +131,41 @@ public interface Expression {
         @Override
         public Expr asZ3Expr(Context context, ReferenceMapping referenceMapping) {
             throw new IllegalArgumentException(String.format("Missing stack: %d.", this.address));
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class Not implements Expression {
+        private Expression input;
+
+        @Override
+        public Expr asZ3Expr(Context context, ReferenceMapping referenceMapping) {
+            var inputExpr = this.input.asZ3Expr(context, referenceMapping);
+            return context.mkNot((BoolExpr) inputExpr);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("!(%s)", this.input);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class And implements Expression {
+        private List<Expression> inputs;
+
+        @Override
+        public Expr asZ3Expr(Context context, ReferenceMapping referenceMapping) {
+            return context.mkAnd((BoolExpr[]) this.inputs.stream()
+                    .map(input -> input.asZ3Expr(context, referenceMapping))
+                    .toArray());
+        }
+
+        @Override
+        public String toString() {
+            return this.inputs.stream().map(input -> String.format("(%s)", input.toString())).collect(Collectors.joining(" && "));
         }
     }
 }

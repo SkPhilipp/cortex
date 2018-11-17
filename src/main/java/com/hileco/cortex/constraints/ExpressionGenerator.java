@@ -92,6 +92,10 @@ public class ExpressionGenerator implements ExpressionStack {
         return this.stack.peek();
     }
 
+    public Expression viewExpression(int offset) {
+        return this.stack.get(this.stack.size() - offset);
+    }
+
     public void addInstruction(Instruction instruction) {
         var instructionClass = instruction.getClass();
         if (MAP.containsKey(instructionClass)) {
