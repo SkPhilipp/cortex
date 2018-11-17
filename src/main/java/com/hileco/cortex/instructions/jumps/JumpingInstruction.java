@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions.jumps;
 
-import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.vm.ProgramContext;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import lombok.EqualsAndHashCode;

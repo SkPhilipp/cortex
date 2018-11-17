@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphNode;
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer;
 import com.hileco.cortex.analysis.edges.EdgeParameters;
-import com.hileco.cortex.context.layer.LayeredStack;
+import com.hileco.cortex.vm.layer.LayeredStack;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.SWAP;

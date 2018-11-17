@@ -2,7 +2,7 @@ package com.hileco.cortex.constraints;
 
 import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.constraints.expressions.ExpressionStack;
-import com.hileco.cortex.context.layer.LayeredStack;
+import com.hileco.cortex.vm.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;

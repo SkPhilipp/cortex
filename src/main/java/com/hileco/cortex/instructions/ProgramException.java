@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.ProgramContext;
+import com.hileco.cortex.vm.ProgramContext;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 

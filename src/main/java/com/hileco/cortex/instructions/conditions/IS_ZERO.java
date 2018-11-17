@@ -1,8 +1,8 @@
 package com.hileco.cortex.instructions.conditions;
 
-import com.hileco.cortex.context.VirtualMachine;
-import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.vm.VirtualMachine;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.ProgramZone;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.util.Collections;
 import java.util.List;
 
-import static com.hileco.cortex.context.ProgramZone.STACK;
+import static com.hileco.cortex.vm.ProgramZone.STACK;
 
 @EqualsAndHashCode
 public class IS_ZERO implements Instruction {

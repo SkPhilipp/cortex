@@ -1,6 +1,6 @@
 package com.hileco.cortex.fuzzer;
 
-import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.conditions.EQUALS;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.jumps.JUMP;

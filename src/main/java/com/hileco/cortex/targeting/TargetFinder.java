@@ -3,7 +3,7 @@ package com.hileco.cortex.targeting;
 import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphBlock;
 import com.hileco.cortex.analysis.GraphNode;
-import com.hileco.cortex.context.layer.Pair;
+import com.hileco.cortex.vm.layer.Pair;
 import com.hileco.cortex.instructions.calls.CALL;
 
 import java.util.HashSet;

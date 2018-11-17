@@ -1,10 +1,10 @@
 package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.analysis.GraphBuilder;
-import com.hileco.cortex.context.VirtualMachine;
-import com.hileco.cortex.context.Program;
-import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.layer.LayeredMap;
+import com.hileco.cortex.vm.VirtualMachine;
+import com.hileco.cortex.vm.Program;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.layer.LayeredMap;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;

@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.VirtualMachine;
+import com.hileco.cortex.vm.VirtualMachine;
 import com.hileco.cortex.instructions.ProgramException.Reason;
 
 public class ProgramRunner {

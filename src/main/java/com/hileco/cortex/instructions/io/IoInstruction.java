@@ -1,8 +1,8 @@
 package com.hileco.cortex.instructions.io;
 
 
-import com.hileco.cortex.context.ProgramZone;
-import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.vm.ProgramZone;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -10,10 +10,10 @@ import lombok.Getter;
 
 import java.util.List;
 
-import static com.hileco.cortex.context.ProgramZone.CALL_DATA;
-import static com.hileco.cortex.context.ProgramZone.DISK;
-import static com.hileco.cortex.context.ProgramZone.MEMORY;
-import static com.hileco.cortex.context.ProgramZone.STACK;
+import static com.hileco.cortex.vm.ProgramZone.CALL_DATA;
+import static com.hileco.cortex.vm.ProgramZone.DISK;
+import static com.hileco.cortex.vm.ProgramZone.MEMORY;
+import static com.hileco.cortex.vm.ProgramZone.STACK;
 
 @Getter
 @AllArgsConstructor

@@ -40,7 +40,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.hileco.cortex.context.data.ProgramStoreZone.valueOf;
+import static com.hileco.cortex.vm.data.ProgramStoreZone.valueOf;
 import static com.hileco.cortex.instructions.ProgramException.Reason;
 
 public class InstructionDeserializer extends StdScalarDeserializer<Instruction> {

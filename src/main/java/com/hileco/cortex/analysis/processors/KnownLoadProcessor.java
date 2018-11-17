@@ -1,9 +1,9 @@
 package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.analysis.Graph;
-import com.hileco.cortex.context.data.ProgramData;
-import com.hileco.cortex.context.data.ProgramDataSource;
-import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.vm.data.ProgramData;
+import com.hileco.cortex.vm.data.ProgramDataSource;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.debug.NOOP;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.stack.PUSH;

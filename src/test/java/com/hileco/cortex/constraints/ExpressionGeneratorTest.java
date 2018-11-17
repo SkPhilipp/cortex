@@ -1,6 +1,6 @@
 package com.hileco.cortex.constraints;
 
-import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.SUBTRACT;

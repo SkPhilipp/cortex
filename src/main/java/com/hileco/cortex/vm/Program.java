@@ -1,8 +1,8 @@
-package com.hileco.cortex.context;
+package com.hileco.cortex.vm;
 
-import com.hileco.cortex.context.layer.LayeredBytes;
-import com.hileco.cortex.context.layer.LayeredStack;
-import com.hileco.cortex.context.layer.Pair;
+import com.hileco.cortex.vm.layer.LayeredBytes;
+import com.hileco.cortex.vm.layer.LayeredStack;
+import com.hileco.cortex.vm.layer.Pair;
 import com.hileco.cortex.instructions.Instruction;
 import lombok.Value;
 

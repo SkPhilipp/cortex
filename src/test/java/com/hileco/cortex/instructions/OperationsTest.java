@@ -1,9 +1,9 @@
 package com.hileco.cortex.instructions;
 
-import com.hileco.cortex.context.VirtualMachine;
-import com.hileco.cortex.context.Program;
-import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.vm.VirtualMachine;
+import com.hileco.cortex.vm.Program;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
 import com.hileco.cortex.instructions.bits.BITWISE_OR;

@@ -1,9 +1,9 @@
 package com.hileco.cortex.instructions.io;
 
-import com.hileco.cortex.context.VirtualMachine;
-import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.data.ProgramStoreZone;
-import com.hileco.cortex.context.layer.LayeredBytes;
+import com.hileco.cortex.vm.VirtualMachine;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
+import com.hileco.cortex.vm.layer.LayeredBytes;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;

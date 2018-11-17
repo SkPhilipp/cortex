@@ -3,7 +3,7 @@ package com.hileco.cortex.analysis.processors;
 import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer;
 import com.hileco.cortex.analysis.edges.EdgeParameters;
-import com.hileco.cortex.context.data.ProgramStoreZone;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.jumps.JUMP_IF;
 import com.hileco.cortex.instructions.stack.PUSH;

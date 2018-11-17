@@ -33,8 +33,8 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 
-import static com.hileco.cortex.context.data.ProgramStoreZone.CALL_DATA;
-import static com.hileco.cortex.context.data.ProgramStoreZone.MEMORY;
+import static com.hileco.cortex.vm.data.ProgramStoreZone.CALL_DATA;
+import static com.hileco.cortex.vm.data.ProgramStoreZone.MEMORY;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;

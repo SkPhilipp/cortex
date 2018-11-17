@@ -1,8 +1,8 @@
 package com.hileco.cortex.fuzzer;
 
-import com.hileco.cortex.context.Program;
-import com.hileco.cortex.context.layer.LayeredMap;
-import com.hileco.cortex.context.layer.LayeredStack;
+import com.hileco.cortex.vm.Program;
+import com.hileco.cortex.vm.layer.LayeredMap;
+import com.hileco.cortex.vm.layer.LayeredStack;
 import com.hileco.cortex.instructions.InstructionsBuilder;
 
 import java.math.BigInteger;

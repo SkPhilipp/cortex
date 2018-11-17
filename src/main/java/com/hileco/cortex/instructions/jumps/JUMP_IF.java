@@ -1,8 +1,8 @@
 package com.hileco.cortex.instructions.jumps;
 
-import com.hileco.cortex.context.VirtualMachine;
-import com.hileco.cortex.context.ProgramContext;
-import com.hileco.cortex.context.ProgramZone;
+import com.hileco.cortex.vm.VirtualMachine;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.ProgramZone;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.StackParameter;
 import lombok.EqualsAndHashCode;
@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
 import java.math.BigInteger;
 import java.util.List;
 
-import static com.hileco.cortex.context.ProgramZone.INSTRUCTION_POSITION;
-import static com.hileco.cortex.context.ProgramZone.STACK;
+import static com.hileco.cortex.vm.ProgramZone.INSTRUCTION_POSITION;
+import static com.hileco.cortex.vm.ProgramZone.STACK;
 import static com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS;
 
 @EqualsAndHashCode(callSuper = true)
