@@ -7,6 +7,6 @@ import java.util.Map;
 
 @Value
 public class Solution {
-    private Map<Expression.Reference, Integer> possibleValues;
+    private Map<Expression.Reference, Long> possibleValues;
     private boolean solvable;
 }

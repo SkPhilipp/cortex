@@ -160,7 +160,7 @@ public interface Expression {
         public Expr asZ3Expr(Context context, ReferenceMapping referenceMapping) {
             return context.mkAnd((BoolExpr[]) this.inputs.stream()
                     .map(input -> input.asZ3Expr(context, referenceMapping))
-                    .toArray());
+                    .toArray(BoolExpr[]::new));
         }
 
         @Override

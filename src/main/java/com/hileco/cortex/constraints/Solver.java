@@ -31,7 +31,7 @@ public class Solver implements ReferenceMapping {
         var constants = Arrays.stream(model.getConstDecls())
                 .collect(Collectors.toMap(
                         functionDeclaration -> this.referencesBackward.get(functionDeclaration.getName().toString()),
-                        functionDeclaration -> ((IntNum) model.getConstInterp(functionDeclaration)).getInt()));
+                        functionDeclaration -> ((IntNum) model.getConstInterp(functionDeclaration)).getInt64()));
         return new Solution(constants, status == Status.SATISFIABLE);
     }
 

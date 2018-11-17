@@ -12,6 +12,7 @@ import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.ExpressionGenerator;
+import com.hileco.cortex.constraints.Solver;
 import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
@@ -53,6 +54,9 @@ public class Attack {
             if (containsTarget(instructions, edgeFlows)) {
                 var expression = attackPath(instructions, edgeFlows);
                 System.out.println(expression);
+                var solver = new Solver();
+                var solution = solver.solve(expression);
+                System.out.println(solution);
             }
         });
         System.out.flush();

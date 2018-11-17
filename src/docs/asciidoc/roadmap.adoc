@@ -45,7 +45,7 @@ include::_links.adoc[]
 
 === Payload Generator (Local)
 
-* Attack Generator which can generate combinations of input data to get to desired instrunctions within a given instructions list
+* Attack Generator which accounts for a given target instruction's input data
 * Multiple levels of complex programs as test-cases to generate payloads for
 * Integration with Program Fuzzer
 
