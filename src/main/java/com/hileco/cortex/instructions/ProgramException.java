@@ -24,6 +24,7 @@ public class ProgramException extends Exception {
         STACK_LIMIT_REACHED,
         RETURN_DATA_TOO_LARGE,
         STACK_TOO_FEW_ELEMENTS,
-        CALL_RECIPIENT_MISSING
+        CALL_RECIPIENT_MISSING,
+        WINNER
     }
 }

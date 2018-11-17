@@ -16,7 +16,9 @@ import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.Solution;
 import com.hileco.cortex.constraints.Solver;
 import com.hileco.cortex.instructions.Instruction;
+import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.calls.CALL;
+import com.hileco.cortex.instructions.debug.HALT;
 import lombok.Value;
 
 import java.util.ArrayList;
@@ -42,11 +44,13 @@ public class Attacker {
             new KnownProcessor()
     ));
 
-    private Predicate<GraphNode> targetPredicate;
+    public static final Predicate<GraphNode> TARGET_IS_CALL = graphNode -> graphNode.getInstruction().get() instanceof CALL;
+    public static final Predicate<GraphNode> TARGET_IS_HALT_WINNER = graphNode -> {
+        var instruction = graphNode.getInstruction().get();
+        return instruction instanceof HALT && ((HALT) instruction).getReason() == ProgramException.Reason.WINNER;
+    };
 
-    public Attacker() {
-        this.targetPredicate = graphNode -> graphNode.getInstruction().get() instanceof CALL;
-    }
+    private Predicate<GraphNode> targetPredicate;
 
     public ArrayList<Solution> solve(Graph graph) {
         var solutions = new ArrayList<Solution>();

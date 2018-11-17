@@ -2,7 +2,6 @@ package com.hileco.cortex.constraints;
 
 import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.constraints.expressions.ExpressionStack;
-import com.hileco.cortex.vm.layer.LayeredStack;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
@@ -23,9 +22,9 @@ import com.hileco.cortex.instructions.math.SUBTRACT;
 import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
+import com.hileco.cortex.vm.layer.LayeredStack;
 import com.microsoft.z3.ArithExpr;
 import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Context;
 import com.microsoft.z3.IntExpr;
 
 import java.math.BigInteger;
@@ -51,11 +50,13 @@ public class ExpressionGenerator implements ExpressionStack {
         MAP.put(DIVIDE.class, LeftRight.builder("/", (context, left, right) -> context.mkDiv((ArithExpr) left, (ArithExpr) right)));
         MAP.put(LESS_THAN.class, LeftRight.builder("<", (context, left, right) -> context.mkLt((ArithExpr) left, (ArithExpr) right)));
         MAP.put(GREATER_THAN.class, LeftRight.builder(">", (context, left, right) -> context.mkGt((ArithExpr) left, (ArithExpr) right)));
-        MAP.put(EQUALS.class, LeftRight.builder("==", Context::mkEq));
+        MAP.put(EQUALS.class, LeftRight.builder("==", (context, left, right) -> context.mkEq(left, right)));
         MAP.put(BITWISE_OR.class, LeftRight.builder("||", (context, left, right) -> context.mkOr((BoolExpr) left, (BoolExpr) right)));
         MAP.put(BITWISE_AND.class, LeftRight.builder("&&", (context, left, right) -> context.mkAnd((BoolExpr) left, (BoolExpr) right)));
         MAP.put(MODULO.class, LeftRight.builder("%", (context, left, right) -> context.mkMod((IntExpr) left, (IntExpr) right)));
-        MAP.put(IS_ZERO.class, Input.builder("0 == ", (context, input) -> context.mkEq(input, context.mkInt(0))));
+        MAP.put(IS_ZERO.class, Input.builder("0 == ", (context, input) -> input.isBool() ?
+                context.mkEq(input, context.mkBool(false)) :
+                context.mkEq(input, context.mkInt(0))));
         MAP.put(HASH.class, Input.builder("HASH", (context, input) -> {
             throw new UnsupportedOperationException();
         }));

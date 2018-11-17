@@ -11,11 +11,9 @@ import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.attack.Attacker;
+import com.hileco.cortex.attack.FlowIterator;
 import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.constraints.Solver;
-import com.hileco.cortex.vm.Program;
-import com.hileco.cortex.vm.ProgramContext;
-import com.hileco.cortex.vm.VirtualMachine;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
@@ -47,8 +45,10 @@ import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
-import com.hileco.cortex.attack.FlowIterator;
 import com.hileco.cortex.visual.VisualGraph;
+import com.hileco.cortex.vm.Program;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.VirtualMachine;
 import guru.nidi.graphviz.engine.Format;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -120,6 +120,14 @@ public class InstructionsController {
             new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
             new KnownProcessor()
     ));
+
+    public static final String ATTACK_TARGET_METHOD_CALL = "anyCall";
+    public static final String ATTACK_TARGET_METHOD_HALT_WINNER = "winner";
+
+    private static final Map<String, Attacker> ATTACK_TARGET_METHODS = Map.of(
+            ATTACK_TARGET_METHOD_CALL, new Attacker(Attacker.TARGET_IS_CALL),
+            ATTACK_TARGET_METHOD_HALT_WINNER, new Attacker(Attacker.TARGET_IS_HALT_WINNER)
+    );
 
     @Data
     @NoArgsConstructor
@@ -223,9 +231,13 @@ public class InstructionsController {
     }
 
     @PostMapping("/attack")
-    public Map attack(@RequestBody ProgramRequest request) {
+    public Map attack(@RequestBody ProgramRequest request,
+                      @RequestParam(value = "targetMethod", defaultValue = ATTACK_TARGET_METHOD_CALL) String targetMethod) {
+        var attacker = ATTACK_TARGET_METHODS.get(targetMethod);
         var graph = GRAPH_BUILDER.build(request.getInstructions());
-        var attacker = new Attacker();
+        if (attacker == null) {
+            throw new IllegalArgumentException("Allowed target methods: " + ATTACK_TARGET_METHODS.keySet());
+        }
         return Map.of("solutions", attacker.solve(graph));
     }
 }
