@@ -2,13 +2,16 @@ package com.hileco.cortex.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
+import com.hileco.cortex.instructions.InstructionsBuilder;
 import com.hileco.cortex.instructions.conditions.EQUALS;
 import com.hileco.cortex.instructions.conditions.LESS_THAN;
+import com.hileco.cortex.instructions.debug.HALT;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.io.SAVE;
 import com.hileco.cortex.instructions.jumps.JUMP;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.math.ADD;
+import com.hileco.cortex.instructions.math.DIVIDE;
 import com.hileco.cortex.instructions.math.MODULO;
 import com.hileco.cortex.instructions.math.MULTIPLY;
 import com.hileco.cortex.instructions.stack.PUSH;
@@ -21,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 
+import static com.hileco.cortex.instructions.ProgramException.Reason.WINNER;
 import static com.hileco.cortex.vm.data.ProgramStoreZone.CALL_DATA;
 import static com.hileco.cortex.vm.data.ProgramStoreZone.MEMORY;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -245,18 +250,24 @@ public class ServerTest {
                                      .content(this.objectMapper.writeValueAsString(request)))
                 .andDo(document("instructions-visualize", requestFields(
                         fieldWithPath("instructions").description("The instructions of the program.")
-                ), operation -> {
-                    var context = (RestDocumentationContext) operation.getAttributes().get(RestDocumentationContext.class.getName());
-                    var path = Paths.get(context.getOutputDirectory().getAbsolutePath(), operation.getName(), "response-file.adoc");
-                    var outputStream = new ByteArrayOutputStream();
-                    outputStream.write("++++\n".getBytes());
-                    outputStream.write("<img src=\"data:image/png;base64,".getBytes());
-                    outputStream.write(Base64.getEncoder().encode(operation.getResponse().getContent()));
-                    outputStream.write("\"/>\n".getBytes());
-                    outputStream.write("++++\n".getBytes());
-                    Files.createDirectories(path.getParent());
-                    Files.write(path, outputStream.toByteArray());
-                }));
+                ), this.storeResponseFile()));
+    }
+
+    private Snippet storeResponseFile() {
+        return operation -> {
+            var context = (RestDocumentationContext) operation.getAttributes().get(RestDocumentationContext.class.getName());
+            var path = Paths.get(context.getOutputDirectory().getAbsolutePath(), operation.getName(), "response-file.adoc");
+            var outputStream = new ByteArrayOutputStream();
+            outputStream.write("++++\n".getBytes());
+            outputStream.write("<p style=\"text-align: center\">\n".getBytes());
+            outputStream.write("<img src=\"data:image/png;base64,".getBytes());
+            outputStream.write(Base64.getEncoder().encode(operation.getResponse().getContent()));
+            outputStream.write("\"/>\n".getBytes());
+            outputStream.write("</p>\n".getBytes());
+            outputStream.write("++++\n".getBytes());
+            Files.createDirectories(path.getParent());
+            Files.write(path, outputStream.toByteArray());
+        };
     }
 
     @Test
@@ -266,7 +277,7 @@ public class ServerTest {
         var first = generated.keySet().iterator().next();
         var program = generated.get(first);
         var request = new InstructionsController.ProgramRequest(program.getInstructions());
-        this.mockMvc.perform(post("/api/instructions/attack")
+        this.mockMvc.perform(post("/api/instructions/attack?targetMethod=anyCall")
                                      .contentType(MediaType.APPLICATION_JSON)
                                      .content(this.objectMapper.writeValueAsString(request)))
                 .andDo(document("instructions-attack", requestFields(
@@ -277,4 +288,26 @@ public class ServerTest {
                         fieldWithPath("solutions[].solvable").description("Whether a solution is technically possible.")
                 )));
     }
+
+    @Test
+    public void documentIntroduction() throws Exception {
+        var instructionsBuilder = new InstructionsBuilder();
+        instructionsBuilder.IF(conditionBuilder -> conditionBuilder.include(List.of(new PUSH(BigInteger.valueOf(2).toByteArray()),
+                                                                                    new PUSH(BigInteger.valueOf(1).toByteArray()),
+                                                                                    new LOAD(CALL_DATA),
+                                                                                    new DIVIDE(),
+                                                                                    new PUSH(BigInteger.valueOf(12345).toByteArray()),
+                                                                                    new EQUALS())),
+                               contentBuilder -> contentBuilder.include(List.of(new HALT(WINNER))));
+        var request = new InstructionsController.ProgramRequest(instructionsBuilder.build());
+        this.mockMvc.perform(post("/api/instructions/visualize")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(request)))
+                .andDo(document("introduction-visualize", this.storeResponseFile()));
+        this.mockMvc.perform(post("/api/instructions/attack?targetMethod=winner")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(request)))
+                .andDo(document("introduction-attack"));
+    }
+
 }
