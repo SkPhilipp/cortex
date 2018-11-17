@@ -10,6 +10,7 @@ import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
 import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
+import com.hileco.cortex.attack.Attacker;
 import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.constraints.Solver;
 import com.hileco.cortex.context.Program;
@@ -206,8 +207,10 @@ public class InstructionsController {
         var flowIterator = new FlowIterator(edgeFlowMapping);
         var paths = new ArrayList<String>();
         flowIterator.forEachRemaining(edgeFlows -> paths.add(edgeFlows.stream()
-                                                                     .map(edgeFlow -> String.format(" --> %d", edgeFlow.getTarget()))
-                                                                     .collect(Collectors.joining())));
+                                                                     .map(EdgeFlow::getTarget)
+                                                                     .filter(Objects::nonNull)
+                                                                     .map(Objects::toString)
+                                                                     .collect(Collectors.joining(" --> ", "START --> ", " --> END"))));
         return Map.of("paths", paths);
     }
 
@@ -219,5 +222,12 @@ public class InstructionsController {
         var outputStream = new ByteArrayOutputStream();
         visualGraph.getVizGraph().render(Format.PNG).toOutputStream(outputStream);
         return outputStream.toByteArray();
+    }
+
+    @PostMapping("/attack")
+    public Map attack(@RequestBody ProgramRequest request) {
+        var graph = GRAPH_BUILDER.build(request.getInstructions());
+        var attacker = new Attacker();
+        return Map.of("solutions", attacker.solve(graph));
     }
 }

@@ -48,6 +48,7 @@ public class FlowProcessor implements Processor {
         var line = graphNode.getLine();
         if (line != null) {
             edge.putLineMapping(line, graphBlock);
+            edge.putLineMapping(line, graphNode);
         }
         graphNode.getParameters().stream()
                 .filter(Objects::nonNull)

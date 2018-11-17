@@ -24,3 +24,16 @@ include::{snippets}/instructions-pathing/response-body.adoc[]
 
 include::{snippets}/instructions-pathing/response-fields.adoc[]
 
+
+==== Attack
+
+Currently, the attack endpoints finds any valid path to a CALL.
+
+include::{snippets}/instructions-attack/http-request.adoc[]
+
+include::{snippets}/instructions-attack/request-fields.adoc[]
+
+include::{snippets}/instructions-attack/response-body.adoc[]
+
+include::{snippets}/instructions-attack/response-fields.adoc[]
+

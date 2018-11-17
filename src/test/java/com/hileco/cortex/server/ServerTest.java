@@ -258,4 +258,23 @@ public class ServerTest {
                     Files.write(path, outputStream.toByteArray());
                 }));
     }
+
+    @Test
+    public void documentAttack() throws Exception {
+        var programGenerator = new ProgramGenerator();
+        var generated = programGenerator.generate(FUZZER_SEED);
+        var first = generated.keySet().iterator().next();
+        var program = generated.get(first);
+        var request = new InstructionsController.ProgramRequest(program.getInstructions());
+        this.mockMvc.perform(post("/api/instructions/attack")
+                                     .contentType(MediaType.APPLICATION_JSON)
+                                     .content(this.objectMapper.writeValueAsString(request)))
+                .andDo(document("instructions-attack", requestFields(
+                        fieldWithPath("instructions").description("The instructions of the program.")
+                ), relaxedResponseFields(
+                        fieldWithPath("solutions").description("The suggested solution."),
+                        fieldWithPath("solutions[].possibleValues").description("Possible values part of the solution."),
+                        fieldWithPath("solutions[].solvable").description("Whether a solution is technically possible.")
+                )));
+    }
 }

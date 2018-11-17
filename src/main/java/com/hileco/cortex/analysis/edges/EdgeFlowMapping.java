@@ -1,6 +1,7 @@
 package com.hileco.cortex.analysis.edges;
 
 import com.hileco.cortex.analysis.GraphBlock;
+import com.hileco.cortex.analysis.GraphNode;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -14,16 +15,22 @@ public class EdgeFlowMapping implements Edge {
 
     private final Map<Integer, Set<EdgeFlow>> flowsFromSource;
     private final Map<Integer, Set<EdgeFlow>> flowsToTarget;
-    private final Map<Integer, GraphBlock> lineMapping;
+    private final Map<Integer, GraphBlock> blockLineMapping;
+    private final Map<Integer, GraphNode> nodeLineMapping;
 
     public EdgeFlowMapping() {
         this.flowsFromSource = new HashMap<>();
         this.flowsToTarget = new HashMap<>();
-        this.lineMapping = new HashMap<>();
+        this.blockLineMapping = new HashMap<>();
+        this.nodeLineMapping = new HashMap<>();
     }
 
     public void putLineMapping(Integer key, GraphBlock value) {
-        this.lineMapping.put(key, value);
+        this.blockLineMapping.put(key, value);
+    }
+
+    public void putLineMapping(Integer key, GraphNode value) {
+        this.nodeLineMapping.put(key, value);
     }
 
     public void map(EdgeFlow edgeFlow) {
