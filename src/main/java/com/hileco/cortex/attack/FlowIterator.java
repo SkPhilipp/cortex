@@ -1,4 +1,4 @@
-package com.hileco.cortex.pathing;
+package com.hileco.cortex.attack;
 
 import com.hileco.cortex.analysis.edges.EdgeFlow;
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping;

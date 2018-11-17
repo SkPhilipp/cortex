@@ -17,7 +17,6 @@ import com.hileco.cortex.constraints.Solution;
 import com.hileco.cortex.constraints.Solver;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.calls.CALL;
-import com.hileco.cortex.pathing.FlowIterator;
 import lombok.Value;
 
 import java.util.ArrayList;

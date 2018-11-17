@@ -47,7 +47,7 @@ import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
 import com.hileco.cortex.instructions.stack.SWAP;
-import com.hileco.cortex.pathing.FlowIterator;
+import com.hileco.cortex.attack.FlowIterator;
 import com.hileco.cortex.visual.VisualGraph;
 import guru.nidi.graphviz.engine.Format;
 import lombok.AllArgsConstructor;
