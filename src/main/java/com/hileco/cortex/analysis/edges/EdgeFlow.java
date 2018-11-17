@@ -11,4 +11,11 @@ public class EdgeFlow implements Edge {
     private EdgeFlowType type;
     private Integer source;
     private Integer target;
+
+    @Override
+    public String toString() {
+        var sourceString = this.source == null ? "START" : this.source;
+        var targetString = this.target == null ? "END" : this.target;
+        return String.format("%s %s --> %s", this.type, sourceString, targetString);
+    }
 }

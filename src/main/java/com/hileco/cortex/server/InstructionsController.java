@@ -66,12 +66,12 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -182,13 +182,11 @@ public class InstructionsController {
     @PostMapping("/flow-mapping")
     public Map flowMapping(@RequestBody ProgramRequest request) {
         var graph = GRAPH_BUILDER.build(request.getInstructions());
-        var flowMapping = new HashMap<String, Set<Integer>>();
-        graph.getEdges().stream()
-                .flatMap(EdgeFlowMapping.UTIL::filter)
-                .forEach(edge -> edge.getFlowsFromSource().forEach((source, flows) -> {
-                    flowMapping.put(Objects.toString(source), flows.stream().map(EdgeFlow::getTarget).collect(Collectors.toSet()));
-                }));
-        return Map.of("flowMapping", flowMapping);
+        return Map.of("flowMapping", EdgeFlowMapping.UTIL.findAny(graph).stream()
+                .flatMap(edgeFlowMapping -> edgeFlowMapping.getFlowsFromSource().values().stream())
+                .flatMap(Collection::stream)
+                .map(EdgeFlow::toString)
+                .collect(Collectors.toSet()));
     }
 
     @PostMapping("/solve")
