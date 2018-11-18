@@ -180,23 +180,6 @@ public class ServerTest {
     }
 
     @Test
-    public void documentFlowMapping() throws Exception {
-        var programGenerator = new ProgramGenerator();
-        var generated = programGenerator.generate(FUZZER_SEED);
-        var first = generated.keySet().iterator().next();
-        var program = generated.get(first);
-        var request = new InstructionsController.ProgramRequest(program.getInstructions());
-        this.mockMvc.perform(post("/api/instructions/flow-mapping")
-                                     .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(request)))
-                .andDo(document("instructions-flow-mapping", requestFields(
-                        fieldWithPath("instructions").description("The instructions of the program.")
-                ), relaxedResponseFields(
-                        fieldWithPath("flowMapping").description("The list of all possible paths through the program.")
-                )));
-    }
-
-    @Test
     public void documentSolve() throws Exception {
         var request = new InstructionsController.ProgramRequest(List.of(
                 new PUSH(BigInteger.valueOf(10L).toByteArray()),
@@ -218,23 +201,6 @@ public class ServerTest {
                         fieldWithPath("solution").description("The suggested solution."),
                         fieldWithPath("solution.possibleValues").description("Possible values part of the solution."),
                         fieldWithPath("solution.solvable").description("Whether a solution is technically possible.")
-                )));
-    }
-
-    @Test
-    public void documentPathing() throws Exception {
-        var programGenerator = new ProgramGenerator();
-        var generated = programGenerator.generate(FUZZER_SEED);
-        var first = generated.keySet().iterator().next();
-        var program = generated.get(first);
-        var request = new InstructionsController.ProgramRequest(program.getInstructions());
-        this.mockMvc.perform(post("/api/instructions/pathing")
-                                     .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(request)))
-                .andDo(document("instructions-pathing", requestFields(
-                        fieldWithPath("instructions").description("The instructions of the program.")
-                ), responseFields(
-                        fieldWithPath("paths").description("The list of all possible paths.")
                 )));
     }
 

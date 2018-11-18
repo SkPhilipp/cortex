@@ -1,8 +1,6 @@
 package com.hileco.cortex.server;
 
 import com.hileco.cortex.analysis.GraphBuilder;
-import com.hileco.cortex.analysis.edges.EdgeFlow;
-import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.FlowProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
@@ -11,7 +9,6 @@ import com.hileco.cortex.analysis.processors.KnownLoadProcessor;
 import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.attack.Attacker;
-import com.hileco.cortex.attack.FlowIterator;
 import com.hileco.cortex.constraints.ExpressionGenerator;
 import com.hileco.cortex.constraints.Solver;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
@@ -64,14 +61,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -187,16 +181,6 @@ public class InstructionsController {
         return Map.of("instructions", optimizedGraph.toInstructions());
     }
 
-    @PostMapping("/flow-mapping")
-    public Map flowMapping(@RequestBody ProgramRequest request) {
-        var graph = GRAPH_BUILDER.build(request.getInstructions());
-        return Map.of("flowMapping", EdgeFlowMapping.UTIL.findAny(graph).stream()
-                .flatMap(edgeFlowMapping -> edgeFlowMapping.getFlowsFromSource().values().stream())
-                .flatMap(Collection::stream)
-                .map(EdgeFlow::toString)
-                .collect(Collectors.toSet()));
-    }
-
     @PostMapping("/solve")
     public Map solve(@RequestBody ProgramRequest request) {
         var builder = new ExpressionGenerator();
@@ -204,20 +188,6 @@ public class InstructionsController {
         var solver = new Solver();
         return Map.of("expression", builder.getCurrentExpression(),
                       "solution", solver.solve(builder.getCurrentExpression()));
-    }
-
-    @PostMapping("/pathing")
-    public Map pathing(@RequestBody ProgramRequest request) {
-        var graph = GRAPH_BUILDER.build(request.getInstructions());
-        var edgeFlowMapping = EdgeFlowMapping.UTIL.findAny(graph).get();
-        var flowIterator = new FlowIterator(edgeFlowMapping);
-        var paths = new ArrayList<String>();
-        flowIterator.forEachRemaining(edgeFlows -> paths.add(edgeFlows.stream()
-                                                                     .map(EdgeFlow::getTarget)
-                                                                     .filter(Objects::nonNull)
-                                                                     .map(Objects::toString)
-                                                                     .collect(Collectors.joining(" --> ", "START --> ", " --> END"))));
-        return Map.of("paths", paths);
     }
 
     @PostMapping(value = "/visualize", produces = MediaType.IMAGE_PNG_VALUE)

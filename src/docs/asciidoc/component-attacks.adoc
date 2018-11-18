@@ -14,17 +14,6 @@ WARNING: This documentation page is incomplete and under construction.
 
 === APIs
 
-==== Path-finding
-
-include::{snippets}/instructions-pathing/http-request.adoc[]
-
-include::{snippets}/instructions-pathing/request-fields.adoc[]
-
-include::{snippets}/instructions-pathing/response-body.adoc[]
-
-include::{snippets}/instructions-pathing/response-fields.adoc[]
-
-
 ==== Attack
 
 Currently, the attack endpoints finds any valid path to a CALL.
