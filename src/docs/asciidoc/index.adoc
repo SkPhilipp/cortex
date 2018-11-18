@@ -25,8 +25,6 @@ Below is a demonstration of Cortex analysing and finding the solution to an exam
 This program contains a target instruction for demonstration, `HALT WINNER`, which Cortex will try to reach.
 The pseudocode for this program is `if(args[1] / 2 == 12345) { HALT WINNER }`;
 
-include::{snippets}/introduction-visualize/response-file.adoc[]
-
 Request to Cortex:
 
 include::{snippets}/introduction-attack/http-request.adoc[]

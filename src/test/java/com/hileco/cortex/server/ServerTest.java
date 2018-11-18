@@ -266,10 +266,6 @@ public class ServerTest {
                                                                                     new EQUALS())),
                                contentBuilder -> contentBuilder.include(List.of(new HALT(WINNER))));
         var request = new InstructionsController.ProgramRequest(instructionsBuilder.build());
-        this.mockMvc.perform(post("/api/instructions/visualize")
-                                     .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(request)))
-                .andDo(document("introduction-visualize", this.storeResponseFile()));
         this.mockMvc.perform(post("/api/instructions/attack?targetMethod=winner")
                                      .contentType(MediaType.APPLICATION_JSON)
                                      .content(this.objectMapper.writeValueAsString(request)))
