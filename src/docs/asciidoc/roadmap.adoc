@@ -24,8 +24,6 @@ include::_links.adoc[]
 
 === Constraint System
 
-* Implement handling DUP instructions in composite constraint Expressions.
-* Implement handling SWAP instructions in composite constraint Expressions.
 * Implement a processor which generates composite constraint Expressions for every subpath and bind it to the Graph.
 * Implement a processor which eliminates impossible paths based on composite constraint Expressions.
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)

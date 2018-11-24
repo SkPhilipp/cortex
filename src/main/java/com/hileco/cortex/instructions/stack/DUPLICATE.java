@@ -34,6 +34,10 @@ public class DUPLICATE implements Instruction {
         }
     }
 
+    public int getPosition() {
+        return this.input.getPosition();
+    }
+
     @Override
     public List<Integer> getStackAdds() {
         return Collections.singletonList(-1);

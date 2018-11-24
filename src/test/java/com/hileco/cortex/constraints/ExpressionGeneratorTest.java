@@ -1,11 +1,13 @@
 package com.hileco.cortex.constraints;
 
-import com.hileco.cortex.vm.data.ProgramStoreZone;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.SUBTRACT;
+import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.POP;
 import com.hileco.cortex.instructions.stack.PUSH;
+import com.hileco.cortex.instructions.stack.SWAP;
+import com.hileco.cortex.vm.data.ProgramStoreZone;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -62,5 +64,30 @@ public class ExpressionGeneratorTest {
         builder.addInstruction(new SUBTRACT());
         Assert.assertEquals("(123 - 123)", builder.viewExpression(0).toString());
         Assert.assertEquals("(456 + 456)", builder.viewExpression(1).toString());
+    }
+
+    @Test
+    public void testDuplicate() {
+        var builder = new ExpressionGenerator();
+        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
+        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
+        builder.addInstruction(new ADD());
+        builder.addInstruction(new DUPLICATE(0));
+        Assert.assertEquals("(456 + 456)", builder.viewExpression(0).toString());
+        Assert.assertEquals("(456 + 456)", builder.viewExpression(1).toString());
+    }
+
+    @Test
+    public void testSwap() {
+        var builder = new ExpressionGenerator();
+        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
+        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
+        builder.addInstruction(new ADD());
+        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
+        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
+        builder.addInstruction(new SUBTRACT());
+        builder.addInstruction(new SWAP(0 ,1));
+        Assert.assertEquals("(123 - 123)", builder.viewExpression(1).toString());
+        Assert.assertEquals("(456 + 456)", builder.viewExpression(0).toString());
     }
 }

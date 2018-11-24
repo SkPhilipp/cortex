@@ -32,6 +32,14 @@ public class SWAP implements Instruction {
         stack.swap(this.left.getPosition(), this.right.getPosition());
     }
 
+    public int getPositionLeft() {
+        return this.left.getPosition();
+    }
+
+    public int getPositionRight() {
+        return this.right.getPosition();
+    }
+
     @Override
     public List<Integer> getStackAdds() {
         return List.of(this.right.getPosition(), this.left.getPosition());

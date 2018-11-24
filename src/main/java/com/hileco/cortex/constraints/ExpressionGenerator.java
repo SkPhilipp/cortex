@@ -66,12 +66,6 @@ public class ExpressionGenerator implements ExpressionStack {
         MAP.put(BITWISE_NOT.class, Input.builder("NOT", (context, input) -> {
             throw new UnsupportedOperationException();
         }));
-        MAP.put(DUPLICATE.class, Input.builder("DUPLICATE", (context, input) -> {
-            throw new UnsupportedOperationException();
-        }));
-        MAP.put(SWAP.class, Input.builder("SWAP", (context, input) -> {
-            throw new UnsupportedOperationException();
-        }));
         MAP.put(SAVE.class, LeftRight.builder("SAVE", (context, left, right) -> {
             throw new UnsupportedOperationException();
         }));
@@ -108,6 +102,12 @@ public class ExpressionGenerator implements ExpressionStack {
             var pushInstruction = (PUSH) instruction;
             var value = new BigInteger(pushInstruction.getBytes());
             this.stack.push(new Value(value.longValue()));
+        } else if (instruction instanceof DUPLICATE) {
+            var duplicateInstruction = (DUPLICATE) instruction;
+            this.stack.duplicate(duplicateInstruction.getPosition());
+        } else if (instruction instanceof SWAP) {
+            var swapInstruction = (SWAP) instruction;
+            this.stack.swap(swapInstruction.getPositionLeft(), swapInstruction.getPositionRight());
         } else {
             instruction.getStackParameters().forEach(parameter -> this.pop(0));
         }
