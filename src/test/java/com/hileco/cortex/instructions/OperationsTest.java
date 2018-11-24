@@ -5,6 +5,7 @@ import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
 import com.hileco.cortex.instructions.bits.BITWISE_OR;
 import com.hileco.cortex.instructions.bits.BITWISE_XOR;
+import com.hileco.cortex.instructions.conditions.ConditionInstruction;
 import com.hileco.cortex.instructions.conditions.EQUALS;
 import com.hileco.cortex.instructions.conditions.GREATER_THAN;
 import com.hileco.cortex.instructions.conditions.IS_ZERO;
@@ -72,9 +73,9 @@ public class OperationsTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 3);
-        Assert.assertEquals(stack.pop(), instructions.get(2).getBytes());
-        Assert.assertEquals(stack.pop(), instructions.get(1).getBytes());
-        Assert.assertEquals(stack.pop(), instructions.get(0).getBytes());
+        Assert.assertArrayEquals(stack.pop(), instructions.get(2).getBytes());
+        Assert.assertArrayEquals(stack.pop(), instructions.get(1).getBytes());
+        Assert.assertArrayEquals(stack.pop(), instructions.get(0).getBytes());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class OperationsTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
-        Assert.assertEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
+        Assert.assertArrayEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
     }
 
     @Test
@@ -104,8 +105,8 @@ public class OperationsTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 2);
-        Assert.assertEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
-        Assert.assertEquals(stack.pop(), ((PUSH) instructions.get(1)).getBytes());
+        Assert.assertArrayEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
+        Assert.assertArrayEquals(stack.pop(), ((PUSH) instructions.get(1)).getBytes());
     }
 
     @Test
@@ -119,8 +120,8 @@ public class OperationsTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 2);
-        Assert.assertEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
-        Assert.assertEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
+        Assert.assertArrayEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
+        Assert.assertArrayEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
     }
 
     @Test
@@ -135,34 +136,40 @@ public class OperationsTest {
                                                             " depending on whether the top element was equal to the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE);
     }
 
     @Test
     public void runGreaterThan() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{100}),
                 new PUSH(new byte[]{10}),
+                new PUSH(new byte[]{100}),
                 new GREATER_THAN());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/greater-than")
                 .headingSection("GREATER_THAN").paragraph("The GREATER_THAN instruction removes two elements from the stack, then adds a 1 or 0 to the stack" +
-                                                                  " depending on whether the top element was equal to the second element.")
+                                                                  " depending on whether the top element was greater than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE);
     }
 
     @Test
     public void runLessThan() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{10}),
                 new PUSH(new byte[]{100}),
+                new PUSH(new byte[]{10}),
                 new LESS_THAN());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/less-than")
                 .headingSection("LESS_THAN").paragraph("The LESS_THAN instruction removes two elements from the stack, then adds a 1 or 0 to the stack" +
-                                                               " depending on whether the top element was equal to the second element.")
+                                                               " depending on whether the top element was less than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE);
     }
 
     @Test
@@ -176,6 +183,8 @@ public class OperationsTest {
                                                              " depending on whether the element was equal to 0.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE);
     }
 
     @Test
@@ -190,6 +199,8 @@ public class OperationsTest {
                                                                 " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{0b0111});
     }
 
     @Test
@@ -204,6 +215,8 @@ public class OperationsTest {
                                                                  " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{0b0110});
     }
 
     @Test
@@ -218,24 +231,28 @@ public class OperationsTest {
                                                                  " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{0b0001});
     }
 
     @Test
     public void runBitwiseNot() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{0b0000}),
+                new PUSH(new byte[]{0b1111111}),
                 new BITWISE_NOT());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/bitwise-not")
                 .headingSection("BITWISE_NOT").paragraph("The BITWISE_NOT instruction performs logical negation on each bit of the top element on the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{0});
     }
 
     @Test
     public void runAdd() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{1}),
+                new PUSH(new byte[]{100}),
                 new PUSH(new byte[]{1}),
                 new ADD());
         var stack = this.run(instructions).getStack();
@@ -245,6 +262,8 @@ public class OperationsTest {
                                                                        "than [default] %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{101});
     }
 
     @Test
@@ -260,8 +279,8 @@ public class OperationsTest {
     @Test
     public void runSubtract() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{100}),
                 new PUSH(new byte[]{1}),
+                new PUSH(new byte[]{100}),
                 new SUBTRACT());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/subtract")
@@ -269,13 +288,15 @@ public class OperationsTest {
                                                               "top element and puts the result on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{99});
     }
 
     @Test
     public void runMultiply() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{100}),
-                new PUSH(new byte[]{100}),
+                new PUSH(new byte[]{10}),
+                new PUSH(new byte[]{10}),
                 new MULTIPLY());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/multiply")
@@ -284,6 +305,8 @@ public class OperationsTest {
                                                                             " than [default] %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{100});
     }
 
     @Test
@@ -300,8 +323,8 @@ public class OperationsTest {
     @Test
     public void runDivide() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{100}),
                 new PUSH(new byte[]{20}),
+                new PUSH(new byte[]{100}),
                 new DIVIDE());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/divide")
@@ -311,13 +334,15 @@ public class OperationsTest {
                                                                           "larger than [default] %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{5});
     }
 
     @Test
     public void runModulo() throws ProgramException {
         var instructions = List.of(
-                new PUSH(new byte[]{10}),
                 new PUSH(new byte[]{3}),
+                new PUSH(new byte[]{10}),
                 new MODULO());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/modulo")
@@ -327,6 +352,8 @@ public class OperationsTest {
                                                                           "larger than [default] %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertArrayEquals(stack.pop(), new byte[]{1});
     }
 
     @Test
@@ -340,6 +367,7 @@ public class OperationsTest {
                                                           "method on it and adds the resulting hash to the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
     }
 
     @Test
@@ -356,6 +384,7 @@ public class OperationsTest {
                                                           "instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 0);
     }
 
     @Test
@@ -373,6 +402,7 @@ public class OperationsTest {
                                                              "JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 0);
     }
 
     @Test
@@ -396,6 +426,8 @@ public class OperationsTest {
                 .headingSection("EXIT").paragraph("The EXIT instruction ends execution of the program.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 1);
+        Assert.assertNotEquals(stack.pop(), new byte[]{10});
     }
 
     @Test
@@ -418,5 +450,7 @@ public class OperationsTest {
                                                                        MEMORY, DISK, CALL_DATA))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
+        Assert.assertEquals(stack.size(), 2);
+        Assert.assertArrayEquals(stack.pop(), ((PUSH) instructions.get(0)).getBytes());
     }
 }

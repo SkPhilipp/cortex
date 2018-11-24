@@ -32,8 +32,8 @@ public abstract class BitInstruction implements Instruction {
         var result = new byte[Math.max(left.length, right.length)];
 
         for (var i = 0; i < result.length; i++) {
-            byte leftByte = i < left.length ? left[i] : 0;
-            byte rightByte = i < right.length ? right[i] : 0;
+            var leftByte = i < left.length ? left[i] : 0;
+            var rightByte = i < right.length ? right[i] : 0;
             result[i] = this.innerExecute(leftByte, rightByte);
         }
         stack.push(result);
