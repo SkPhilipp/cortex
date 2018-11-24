@@ -1,16 +1,25 @@
 package com.hileco.cortex.documentation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hileco.cortex.instructions.Instruction;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ReturnOfThis")
 public class Document {
+    private final ObjectMapper objectMapper;
     private final String snippetPath;
     private final OutputStream outputStream;
     private final Consumer<IOException> exceptionHandler;
 
-    Document(String snippetPath, OutputStream outputStream) {
+    Document(String snippetPath, OutputStream outputStream, ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.snippetPath = snippetPath;
         this.outputStream = outputStream;
         this.exceptionHandler = e -> {
@@ -29,8 +38,18 @@ public class Document {
         return this;
     }
 
-    public Document source(String source) {
+    public Document source(List<? extends Instruction> instructions) {
+        var source = instructions.stream().map(Objects::toString).collect(Collectors.joining("\n"));
         return this.append("[source]\n", "```\n", source, "\n```\n\n");
+    }
+
+    public Document source(Object source) {
+        try {
+            this.append("[source]\n", "```\n", this.objectMapper.writeValueAsString(source), "\n```\n\n");
+        } catch (JsonProcessingException e) {
+            this.exceptionHandler.accept(e);
+        }
+        return this;
     }
 
     public Document include(String otherSnippetPath) {

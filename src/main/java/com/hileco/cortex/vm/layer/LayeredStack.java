@@ -266,7 +266,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        LayeredStack<?> that = (LayeredStack<?>) o;
+        var that = (LayeredStack<?>) o;
         return this.size == that.size &&
                 Arrays.equals(this.toArray(), that.toArray());
     }
