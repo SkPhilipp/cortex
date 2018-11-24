@@ -7,9 +7,6 @@ import com.hileco.cortex.instructions.conditions.EQUALS;
 import com.hileco.cortex.instructions.conditions.LESS_THAN;
 import com.hileco.cortex.instructions.debug.HALT;
 import com.hileco.cortex.instructions.io.LOAD;
-import com.hileco.cortex.instructions.io.SAVE;
-import com.hileco.cortex.instructions.jumps.JUMP;
-import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.DIVIDE;
 import com.hileco.cortex.instructions.math.MODULO;
@@ -39,10 +36,8 @@ import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.WINNER;
 import static com.hileco.cortex.vm.data.ProgramStoreZone.CALL_DATA;
-import static com.hileco.cortex.vm.data.ProgramStoreZone.MEMORY;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
@@ -82,49 +77,6 @@ public class ServerTest {
     }
 
     @Test
-    public void documentExecute() throws Exception {
-        this.mockMvc.perform(post("/api/instructions/execute")
-                                     .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
-                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
-                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
-                                             new ADD()
-                                     )))))
-                .andDo(document("instructions-execute-1", requestFields(
-                        fieldWithPath("instructions").description("The instructions of the program.")
-                ), responseFields(
-                        fieldWithPath("stack").description("The stack of the virtual machine after program execution.")
-                )));
-        this.mockMvc.perform(post("/api/instructions/execute")
-                                     .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
-                                             new PUSH(BigInteger.valueOf(3).toByteArray()),
-                                             new JUMP(),
-                                             new PUSH(BigInteger.valueOf(10).toByteArray()),
-                                             new JUMP_DESTINATION()
-                                     )))))
-                .andDo(document("instructions-execute-2", requestFields(
-                        fieldWithPath("instructions").description("The instructions of the program.")
-                ), responseFields(
-                        fieldWithPath("stack").description("The stack of the virtual machine after program execution.")
-                )));
-        this.mockMvc.perform(post("/api/instructions/execute")
-                                     .contentType(MediaType.APPLICATION_JSON)
-                                     .content(this.objectMapper.writeValueAsString(new InstructionsController.ProgramRequest(List.of(
-                                             new PUSH(new BigInteger("10032157633811666223373963209218291332868453566459764444214480010939495088128").toByteArray()),
-                                             new PUSH(BigInteger.valueOf(1234).toByteArray()),
-                                             new SAVE(MEMORY),
-                                             new PUSH(BigInteger.valueOf(1234).toByteArray()),
-                                             new LOAD(MEMORY)
-                                     )))))
-                .andDo(document("instructions-execute-3", requestFields(
-                        fieldWithPath("instructions").description("The instructions of the program.")
-                ), responseFields(
-                        fieldWithPath("stack").description("The stack of the virtual machine after program execution.")
-                )));
-    }
-
-    @Test
     public void documentConstraints() throws Exception {
         var request = new InstructionsController.ProgramRequest(List.of(
                 new PUSH(BigInteger.valueOf(0).toByteArray()),
@@ -139,14 +91,6 @@ public class ServerTest {
                         fieldWithPath("instructions").description("The instructions of the program.")
                 ), responseFields(
                         fieldWithPath("expression").description("The top constraint expression.")
-                )));
-    }
-
-    @Test
-    public void documentFuzzer() throws Exception {
-        this.mockMvc.perform(get("/api/instructions/fuzzer?seed=" + FUZZER_SEED))
-                .andDo(document("instructions-fuzzer", responseFields(
-                        fieldWithPath("instructions").description("The instructions of the generated program.")
                 )));
     }
 

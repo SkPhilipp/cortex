@@ -2,12 +2,6 @@ include::_links.adoc[]
 
 The fuzzer can generate random programs, which are generally used to verify correctness of other components.
 
-=== APIs
+Sample output of the fuzzer:
 
-==== Fuzzer
-
-include::{snippets}/instructions-fuzzer/http-request.adoc[]
-
-include::{snippets}/instructions-fuzzer/response-body.adoc[]
-
-include::{snippets}/instructions-fuzzer/response-fields.adoc[]
+include::{snippets}/fuzzer/sample.adoc[]
