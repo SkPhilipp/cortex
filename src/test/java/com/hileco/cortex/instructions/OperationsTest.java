@@ -69,7 +69,7 @@ public class OperationsTest {
                 new PUSH(new byte[]{100}));
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/push")
-                .headingParagraph("PUSH").paragraph("The PUSH instruction adds one element to top of the stack.")
+                .headingParagraph("PUSH").paragraph("The PUSH operation adds one element to top of the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 3);
@@ -86,7 +86,7 @@ public class OperationsTest {
                 new POP());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/pop")
-                .headingSection("POP").paragraph("The POP instruction removes the top element from the stack.")
+                .headingParagraph("POP").paragraph("The POP operation removes the top element from the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
@@ -101,7 +101,7 @@ public class OperationsTest {
                 new SWAP(0, 1));
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/swap")
-                .headingSection("SWAP").paragraph("The SWAP instruction swaps two elements on the stack.")
+                .headingParagraph("SWAP").paragraph("The SWAP operation swaps two elements on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 2);
@@ -116,7 +116,7 @@ public class OperationsTest {
                 new DUPLICATE(0));
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/duplicate")
-                .headingSection("DUPLICATE").paragraph("The DUPLICATE instruction adds a duplicate of an element on the stack, to the stack.")
+                .headingParagraph("DUPLICATE").paragraph("The DUPLICATE operation adds a duplicate of an element on the stack, to the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 2);
@@ -132,7 +132,7 @@ public class OperationsTest {
                 new EQUALS());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/equals")
-                .headingSection("EQUALS").paragraph("The EQUALS instruction removes two elements from the stack, then adds a 1 or 0 to the stack" +
+                .headingParagraph("EQUALS").paragraph("The EQUALS operation removes two elements from the stack, then adds a 1 or 0 to the stack" +
                                                             " depending on whether the top element was equal to the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -148,7 +148,7 @@ public class OperationsTest {
                 new GREATER_THAN());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/greater-than")
-                .headingSection("GREATER_THAN").paragraph("The GREATER_THAN instruction removes two elements from the stack, then adds a 1 or 0 to the stack" +
+                .headingParagraph("GREATER_THAN").paragraph("The GREATER_THAN operation removes two elements from the stack, then adds a 1 or 0 to the stack" +
                                                                   " depending on whether the top element was greater than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -164,7 +164,7 @@ public class OperationsTest {
                 new LESS_THAN());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/less-than")
-                .headingSection("LESS_THAN").paragraph("The LESS_THAN instruction removes two elements from the stack, then adds a 1 or 0 to the stack" +
+                .headingParagraph("LESS_THAN").paragraph("The LESS_THAN operation removes two elements from the stack, then adds a 1 or 0 to the stack" +
                                                                " depending on whether the top element was less than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -179,7 +179,7 @@ public class OperationsTest {
                 new IS_ZERO());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/is-zero")
-                .headingSection("IS_ZERO").paragraph("The IS_ZERO instruction removes the top element of the stack then adds a 1 or 0 to the stack" +
+                .headingParagraph("IS_ZERO").paragraph("The IS_ZERO operation removes the top element of the stack then adds a 1 or 0 to the stack" +
                                                              " depending on whether the element was equal to 0.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -195,7 +195,7 @@ public class OperationsTest {
                 new BITWISE_OR());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/bitwise-or")
-                .headingSection("BITWISE_OR").paragraph("The BITWISE_OR instruction performs a bitwise OR operation on each bit of the top two elements on" +
+                .headingParagraph("BITWISE_OR").paragraph("The BITWISE_OR operation performs a bitwise OR operation on each bit of the top two elements on" +
                                                                 " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -211,7 +211,7 @@ public class OperationsTest {
                 new BITWISE_XOR());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/bitwise-xor")
-                .headingSection("BITWISE_XOR").paragraph("The BITWISE_XOR instruction performs a bitwise XOR operation on each bit of the top two elements on" +
+                .headingParagraph("BITWISE_XOR").paragraph("The BITWISE_XOR operation performs a bitwise XOR operation on each bit of the top two elements on" +
                                                                  " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -227,7 +227,7 @@ public class OperationsTest {
                 new BITWISE_AND());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/bitwise-and")
-                .headingSection("BITWISE_AND").paragraph("The BITWISE_AND instruction performs a bitwise AND operation on each bit of the top two elements on" +
+                .headingParagraph("BITWISE_AND").paragraph("The BITWISE_AND operation performs a bitwise AND operation on each bit of the top two elements on" +
                                                                  " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -242,7 +242,7 @@ public class OperationsTest {
                 new BITWISE_NOT());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/bitwise-not")
-                .headingSection("BITWISE_NOT").paragraph("The BITWISE_NOT instruction performs logical negation on each bit of the top element on the stack")
+                .headingParagraph("BITWISE_NOT").paragraph("The BITWISE_NOT operation performs logical negation on each bit of the top element on the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
@@ -257,9 +257,9 @@ public class OperationsTest {
                 new ADD());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/add")
-                .headingSection("ADD").paragraph(String.format("The ADD instruction removes two elements from the stack, adds them together and puts the " +
+                .headingParagraph("ADD").paragraph(String.format("The ADD operation removes two elements from the stack, adds them together and puts the " +
                                                                        "result on the stack. (This result may overflow if it would have been larger " +
-                                                                       "than [default] %s)", NUMERICAL_LIMIT))
+                                                                       "than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
@@ -284,7 +284,7 @@ public class OperationsTest {
                 new SUBTRACT());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/subtract")
-                .headingSection("SUBTRACT").paragraph("The SUBTRACT instruction removes two elements from the stack, subtracts the second element from the " +
+                .headingParagraph("SUBTRACT").paragraph("The SUBTRACT operation removes two elements from the stack, subtracts the second element from the " +
                                                               "top element and puts the result on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -300,9 +300,9 @@ public class OperationsTest {
                 new MULTIPLY());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/multiply")
-                .headingSection("MULTIPLY").paragraph(String.format("The MULTIPLY instruction removes two elements from the stack, multiplies them and puts" +
+                .headingParagraph("MULTIPLY").paragraph(String.format("The MULTIPLY operation removes two elements from the stack, multiplies them and puts" +
                                                                             " the result on the stack. (This result may overflow if it would have been larger" +
-                                                                            " than [default] %s)", NUMERICAL_LIMIT))
+                                                                            " than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
@@ -328,7 +328,7 @@ public class OperationsTest {
                 new DIVIDE());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/divide")
-                .headingSection("DIVIDE").paragraph(String.format("The DIVIDE instruction removes two elements from the stack, divides them with the top " +
+                .headingParagraph("DIVIDE").paragraph(String.format("The DIVIDE operation removes two elements from the stack, divides them with the top " +
                                                                           "element being the dividend and the second element being the divisor. It puts the " +
                                                                           "resulting quotient on the stack. (This result may overflow if it would have been " +
                                                                           "larger than [default] %s)", NUMERICAL_LIMIT))
@@ -346,7 +346,7 @@ public class OperationsTest {
                 new MODULO());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/modulo")
-                .headingSection("MODULO").paragraph(String.format("The MODULO instruction removes two elements from the stack, divides them with the top " +
+                .headingParagraph("MODULO").paragraph(String.format("The MODULO operation removes two elements from the stack, divides them with the top " +
                                                                           "element being the dividend and the second element being the divisor. It puts the " +
                                                                           "resulting remainder on the stack. (This result may overflow if it would have been " +
                                                                           "larger than [default] %s)", NUMERICAL_LIMIT))
@@ -363,7 +363,7 @@ public class OperationsTest {
                 new HASH("SHA-512"));
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/hash")
-                .headingSection("HASH").paragraph("The HASH instruction removes one element from the stack, performs the desired hashing " +
+                .headingParagraph("HASH").paragraph("The HASH operation removes one element from the stack, performs the desired hashing " +
                                                           "method on it and adds the resulting hash to the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
@@ -379,7 +379,7 @@ public class OperationsTest {
                 new JUMP_DESTINATION());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/jump")
-                .headingSection("JUMP").paragraph("The JUMP instruction removes one element from the stack, using it to set the instruction position of the " +
+                .headingParagraph("JUMP").paragraph("The JUMP operation removes one element from the stack, using it to set the instruction position of the " +
                                                           "program itself. JUMPs may only result in instruction positions which point to a JUMP_DESTINATION " +
                                                           "instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
@@ -396,7 +396,7 @@ public class OperationsTest {
                                    new JUMP_DESTINATION());
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/jump-if")
-                .headingSection("JUMP_IF").paragraph("The JUMP_IF instruction removes two elements from the stack, using the top element to set the " +
+                .headingParagraph("JUMP_IF").paragraph("The JUMP_IF operation removes two elements from the stack, using the top element to set the " +
                                                              "instruction position of the program itself, depending on whether the second element is a " +
                                                              "positive value. JUMP_IFs may only result in instruction positions which point to a " +
                                                              "JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
@@ -410,7 +410,7 @@ public class OperationsTest {
         var instructions = List.of(new NOOP());
         this.run(instructions);
         Documentation.of("instructions/noop")
-                .headingSection("NOOP").paragraph("This instruction does nothing. It is generally used within optimization processes to replace instructions " +
+                .headingParagraph("NOOP").paragraph("This operation does nothing. It is generally used within optimization processes to replace instructions " +
                                                           "instead of having to remove them. This allows all JUMP-related instructions stay intact.")
                 .paragraph("Example program:").source(instructions);
     }
@@ -423,7 +423,7 @@ public class OperationsTest {
                 new PUSH(new byte[]{100}));
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/exit")
-                .headingSection("EXIT").paragraph("The EXIT instruction ends execution of the program.")
+                .headingParagraph("EXIT").paragraph("The EXIT operation ends execution of the program.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
@@ -436,16 +436,16 @@ public class OperationsTest {
                 new PUSH(new BigInteger("10032157633811666223373963209218291332868453566459764444214480010939495088128").toByteArray()),
                 new PUSH(BigInteger.valueOf(1234).toByteArray()),
                 new SAVE(MEMORY),
-                new PUSH(new byte[]{123}),
+                new PUSH(new byte[]{10}),
                 new PUSH(BigInteger.valueOf(1234).toByteArray()),
                 new LOAD(MEMORY)
         );
         var stack = this.run(instructions).getStack();
         Documentation.of("instructions/save-and-load")
-                .headingSection("SAVE & LOAD").paragraph(String.format("The SAVE instruction removes two elements from the stack, using the top element as an" +
+                .headingParagraph("SAVE & LOAD").paragraph(String.format("The SAVE operation removes two elements from the stack, using the top element as an" +
                                                                                " address and the second element as a value to write into the area specified" +
                                                                                " (%s, or %s)." +
-                                                                               "The LOAD  instruction removes one element from the stack, using it as an" +
+                                                                               " The LOAD  operation removes one element from the stack, using it as an" +
                                                                                " address to read from the area specified (%s, %s, or %s).", MEMORY, DISK,
                                                                        MEMORY, DISK, CALL_DATA))
                 .paragraph("Example program:").source(instructions)

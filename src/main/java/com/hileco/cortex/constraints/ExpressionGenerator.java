@@ -2,6 +2,7 @@ package com.hileco.cortex.constraints;
 
 import com.hileco.cortex.constraints.expressions.Expression;
 import com.hileco.cortex.constraints.expressions.ExpressionStack;
+import com.hileco.cortex.constraints.expressions.ImpossibleExpressionException;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.bits.BITWISE_AND;
 import com.hileco.cortex.instructions.bits.BITWISE_NOT;
@@ -107,7 +108,11 @@ public class ExpressionGenerator implements ExpressionStack {
             this.stack.duplicate(duplicateInstruction.getPosition());
         } else if (instruction instanceof SWAP) {
             var swapInstruction = (SWAP) instruction;
-            this.stack.swap(swapInstruction.getPositionLeft(), swapInstruction.getPositionRight());
+            try {
+                this.stack.swap(swapInstruction.getPositionLeft(), swapInstruction.getPositionRight());
+            } catch (IndexOutOfBoundsException e) {
+                throw new ImpossibleExpressionException(e);
+            }
         } else {
             instruction.getStackParameters().forEach(parameter -> this.pop(0));
         }

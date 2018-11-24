@@ -82,16 +82,6 @@ public class ServerTest {
     }
 
     @Test
-    public void documentList() throws Exception {
-        this.mockMvc.perform(get("/api/instructions/list"))
-                .andDo(document("instructions-list", responseFields(
-                        fieldWithPath("instructions[].name").description("The instruction's name."),
-                        fieldWithPath("instructions[].takes").description("The stack positions which are inputs to the instruction."),
-                        fieldWithPath("instructions[].provides").description("The stack positions which are modified by the instruction.")
-                )));
-    }
-
-    @Test
     public void documentExecute() throws Exception {
         this.mockMvc.perform(post("/api/instructions/execute")
                                      .contentType(MediaType.APPLICATION_JSON)

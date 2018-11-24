@@ -15,6 +15,7 @@ import com.hileco.cortex.analysis.processors.KnownProcessor;
 import com.hileco.cortex.analysis.processors.ParameterProcessor;
 import com.hileco.cortex.constraints.Solution;
 import com.hileco.cortex.constraints.Solver;
+import com.hileco.cortex.constraints.expressions.ImpossibleExpressionException;
 import com.hileco.cortex.instructions.Instruction;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.calls.CALL;
@@ -61,7 +62,10 @@ public class Attacker {
                 if (this.isTargeted(edgeFlows, instructions, edgeFlowMapping)) {
                     var attackPath = new AttackPath(instructions, edgeFlows);
                     var solver = new Solver();
-                    solutions.add(solver.solve(attackPath.toExpression()));
+                    try {
+                        solutions.add(solver.solve(attackPath.toExpression()));
+                    } catch (ImpossibleExpressionException ignored) {
+                    }
                 }
             });
         });

@@ -6,6 +6,66 @@ such as those available on the Ethereum or Bitcoin blockchains.
 
 Notably, the virtual machine also supports snapshots, and in-memory copies at near-zero memory cost.
 
+=== Stack Operations
+
+include::{snippets}/instructions/push.adoc[]
+
+include::{snippets}/instructions/pop.adoc[]
+
+include::{snippets}/instructions/swap.adoc[]
+
+include::{snippets}/instructions/duplicate.adoc[]
+
+=== Math Operations
+
+include::{snippets}/instructions/add.adoc[]
+
+include::{snippets}/instructions/subtract.adoc[]
+
+include::{snippets}/instructions/multiply.adoc[]
+
+include::{snippets}/instructions/divide.adoc[]
+
+include::{snippets}/instructions/modulo.adoc[]
+
+include::{snippets}/instructions/hash.adoc[]
+
+=== Comparison Operations
+
+include::{snippets}/instructions/equals.adoc[]
+
+include::{snippets}/instructions/greater-than.adoc[]
+
+include::{snippets}/instructions/less-than.adoc[]
+
+include::{snippets}/instructions/is-zero.adoc[]
+
+=== Bitwise Operations
+
+include::{snippets}/instructions/bitwise-not.adoc[]
+
+include::{snippets}/instructions/bitwise-or.adoc[]
+
+include::{snippets}/instructions/bitwise-and.adoc[]
+
+include::{snippets}/instructions/bitwise-xor.adoc[]
+
+=== Program Flow Operations
+
+include::{snippets}/instructions/jump.adoc[]
+
+include::{snippets}/instructions/jump-if.adoc[]
+
+include::{snippets}/instructions/exit.adoc[]
+
+=== Data Flow Operations
+
+include::{snippets}/instructions/save-and-load.adoc[]
+
+=== Others
+
+include::{snippets}/instructions/noop.adoc[]
+
 === APIs
 
 ==== Instructions Execute
@@ -27,11 +87,3 @@ include::{snippets}/instructions-execute-2/response-body.adoc[]
 include::{snippets}/instructions-execute-3/http-request.adoc[]
 
 include::{snippets}/instructions-execute-3/response-body.adoc[]
-
-==== Instructions List
-
-include::{snippets}/instructions-list/http-request.adoc[]
-
-include::{snippets}/instructions-list/response-body.adoc[]
-
-include::{snippets}/instructions-list/response-fields.adoc[]
