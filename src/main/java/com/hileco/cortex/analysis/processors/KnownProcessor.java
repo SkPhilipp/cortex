@@ -18,10 +18,6 @@ public class KnownProcessor implements Processor {
 
     private void noopDownwards(GraphNode graphNode) {
         this.unlinkParameters(graphNode);
-//        var parameterConsumerEdges = graphNode.getEdges().stream()
-//                .filter(EdgeParameterConsumer.class::isInstance)
-//                .collect(Collectors.toList());
-//        graphNode.getEdges().removeAll(parameterConsumerEdges);
         graphNode.getInstruction().set(new NOOP());
         graphNode.getParameters().forEach(this::noopDownwards);
     }

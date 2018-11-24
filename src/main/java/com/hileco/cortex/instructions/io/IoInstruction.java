@@ -2,7 +2,7 @@ package com.hileco.cortex.instructions.io;
 
 
 import com.hileco.cortex.vm.ProgramZone;
-import com.hileco.cortex.vm.data.ProgramStoreZone;
+import com.hileco.cortex.vm.ProgramStoreZone;
 import com.hileco.cortex.instructions.Instruction;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static com.hileco.cortex.vm.VirtualMachine.NUMERICAL_LIMIT;
-import static com.hileco.cortex.vm.data.ProgramStoreZone.CALL_DATA;
-import static com.hileco.cortex.vm.data.ProgramStoreZone.DISK;
-import static com.hileco.cortex.vm.data.ProgramStoreZone.MEMORY;
+import static com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA;
+import static com.hileco.cortex.vm.ProgramStoreZone.DISK;
+import static com.hileco.cortex.vm.ProgramStoreZone.MEMORY;
 
 public class OperationsTest {
 

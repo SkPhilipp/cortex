@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.WINNER;
-import static com.hileco.cortex.vm.data.ProgramStoreZone.CALL_DATA;
+import static com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA;
 
 public class AttackerTest {
 

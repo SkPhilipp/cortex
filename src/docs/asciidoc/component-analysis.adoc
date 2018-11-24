@@ -11,32 +11,22 @@ These edges can then be used by the next processors to further update the graph.
 
 Optimizing processors analyse a program's data flow, looking for optimizations which can be done at
 instruction level. These optimizations should however not modify the program's behaviour in any way.
-Optimizations made make it easier to further process the graph; they are not specifically meant
+Optimizations made make it easier to further analyse the program; they are not specifically meant
 to make a program faster. (Althrough this commonly happens as a side effect).
 
-For example, when a value can be known ahead of time to always be certain values (or within a certain range),
-an optimizing processor can take this information and possibly eliminate instructions.
+include::{snippets}/ParameterProcessor.adoc[]
 
-A basic example of this, is the following "self-contained" set of instrunctions.
-Here, the instructions do not have any external dependencies, always yielding the same result.
+include::{snippets}/KnownProcessor.adoc[]
 
-include::{snippets}/instructions-optimizer/request-body.adoc[]
+include::{snippets}/KnownLoadProcessor.adoc[]
 
-Performing analysis on these instructions with optimization enabled yields the following result;
+include::{snippets}/KnownJumpIfProcessor.adoc[]
 
-include::{snippets}/instructions-optimizer/response-body.adoc[]
+include::{snippets}/JumpUnreachableProcessor.adoc[]
 
-=== APIs
+include::{snippets}/JumpThreadingProcessor.adoc[]
 
-==== Optimizer
-
-include::{snippets}/instructions-optimizer/http-request.adoc[]
-
-include::{snippets}/instructions-optimizer/request-fields.adoc[]
-
-include::{snippets}/instructions-optimizer/response-body.adoc[]
-
-include::{snippets}/instructions-optimizer/response-fields.adoc[]
+include::{snippets}/JumpIllegalProcessor.adoc[]
 
 ==== Visualization
 

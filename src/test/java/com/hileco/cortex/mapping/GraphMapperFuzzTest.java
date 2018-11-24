@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +30,7 @@ public class GraphMapperFuzzTest {
                 new ExitTrimProcessor(),
                 new JumpIllegalProcessor(),
                 new KnownJumpIfProcessor(),
-                new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
+                new KnownLoadProcessor(new HashMap<>()),
                 new KnownProcessor(),
                 new FlowProcessor()
         ));

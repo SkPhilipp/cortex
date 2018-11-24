@@ -1,23 +1,21 @@
 package com.hileco.cortex.analysis.processors;
 
 import com.hileco.cortex.analysis.GraphBuilder;
-import com.hileco.cortex.vm.VirtualMachine;
-import com.hileco.cortex.vm.Program;
-import com.hileco.cortex.vm.ProgramContext;
-import com.hileco.cortex.vm.layer.LayeredMap;
 import com.hileco.cortex.fuzzer.ProgramGenerator;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.ProgramRunner;
+import com.hileco.cortex.vm.Program;
+import com.hileco.cortex.vm.ProgramContext;
+import com.hileco.cortex.vm.VirtualMachine;
+import com.hileco.cortex.vm.layer.LayeredMap;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
-public class ProcessorFuzzTest {
+public abstract class ProcessorFuzzTest {
 
     private static final int LIMIT_RUNS = 500;
 
@@ -82,38 +80,10 @@ public class ProcessorFuzzTest {
         }
     }
 
-    @Test
-    public void fuzzTestExitTrimProcessor() {
-        this.fuzzTestProcessor(new ExitTrimProcessor());
-    }
+    abstract Processor fuzzTestableProcessor();
 
     @Test
-    public void fuzzTestJumpIllegalProcessor() {
-        this.fuzzTestProcessor(new JumpIllegalProcessor());
-    }
-
-    @Test
-    public void fuzzTestJumpThreadingProcessor() {
-        this.fuzzTestProcessor(new JumpThreadingProcessor());
-    }
-
-    @Test
-    public void fuzzTestJumpUnreachableProcessor() {
-        this.fuzzTestProcessor(new JumpUnreachableProcessor());
-    }
-
-    @Test
-    public void fuzzTestKnownJumpIfProcessor() {
-        this.fuzzTestProcessor(new KnownJumpIfProcessor());
-    }
-
-    @Test
-    public void fuzzTestKnownLoadProcessor() {
-        this.fuzzTestProcessor(new KnownLoadProcessor(new HashMap<>(), new HashSet<>()));
-    }
-
-    @Test
-    public void fuzzTestKnownProcessor() {
-        this.fuzzTestProcessor(new KnownProcessor());
+    public void fuzzTest() {
+        this.fuzzTestProcessor(this.fuzzTestableProcessor());
     }
 }

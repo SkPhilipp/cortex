@@ -35,7 +35,7 @@ import java.util.Base64;
 import java.util.List;
 
 import static com.hileco.cortex.instructions.ProgramException.Reason.WINNER;
-import static com.hileco.cortex.vm.data.ProgramStoreZone.CALL_DATA;
+import static com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;

@@ -1,6 +1,6 @@
 package com.hileco.cortex.constraints.expressions;
 
-import com.hileco.cortex.vm.data.ProgramStoreZone;
+import com.hileco.cortex.vm.ProgramStoreZone;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;

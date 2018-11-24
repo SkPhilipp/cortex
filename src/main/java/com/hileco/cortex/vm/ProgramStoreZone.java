@@ -1,4 +1,4 @@
-package com.hileco.cortex.vm.data;
+package com.hileco.cortex.vm;
 
 public enum ProgramStoreZone {
     MEMORY,

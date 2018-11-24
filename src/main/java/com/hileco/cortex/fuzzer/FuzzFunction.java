@@ -1,6 +1,6 @@
 package com.hileco.cortex.fuzzer;
 
-import com.hileco.cortex.vm.data.ProgramStoreZone;
+import com.hileco.cortex.vm.ProgramStoreZone;
 import com.hileco.cortex.instructions.calls.CALL;
 import com.hileco.cortex.instructions.calls.CALL_RETURN;
 import com.hileco.cortex.instructions.io.SAVE;

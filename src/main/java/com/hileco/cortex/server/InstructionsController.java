@@ -35,7 +35,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class InstructionsController {
             new ExitTrimProcessor(),
             new JumpIllegalProcessor(),
             new KnownJumpIfProcessor(),
-            new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
+            new KnownLoadProcessor(new HashMap<>()),
             new KnownProcessor()
     ));
 

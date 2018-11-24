@@ -2,7 +2,7 @@ package com.hileco.cortex.instructions.io;
 
 import com.hileco.cortex.vm.VirtualMachine;
 import com.hileco.cortex.vm.ProgramContext;
-import com.hileco.cortex.vm.data.ProgramStoreZone;
+import com.hileco.cortex.vm.ProgramStoreZone;
 import com.hileco.cortex.vm.layer.LayeredBytes;
 import com.hileco.cortex.instructions.ProgramException;
 import com.hileco.cortex.instructions.StackParameter;

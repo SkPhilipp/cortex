@@ -24,7 +24,6 @@ import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class Attacker {
             new ExitTrimProcessor(),
             new JumpIllegalProcessor(),
             new KnownJumpIfProcessor(),
-            new KnownLoadProcessor(new HashMap<>(), new HashSet<>()),
+            new KnownLoadProcessor(new HashMap<>()),
             new KnownProcessor()
     ));
 
