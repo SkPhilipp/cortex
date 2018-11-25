@@ -24,14 +24,23 @@
               )  |  \  `.___________|/
 ```
 
+== Introduction
+
 Blockchain-based programs ("smart contracts") open up new attack surfaces.
 Their executables must be small in size, and public.
 Their storage space is publicly readable, and every interaction with them is recorded.
 Cortex aims to be the system to analyse such software,
-find desired paths within them & even move them to such desired states.
+find desired paths within them & even move them to desired states.
 
 Below is a demonstration of Cortex analysing and finding the solution to an example program.
-The pseudocode for this program is `if(args[1] / 2 == 12345) { HALT WINNER }`.
+The pseudocode for this program is:
+
+```
+if(args[1] / 2 == 12345) {
+    HALT WINNER
+}
+```
+
 Cortex will try to reach `HALT WINNER`.
 
 include::{snippets}/Attacker.adoc[]

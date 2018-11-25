@@ -411,7 +411,7 @@ public class OperationsTest {
         this.run(instructions);
         Documentation.of("instructions/noop")
                 .headingParagraph("NOOP").paragraph("This operation does nothing. It is generally used within optimization processes to replace instructions " +
-                                                          "instead of having to remove them. This allows all JUMP-related instructions stay intact.")
+                                                          "instead of having to remove them. This allows all JUMP-related instructions remain functional.")
                 .paragraph("Example program:").source(instructions);
     }
 
