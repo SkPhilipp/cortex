@@ -28,10 +28,4 @@ include::{snippets}/JumpThreadingProcessor.adoc[]
 
 include::{snippets}/JumpIllegalProcessor.adoc[]
 
-==== Visualization
-
-include::{snippets}/instructions-visualize/http-request.adoc[]
-
-include::{snippets}/instructions-visualize/request-fields.adoc[]
-
-include::{snippets}/instructions-visualize/response-file.adoc[]
+include::{snippets}/VisualGraph.adoc[]

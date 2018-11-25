@@ -6,6 +6,7 @@ import com.hileco.cortex.instructions.Instruction;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -40,12 +41,12 @@ public class Document {
 
     public Document source(List<? extends Instruction> instructions) {
         var source = instructions.stream().map(Objects::toString).collect(Collectors.joining("\n"));
-        return this.append("[source]\n", "```\n", source, "\n```\n\n");
+        return this.append("[source]\n```\n", source, "\n```\n\n");
     }
 
     public Document source(Object source) {
         try {
-            this.append("[source]\n", "```\n", this.objectMapper.writeValueAsString(source), "\n```\n\n");
+            this.append("[source]\n```\n", this.objectMapper.writeValueAsString(source), "\n```\n\n");
         } catch (JsonProcessingException e) {
             this.exceptionHandler.accept(e);
         }
@@ -74,5 +75,10 @@ public class Document {
 
     public Document paragraph(String body) {
         return this.append(body, "\n\n");
+    }
+
+    public Document image(byte[] bytes) {
+        return this.append("++++\n<p style=\"text-align: center\">\n<img src=\"data:image/png;base64,",
+                           Base64.getEncoder().encodeToString(bytes), "\"/>\n</p>\n++++\n\n");
     }
 }

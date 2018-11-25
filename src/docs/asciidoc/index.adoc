@@ -22,13 +22,7 @@ Cortex aims to be the system to analyse such software,
 find desired paths within them & even move them to such desired states.
 
 Below is a demonstration of Cortex analysing and finding the solution to an example program.
-This program contains a target instruction for demonstration, `HALT WINNER`, which Cortex will try to reach.
-The pseudocode for this program is `if(args[1] / 2 == 12345) { HALT WINNER }`;
+The pseudocode for this program is `if(args[1] / 2 == 12345) { HALT WINNER }`.
+Cortex will try to reach `HALT WINNER`.
 
-Request to Cortex:
-
-include::{snippets}/introduction-attack/http-request.adoc[]
-
-Cortex's Response:
-
-include::{snippets}/introduction-attack/response-body.adoc[]
+include::{snippets}/Attacker.adoc[]

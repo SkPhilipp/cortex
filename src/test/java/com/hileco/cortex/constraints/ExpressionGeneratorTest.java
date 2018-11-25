@@ -1,5 +1,6 @@
 package com.hileco.cortex.constraints;
 
+import com.hileco.cortex.documentation.Documentation;
 import com.hileco.cortex.instructions.io.LOAD;
 import com.hileco.cortex.instructions.math.ADD;
 import com.hileco.cortex.instructions.math.SUBTRACT;
@@ -12,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class ExpressionGeneratorTest {
 
@@ -55,13 +57,19 @@ public class ExpressionGeneratorTest {
 
     @Test
     public void testMultipleExpressions() {
+        var instructions = List.of(
+                new PUSH(BigInteger.valueOf(456L).toByteArray()),
+                new PUSH(BigInteger.valueOf(456L).toByteArray()),
+                new ADD(),
+                new PUSH(BigInteger.valueOf(123L).toByteArray()),
+                new PUSH(BigInteger.valueOf(123L).toByteArray()),
+                new SUBTRACT());
         var builder = new ExpressionGenerator();
-        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
-        builder.addInstruction(new PUSH(BigInteger.valueOf(456L).toByteArray()));
-        builder.addInstruction(new ADD());
-        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
-        builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
-        builder.addInstruction(new SUBTRACT());
+        instructions.forEach(builder::addInstruction);
+        Documentation.of(ExpressionGenerator.class.getSimpleName())
+                .headingParagraph(ExpressionGenerator.class.getSimpleName())
+                .paragraph("Program:").source(instructions)
+                .paragraph("Resulting expressions:").source(builder.viewAllExpressions());
         Assert.assertEquals("(123 - 123)", builder.viewExpression(0).toString());
         Assert.assertEquals("(456 + 456)", builder.viewExpression(1).toString());
     }
@@ -86,7 +94,7 @@ public class ExpressionGeneratorTest {
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new PUSH(BigInteger.valueOf(123L).toByteArray()));
         builder.addInstruction(new SUBTRACT());
-        builder.addInstruction(new SWAP(0 ,1));
+        builder.addInstruction(new SWAP(0, 1));
         Assert.assertEquals("(123 - 123)", builder.viewExpression(1).toString());
         Assert.assertEquals("(456 + 456)", builder.viewExpression(0).toString());
     }

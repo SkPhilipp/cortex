@@ -11,5 +11,4 @@ link:component-vm.html[Virtual Machine] /
 link:component-fuzzer.html[Fuzzer] /
 link:component-analysis.html[Analysis] /
 link:component-constraints.html[Constraints] /
-link:component-attacks.html[Attacks] /
 link:roadmap.html[Roadmap]
