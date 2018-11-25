@@ -50,6 +50,8 @@ include::{snippets}/instructions/jump-if.adoc[]
 
 include::{snippets}/instructions/exit.adoc[]
 
+include::{snippets}/instructions/halt.adoc[]
+
 include::{snippets}/instructions/save-and-load.adoc[]
 
 include::{snippets}/instructions/noop.adoc[]
