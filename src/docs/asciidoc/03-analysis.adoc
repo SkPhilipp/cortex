@@ -11,6 +11,8 @@ such as adding edges and replacing instructions.
 
 include::{snippets}/ParameterProcessor.adoc[]
 
+include::{snippets}/FlowProcessor.adoc[]
+
 include::{snippets}/KnownProcessor.adoc[]
 
 include::{snippets}/KnownLoadProcessor.adoc[]
@@ -22,5 +24,9 @@ include::{snippets}/JumpUnreachableProcessor.adoc[]
 include::{snippets}/JumpThreadingProcessor.adoc[]
 
 include::{snippets}/JumpIllegalProcessor.adoc[]
+
+include::{snippets}/ExitTrimProcessor.adoc[]
+
+=== Visualization
 
 include::{snippets}/VisualGraph.adoc[]
