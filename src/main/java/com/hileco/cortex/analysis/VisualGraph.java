@@ -1,7 +1,5 @@
-package com.hileco.cortex.visual;
+package com.hileco.cortex.analysis;
 
-import com.hileco.cortex.analysis.Graph;
-import com.hileco.cortex.analysis.GraphBlock;
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.RankDir;

@@ -3,14 +3,12 @@ package com.hileco.cortex.documentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.hileco.cortex.constraints.Solution;
 import com.hileco.cortex.constraints.expressions.Expression;
+import com.hileco.cortex.documentation.source.ByteArraySerializer;
+import com.hileco.cortex.documentation.source.ExpressionSerializer;
+import com.hileco.cortex.documentation.source.InstructionSerializer;
+import com.hileco.cortex.documentation.source.LayeredStackSerializer;
 import com.hileco.cortex.instructions.Instruction;
-import com.hileco.cortex.server.parsing.ByteArraySerializer;
-import com.hileco.cortex.server.parsing.ExpressionSerializer;
-import com.hileco.cortex.server.parsing.InstructionSerializer;
-import com.hileco.cortex.server.parsing.LayeredStackSerializer;
-import com.hileco.cortex.server.parsing.SolutionSerializer;
 import com.hileco.cortex.vm.layer.LayeredStack;
 
 import java.io.FileOutputStream;
@@ -34,7 +32,6 @@ public class Documentation {
         module.addSerializer(LayeredStack.class, new LayeredStackSerializer());
         module.addSerializer(Instruction.class, new InstructionSerializer());
         module.addSerializer(Expression.class, new ExpressionSerializer());
-        module.addSerializer(Solution.class, new SolutionSerializer());
         module.addSerializer(byte[].class, new ByteArraySerializer());
         OBJECT_MAPPER = new ObjectMapper();
         OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);

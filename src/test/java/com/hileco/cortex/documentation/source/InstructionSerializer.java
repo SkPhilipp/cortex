@@ -1,24 +1,24 @@
-package com.hileco.cortex.server.parsing;
+package com.hileco.cortex.documentation.source;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;
-import com.hileco.cortex.constraints.expressions.Expression;
+import com.hileco.cortex.instructions.Instruction;
 
 import java.io.IOException;
 
-public class ExpressionSerializer extends StdScalarSerializer<Expression> {
+public class InstructionSerializer extends StdScalarSerializer<Instruction> {
 
     private final StringSerializer stringSerializer;
 
-    public ExpressionSerializer() {
-        super(Expression.class);
+    public InstructionSerializer() {
+        super(Instruction.class);
         this.stringSerializer = new StringSerializer();
     }
 
     @Override
-    public void serialize(Expression value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(Instruction value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         this.stringSerializer.serialize(value == null ? null : value.toString(), gen, provider);
     }
 }

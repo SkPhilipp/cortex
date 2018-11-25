@@ -3,6 +3,7 @@
 :source-highlighter: highlightjs
 :nofooter:
 :stylesheet: boot-darkly.css
+:snippets: ../../../build/generated-snippets
 
 = Cortex
 

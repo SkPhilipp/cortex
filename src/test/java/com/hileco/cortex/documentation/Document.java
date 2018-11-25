@@ -41,12 +41,12 @@ public class Document {
 
     public Document source(List<? extends Instruction> instructions) {
         var source = instructions.stream().map(Objects::toString).collect(Collectors.joining("\n"));
-        return this.append("[source]\n```\n", source, "\n```\n\n");
+        return this.append("```\n", source, "\n```\n\n");
     }
 
     public Document source(Object source) {
         try {
-            this.append("[source]\n```\n", this.objectMapper.writeValueAsString(source), "\n```\n\n");
+            this.append("```\n", this.objectMapper.writeValueAsString(source), "\n```\n\n");
         } catch (JsonProcessingException e) {
             this.exceptionHandler.accept(e);
         }

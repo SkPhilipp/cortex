@@ -1,4 +1,4 @@
-package com.hileco.cortex.server.parsing;
+package com.hileco.cortex.documentation.source;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

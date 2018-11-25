@@ -1,6 +1,5 @@
-package com.hileco.cortex.visual;
+package com.hileco.cortex.analysis;
 
-import com.hileco.cortex.analysis.GraphBuilder;
 import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
 import com.hileco.cortex.analysis.processors.FlowProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;

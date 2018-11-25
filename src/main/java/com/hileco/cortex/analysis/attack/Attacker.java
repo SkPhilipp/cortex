@@ -1,4 +1,4 @@
-package com.hileco.cortex.attack;
+package com.hileco.cortex.analysis.attack;
 
 import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphBuilder;

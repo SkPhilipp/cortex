@@ -2,11 +2,9 @@ plugins {
     id 'org.asciidoctor.convert' version '1.5.3'
     id 'java'
     id 'io.franzbecker.gradle-lombok' version '1.14'
-    id 'org.springframework.boot' version '2.0.6.RELEASE'
 }
 
 apply plugin: 'java'
-apply plugin: 'io.spring.dependency-management'
 
 group 'com.hileco'
 
@@ -14,7 +12,6 @@ sourceCompatibility = 1.10
 
 repositories {
     mavenLocal()
-    maven { url 'https://repo.spring.io/libs-snapshot' }
     mavenCentral()
 }
 
@@ -27,16 +24,11 @@ lombok {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web:2.0.6.RELEASE'
-    compile 'org.springframework.boot:spring-boot-starter-test:2.0.6.RELEASE'
-    compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.microsoft.z3:z3:4.7.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
     compile 'guru.nidi:graphviz-java:0.7.0'
     compileOnly 'org.projectlombok:lombok:1.18.2'
+    testCompile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
     testCompile 'junit:junit:4.12'
-    testCompile "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.2.RELEASE"
-    asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.2.RELEASE"
     testCompile 'org.mockito:mockito-core:2.19.1'
 }
 
