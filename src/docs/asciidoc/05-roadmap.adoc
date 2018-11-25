@@ -1,10 +1,18 @@
 == Roadmap
 
-=== Current
+=== Known Issues
 
 ==== Instructions
 
 * There currently exists an issue where any value SAVE'd smaller than the LOAD'd default size is left-aligned in its LOAD space during SAVE.
+
+=== Improvements
+
+==== Instructions
+
+* EVM-based signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
+* Implement signed as well as unsigned byte math
+* Check for issues with current implementation in Java's signed byte math (ie byte = 127 should be an unsigned int of 255)
 
 ==== Graph
 
@@ -29,38 +37,20 @@
 * Implement a processor which generates composite constraint Expressions for every subpath and bind it to the Graph.
 * Implement a processor which eliminates impossible paths based on composite constraint Expressions.
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
-* Integration with Program Fuzzer
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction
-* Constraint solving should provide feedback to the path generator, examples;
-  - may exclude impossible paths after evaluating constraints
-  - may want exclude paths ahead of time based on known data
-* Constraint solving might want to precompute every block's exit
-  - This allows for building constraint composites instead of rebuilding them based on instructions
 * Implementing overflow as part of Expression building
 
-==== Payload Generator (Local)
+==== Attacks
 
 * Attack Generator which accounts for a given target instruction's input data (ie CALL with parameter CALL.ADDRESS = given address)
-* Multiple levels of complex programs as test-cases to generate payloads for
-* Integration with Program Fuzzer
-
-==== Payload Generator (Online)
-
-* Sample contracts of legends implemented and mapped to instructions, along with the historically known payloads executed on them
-* Set up tests which verify that the generated payloads on popular contracts have the same result as the historically known payloads
-* Find transaction history on popular contracts, see if this can be of use for the Attack Generator to figure out which data flows are desirable
-* When pulling down contracts, check for similarity with already pulled-down contracts
-
-=== Future
-
-These issues will eventually land on the roadmap, they are however currently not as important as every other issue on the roadmap
+* Known vulnerable contracts implemented and mapped to instructions, along with the historically known payloads executed on them as tests
+* Mapping EVM compatible smart contracts to Cortex programs
 
 ==== Fuzzer
 
-* Fuzzer should output a Tree-format of instruction types to be generated. This would allow it to generate more realistic programs in which
+* Fuzzer should output a higher level tree of instruction types to be generated. This would allow it to generate more realistic programs in which
   instructions can be written which reliably reference variables, mapped data, and functions which have not been defined
-
 * Additional dynamic constructs for:
   - Loops, using `ProgramBuilder.LOOP(...)`
   - Switches, using `ProgramBuilder.IF(...)`
@@ -68,21 +58,3 @@ These issues will eventually land on the roadmap, they are however currently not
   - Conditions; basic `JUMP_IF` wrapping
   - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
   - Invalid instructions; ex: `JUMP` out of bounds
-
-==== Instructions
-
-* EVM-based signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
-* Implement signed as well as unsigned byte math
-* Check for issues with current implementation in Java's signed byte math (ie byte = 127 should be an unsigned int of 255)
-
-==== Context Layers
-
-* Make interitable-thread-local layers; All layers are split when a new thread is created. This could allow for easy branching of all layers without having to manually manage them
-  Could also use this thread-local mechanic to have multiple threads run on the same context, and only some branching
-* Implement branching LayeredBytes
-* Support branching for all context types
-
-==== Flow Mapping
-
-* Strategy mapping blocks containing an EXIT or conditional EXIT to END
-
