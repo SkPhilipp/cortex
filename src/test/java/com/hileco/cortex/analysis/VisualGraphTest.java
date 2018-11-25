@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis;
 
-import com.hileco.cortex.analysis.processors.ExitTrimProcessor;
+import com.hileco.cortex.analysis.processors.TrimEndProcessor;
 import com.hileco.cortex.analysis.processors.FlowProcessor;
 import com.hileco.cortex.analysis.processors.JumpIllegalProcessor;
 import com.hileco.cortex.analysis.processors.KnownJumpIfProcessor;
@@ -24,7 +24,7 @@ public class VisualGraphTest {
     private static final GraphBuilder GRAPH_BUILDER = new GraphBuilder(List.of(
             new ParameterProcessor(),
             new FlowProcessor(),
-            new ExitTrimProcessor(),
+            new TrimEndProcessor(),
             new JumpIllegalProcessor(),
             new KnownJumpIfProcessor(),
             new KnownLoadProcessor(new HashMap<>()),
