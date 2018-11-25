@@ -4,10 +4,10 @@ import com.hileco.cortex.analysis.Graph;
 import com.hileco.cortex.analysis.GraphNode;
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer;
 import com.hileco.cortex.analysis.edges.EdgeParameters;
-import com.hileco.cortex.vm.layer.LayeredStack;
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION;
 import com.hileco.cortex.instructions.stack.DUPLICATE;
 import com.hileco.cortex.instructions.stack.SWAP;
+import com.hileco.cortex.vm.layer.LayeredStack;
 
 import java.util.ArrayList;
 
@@ -16,6 +16,9 @@ public class ParameterProcessor implements Processor {
 
     @Override
     public void process(Graph graph) {
+        EdgeParameterConsumer.UTIL.clear(graph);
+        EdgeParameters.UTIL.clear(graph);
+
         graph.getGraphBlocks().forEach(graphBlock -> {
             LayeredStack<GraphNode> stack = new LayeredStack<>();
             var graphNodes = graphBlock.getGraphNodes();

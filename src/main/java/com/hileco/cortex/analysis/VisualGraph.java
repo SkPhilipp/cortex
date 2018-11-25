@@ -4,11 +4,14 @@ import com.hileco.cortex.analysis.edges.EdgeFlowMapping;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Records;
+import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Compass;
 import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.Node;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +72,10 @@ public class VisualGraph {
         graph.getEdges().stream().flatMap(EdgeFlowMapping.UTIL::filter).forEach(this::map);
     }
 
-    public Graphviz getVizGraph() {
-        return Graphviz.fromGraph(this.vizGraph);
+    public byte[] toBytes() throws IOException {
+        var graphViz = Graphviz.fromGraph(this.vizGraph);
+        var outputStream = new ByteArrayOutputStream();
+        graphViz.render(Format.PNG).toOutputStream(outputStream);
+        return outputStream.toByteArray();
     }
 }

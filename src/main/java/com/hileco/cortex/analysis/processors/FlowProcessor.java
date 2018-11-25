@@ -57,6 +57,9 @@ public class FlowProcessor implements Processor {
 
     @Override
     public void process(Graph graph) {
+        EdgeFlowMapping.UTIL.clear(graph);
+        EdgeFlow.UTIL.clear(graph);
+
         var graphEdge = new EdgeFlowMapping();
         var graphBlocks = graph.getGraphBlocks();
 
