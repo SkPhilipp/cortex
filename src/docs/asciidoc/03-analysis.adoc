@@ -27,6 +27,8 @@ include::{snippets}/JumpIllegalProcessor.adoc[]
 
 include::{snippets}/ExitTrimProcessor.adoc[]
 
+include::{snippets}/DeadSwapProcessor.adoc[]
+
 === Visualization
 
 include::{snippets}/VisualGraph.adoc[]

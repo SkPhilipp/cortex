@@ -26,7 +26,6 @@
 * Processor to eliminate dead SAVE's
 * Processor to eliminate dead code following a JUMP, HALT or EXIT in the same block
 * Processor to eliminate dead code before a HALT or EXIT in the same block, which does not perform any kind of modification
-* Processor to eliminate dead SWAP's (whose left and right are equal)
 
 ==== Pathing System
 
