@@ -9,7 +9,8 @@ public class ExitTrimProcessorTest extends ProcessorFuzzTest {
     public void process() {
         Documentation.of(ExitTrimProcessor.class.getSimpleName())
                 .headingParagraph(ExitTrimProcessor.class.getSimpleName())
-                .paragraph("Removes any instructions which follow an EXIT, HALT or CALL_RETURN which cannot otherwise be reached.");
+                .paragraph("Removes any instructions following another instruction that guarantees the instructions will not be reached.");
+        // Note; this would likely be CALL_RETURN, EXIT, HALT and JUMP
     }
 
     @Override
