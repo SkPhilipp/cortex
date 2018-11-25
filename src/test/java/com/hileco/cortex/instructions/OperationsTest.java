@@ -331,7 +331,7 @@ public class OperationsTest {
                 .headingParagraph("DIVIDE").paragraph(String.format("The DIVIDE operation removes two elements from the stack, divides them with the top " +
                                                                           "element being the dividend and the second element being the divisor. It puts the " +
                                                                           "resulting quotient on the stack. (This result may overflow if it would have been " +
-                                                                          "larger than [default] %s)", NUMERICAL_LIMIT))
+                                                                          "larger than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);
@@ -349,7 +349,7 @@ public class OperationsTest {
                 .headingParagraph("MODULO").paragraph(String.format("The MODULO operation removes two elements from the stack, divides them with the top " +
                                                                           "element being the dividend and the second element being the divisor. It puts the " +
                                                                           "resulting remainder on the stack. (This result may overflow if it would have been " +
-                                                                          "larger than [default] %s)", NUMERICAL_LIMIT))
+                                                                          "larger than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack);
         Assert.assertEquals(stack.size(), 1);

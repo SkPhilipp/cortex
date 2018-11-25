@@ -1,4 +1,4 @@
-include::_links.adoc[]
+== Virtual Machine
 
 The Cortex virtual machine can execute Cortex instruction set compatible programs.
 The virtual machine and instruction set are used to define and simulate behaviour of compiled smart contracts,

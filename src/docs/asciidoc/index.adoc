@@ -1,4 +1,13 @@
-include::_links.adoc[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex
+:snippets: ../../../build/generated-snippets
+
+= Cortex
 
 [source]
 ```
@@ -26,3 +35,13 @@ The pseudocode for this program is `if(args[1] / 2 == 12345) { HALT WINNER }`.
 Cortex will try to reach `HALT WINNER`.
 
 include::{snippets}/Attacker.adoc[]
+
+include::01-virtual-machine.adoc[]
+
+include::02-fuzzer.adoc[]
+
+include::03-analysis.adoc[]
+
+include::04-constraints.adoc[]
+
+include::05-roadmap.adoc[]

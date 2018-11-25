@@ -46,7 +46,7 @@ public class AttackerTest {
                 .headingParagraph(Attacker.class.getSimpleName())
                 .paragraph("Program:").source(instructions)
                 .paragraph("Attack method:").source("TARGET_IS_HALT_WINNER")
-                .paragraph("Suggested solutions:").source(solutions);
+                .paragraph("Suggested solution by Cortex:").source(solutions);
         Assert.assertEquals(1, solutions.size());
         var solution = solutions.get(0);
         Assert.assertTrue(solution.isSolvable());

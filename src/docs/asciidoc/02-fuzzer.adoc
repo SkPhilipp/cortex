@@ -1,4 +1,4 @@
-include::_links.adoc[]
+== Fuzzer
 
 The fuzzer can generate random programs, which are generally used to verify correctness of other components.
 
