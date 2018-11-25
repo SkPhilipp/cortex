@@ -418,8 +418,9 @@ public class OperationsTest {
         var instructions = List.of(new NOOP());
         this.run(instructions);
         Documentation.of("instructions/noop")
-                .headingParagraph("NOOP").paragraph("This operation does nothing. It is generally used within optimization processes to replace instructions " +
-                                                            "instead of having to remove them. This allows all JUMP-related instructions remain functional.")
+                .headingParagraph("NOOP").paragraph("This operation does nothing. It is generally only used within optimization processes to replace " +
+                                                            "instructions instead of having to remove them. This allows all JUMP-related instructions remain " +
+                                                            "functional.")
                 .paragraph("Example program:").source(instructions);
     }
 
@@ -443,7 +444,9 @@ public class OperationsTest {
         var instructions = List.of(
                 new HALT(STACK_LIMIT_REACHED));
         Documentation.of("instructions/halt")
-                .headingParagraph("HALT").paragraph("The HALT operation cancels execution of the entire process, and provides a reason for doing so.")
+                .headingParagraph("HALT").paragraph("The HALT operation cancels execution of the entire process, and provides a reason for doing so. It is " +
+                                                            "generally only used within optimization processed to replace instructions which would otherwise " +
+                                                            "cause the same errors during runtime.")
                 .paragraph("Example program:").source(instructions);
         this.run(instructions);
     }
