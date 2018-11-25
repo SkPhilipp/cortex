@@ -4,8 +4,6 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '1.14'
 }
 
-apply plugin: 'java'
-
 group 'com.hileco'
 
 sourceCompatibility = 1.10
@@ -13,10 +11,6 @@ sourceCompatibility = 1.10
 repositories {
     mavenLocal()
     mavenCentral()
-}
-
-ext {
-    snippetsDir = file('build/generated-snippets')
 }
 
 lombok {
@@ -32,20 +26,10 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.19.1'
 }
 
-test {
-    outputs.dir snippetsDir
-    ignoreFailures true
-}
-
 asciidoctor {
-    inputs.dir snippetsDir
     dependsOn test
 }
 
 build {
     dependsOn asciidoctor
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'utf-8'
 }
