@@ -1,0 +1,16 @@
+== Attacks
+
+=== Attack Generators
+
+Below is a demonstration of Cortex analysing and finding the solution to an example program.
+The pseudocode for this program is:
+
+```
+if(args[1] / 2 == 12345) {
+    HALT WINNER
+}
+```
+
+Cortex will try to reach `HALT WINNER`.
+
+include::{snippets}/Attacker.adoc[]
