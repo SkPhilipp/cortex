@@ -14,3 +14,7 @@ unzip z3.zip
 cp z3-4.7.1-x64-ubuntu-16.04/bin/libz3* /usr/lib/x86_64-linux-gnu/
 rm z3.zip
 rm -rf z3-4.7.1-x64-ubuntu-16.04
+
+# Configure Site
+echo "User-agent: *" > /var/www/html/robots.txt
+echo "Disallow: /" >> /var/www/html/robots.txt

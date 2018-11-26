@@ -44,7 +44,7 @@
 * Known vulnerable contracts implemented and mapped to instructions, along with the historically known payloads executed on them as tests
 * Mapping EVM compatible smart contracts to Cortex programs
 
-==== Fuzzer
+=== Fuzzer
 
 * Fuzzer should output a higher level tree of instruction types to be generated. This would allow it to generate more realistic programs in which
   instructions can be written which reliably reference variables, mapped data, and functions which have not been defined
