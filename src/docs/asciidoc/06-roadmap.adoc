@@ -8,6 +8,12 @@
 
 === Improvements
 
+==== Core
+
+* Functionality to read in and execute instructions (from file, using - to mark standard input)
+* Functionality to print fuzzer-output instructions (to file, using - to mark standard output)
+* Functionality to store and load Virtual Machine state (to and from file, using - to mark standard input and output)
+
 ==== Instructions
 
 * EVM-based signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
@@ -55,3 +61,4 @@
   - Conditions; basic `JUMP_IF` wrapping
   - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
   - Invalid instructions; ex: `JUMP` out of bounds
+
