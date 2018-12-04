@@ -30,3 +30,10 @@ Defining these allows for constraints to be added, where a certain Definition mu
 
 These are essentially templates which can be expanded with additional definitions.
 
+# Code Design
+
+Try out Clojure or some other lisp? If just to get the concepts
+
+The following would be nice;
+- More pure functions
+- REPL development in combination with the above two

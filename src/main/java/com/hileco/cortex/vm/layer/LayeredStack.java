@@ -276,7 +276,7 @@ public class LayeredStack<V> implements StackApi<V, LayeredStack<V>> {
         return Objects.hash((Object[]) this.toArray());
     }
 
-    private class IndexedIterator implements ListIterator<V> {
+    public class IndexedIterator implements ListIterator<V> {
         private int index;
 
         IndexedIterator(int index) {
