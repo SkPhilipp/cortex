@@ -15,11 +15,11 @@ import java.math.BigInteger
 abstract class ProcessorFuzzTest {
 
     private fun executeAll(atlas: LayeredMap<BigInteger, Program>): ProgramContext {
-        val caller = Program(BigInteger.ZERO, listOf())
+        val caller = Program(listOf())
         val callerContext = ProgramContext(caller)
         for (programAddress in atlas.keySet()) {
-            val program = atlas.get(programAddress)
-            val programContext = ProgramContext(program)
+            val program = atlas[programAddress]
+            val programContext = ProgramContext(program!!)
             val processContext = VirtualMachine(callerContext, programContext)
             try {
                 val programRunner = ProgramRunner(processContext)
@@ -50,13 +50,13 @@ abstract class ProcessorFuzzTest {
             val generated = programGenerator.generate(runSeed)
             val generatedOptimized = programGenerator.generate(runSeed)
             for (address in generatedOptimized.keySet()) {
-                val program = generatedOptimized.get(address)
+                val program = generatedOptimized[address]
                 val instructions = program!!.instructions
                 val optimizedInstructions = graphBuilder.build(instructions).toInstructions()
-                generatedOptimized.put(program.address, Program(program.address, optimizedInstructions))
+                generatedOptimized[program.address] = Program(optimizedInstructions, program.address)
             }
-            val callerContext = this.executeAll(generated)
-            val callerContextOptimized = this.executeAll(generatedOptimized)
+            val callerContext = executeAll(generated)
+            val callerContextOptimized = executeAll(generatedOptimized)
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.memory,
                     callerContextOptimized.memory)
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.program.storage,
@@ -64,8 +64,8 @@ abstract class ProcessorFuzzTest {
             Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.program.transfers,
                     callerContextOptimized.program.transfers)
             for (address in generated.keySet()) {
-                val standard = generated.get(address)
-                val optimized = generatedOptimized.get(address)
+                val standard = generated[address]
+                val optimized = generatedOptimized[address]
                 Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
                         standard!!.storage,
                         optimized!!.storage)
@@ -80,7 +80,7 @@ abstract class ProcessorFuzzTest {
 
     @Test
     fun fuzzTest() {
-        this.fuzzTestProcessor(this.fuzzTestableProcessor())
+        fuzzTestProcessor(fuzzTestableProcessor())
     }
 
     companion object {

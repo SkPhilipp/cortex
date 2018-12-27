@@ -1,8 +1,5 @@
 package com.hileco.cortex.instructions
 
-import com.hileco.cortex.vm.VirtualMachine
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.instructions.conditions.EQUALS
 import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.debug.NOOP
@@ -11,9 +8,11 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.math.ADD
 import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.PUSH
+import com.hileco.cortex.vm.Program
+import com.hileco.cortex.vm.ProgramContext
+import com.hileco.cortex.vm.VirtualMachine
 import org.junit.Assert
 import org.junit.Test
-
 import java.math.BigInteger
 
 class InstructionsBuilderTest {
@@ -21,7 +20,7 @@ class InstructionsBuilderTest {
     @Test
     @Throws(ProgramException::class)
     fun testJump() {
-        val program = Program(BigInteger.ZERO, listOf(
+        val program = Program(listOf(
                 PUSH(byteArrayOf(123)),
                 PUSH(byteArrayOf(123)),
                 EQUALS(),
@@ -45,7 +44,7 @@ class InstructionsBuilderTest {
     @Test
     @Throws(ProgramException::class)
     fun testNoJump() {
-        val program = Program(BigInteger.ZERO, listOf(
+        val program = Program(listOf(
                 PUSH(byteArrayOf(123)),
                 PUSH(byteArrayOf(124)),
                 EQUALS(),
@@ -69,7 +68,7 @@ class InstructionsBuilderTest {
     @Test
     @Throws(ProgramException::class)
     fun testLoop() {
-        val program = Program(BigInteger.ZERO, listOf(
+        val program = Program(listOf(
                 PUSH(byteArrayOf(0)),
                 JUMP_DESTINATION(),
                 PUSH(byteArrayOf(1)),

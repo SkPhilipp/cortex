@@ -30,7 +30,7 @@ class FlowProcessorTest : ProcessorFuzzTest() {
                 .headingParagraph(FlowProcessor::class.simpleName!!)
                 .paragraph("Adds edges describing the program flow, this includes JUMP and JUMP_IFs where jump address information is known ahead of time.")
 
-        val edgeFlowMapping = EdgeFlowMapping.UTIL.findAny(graph).orElseThrow()
+        val edgeFlowMapping = EdgeFlowMapping.UTIL.findAny(graph)!!
         val fromInstruction1 = edgeFlowMapping.flowsFromSource[1]!!.stream().findFirst().orElseThrow()
         val toInstruction3 = edgeFlowMapping.flowsToTarget[3]!!.stream().findFirst().orElseThrow()
         Assert.assertEquals(fromInstruction1.target, 3)
@@ -39,7 +39,7 @@ class FlowProcessorTest : ProcessorFuzzTest() {
         Assert.assertEquals(toInstruction3.type, INSTRUCTION_JUMP)
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return FlowProcessor()
     }
 }

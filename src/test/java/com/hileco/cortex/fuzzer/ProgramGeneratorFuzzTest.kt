@@ -8,7 +8,6 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class ProgramGeneratorFuzzTest {
 
@@ -24,8 +23,8 @@ class ProgramGeneratorFuzzTest {
             for (programAddress in programAddresses) {
                 runs++
                 try {
-                    val caller = Program(BigInteger.ZERO, listOf())
-                    val program = generated.get(programAddress)
+                    val caller = Program(listOf())
+                    val program = generated[programAddress]!!
                     val callerContext = ProgramContext(caller)
                     val programContext = ProgramContext(program)
                     val processContext = VirtualMachine(callerContext, programContext)

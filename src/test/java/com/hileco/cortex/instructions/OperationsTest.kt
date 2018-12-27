@@ -24,7 +24,7 @@ import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.VirtualMachine
-import com.hileco.cortex.vm.VirtualMachine.NUMERICAL_LIMIT
+import com.hileco.cortex.vm.VirtualMachine.Companion.NUMERICAL_LIMIT
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger
@@ -59,7 +59,7 @@ class OperationsTest {
                 .headingParagraph("PUSH").paragraph("The PUSH operation adds one element to top of the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 3)
+        Assert.assertEquals(stack.size().toLong(), 3)
         Assert.assertArrayEquals(stack.pop(), instructions[2].bytes)
         Assert.assertArrayEquals(stack.pop(), instructions[1].bytes)
         Assert.assertArrayEquals(stack.pop(), instructions[0].bytes)
@@ -77,7 +77,7 @@ class OperationsTest {
                 .headingParagraph("POP").paragraph("The POP operation removes the top element from the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
     }
 
@@ -93,7 +93,7 @@ class OperationsTest {
                 .headingParagraph("SWAP").paragraph("The SWAP operation swaps two elements on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 2)
+        Assert.assertEquals(stack.size().toLong(), 2)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
         Assert.assertArrayEquals(stack.pop(), (instructions[1] as PUSH).bytes)
     }
@@ -109,7 +109,7 @@ class OperationsTest {
                 .headingParagraph("DUPLICATE").paragraph("The DUPLICATE operation adds a duplicate of an element on the stack, to the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 2)
+        Assert.assertEquals(stack.size().toLong(), 2)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
     }
@@ -126,7 +126,7 @@ class OperationsTest {
                 .headingParagraph("EQUALS").paragraph("The EQUALS operation removes two elements from the stack, then adds a 1 or 0 to the stack" + " depending on whether the top element was equal to the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE)
     }
 
@@ -142,7 +142,7 @@ class OperationsTest {
                 .headingParagraph("GREATER_THAN").paragraph("The GREATER_THAN operation removes two elements from the stack, then adds a 1 or 0 to the stack" + " depending on whether the top element was greater than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE)
     }
 
@@ -158,7 +158,7 @@ class OperationsTest {
                 .headingParagraph("LESS_THAN").paragraph("The LESS_THAN operation removes two elements from the stack, then adds a 1 or 0 to the stack" + " depending on whether the top element was less than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE)
     }
 
@@ -173,7 +173,7 @@ class OperationsTest {
                 .headingParagraph("IS_ZERO").paragraph("The IS_ZERO operation removes the top element of the stack then adds a 1 or 0 to the stack" + " depending on whether the element was equal to 0.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE)
     }
 
@@ -189,7 +189,7 @@ class OperationsTest {
                 .headingParagraph("BITWISE_OR").paragraph("The BITWISE_OR operation performs a bitwise OR operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(7))
     }
 
@@ -205,7 +205,7 @@ class OperationsTest {
                 .headingParagraph("BITWISE_XOR").paragraph("The BITWISE_XOR operation performs a bitwise XOR operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(6))
     }
 
@@ -221,7 +221,7 @@ class OperationsTest {
                 .headingParagraph("BITWISE_AND").paragraph("The BITWISE_AND operation performs a bitwise AND operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
     }
 
@@ -236,8 +236,8 @@ class OperationsTest {
                 .headingParagraph("BITWISE_NOT").paragraph("The BITWISE_NOT operation performs logical negation on each bit of the top element on the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(0))
+        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertArrayEquals(stack.pop(), byteArrayOf(-128))
     }
 
     @Test
@@ -254,7 +254,7 @@ class OperationsTest {
                         "than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(101))
     }
 
@@ -281,7 +281,7 @@ class OperationsTest {
                 .headingParagraph("SUBTRACT").paragraph("The SUBTRACT operation removes two elements from the stack, subtracts the second element from the " + "top element and puts the result on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(99))
     }
 
@@ -300,7 +300,7 @@ class OperationsTest {
                         " than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(100))
     }
 
@@ -333,7 +333,7 @@ class OperationsTest {
                         "larger than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(5))
     }
 
@@ -354,7 +354,7 @@ class OperationsTest {
                         "larger than %s)", NUMERICAL_LIMIT))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
     }
 
@@ -369,7 +369,7 @@ class OperationsTest {
                 .headingParagraph("HASH").paragraph("The HASH operation removes one element from the stack, performs the desired hashing " + "method on it and adds the resulting hash to the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
     }
 
     @Test
@@ -388,7 +388,7 @@ class OperationsTest {
                         "instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 0)
+        Assert.assertEquals(stack.size().toLong(), 0)
     }
 
     @Test
@@ -407,7 +407,7 @@ class OperationsTest {
                         "JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 0)
+        Assert.assertEquals(stack.size().toLong(), 0)
     }
 
     @Test
@@ -434,7 +434,7 @@ class OperationsTest {
                 .headingParagraph("EXIT").paragraph("The EXIT operation ends execution of the program.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 1)
+        Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertNotEquals(stack.pop(), byteArrayOf(10))
     }
 
@@ -472,7 +472,7 @@ class OperationsTest {
                         MEMORY, DISK, CALL_DATA))
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size.toLong(), 2)
+        Assert.assertEquals(stack.size().toLong(), 2)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
     }
 }

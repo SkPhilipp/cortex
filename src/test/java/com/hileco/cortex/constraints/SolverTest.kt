@@ -36,6 +36,6 @@ class SolverTest {
                 .paragraph("Resulting expression:").source(expressionGenerator.currentExpression)
                 .paragraph("Suggested solution for expression to be true:").source(solution)
         Assert.assertTrue(solution.isSolvable)
-        Assert.assertTrue((10L + onlyValue!!) % 0xffffffL < 10)
+        Assert.assertTrue((10L + onlyValue) % 0xffffffL < 10)
     }
 }

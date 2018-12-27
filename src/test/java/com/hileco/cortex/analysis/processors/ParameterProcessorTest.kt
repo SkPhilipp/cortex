@@ -8,9 +8,8 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
-
 import java.math.BigInteger
-import java.util.ArrayList
+import java.util.*
 
 class ParameterProcessorTest : ProcessorFuzzTest() {
 
@@ -32,11 +31,11 @@ class ParameterProcessorTest : ProcessorFuzzTest() {
         Assert.assertEquals(1L, EdgeParameterConsumer.UTIL.count(graphNodes[0]))
         Assert.assertEquals(1L, EdgeParameterConsumer.UTIL.count(graphNodes[1]))
         val edgeParametersOptional = EdgeParameters.UTIL.findAny(graphNodes[2])
-        Assert.assertTrue(edgeParametersOptional.isPresent)
-        Assert.assertEquals(2, edgeParametersOptional.get().graphNodes.size.toLong())
+        Assert.assertTrue(edgeParametersOptional != null)
+        Assert.assertEquals(2, edgeParametersOptional!!.graphNodes.size.toLong())
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return ParameterProcessor()
     }
 }
