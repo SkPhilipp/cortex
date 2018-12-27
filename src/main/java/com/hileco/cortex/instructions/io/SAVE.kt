@@ -27,7 +27,7 @@ class SAVE(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
         val layeredBytes: LayeredBytes = when (programStoreZone) {
             ProgramStoreZone.MEMORY -> program.memory
             ProgramStoreZone.DISK -> program.program.storage
-            ProgramStoreZone.CALL_DATA -> throw IllegalArgumentException(String.format("Unsupported ProgramStoreZone: %s", programStoreZone))
+            ProgramStoreZone.CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $programStoreZone")
         }
         val bytes = program.stack.pop()!!
         layeredBytes.write(address.toInt(), bytes)

@@ -6,10 +6,8 @@ import com.hileco.cortex.constraints.ExpressionGenerator
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.jumps.JUMP_IF
-import lombok.Value
 import java.util.*
 
-@Value
 class AttackPath(private val instructions: List<Instruction>,
                  private val edgeFlows: List<EdgeFlow>) {
 
@@ -21,7 +19,7 @@ class AttackPath(private val instructions: List<Instruction>,
             if (BLOCK_TO_END_TYPES.contains(edgeFlow.type)) {
                 val edgeFlowNextAvailable = i + 1 < edgeFlows.size
                 val source = edgeFlow.source!!
-                val target = Optional.ofNullable(edgeFlow.target).orElse(instructions.size - 1)
+                val target = edgeFlow.target ?: (instructions.size - 1)
                 for (j in source..target) {
                     val instruction = instructions[j]
                     if (instruction is JUMP_IF) {

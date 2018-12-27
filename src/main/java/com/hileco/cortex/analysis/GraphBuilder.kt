@@ -2,7 +2,6 @@ package com.hileco.cortex.analysis
 
 import com.hileco.cortex.analysis.processors.Processor
 import com.hileco.cortex.instructions.Instruction
-import lombok.Value
 
 class GraphBuilder(val processors: List<Processor>) {
 

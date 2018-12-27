@@ -57,21 +57,14 @@ abstract class ProcessorFuzzTest {
             }
             val callerContext = executeAll(generated)
             val callerContextOptimized = executeAll(generatedOptimized)
-            Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.memory,
-                    callerContextOptimized.memory)
-            Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.program.storage,
-                    callerContextOptimized.program.storage)
-            Assert.assertEquals(String.format("Issue with runSeed %d in caller", runSeed), callerContext.program.transfers,
-                    callerContextOptimized.program.transfers)
+            Assert.assertEquals("Issue with runSeed $runSeed in caller", callerContext.memory, callerContextOptimized.memory)
+            Assert.assertEquals("Issue with runSeed $runSeed in caller", callerContext.program.storage, callerContextOptimized.program.storage)
+            Assert.assertEquals("Issue with runSeed $runSeed in caller", callerContext.program.transfers, callerContextOptimized.program.transfers)
             for (address in generated.keySet()) {
                 val standard = generated[address]
                 val optimized = generatedOptimized[address]
-                Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
-                        standard!!.storage,
-                        optimized!!.storage)
-                Assert.assertEquals(String.format("Issue with runSeed %d in program %s", runSeed, address.toString()),
-                        standard.transfers,
-                        optimized.transfers)
+                Assert.assertEquals("Issue with runSeed $runSeed in program $address", standard!!.storage, optimized!!.storage)
+                Assert.assertEquals("Issue with runSeed $runSeed in program $address", standard.transfers, optimized.transfers)
             }
         }
     }

@@ -23,7 +23,7 @@ class KnownJumpIfProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.stream()
-                    .filter { it.isInstruction(JUMP_IF::class.java) }
+                    .filter { it.instruction.get() is JUMP_IF }
                     .filter { it.hasOneParameter(JUMP_IF.CONDITION.position) { parameter -> parameter.isSelfContained() } }
                     .forEach {
                         val decidingNode = it.parameters()[1]

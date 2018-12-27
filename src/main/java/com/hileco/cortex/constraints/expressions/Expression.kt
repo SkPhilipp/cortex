@@ -19,7 +19,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return String.format("%s(%s)", representation, input)
+            return "$representation($input)"
         }
     }
 
@@ -35,7 +35,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return String.format("(%s %s %s)", left, representation, right)
+            return "($left $representation $right)"
         }
     }
 
@@ -53,7 +53,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return String.format("%s[%s]", type, address)
+            return "$type[$address]"
         }
     }
 
@@ -71,11 +71,11 @@ interface Expression {
     data class Stack(private val address: Int = 0) : Expression {
 
         override fun toString(): String {
-            return String.format("STACK[%d]", address)
+            return "STACK[$address]"
         }
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            throw IllegalArgumentException(String.format("Missing stack: %d.", address))
+            throw IllegalArgumentException("Missing stack: $address.")
         }
     }
 
@@ -87,7 +87,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return String.format("!(%s)", input)
+            return "!($input)"
         }
     }
 
@@ -101,7 +101,7 @@ interface Expression {
 
         override fun toString(): String {
             return inputs.stream()
-                    .map { input -> String.format("(%s)", input.toString()) }
+                    .map { input -> "($input)" }
                     .collect(Collectors.joining(" && "))
         }
     }

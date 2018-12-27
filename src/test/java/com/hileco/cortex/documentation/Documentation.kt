@@ -40,7 +40,7 @@ object Documentation {
 
     fun of(snippetPath: String): Document {
         val separator = System.getProperty("file.separator")
-        val path = DOCS_PATH.resolve(String.format("%s.adoc", snippetPath.replace("/", separator)))
+        val path = DOCS_PATH.resolve(snippetPath.replace("/", separator) + ".adoc")
         return (OPEN_DOCUMENTS).computeIfAbsent(path.toString()) {
             try {
                 val file = path.toFile()
@@ -51,7 +51,7 @@ object Documentation {
                 val outputStream = FileOutputStream(file, !file.exists())
                 Document(snippetPath, outputStream, OBJECT_MAPPER)
             } catch (e: IOException) {
-                throw IllegalStateException(String.format("Erred while interacting with file: %s", path), e)
+                throw IllegalStateException("Erred while interacting with file: $path", e)
             }
         }
     }

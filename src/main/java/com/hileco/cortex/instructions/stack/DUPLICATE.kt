@@ -38,6 +38,6 @@ data class DUPLICATE(val topOffset: Int) : Instruction() {
     }
 
     override fun toString(): String {
-        return String.format("DUPLICATE %d", input.position)
+        return "DUPLICATE ${input.position}"
     }
 }

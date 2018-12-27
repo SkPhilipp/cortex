@@ -39,10 +39,6 @@ abstract class BitInstruction : Instruction() {
         program.stack.push(result)
     }
 
-    override fun toString(): String {
-        return this.javaClass.simpleName
-    }
-
     companion object {
         val LEFT = StackParameter("left", 0)
         val RIGHT = StackParameter("right", 1)

@@ -32,13 +32,13 @@ data class HASH(private val hashMethod: String) : Instruction() {
             messageDigest.update(program.stack.pop()!!)
             program.stack.push(messageDigest.digest())
         } catch (e: NoSuchAlgorithmException) {
-            throw IllegalArgumentException(String.format("Unknown hash method: %s", hashMethod), e)
+            throw IllegalArgumentException("Unknown hash method: $hashMethod", e)
         }
 
     }
 
     override fun toString(): String {
-        return String.format("HASH %s", hashMethod)
+        return "HASH $hashMethod"
     }
 
     companion object {

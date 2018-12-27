@@ -2,7 +2,6 @@ package com.hileco.cortex.analysis
 
 import com.hileco.cortex.analysis.edges.Edge
 import com.hileco.cortex.instructions.Instruction
-import lombok.Getter
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 

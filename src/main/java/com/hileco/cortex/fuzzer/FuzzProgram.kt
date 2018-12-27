@@ -8,12 +8,11 @@ import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
 import java.util.*
-import java.util.function.Consumer
 
 enum class FuzzProgram(
         private val chance: Double,
         private val implementation: (ProgramGeneratorContext) -> Unit
-) : Chanced, Consumer<ProgramGeneratorContext> {
+) : Chanced, (ProgramGeneratorContext) -> Unit {
 
     /**
      * A commonly used program layout; A jump table for each function of the program.
@@ -35,7 +34,7 @@ enum class FuzzProgram(
         context.currentBuilder().include { JUMP() }
         functions.forEach { address ->
             context.currentBuilder().MARK_LABEL(address.toString())
-            context.randomFuzzFunction().accept(context)
+            context.randomFuzzFunction()(context)
             context.currentBuilder().PUSH_LABEL(PROGRAM_END_LABEL)
             context.currentBuilder().include { JUMP() }
         }
@@ -47,14 +46,14 @@ enum class FuzzProgram(
             context.currentBuilder().include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
             context.currentBuilder().include { LOAD(ProgramStoreZone.CALL_DATA) }
         }
-        context.randomFuzzFunction().accept(context)
+        context.randomFuzzFunction()(context)
     });
 
     override fun chance(): Double {
         return this.chance
     }
 
-    override fun accept(programGeneratorContext: ProgramGeneratorContext) {
+    override fun invoke(programGeneratorContext: ProgramGeneratorContext) {
         implementation(programGeneratorContext)
     }
 

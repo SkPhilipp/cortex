@@ -28,14 +28,6 @@ class POP : Instruction() {
         program.stack.pop()
     }
 
-    override fun equals(other: Any?): Boolean {
-        return other is POP
-    }
-
-    override fun hashCode(): Int {
-        return POP::class.hashCode()
-    }
-
     companion object {
         val INPUT = StackParameter("input", 0)
     }

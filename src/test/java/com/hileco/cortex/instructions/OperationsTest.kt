@@ -249,9 +249,8 @@ class OperationsTest {
                 ADD())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/add")
-                .headingParagraph("ADD").paragraph(String.format("The ADD operation removes two elements from the stack, adds them together and puts the " +
-                        "result on the stack. (This result may overflow if it would have been larger " +
-                        "than %s)", NUMERICAL_LIMIT))
+                .headingParagraph("ADD").paragraph("The ADD operation removes two elements from the stack, adds them together and puts the " +
+                        "result on the stack. (This result may overflow if it would have been larger than $NUMERICAL_LIMIT)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 1)
@@ -294,10 +293,8 @@ class OperationsTest {
                 MULTIPLY())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/multiply")
-                .headingParagraph("MULTIPLY").paragraph(String.format("The MULTIPLY operation removes two elements from the stack, multiplies them and puts" +
-                        " the result on the stack. (This result may overflow if it would have been " +
-                        "larger" +
-                        " than %s)", NUMERICAL_LIMIT))
+                .headingParagraph("MULTIPLY").paragraph("The MULTIPLY operation removes two elements from the stack, multiplies them and puts" +
+                        " the result on the stack. (This result may overflow if it would have been larger than $NUMERICAL_LIMIT)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 1)
@@ -325,12 +322,9 @@ class OperationsTest {
                 DIVIDE())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/divide")
-                .headingParagraph("DIVIDE").paragraph(String.format("The DIVIDE operation removes two elements from the stack, divides them with the top " +
+                .headingParagraph("DIVIDE").paragraph("The DIVIDE operation removes two elements from the stack, divides them with the top " +
                         "element being the dividend and the second element being the divisor. It puts the" +
-                        " " +
-                        "resulting quotient on the stack. (This result may overflow if it would have been" +
-                        " " +
-                        "larger than %s)", NUMERICAL_LIMIT))
+                        "resulting quotient on the stack. (This result may overflow if it would have been larger than $NUMERICAL_LIMIT)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 1)
@@ -346,12 +340,9 @@ class OperationsTest {
                 MODULO())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/modulo")
-                .headingParagraph("MODULO").paragraph(String.format("The MODULO operation removes two elements from the stack, divides them with the top " +
+                .headingParagraph("MODULO").paragraph("The MODULO operation removes two elements from the stack, divides them with the top " +
                         "element being the dividend and the second element being the divisor. It puts the" +
-                        " " +
-                        "resulting remainder on the stack. (This result may overflow if it would have " +
-                        "been " +
-                        "larger than %s)", NUMERICAL_LIMIT))
+                        "resulting remainder on the stack. (This result may overflow if it would have been larger than $NUMERICAL_LIMIT)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 1)
@@ -464,12 +455,11 @@ class OperationsTest {
         )
         val stack = this.run(instructions).stack
         Documentation.of("instructions/save-and-load")
-                .headingParagraph("SAVE & LOAD").paragraph(String.format("The SAVE operation removes two elements from the stack, using the top element as an" +
+                .headingParagraph("SAVE & LOAD").paragraph("The SAVE operation removes two elements from the stack, using the top element as an" +
                         " address and the second element as a value to write into the area specified" +
-                        " (%s, or %s)." +
+                        " ($MEMORY, or $DISK)." +
                         " The LOAD  operation removes one element from the stack, using it as an" +
-                        " address to read from the area specified (%s, %s, or %s).", MEMORY, DISK,
-                        MEMORY, DISK, CALL_DATA))
+                        " address to read from the area specified ($MEMORY, $DISK, or $CALL_DATA).")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 2)

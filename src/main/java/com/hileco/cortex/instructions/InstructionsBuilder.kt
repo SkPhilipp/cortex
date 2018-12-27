@@ -7,7 +7,6 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
 import java.math.BigInteger
 import java.util.*
-import java.util.function.Consumer
 import java.util.stream.Collectors
 
 class InstructionsBuilder {
@@ -42,23 +41,23 @@ class InstructionsBuilder {
         this.include { JUMP_DESTINATION() }
     }
 
-    fun LOOP(loopBody: Consumer<InstructionsBuilder>) {
+    fun LOOP(loopBody: (InstructionsBuilder) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
         MARK_LABEL(startLabel)
-        loopBody.accept(this)
+        loopBody(this)
         PUSH_LABEL(startLabel)
         this.include { JUMP() }
     }
 
-    fun LOOP(conditionBody: Consumer<InstructionsBuilder>, loopBody: Consumer<InstructionsBuilder>) {
+    fun LOOP(conditionBody: (InstructionsBuilder) -> Unit, loopBody: (InstructionsBuilder) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
         val endLabel = UUID.randomUUID().toString()
         MARK_LABEL(startLabel)
-        conditionBody.accept(this)
+        conditionBody(this)
         this.include { IS_ZERO() }
         PUSH_LABEL(endLabel)
         this.include { JUMP_IF() }
-        loopBody.accept(this)
+        loopBody(this)
         PUSH_LABEL(startLabel)
         this.include { JUMP() }
         MARK_LABEL(endLabel)

@@ -34,10 +34,6 @@ abstract class ConditionInstruction : Instruction() {
         program.stack.push(if (equals) TRUE.clone() else FALSE.clone())
     }
 
-    override fun toString(): String {
-        return this.javaClass.simpleName
-    }
-
     companion object {
         val LEFT = StackParameter("left", 0)
         val RIGHT = StackParameter("right", 1)

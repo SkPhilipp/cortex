@@ -8,12 +8,11 @@ import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
-import java.util.function.Consumer
 
 enum class FuzzFunction(
         private val chance: Double,
         private val implementation: (ProgramGeneratorContext) -> Unit
-) : Chanced, Consumer<ProgramGeneratorContext> {
+) : Chanced, (ProgramGeneratorContext) -> Unit {
 
     EXIT_ONLY(0.3, { context -> context.currentBuilder().include { EXIT() } }),
 
@@ -48,11 +47,11 @@ enum class FuzzFunction(
         return this.chance
     }
 
-    override fun accept(programGeneratorContext: ProgramGeneratorContext) {
+    override fun invoke(programGeneratorContext: ProgramGeneratorContext) {
         implementation(programGeneratorContext)
     }
 
-    companion object Constants {
+    companion object {
         const val STACK_SWAP_UPPER_BOUND = 10
     }
 }

@@ -16,6 +16,6 @@ abstract class IoInstruction(val programStoreZone: ProgramStoreZone) : Instructi
         }
 
     override fun toString(): String {
-        return String.format("%s %s", this.javaClass.simpleName, programStoreZone)
+        return "${this::class.simpleName} $programStoreZone"
     }
 }

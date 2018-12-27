@@ -7,7 +7,7 @@ class EdgeFlow(val type: EdgeFlowType,
     override fun toString(): String {
         val sourceString = source ?: "START"
         val targetString = target ?: "END"
-        return String.format("%s %s --> %s", type, sourceString, targetString)
+        return "$type $sourceString --> $targetString"
     }
 
     companion object {

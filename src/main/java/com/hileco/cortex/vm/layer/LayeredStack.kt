@@ -50,7 +50,7 @@ class LayeredStack<V> {
     @Synchronized
     private fun checkBounds(index: Int) {
         if (this.size < index) {
-            throw IndexOutOfBoundsException(String.format("Size %s < Index %s", this.size, index))
+            throw IndexOutOfBoundsException("size ${this.size} < index $index")
         }
     }
 
@@ -61,7 +61,7 @@ class LayeredStack<V> {
             layer[index]
         } else {
             if (parent == null) {
-                throw IndexOutOfBoundsException(String.format("Size %s < Index %s", this.size, index))
+                throw IndexOutOfBoundsException("size ${this.size} < index $index")
             } else {
                 parent[index]
             }

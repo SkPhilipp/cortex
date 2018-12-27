@@ -10,14 +10,10 @@ import java.io.IOException
 
 class ExpressionSerializer : StdScalarSerializer<Expression>(Expression::class.java) {
 
-    private val stringSerializer: StringSerializer
-
-    init {
-        this.stringSerializer = StringSerializer()
-    }
+    private val stringSerializer: StringSerializer = StringSerializer()
 
     @Throws(IOException::class)
     override fun serialize(value: Expression?, gen: JsonGenerator, provider: SerializerProvider) {
-        this.stringSerializer.serialize(value?.toString(), gen, provider)
+        stringSerializer.serialize(value?.toString(), gen, provider)
     }
 }

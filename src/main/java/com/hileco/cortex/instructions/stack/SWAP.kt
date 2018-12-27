@@ -31,6 +31,6 @@ data class SWAP(val topOffsetLeft: Int, val topOffsetRight: Int) : Instruction()
     }
 
     override fun toString(): String {
-        return String.format("SWAP %d %d", topOffsetLeft, topOffsetRight)
+        return "SWAP $topOffsetLeft $topOffsetRight"
     }
 }

@@ -31,7 +31,7 @@ data class PUSH(val bytes: ByteArray) : Instruction() {
     }
 
     override fun toString(): String {
-        return String.format("PUSH %s", BigInteger(bytes))
+        return "PUSH ${BigInteger(bytes)}"
     }
 
     override fun equals(other: Any?): Boolean {

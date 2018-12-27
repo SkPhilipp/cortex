@@ -26,7 +26,7 @@ class FlowProcessor : Processor {
         graphNode.parameters().stream()
                 .filter { Objects.nonNull(it) }
                 .forEach { parameter ->
-                    if(parameter != null) {
+                    if (parameter != null) {
                         mapLinesToBlocksForNode(edge, graphBlock, parameter)
                     }
                 }
@@ -68,10 +68,9 @@ class FlowProcessor : Processor {
 
         // map jumps to blocks
         graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes
-                    .stream()
+            graphBlock.graphNodes.stream()
                     .filter { graphNode -> graphNode.isInstruction(FLOW_CLASSES_JUMPS) }
-                    .filter { graphNode -> graphNode.hasOneParameter(0) { parameter -> parameter.isInstruction(PUSH::class.java) } }
+                    .filter { graphNode -> graphNode.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach { graphNode ->
                         val targetPushInstruction = graphNode.parameters()[0].instruction.get() as PUSH
                         val target = BigInteger(targetPushInstruction.bytes).toInt()

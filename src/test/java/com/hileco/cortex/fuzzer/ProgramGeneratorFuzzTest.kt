@@ -37,7 +37,7 @@ class ProgramGeneratorFuzzTest {
             }
         }
         val ratio = exceptions.toDouble() / runs.toDouble()
-        Assert.assertFalse(String.format("Too many ProgramExceptions per generated program: %f (seed: %d)", ratio, seed), ratio > 0.5)
+        Assert.assertFalse("Too many ProgramExceptions per generated program: $ratio (seed: $seed)", ratio > 0.5)
     }
 
     @Test

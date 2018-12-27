@@ -15,7 +15,6 @@ import guru.nidi.graphviz.model.Node
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
-import java.util.function.Consumer
 
 class VisualGraph {
 
@@ -34,7 +33,7 @@ class VisualGraph {
         val lines = ArrayList<Int>()
         for (graphNode in graphBlock.graphNodes) {
             lines.add(graphNode.line)
-            records.add(rec(graphNode.line.toString(), String.format("%d: %s", graphNode.line, graphNode.instruction.get().toString())))
+            records.add(rec(graphNode.line.toString(), "${graphNode.line}: ${graphNode.instruction.get()}"))
         }
         val node = node(lines.iterator().next().toString())
                 .with(Records.of(*records.toTypedArray()))
@@ -63,7 +62,7 @@ class VisualGraph {
     }
 
     fun map(graph: Graph) {
-        graph.graphBlocks.forEach(Consumer<GraphBlock> { this.map(it) })
+        graph.graphBlocks.forEach { this.map(it) }
         graph.edges.forEach {
             if (it is EdgeFlowMapping) {
                 this.map(it)

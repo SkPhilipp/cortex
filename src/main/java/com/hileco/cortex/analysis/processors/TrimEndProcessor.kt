@@ -18,20 +18,13 @@ class TrimEndProcessor : Processor {
                 val instruction = graphNode.instruction
                 if (trim.get()) {
                     instruction.set(NOOP())
-                } else if (graphNode.isInstruction(*GUARANTEED_ENDS)) {
+                } else if (instruction.get() is JUMP
+                        || instruction.get() is HALT
+                        || instruction.get() is EXIT
+                        || instruction.get() is CALL_RETURN) {
                     trim.set(true)
                 }
-
             }
         }
-    }
-
-    companion object {
-        private val GUARANTEED_ENDS = arrayOf(
-                JUMP::class.java,
-                HALT::class.java,
-                EXIT::class.java,
-                CALL_RETURN::class.java
-        )
     }
 }

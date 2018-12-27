@@ -9,10 +9,9 @@ class DeadSwapProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.stream()
-                    .filter { graphNode -> graphNode.isInstruction(SWAP::class.java) }
-                    .filter { swapNode ->
-                        val swap = swapNode.instruction.get() as SWAP
-                        swap.topOffsetLeft == swap.topOffsetRight
+                    .filter {
+                        val instruction = it.instruction.get()
+                        instruction is SWAP && instruction.topOffsetLeft == instruction.topOffsetRight
                     }
                     .forEach { swapNode -> swapNode.instruction.set(NOOP()) }
         }

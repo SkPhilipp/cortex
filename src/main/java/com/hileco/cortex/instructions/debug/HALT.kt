@@ -24,6 +24,6 @@ class HALT(val reason: ProgramException.Reason) : Instruction() {
     }
 
     override fun toString(): String {
-        return String.format("HALT %s", reason)
+        return "HALT $reason"
     }
 }

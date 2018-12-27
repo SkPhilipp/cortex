@@ -3,11 +3,8 @@ package com.hileco.cortex.analysis.edges
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.GraphNode
-import lombok.Value
-import java.util.function.Consumer
 import java.util.stream.Stream
 
-@Value
 class EdgeUtility<T : Edge>(private val edgeClass: Class<T>) {
 
     fun count(graphNode: GraphNode): Long {
@@ -32,13 +29,13 @@ class EdgeUtility<T : Edge>(private val edgeClass: Class<T>) {
     fun clear(graph: Graph) {
         val edges = graph.edges
         this.clear(edges)
-        graph.graphBlocks.forEach(Consumer<GraphBlock> { this.clear(it) })
+        graph.graphBlocks.forEach { this.clear(it) }
     }
 
     private fun clear(graphBlock: GraphBlock) {
         val edges = graphBlock.edges
         this.clear(edges)
-        graphBlock.graphNodes.forEach(Consumer<GraphNode> { this.clear(it) })
+        graphBlock.graphNodes.forEach { this.clear(it) }
     }
 
     private fun clear(graphNode: GraphNode) {

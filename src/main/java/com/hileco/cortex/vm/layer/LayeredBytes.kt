@@ -21,14 +21,11 @@ class LayeredBytes(var bytes: ByteArray = ByteArray(DEFAULT_TOTAL_SIZE)) {
     }
 
     override fun toString(): String {
-        return String.format("LayeredBytes{size %d}", bytes.size)
+        return "LayeredBytes{size ${bytes.size}}"
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this.javaClass != other.javaClass) return false
-        val that = other as LayeredBytes
-        return Arrays.equals(bytes, that.bytes)
+        return other != null && other is LayeredBytes && Arrays.equals(bytes, other.bytes)
     }
 
     override fun hashCode(): Int {

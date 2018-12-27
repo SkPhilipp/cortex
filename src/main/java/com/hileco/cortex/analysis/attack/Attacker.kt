@@ -41,8 +41,8 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
                 .filter { edgeFlow -> BLOCK_TO_END_TYPES.contains(edgeFlow.type) }
                 .anyMatch { edgeFlow ->
                     val source = edgeFlow.source
-                    val target = Optional.ofNullable(edgeFlow.target).orElse(instructions.size - 1)
-                    IntStream.range(source!!, target!! + 1)
+                    val target = edgeFlow.target ?: (instructions.size - 1)
+                    IntStream.range(source!!, target + 1)
                             .mapToObj<GraphNode> { line -> edgeFlowMapping.nodeLineMapping[line] }
                             .anyMatch(targetPredicate)
                 }

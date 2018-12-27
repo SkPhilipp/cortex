@@ -33,7 +33,6 @@ import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramStoreZone.valueOf
 import java.io.IOException
 import java.math.BigInteger
-import java.util.*
 
 class InstructionDeserializer : StdScalarDeserializer<Instruction>(Instruction::class.java) {
 
@@ -47,28 +46,27 @@ class InstructionDeserializer : StdScalarDeserializer<Instruction>(Instruction::
 
     @Throws(IOException::class)
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Instruction? {
-        val string = this.stringDeserializer.deserialize(p, ctxt) ?: return null
+        val string = stringDeserializer.deserialize(p, ctxt) ?: return null
         val split = string.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val type = split[0]
-        val builder = MAP[type] ?: throw JsonMappingException(p, String.format("%s is not a known instruction type.", type))
+        val builder = MAP[type] ?: throw JsonMappingException(p, "$type is not a known instruction type.")
         try {
             return builder.build(split)
         } catch (e: IOException) {
-            throw JsonMappingException(p, String.format("Cloud not parse instruction of type %s: %s", type, e.message), e)
+            throw JsonMappingException(p, "Cloud not parse instruction of type $type: ${e.message}", e)
         }
-
     }
 
     companion object {
 
-        private val MAP: MutableMap<String, Builder>
+        private val MAP: Map<String, Builder>
 
         private fun require(amount: Int, function: (Array<String>) -> Instruction): Builder {
             return object : Builder {
                 override fun build(split: Array<String>): Instruction {
                     val params = split.size - 1
                     if (params != amount) {
-                        throw IOException(String.format("Type requires %d parameters, %d given.", amount, params))
+                        throw IOException("Type requires $amount parameters, $params given.")
                     }
                     return function(split)
                 }
@@ -76,35 +74,36 @@ class InstructionDeserializer : StdScalarDeserializer<Instruction>(Instruction::
         }
 
         init {
-            MAP = HashMap()
-            MAP[BITWISE_AND::class.simpleName!!] = require(0) { BITWISE_AND() }
-            MAP[BITWISE_NOT::class.simpleName!!] = require(0) { BITWISE_NOT() }
-            MAP[BITWISE_OR::class.simpleName!!] = require(0) { BITWISE_OR() }
-            MAP[BITWISE_XOR::class.simpleName!!] = require(0) { BITWISE_XOR() }
-            MAP[CALL::class.simpleName!!] = require(0) { CALL() }
-            MAP[CALL_RETURN::class.simpleName!!] = require(0) { CALL_RETURN() }
-            MAP[EQUALS::class.simpleName!!] = require(0) { EQUALS() }
-            MAP[GREATER_THAN::class.simpleName!!] = require(0) { GREATER_THAN() }
-            MAP[IS_ZERO::class.simpleName!!] = require(0) { IS_ZERO() }
-            MAP[LESS_THAN::class.simpleName!!] = require(0) { LESS_THAN() }
-            MAP[HALT::class.simpleName!!] = require(1) { parameters -> HALT(Reason.valueOf(parameters[1])) }
-            MAP[NOOP::class.simpleName!!] = require(0) { NOOP() }
-            MAP[LOAD::class.simpleName!!] = require(1) { parameters -> LOAD(valueOf(parameters[1])) }
-            MAP[SAVE::class.simpleName!!] = require(1) { parameters -> SAVE(valueOf(parameters[1])) }
-            MAP[EXIT::class.simpleName!!] = require(0) { EXIT() }
-            MAP[JUMP::class.simpleName!!] = require(0) { JUMP() }
-            MAP[JUMP_DESTINATION::class.simpleName!!] = require(0) { JUMP_DESTINATION() }
-            MAP[JUMP_IF::class.simpleName!!] = require(0) { JUMP_IF() }
-            MAP[ADD::class.simpleName!!] = require(0) { ADD() }
-            MAP[DIVIDE::class.simpleName!!] = require(0) { DIVIDE() }
-            MAP[HASH::class.simpleName!!] = require(1) { parameters -> HASH(parameters[1]) }
-            MAP[MODULO::class.simpleName!!] = require(0) { MODULO() }
-            MAP[MULTIPLY::class.simpleName!!] = require(0) { MULTIPLY() }
-            MAP[SUBTRACT::class.simpleName!!] = require(0) { SUBTRACT() }
-            MAP[DUPLICATE::class.simpleName!!] = require(1) { parameters -> DUPLICATE(Integer.valueOf(parameters[1])) }
-            MAP[POP::class.simpleName!!] = require(0) { POP() }
-            MAP[PUSH::class.simpleName!!] = require(1) { parameters -> PUSH(BigInteger(parameters[1]).toByteArray()) }
-            MAP[SWAP::class.simpleName!!] = require(2) { parameters -> SWAP(Integer.valueOf(parameters[1]), Integer.valueOf(parameters[2])) }
+            MAP = mapOf(
+                    "BITWISE_AND" to require(0) { BITWISE_AND() },
+                    "BITWISE_NOT" to require(0) { BITWISE_NOT() },
+                    "BITWISE_OR" to require(0) { BITWISE_OR() },
+                    "BITWISE_XOR" to require(0) { BITWISE_XOR() },
+                    "CALL" to require(0) { CALL() },
+                    "CALL_RETURN" to require(0) { CALL_RETURN() },
+                    "EQUALS" to require(0) { EQUALS() },
+                    "GREATER_THAN" to require(0) { GREATER_THAN() },
+                    "IS_ZERO" to require(0) { IS_ZERO() },
+                    "LESS_THAN" to require(0) { LESS_THAN() },
+                    "HALT" to require(1) { parameters -> HALT(Reason.valueOf(parameters[1])) },
+                    "NOOP" to require(0) { NOOP() },
+                    "LOAD" to require(1) { parameters -> LOAD(valueOf(parameters[1])) },
+                    "SAVE" to require(1) { parameters -> SAVE(valueOf(parameters[1])) },
+                    "EXIT" to require(0) { EXIT() },
+                    "JUMP" to require(0) { JUMP() },
+                    "JUMP_DESTINATION" to require(0) { JUMP_DESTINATION() },
+                    "JUMP_IF" to require(0) { JUMP_IF() },
+                    "ADD" to require(0) { ADD() },
+                    "DIVIDE" to require(0) { DIVIDE() },
+                    "HASH" to require(1) { parameters -> HASH(parameters[1]) },
+                    "MODULO" to require(0) { MODULO() },
+                    "MULTIPLY" to require(0) { MULTIPLY() },
+                    "SUBTRACT" to require(0) { SUBTRACT() },
+                    "DUPLICATE" to require(1) { parameters -> DUPLICATE(Integer.valueOf(parameters[1])) },
+                    "POP" to require(0) { POP() },
+                    "PUSH" to require(1) { parameters -> PUSH(BigInteger(parameters[1]).toByteArray()) },
+                    "SWAP" to require(2) { parameters -> SWAP(Integer.valueOf(parameters[1]), Integer.valueOf(parameters[2])) }
+            )
         }
     }
 }
