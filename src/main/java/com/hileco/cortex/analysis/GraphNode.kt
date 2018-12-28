@@ -19,14 +19,14 @@ class GraphNode(val instruction: AtomicReference<Instruction>,
     private fun addInstructionsByLine(list: MutableList<Pair<Int, AtomicReference<Instruction>>>) {
         list.add(line to instruction)
         edges.asSequence()
-                .filterIsInstance(EdgeParameters::class.java)
+                .filterIsInstance<EdgeParameters>()
                 .flatMap { it.graphNodes.asSequence() }
                 .forEach { it?.addInstructionsByLine(list) }
     }
 
     fun parameters(): List<GraphNode?> {
         return edges.asSequence()
-                .filterIsInstance(EdgeParameters::class.java)
+                .filterIsInstance<EdgeParameters>()
                 .flatMap { it.graphNodes.asSequence() }
                 .toList()
     }
@@ -42,20 +42,18 @@ class GraphNode(val instruction: AtomicReference<Instruction>,
 
     private fun allParameters(predicate: (GraphNode) -> Boolean): Boolean {
         return edges.asSequence()
-                .filter { it is EdgeParameters }
-                .map { it as EdgeParameters }
+                .filterIsInstance<EdgeParameters>()
                 .flatMap { it.graphNodes.asSequence() }
                 .all { it != null && predicate(it) }
     }
 
     fun hasOneParameter(index: Int, predicate: (GraphNode) -> Boolean): Boolean {
         val nodes = edges.asSequence()
-                .filter { it is EdgeParameters }
-                .map { it as EdgeParameters }
+                .filterIsInstance<EdgeParameters>()
                 .map { it.graphNodes[index] }
                 .filterNotNull()
                 .toList()
-        return nodes.size == 1 && nodes.asSequence().all(predicate)
+        return nodes.size == 1 && nodes.all(predicate)
     }
 
     fun isInstruction(classes: Collection<Class<*>>): Boolean {

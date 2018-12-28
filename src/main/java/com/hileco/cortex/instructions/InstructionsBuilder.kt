@@ -72,9 +72,7 @@ class InstructionsBuilder {
     }
 
     fun build(): List<Instruction> {
-        return instructions.asSequence()
-                .map { it() }
-                .toList()
+        return instructions.map { it() }
     }
 
     fun include(others: List<Instruction>) {

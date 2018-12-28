@@ -40,8 +40,7 @@ class FlowProcessor : Processor {
 
         // other flow instructions
         graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes
-                    .asSequence()
+            graphBlock.graphNodes.asSequence()
                     .filter { it.isInstruction(FLOW_CLASSES_OTHERS) }
                     .forEach {
                         val blockStart = graphBlock.graphNodes[0].line
@@ -61,8 +60,7 @@ class FlowProcessor : Processor {
 
         // map jumps to blocks
         graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes
-                    .asSequence()
+            graphBlock.graphNodes.asSequence()
                     .filter { it.isInstruction(FLOW_CLASSES_JUMPS) }
                     .filter { it.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach {

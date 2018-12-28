@@ -7,9 +7,7 @@ import java.util.stream.Stream
 
 class EdgeUtility<T : Edge>(private val edgeClass: Class<T>) {
     fun count(graphNode: GraphNode): Int {
-        return graphNode.edges.asSequence()
-                .filterIsInstance(edgeClass)
-                .count()
+        return graphNode.edges.count { edgeClass.isInstance(it) }
     }
 
     fun findAny(graphNode: GraphNode): T? {
