@@ -8,7 +8,6 @@ import com.hileco.cortex.vm.layer.LayeredStack
 import java.io.IOException
 
 class LayeredStackSerializer : StdScalarSerializer<LayeredStack<*>>(LayeredStack::class.java) {
-
     @Throws(IOException::class)
     override fun serialize(layeredStack: LayeredStack<*>, gen: JsonGenerator, provider: SerializerProvider) {
         gen.writeStartArray()

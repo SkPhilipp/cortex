@@ -9,15 +9,10 @@ import com.hileco.cortex.instructions.Instruction
 import java.io.IOException
 
 class InstructionSerializer : StdScalarSerializer<Instruction>(Instruction::class.java) {
-
-    private val stringSerializer: StringSerializer
-
-    init {
-        this.stringSerializer = StringSerializer()
-    }
+    private val stringSerializer: StringSerializer = StringSerializer()
 
     @Throws(IOException::class)
     override fun serialize(value: Instruction?, gen: JsonGenerator, provider: SerializerProvider) {
-        this.stringSerializer.serialize(value?.toString(), gen, provider)
+        stringSerializer.serialize(value?.toString(), gen, provider)
     }
 }

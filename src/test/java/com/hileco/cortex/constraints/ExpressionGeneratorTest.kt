@@ -15,7 +15,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class ExpressionGeneratorTest {
-
     @Test
     fun testParameterized() {
         val builder = ExpressionGenerator()

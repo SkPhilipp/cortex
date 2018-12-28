@@ -9,7 +9,6 @@ import com.hileco.cortex.constraints.expressions.Expression
 import java.io.IOException
 
 class ExpressionSerializer : StdScalarSerializer<Expression>(Expression::class.java) {
-
     private val stringSerializer: StringSerializer = StringSerializer()
 
     @Throws(IOException::class)

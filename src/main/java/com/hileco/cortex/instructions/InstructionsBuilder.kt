@@ -10,20 +10,15 @@ import java.util.*
 import java.util.stream.Collectors
 
 class InstructionsBuilder {
-    private val instructions: MutableList<() -> Instruction>
-    private val labelAddresses: MutableMap<String, Int>
-
-    init {
-        instructions = ArrayList()
-        labelAddresses = HashMap()
-    }
+    private val instructions: MutableList<() -> Instruction> = ArrayList()
+    private val labelAddresses: MutableMap<String, Int> = HashMap()
 
     fun include(supplier: () -> Instruction) {
         instructions.add(supplier)
     }
 
     fun PUSH_LABEL(name: String) {
-        this.include {
+        include {
             val address = labelAddresses[name]
             if (address == null) {
                 throw IllegalStateException("No label for name $name")
@@ -38,7 +33,7 @@ class InstructionsBuilder {
             throw IllegalArgumentException("Name $name is already taken")
         }
         labelAddresses[name] = instructions.size
-        this.include { JUMP_DESTINATION() }
+        include { JUMP_DESTINATION() }
     }
 
     fun LOOP(loopBody: (InstructionsBuilder) -> Unit) {
@@ -46,7 +41,7 @@ class InstructionsBuilder {
         MARK_LABEL(startLabel)
         loopBody(this)
         PUSH_LABEL(startLabel)
-        this.include { JUMP() }
+        include { JUMP() }
     }
 
     fun LOOP(conditionBody: (InstructionsBuilder) -> Unit, loopBody: (InstructionsBuilder) -> Unit) {
@@ -54,21 +49,21 @@ class InstructionsBuilder {
         val endLabel = UUID.randomUUID().toString()
         MARK_LABEL(startLabel)
         conditionBody(this)
-        this.include { IS_ZERO() }
+        include { IS_ZERO() }
         PUSH_LABEL(endLabel)
-        this.include { JUMP_IF() }
+        include { JUMP_IF() }
         loopBody(this)
         PUSH_LABEL(startLabel)
-        this.include { JUMP() }
+        include { JUMP() }
         MARK_LABEL(endLabel)
     }
 
     fun IF(condition: (InstructionsBuilder) -> Unit, content: (InstructionsBuilder) -> Unit) {
         val endLabel = UUID.randomUUID().toString()
         condition(this)
-        this.include { IS_ZERO() }
+        include { IS_ZERO() }
         PUSH_LABEL(endLabel)
-        this.include { JUMP_IF() }
+        include { JUMP_IF() }
         content(this)
         MARK_LABEL(endLabel)
     }

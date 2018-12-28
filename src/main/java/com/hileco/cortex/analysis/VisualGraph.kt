@@ -17,16 +17,8 @@ import java.io.IOException
 import java.util.*
 
 class VisualGraph {
-
-    private val vizNodeMapping: MutableMap<Int, Node>
-    private var vizGraph: guru.nidi.graphviz.model.Graph
-
-    init {
-        vizNodeMapping = HashMap()
-        vizGraph = graph()
-                .directed()
-                .graphAttr().with(RankDir.LEFT_TO_RIGHT)
-    }
+    private val vizNodeMapping: MutableMap<Int, Node> = HashMap()
+    private var vizGraph: guru.nidi.graphviz.model.Graph = graph().directed().graphAttr().with(RankDir.LEFT_TO_RIGHT)
 
     private fun map(graphBlock: GraphBlock) {
         val records = ArrayList<String>()

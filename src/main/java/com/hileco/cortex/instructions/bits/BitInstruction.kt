@@ -10,7 +10,6 @@ import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.VirtualMachine
 
 abstract class BitInstruction : Instruction() {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 
@@ -20,7 +19,7 @@ abstract class BitInstruction : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(LEFT, RIGHT)
 
-    internal abstract fun innerExecute(left: Byte, right: Byte): Byte
+    abstract fun innerExecute(left: Byte, right: Byte): Byte
 
     @Throws(ProgramException::class)
     override fun execute(process: VirtualMachine, program: ProgramContext) {

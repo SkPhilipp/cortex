@@ -11,7 +11,6 @@ import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import java.util.stream.Collectors
 
 class JumpIllegalProcessor : Processor {
-
     override fun process(graph: Graph) {
         EdgeFlowMapping.UTIL.findAny(graph)?.let {
             it.flowsFromSource.forEach { _, edgeFlows ->

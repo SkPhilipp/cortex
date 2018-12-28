@@ -7,7 +7,6 @@ import org.junit.Test
 import java.io.IOException
 
 class VisualGraphTest {
-
     @Test
     @Throws(IOException::class)
     fun testMap() {
@@ -30,12 +29,10 @@ class VisualGraphTest {
     }
 
     companion object {
-
         private val BASIC_GRAPH_BUILDER = GraphBuilder(listOf(
                 ParameterProcessor(),
                 FlowProcessor()
         ))
-
         private val OPTIMIZED_GRAPH_BUILDER = GraphBuilder(listOf(
                 ParameterProcessor(),
                 FlowProcessor(),

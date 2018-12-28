@@ -11,7 +11,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class KnownProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun process() {
         val graphBuilder = GraphBuilder(listOf(
@@ -37,7 +36,7 @@ class KnownProcessorTest : ProcessorFuzzTest() {
         ))
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return KnownProcessor()
     }
 }

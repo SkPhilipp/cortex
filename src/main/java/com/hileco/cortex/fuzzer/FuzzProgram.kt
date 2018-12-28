@@ -9,11 +9,8 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
 import java.util.*
 
-enum class FuzzProgram(
-        private val chance: Double,
-        private val implementation: (ProgramGeneratorContext) -> Unit
-) : Chanced, (ProgramGeneratorContext) -> Unit {
-
+enum class FuzzProgram(private val chance: Double,
+                       private val implementation: (ProgramGeneratorContext) -> Unit) : Chanced, (ProgramGeneratorContext) -> Unit {
     /**
      * A commonly used program layout; A jump table for each function of the program.
      */

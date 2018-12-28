@@ -7,7 +7,6 @@ import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.*
 
 abstract class IoInstruction(val programStoreZone: ProgramStoreZone) : Instruction() {
-
     override val instructionModifiers: List<ProgramZone>
         get() = when (programStoreZone) {
             ProgramStoreZone.MEMORY -> listOf(STACK, MEMORY)

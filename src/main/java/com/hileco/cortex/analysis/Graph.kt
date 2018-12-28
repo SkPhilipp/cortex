@@ -8,13 +8,8 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.stream.Collectors
 
 class Graph() {
-    internal val graphBlocks: MutableList<GraphBlock>
-    val edges: MutableList<Edge>
-
-    init {
-        graphBlocks = ArrayList()
-        edges = ArrayList()
-    }
+    val graphBlocks: MutableList<GraphBlock> = ArrayList()
+    val edges: MutableList<Edge> = ArrayList()
 
     constructor(instructions: List<Instruction>) : this() {
         val block = ArrayList<AtomicReference<Instruction>>()

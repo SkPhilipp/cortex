@@ -5,11 +5,10 @@ import com.hileco.cortex.analysis.GraphNode
 import java.util.*
 import kotlin.collections.HashMap
 
-class EdgeFlowMapping(internal val flowsFromSource: MutableMap<Int?, MutableSet<EdgeFlow>> = HashMap(),
-                      internal val flowsToTarget: MutableMap<Int?, MutableSet<EdgeFlow>> = HashMap(),
-                      private val blockLineMapping: MutableMap<Int, GraphBlock> = HashMap(),
-                      internal val nodeLineMapping: MutableMap<Int, GraphNode> = HashMap()) : Edge {
-
+class EdgeFlowMapping(val flowsFromSource: MutableMap<Int?, MutableSet<EdgeFlow>> = HashMap(),
+                      val flowsToTarget: MutableMap<Int?, MutableSet<EdgeFlow>> = HashMap(),
+                      val blockLineMapping: MutableMap<Int, GraphBlock> = HashMap(),
+                      val nodeLineMapping: MutableMap<Int, GraphNode> = HashMap()) : Edge {
     fun putLineMapping(key: Int, value: GraphBlock) {
         blockLineMapping[key] = value
     }

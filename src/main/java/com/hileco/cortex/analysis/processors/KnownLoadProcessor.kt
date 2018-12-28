@@ -8,7 +8,6 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
 
 class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInteger, BigInteger>>) : Processor {
-
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.stream()

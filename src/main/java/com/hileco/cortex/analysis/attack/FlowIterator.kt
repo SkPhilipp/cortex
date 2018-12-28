@@ -7,14 +7,13 @@ import java.util.*
 import java.util.stream.Collectors
 
 class FlowIterator constructor(private val edgeFlowMapping: EdgeFlowMapping,
-                               private val edgeFlow: EdgeFlow = EdgeFlow(EdgeFlowType.START, null, 0),
+                               private val beginning: EdgeFlow = EdgeFlow(EdgeFlowType.START, null, 0),
                                private var children: List<FlowIterator>? = null,
                                private var counter: Int = 0) : Iterator<List<EdgeFlow>> {
-
     private fun initialize() {
         if (children == null) {
-            var childrenEdgeFlows: Set<EdgeFlow>? = edgeFlowMapping.flowsFromSource[edgeFlow.target]
-            if (childrenEdgeFlows == null || edgeFlow.target == null) {
+            var childrenEdgeFlows: Set<EdgeFlow>? = edgeFlowMapping.flowsFromSource[beginning.target]
+            if (childrenEdgeFlows == null || beginning.target == null) {
                 childrenEdgeFlows = emptySet()
             }
             children = childrenEdgeFlows.stream()
@@ -32,7 +31,7 @@ class FlowIterator constructor(private val edgeFlowMapping: EdgeFlowMapping,
     }
 
     private fun build(list: MutableList<EdgeFlow>) {
-        list.add(edgeFlow)
+        list.add(beginning)
         initialize()
         val totalChildren = children!!.size
         if (totalChildren > 0) {

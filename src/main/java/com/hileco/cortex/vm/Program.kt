@@ -5,7 +5,8 @@ import com.hileco.cortex.vm.layer.LayeredBytes
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class Program(val instructions: List<Instruction>, val address: BigInteger = BigInteger.ZERO) {
+class Program(val instructions: List<Instruction>,
+              val address: BigInteger = BigInteger.ZERO) {
     val storage: LayeredBytes = LayeredBytes()
     val transfers: LayeredStack<Pair<BigInteger, BigInteger>> = LayeredStack()
 

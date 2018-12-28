@@ -6,7 +6,6 @@ import com.hileco.cortex.vm.layer.LayeredMap
 import java.math.BigInteger
 
 class ProgramGenerator {
-
     fun generate(seed: Long): LayeredMap<BigInteger, Program> {
         val context = ProgramGeneratorContext(seed)
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS) {

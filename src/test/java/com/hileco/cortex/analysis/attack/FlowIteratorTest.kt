@@ -9,7 +9,6 @@ import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
 
 class FlowIteratorTest {
-
     @Test
     fun testIterating() {
         val edgeFlowMapping = EdgeFlowMapping()

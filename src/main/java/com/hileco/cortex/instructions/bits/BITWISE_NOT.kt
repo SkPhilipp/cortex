@@ -10,7 +10,6 @@ import com.hileco.cortex.vm.VirtualMachine
 import kotlin.experimental.inv
 
 class BITWISE_NOT : Instruction() {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 

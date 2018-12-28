@@ -12,7 +12,6 @@ import com.hileco.cortex.vm.VirtualMachine
 import java.math.BigInteger
 
 abstract class MathInstruction : Instruction() {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 

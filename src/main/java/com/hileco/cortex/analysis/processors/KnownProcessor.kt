@@ -13,7 +13,6 @@ import com.hileco.cortex.vm.VirtualMachine
 import java.util.stream.Collectors
 
 class KnownProcessor : Processor {
-
     private fun noopDownwards(graphNode: GraphNode) {
         unlinkParameters(graphNode)
         graphNode.instruction.set(NOOP())

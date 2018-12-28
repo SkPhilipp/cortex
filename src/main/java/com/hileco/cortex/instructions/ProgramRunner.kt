@@ -5,7 +5,6 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
 
 class ProgramRunner(private val virtualMachine: VirtualMachine) {
-
     @Throws(ProgramException::class)
     fun run() {
         var context: ProgramContext? = virtualMachine.programs.peek()

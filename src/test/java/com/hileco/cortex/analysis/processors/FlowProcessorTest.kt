@@ -12,7 +12,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class FlowProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun process() {
         val graphBuilder = GraphBuilder(listOf(

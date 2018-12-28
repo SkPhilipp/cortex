@@ -4,7 +4,6 @@ import com.hileco.cortex.documentation.Documentation
 import org.junit.Test
 
 class JumpThreadingProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun process() {
         Documentation.of(JumpThreadingProcessor::class.simpleName!!)
@@ -12,7 +11,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Finds JUMP and JUMP_IF instructions whose addresses are blocks that immediately JUMP again. When this is the case the address of " + "the first JUMP or JUMP_IF is replaced with the address of the second JUMP")
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return JumpThreadingProcessor()
     }
 }

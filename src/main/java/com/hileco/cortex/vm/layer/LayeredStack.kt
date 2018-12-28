@@ -1,28 +1,11 @@
 package com.hileco.cortex.vm.layer
 
 import java.util.*
+import kotlin.collections.HashMap
 
-class LayeredStack<V> {
-    private val parent: LayeredStack<V>?
-    private val layer: MutableMap<Int, V?>
-    private var size: Int = 0
-
-    constructor() {
-        parent = null
-        layer = HashMap()
-        this.size = 0
-    }
-
-    private constructor(parent: LayeredStack<V>?, layer: MutableMap<Int, V?>, size: Int) {
-        this.parent = parent
-        this.layer = layer
-        this.size = size
-    }
-
-    @Synchronized
-    fun spawnChild(): LayeredStack<V> {
-        return LayeredStack(this, HashMap<Int, V?>(), this.size)
-    }
+class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
+    private var size: Int = parent?.size ?: 0
+    private val layer: MutableMap<Int, V?> = HashMap()
 
     @Synchronized
     fun push(value: V) {
@@ -32,7 +15,7 @@ class LayeredStack<V> {
 
     @Synchronized
     fun pop(): V? {
-        if(this.size == 0) {
+        if (this.size == 0) {
 
         }
         val value = peek()
@@ -157,7 +140,7 @@ class LayeredStack<V> {
         return Objects.hash(layer, parent)
     }
 
-    inner class IndexedIterator internal constructor(private var index: Int) : ListIterator<V> {
+    inner class IndexedIterator constructor(private var index: Int) : ListIterator<V> {
 
         @Synchronized
         override fun hasNext(): Boolean {

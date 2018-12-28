@@ -35,7 +35,6 @@ import java.io.IOException
 import java.math.BigInteger
 
 class InstructionDeserializer : StdScalarDeserializer<Instruction>(Instruction::class.java) {
-
     private val stringDeserializer: StringDeserializer = StringDeserializer()
 
     @FunctionalInterface
@@ -58,7 +57,6 @@ class InstructionDeserializer : StdScalarDeserializer<Instruction>(Instruction::
     }
 
     companion object {
-
         private val MAP: Map<String, Builder>
 
         private fun require(amount: Int, function: (Array<String>) -> Instruction): Builder {

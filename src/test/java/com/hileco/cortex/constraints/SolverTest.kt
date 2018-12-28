@@ -12,7 +12,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class SolverTest {
-
     @Test
     fun testSolve() {
         val instructions = listOf(

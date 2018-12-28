@@ -6,7 +6,6 @@ import com.hileco.cortex.instructions.debug.NOOP
 import java.util.*
 
 class JumpUnreachableProcessor : Processor {
-
     override fun process(graph: Graph) {
         EdgeFlowMapping.UTIL.findAny(graph)?.let {
             val targets = HashSet<Int>()

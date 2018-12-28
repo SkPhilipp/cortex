@@ -14,7 +14,6 @@ import kotlin.streams.asSequence
 class GraphNode(val instruction: AtomicReference<Instruction>,
                 val line: Int,
                 val edges: ArrayList<Edge> = ArrayList()) {
-
     // TODO: And ensure that all child parameter do not have multiple parameter-consumers
     fun isSelfContained(): Boolean {
         return fully { graphNode -> SELF_CONTAINED_ZONES.containsAll(graphNode.instruction.get().instructionModifiers) && graphNode.instruction.get() !is SWAP }

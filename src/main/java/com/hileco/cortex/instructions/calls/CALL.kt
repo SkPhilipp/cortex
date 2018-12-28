@@ -12,10 +12,6 @@ import com.hileco.cortex.vm.VirtualMachine
 import java.math.BigInteger
 
 class CALL : Instruction() {
-
-    override val stackAdds: List<Int>
-        get() = listOf()
-
     override val instructionModifiers: List<ProgramZone>
         get() = listOf(STACK, PROGRAM_CONTEXT, MEMORY)
 

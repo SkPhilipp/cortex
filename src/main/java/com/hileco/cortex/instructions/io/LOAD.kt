@@ -10,7 +10,6 @@ import com.hileco.cortex.vm.layer.LayeredBytes
 import java.math.BigInteger
 
 class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone) {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 

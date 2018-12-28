@@ -12,7 +12,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class KnownJumpIfProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun testProcess() {
         val graphBuilder = GraphBuilder(listOf(
@@ -41,7 +40,7 @@ class KnownJumpIfProcessorTest : ProcessorFuzzTest() {
         ))
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return KnownJumpIfProcessor()
     }
 }

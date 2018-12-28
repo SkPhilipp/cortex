@@ -5,7 +5,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class GraphTest {
-
     @Test
     fun test() {
         val graph = Graph(listOf(

@@ -6,9 +6,15 @@ import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.VirtualMachine
 
 abstract class Instruction {
-    abstract val stackAdds: List<Int>
-    abstract val instructionModifiers: List<ProgramZone>
-    abstract val stackParameters: List<StackParameter>
+    open val stackAdds: List<Int>
+        get() = listOf()
+
+    open val instructionModifiers: List<ProgramZone>
+        get() = listOf()
+
+    open val stackParameters: List<StackParameter>
+        get() = listOf()
+
     @Throws(ProgramException::class)
     abstract fun execute(process: VirtualMachine, program: ProgramContext)
 

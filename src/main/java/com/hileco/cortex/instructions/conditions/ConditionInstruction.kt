@@ -11,7 +11,6 @@ import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.VirtualMachine
 
 abstract class ConditionInstruction : Instruction() {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 
@@ -21,7 +20,7 @@ abstract class ConditionInstruction : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(LEFT, RIGHT)
 
-    internal abstract fun innerExecute(left: ByteArray, right: ByteArray): Boolean
+    abstract fun innerExecute(left: ByteArray, right: ByteArray): Boolean
 
     @Throws(ProgramException::class)
     override fun execute(process: VirtualMachine, program: ProgramContext) {

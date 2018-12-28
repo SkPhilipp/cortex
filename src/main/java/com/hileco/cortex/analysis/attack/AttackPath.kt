@@ -10,7 +10,6 @@ import java.util.*
 
 class AttackPath(private val instructions: List<Instruction>,
                  private val edgeFlows: List<EdgeFlow>) {
-
     fun toExpression(): Expression {
         val expressionGenerator = ExpressionGenerator()
         val conditions = ArrayList<Expression>()

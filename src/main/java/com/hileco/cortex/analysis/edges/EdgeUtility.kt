@@ -6,7 +6,6 @@ import com.hileco.cortex.analysis.GraphNode
 import java.util.stream.Stream
 
 class EdgeUtility<T : Edge>(private val edgeClass: Class<T>) {
-
     fun count(graphNode: GraphNode): Long {
         return graphNode.edges.stream()
                 .filter { edgeClass.isInstance(it) }

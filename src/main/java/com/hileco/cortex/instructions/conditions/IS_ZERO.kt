@@ -9,7 +9,6 @@ import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.VirtualMachine
 
 class IS_ZERO : Instruction() {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 

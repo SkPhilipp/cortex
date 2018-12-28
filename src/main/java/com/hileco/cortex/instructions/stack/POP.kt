@@ -10,10 +10,6 @@ import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.VirtualMachine
 
 class POP : Instruction() {
-
-    override val stackAdds: List<Int>
-        get() = listOf()
-
     override val instructionModifiers: List<ProgramZone>
         get() = listOf(STACK)
 

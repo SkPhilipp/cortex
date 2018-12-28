@@ -9,11 +9,8 @@ import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
 
-enum class FuzzFunction(
-        private val chance: Double,
-        private val implementation: (ProgramGeneratorContext) -> Unit
-) : Chanced, (ProgramGeneratorContext) -> Unit {
-
+enum class FuzzFunction(private val chance: Double,
+                        private val implementation: (ProgramGeneratorContext) -> Unit) : Chanced, (ProgramGeneratorContext) -> Unit {
     EXIT_ONLY(0.3, { context -> context.currentBuilder().include { EXIT() } }),
 
     RETURN_ONLY(3.0, { context -> context.currentBuilder().include { CALL_RETURN() } }),

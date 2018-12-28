@@ -8,11 +8,13 @@ import java.io.OutputStream
 import java.util.*
 import java.util.stream.Collectors
 
-class Document internal constructor(private val snippetPath: String, private val outputStream: OutputStream, private val objectMapper: ObjectMapper) {
+class Document constructor(private val snippetPath: String,
+                                    private val outputStream: OutputStream,
+                                    private val objectMapper: ObjectMapper) {
     private val exceptionHandler: (IOException) -> Nothing
 
     init {
-        this.exceptionHandler = { e -> throw IllegalStateException("Unexpected exception", e) }
+        exceptionHandler = { e -> throw IllegalStateException("Unexpected exception", e) }
     }
 
     private fun append(vararg strings: String): Document {
@@ -21,7 +23,7 @@ class Document internal constructor(private val snippetPath: String, private val
                 this.outputStream.write(string.toByteArray())
             }
         } catch (e: IOException) {
-            this.exceptionHandler(e)
+            exceptionHandler(e)
         }
 
         return this
@@ -36,9 +38,9 @@ class Document internal constructor(private val snippetPath: String, private val
 
     fun source(source: Any): Document {
         try {
-            this.append("```\n", this.objectMapper.writeValueAsString(source), "\n```\n\n")
+            this.append("```\n", objectMapper.writeValueAsString(source), "\n```\n\n")
         } catch (e: JsonProcessingException) {
-            this.exceptionHandler(e)
+            exceptionHandler(e)
         }
 
         return this

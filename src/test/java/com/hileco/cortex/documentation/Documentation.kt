@@ -17,7 +17,6 @@ import java.nio.file.Paths
 import java.util.*
 
 object Documentation {
-
     private val DOCS_PATH: Path
     private val OPEN_DOCUMENTS: MutableMap<String, Document>
     private val OBJECT_MAPPER: ObjectMapper

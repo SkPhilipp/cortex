@@ -15,7 +15,6 @@ import java.util.*
 import java.util.stream.IntStream
 
 class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
-
     fun solve(graph: Graph): ArrayList<Solution> {
         val solutions = ArrayList<Solution>()
         val instructions = graph.toInstructions()

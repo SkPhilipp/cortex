@@ -12,7 +12,6 @@ import java.math.BigInteger
 import java.util.*
 
 class ParameterProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun process() {
         val processors = ArrayList<Processor>()

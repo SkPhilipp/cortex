@@ -13,7 +13,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 abstract class ProcessorFuzzTest {
-
     private fun executeAll(atlas: LayeredMap<BigInteger, Program>): ProgramContext {
         val caller = Program(listOf())
         val callerContext = ProgramContext(caller)
@@ -69,7 +68,7 @@ abstract class ProcessorFuzzTest {
         }
     }
 
-    internal abstract fun fuzzTestableProcessor(): Processor
+    abstract fun fuzzTestableProcessor(): Processor
 
     @Test
     fun fuzzTest() {

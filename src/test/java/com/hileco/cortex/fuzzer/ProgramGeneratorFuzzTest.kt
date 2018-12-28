@@ -10,7 +10,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class ProgramGeneratorFuzzTest {
-
     @Test
     fun fuzzTestGenerator() {
         val seed = System.currentTimeMillis() * LIMIT_RUNS

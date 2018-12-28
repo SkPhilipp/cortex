@@ -12,11 +12,9 @@ import java.util.*
 
 
 class ParameterProcessor : Processor {
-
     override fun process(graph: Graph) {
         EdgeParameterConsumer.UTIL.clear(graph)
         EdgeParameters.UTIL.clear(graph)
-
         graph.graphBlocks.forEach { graphBlock ->
             val stack = LayeredStack<GraphNode>()
             val graphNodes = graphBlock.graphNodes

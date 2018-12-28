@@ -5,7 +5,6 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.DISK
 import org.junit.Assert
 import org.junit.Test
@@ -13,7 +12,6 @@ import java.math.BigInteger
 import java.util.*
 
 class KnownLoadProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun process() {
         val configuration = mapOf(DISK to mapOf(BigInteger.ONE to BigInteger.ZERO))
@@ -39,7 +37,7 @@ class KnownLoadProcessorTest : ProcessorFuzzTest() {
         ))
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
-        return KnownLoadProcessor(HashMap<ProgramStoreZone, Map<BigInteger, BigInteger>>())
+    override fun fuzzTestableProcessor(): Processor {
+        return KnownLoadProcessor(HashMap())
     }
 }

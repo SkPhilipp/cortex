@@ -13,10 +13,6 @@ import java.math.BigInteger
 import java.util.*
 
 class CALL_RETURN : Instruction() {
-
-    override val stackAdds: List<Int>
-        get() = listOf()
-
     override val instructionModifiers: List<ProgramZone>
         get() = listOf(STACK, PROGRAM_CONTEXT, MEMORY)
 

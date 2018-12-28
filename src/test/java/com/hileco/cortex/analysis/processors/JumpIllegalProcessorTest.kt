@@ -2,19 +2,16 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS
+import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
-
 import java.math.BigInteger
 
-import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS
-import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
-
 class JumpIllegalProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun testprocessJumpToIllegalInstruction() {
         val graphBuilder = GraphBuilder(listOf(
@@ -64,7 +61,7 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
         ))
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return JumpIllegalProcessor()
     }
 }

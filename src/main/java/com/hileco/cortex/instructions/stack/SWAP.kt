@@ -9,7 +9,8 @@ import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.VirtualMachine
 
-data class SWAP(val topOffsetLeft: Int, val topOffsetRight: Int) : Instruction() {
+data class SWAP(val topOffsetLeft: Int,
+                val topOffsetRight: Int) : Instruction() {
     override val stackAdds: List<Int>
         get() = listOf(topOffsetRight, topOffsetLeft)
 

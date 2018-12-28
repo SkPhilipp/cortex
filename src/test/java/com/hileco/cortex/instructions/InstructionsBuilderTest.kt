@@ -16,7 +16,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class InstructionsBuilderTest {
-
     @Test
     @Throws(ProgramException::class)
     fun testJump() {

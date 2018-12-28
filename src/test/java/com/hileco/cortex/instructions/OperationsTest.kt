@@ -30,7 +30,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class OperationsTest {
-
     @Throws(ProgramException::class)
     private fun run(instruction: List<Instruction>): ProgramContext {
         return this.run(instruction) { _, _ -> }

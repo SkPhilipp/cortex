@@ -6,13 +6,8 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 class GraphBlock {
-    internal val graphNodes: MutableList<GraphNode>
-    val edges: MutableList<Edge>
-
-    init {
-        graphNodes = ArrayList()
-        edges = ArrayList()
-    }
+    val graphNodes: MutableList<GraphNode> = ArrayList()
+    val edges: MutableList<Edge> = ArrayList()
 
     fun include(lineOffset: Int, instructions: List<AtomicReference<Instruction>>) {
         for (i in instructions.indices) {
@@ -22,7 +17,7 @@ class GraphBlock {
         }
     }
 
-    internal fun append(other: GraphBlock) {
+    fun append(other: GraphBlock) {
         graphNodes.addAll(other.graphNodes)
     }
 

@@ -2,8 +2,8 @@ package com.hileco.cortex.instructions
 
 import com.hileco.cortex.vm.ProgramContext
 
-class ProgramException(private val programContext: ProgramContext, val reason: Reason) : Exception() {
-
+class ProgramException(private val programContext: ProgramContext,
+                       val reason: Reason) : Exception() {
     override val message: String?
         get() = "$reason: $programContext"
 

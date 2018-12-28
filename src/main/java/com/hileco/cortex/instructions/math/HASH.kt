@@ -12,7 +12,6 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 data class HASH(private val hashMethod: String) : Instruction() {
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 

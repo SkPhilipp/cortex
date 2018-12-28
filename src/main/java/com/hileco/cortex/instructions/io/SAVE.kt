@@ -10,10 +10,6 @@ import com.hileco.cortex.vm.layer.LayeredBytes
 import java.math.BigInteger
 
 class SAVE(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone) {
-
-    override val stackAdds: List<Int>
-        get() = listOf()
-
     override val stackParameters: List<StackParameter>
         get() = listOf(ADDRESS, BYTES)
 

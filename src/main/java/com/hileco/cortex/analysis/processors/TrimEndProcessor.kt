@@ -10,7 +10,6 @@ import com.hileco.cortex.instructions.jumps.JUMP
 import java.util.concurrent.atomic.AtomicBoolean
 
 class TrimEndProcessor : Processor {
-
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             val trim = AtomicBoolean(false)

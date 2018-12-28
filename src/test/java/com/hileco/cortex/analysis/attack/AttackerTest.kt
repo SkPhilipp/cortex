@@ -19,7 +19,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class AttackerTest {
-
     @Test
     fun test() {
         val graphBuilder = GraphBuilder(listOf(
@@ -35,8 +34,7 @@ class AttackerTest {
                     DIVIDE(),
                     PUSH(BigInteger.valueOf(12345).toByteArray()),
                     EQUALS()))
-        },
-                { contentBuilder -> contentBuilder.include(listOf(HALT(WINNER))) })
+        }, { contentBuilder -> contentBuilder.include(listOf(HALT(WINNER))) })
         val instructions = instructionsBuilder.build()
         val graph = graphBuilder.build(instructions)
         val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)

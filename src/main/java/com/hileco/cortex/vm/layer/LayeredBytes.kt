@@ -3,7 +3,6 @@ package com.hileco.cortex.vm.layer
 import java.util.*
 
 class LayeredBytes(var bytes: ByteArray = ByteArray(DEFAULT_TOTAL_SIZE)) {
-
     fun read(offset: Int, length: Int): ByteArray {
         return Arrays.copyOfRange(bytes, offset, offset + length)
     }

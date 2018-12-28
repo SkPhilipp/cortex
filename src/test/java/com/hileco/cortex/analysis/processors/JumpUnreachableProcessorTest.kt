@@ -12,7 +12,6 @@ import org.junit.Test
 import java.math.BigInteger
 
 class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
-
     @Test
     fun testProcessUnreachable() {
         val graphBuilder = GraphBuilder(listOf(
@@ -64,7 +63,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
         ))
     }
 
-    internal override fun fuzzTestableProcessor(): Processor {
+    override fun fuzzTestableProcessor(): Processor {
         return JumpUnreachableProcessor()
     }
 }

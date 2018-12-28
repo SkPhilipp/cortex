@@ -5,7 +5,6 @@ import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.stack.SWAP
 
 class DeadSwapProcessor : Processor {
-
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.stream()

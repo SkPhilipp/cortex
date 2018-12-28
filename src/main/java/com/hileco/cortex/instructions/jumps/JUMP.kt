@@ -10,10 +10,6 @@ import com.hileco.cortex.vm.VirtualMachine
 import java.math.BigInteger
 
 class JUMP : JumpingInstruction() {
-
-    override val stackAdds: List<Int>
-        get() = listOf()
-
     override val instructionModifiers: List<ProgramZone>
         get() = listOf(INSTRUCTION_POSITION)
 

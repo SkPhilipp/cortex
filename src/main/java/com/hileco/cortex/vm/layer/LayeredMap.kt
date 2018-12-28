@@ -1,26 +1,8 @@
 package com.hileco.cortex.vm.layer
 
-class LayeredMap<K, V> {
-    private var parent: LayeredMap<K, V>?
-    private var layer: MutableMap<K, V>
-    private var deletions: MutableSet<K>
-
-    constructor() {
-        parent = null
-        layer = HashMap()
-        deletions = HashSet()
-    }
-
-    private constructor(parent: LayeredMap<K, V>, layer: MutableMap<K, V>, deletions: MutableSet<K>) {
-        this.parent = parent
-        this.layer = layer
-        this.deletions = deletions
-    }
-
-    @Synchronized
-    fun spawnChild(): LayeredMap<K, V> {
-        return LayeredMap(this, HashMap(), HashSet())
-    }
+class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
+    private var layer: MutableMap<K, V> = HashMap()
+    private var deletions: MutableSet<K> = HashSet()
 
     fun size(): Int {
         return keySet().size
@@ -73,5 +55,22 @@ class LayeredMap<K, V> {
         }
         stringBuilder.append("}")
         return stringBuilder.toString()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is LayeredMap<*, *> && let {
+            other as LayeredMap<K, V>
+            val keySet = keySet()
+            keySet == other.keySet() && keySet.all { key ->
+                val thisValue = this[key]
+                val otherValue = other[key]
+                return (thisValue == null && otherValue == null)
+                        || (thisValue != null && thisValue == otherValue)
+            }
+        }
+    }
+
+    override fun hashCode(): Int {
+        return keySet().hashCode()
     }
 }

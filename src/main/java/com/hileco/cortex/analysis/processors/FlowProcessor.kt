@@ -18,7 +18,6 @@ import java.math.BigInteger
 import java.util.*
 
 class FlowProcessor : Processor {
-
     private fun mapLinesToBlocksForNode(edge: EdgeFlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {
         val line = graphNode.line
         edge.putLineMapping(line, graphBlock)
