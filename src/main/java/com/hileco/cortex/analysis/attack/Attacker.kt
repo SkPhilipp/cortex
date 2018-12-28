@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.analysis.edges.EdgeFlow
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping
-import com.hileco.cortex.analysis.edges.EdgeFlowType
+import com.hileco.cortex.analysis.edges.EdgeFlowType.*
 import com.hileco.cortex.constraints.Solution
 import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.ImpossibleExpressionException
@@ -36,9 +36,9 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
     }
 
     private fun isTargeted(edgeFlows: List<EdgeFlow>, instructions: List<Instruction>, edgeFlowMapping: EdgeFlowMapping): Boolean {
-        return edgeFlows.stream()
-                .filter { edgeFlow -> BLOCK_TO_END_TYPES.contains(edgeFlow.type) }
-                .anyMatch { edgeFlow ->
+        return edgeFlows.asSequence()
+                .filter { edgeFlow -> edgeFlow.type in arrayOf(BLOCK_PART, BLOCK_END, END) }
+                .any { edgeFlow ->
                     val source = edgeFlow.source
                     val target = edgeFlow.target ?: (instructions.size - 1)
                     IntStream.range(source!!, target + 1)
@@ -48,7 +48,6 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
     }
 
     companion object {
-        private val BLOCK_TO_END_TYPES = setOf(EdgeFlowType.BLOCK_PART, EdgeFlowType.BLOCK_END, EdgeFlowType.END)
         val TARGET_IS_HALT_WINNER: (GraphNode) -> Boolean = {
             val instruction = it.instruction.get()
             instruction is HALT && instruction.reason == ProgramException.Reason.WINNER

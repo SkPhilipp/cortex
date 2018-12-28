@@ -15,20 +15,15 @@ import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
 import java.math.BigInteger
-import java.util.*
 
 class FlowProcessor : Processor {
     private fun mapLinesToBlocksForNode(edge: EdgeFlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {
         val line = graphNode.line
         edge.putLineMapping(line, graphBlock)
         edge.putLineMapping(line, graphNode)
-        graphNode.parameters().stream()
-                .filter { Objects.nonNull(it) }
-                .forEach { parameter ->
-                    if (parameter != null) {
-                        mapLinesToBlocksForNode(edge, graphBlock, parameter)
-                    }
-                }
+        graphNode.parameters().asSequence()
+                .filterNotNull()
+                .forEach { mapLinesToBlocksForNode(edge, graphBlock, it) }
     }
 
     override fun process(graph: Graph) {
@@ -40,25 +35,24 @@ class FlowProcessor : Processor {
 
         // map lines to blocks
         graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes
-                    .forEach { graphNode -> mapLinesToBlocksForNode(graphEdge, graphBlock, graphNode) }
+            graphBlock.graphNodes.forEach { mapLinesToBlocksForNode(graphEdge, graphBlock, it) }
         }
 
         // other flow instructions
         graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes
-                    .stream()
+                    .asSequence()
                     .filter { it.isInstruction(FLOW_CLASSES_OTHERS) }
-                    .forEach { graphNode ->
+                    .forEach {
                         val blockStart = graphBlock.graphNodes[0].line
-                        val instructionClass = graphNode.instruction.get().javaClass
-                        FLOW_TYPE_MAPPING[instructionClass]?.let {
-                            val edgeFlow = EdgeFlow(it, graphNode.line, null)
-                            graphNode.edges.add(edgeFlow)
+                        val instructionClass = it.instruction.get().javaClass
+                        FLOW_TYPE_MAPPING[instructionClass]?.let { edgeFlowType ->
+                            val edgeFlow = EdgeFlow(edgeFlowType, it.line, null)
+                            it.edges.add(edgeFlow)
                             graphEdge.map(edgeFlow)
-                            if (graphNode.isInstruction(*GUARANTEED_ENDS)) {
-                                val blockPartEdgeFlow = EdgeFlow(BLOCK_PART, blockStart, graphNode.line)
-                                graphNode.edges.add(blockPartEdgeFlow)
+                            if (it.isInstruction(*GUARANTEED_ENDS)) {
+                                val blockPartEdgeFlow = EdgeFlow(BLOCK_PART, blockStart, it.line)
+                                it.edges.add(blockPartEdgeFlow)
                                 graphEdge.map(blockPartEdgeFlow)
                             }
                         }
@@ -67,16 +61,20 @@ class FlowProcessor : Processor {
 
         // map jumps to blocks
         graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes.stream()
-                    .filter { graphNode -> graphNode.isInstruction(FLOW_CLASSES_JUMPS) }
-                    .filter { graphNode -> graphNode.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
-                    .forEach { graphNode ->
-                        val targetPushInstruction = graphNode.parameters()[0].instruction.get() as PUSH
-                        val target = BigInteger(targetPushInstruction.bytes).toInt()
-                        FLOW_TYPE_MAPPING[graphNode.instruction.get().javaClass]?.let {
-                            val edgeFlow = EdgeFlow(it, graphNode.line, target)
-                            graphNode.edges.add(edgeFlow)
-                            graphEdge.map(edgeFlow)
+            graphBlock.graphNodes
+                    .asSequence()
+                    .filter { it.isInstruction(FLOW_CLASSES_JUMPS) }
+                    .filter { it.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
+                    .forEach {
+                        val targetInstruction = it.parameters()[0]?.instruction?.get()
+                        if (targetInstruction != null) {
+                            targetInstruction as PUSH
+                            val target = BigInteger(targetInstruction.bytes).toInt()
+                            FLOW_TYPE_MAPPING[it.instruction.get().javaClass]?.let { edgeFlowType ->
+                                val edgeFlow = EdgeFlow(edgeFlowType, it.line, target)
+                                it.edges.add(edgeFlow)
+                                graphEdge.map(edgeFlow)
+                            }
                         }
                     }
         }
@@ -86,7 +84,7 @@ class FlowProcessor : Processor {
             val graphNodes = graphBlock.graphNodes
             if (!graphNodes.isEmpty()) {
                 val graphBlockStart = graphNodes[0].line
-                graphNodes.stream()
+                graphNodes.asSequence()
                         .filter { graphNode -> graphNode.isInstruction(FLOW_CLASSES_JUMPS) }
                         .forEach { graphNode ->
                             val edgeFlow = EdgeFlow(BLOCK_PART, graphBlockStart, graphNode.line)
@@ -105,7 +103,7 @@ class FlowProcessor : Processor {
                 val graphNodesB = graphBlockB.graphNodes
                 if (!graphNodesA.isEmpty()
                         && !graphNodesB.isEmpty()
-                        && graphNodesA.stream().noneMatch { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
+                        && graphNodesA.none { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
                     // TODO: Don't map blocks to block here; instead if a block contains no guaranteed ends
                     // TODO:   it should inherit all the mappings of the next block, continuing until either
                     // TODO:   the last block is reached or a block is found which does contain a guaranteed end
@@ -129,7 +127,7 @@ class FlowProcessor : Processor {
         // map the last block's start to the program end (if such end is possible)
         if (graphBlocksLimit > 0) {
             val graphBlockEnd = graphBlocks[graphBlocks.size - 1]
-            if (graphBlockEnd.graphNodes.stream().noneMatch { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
+            if (graphBlockEnd.graphNodes.none { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
                 val graphNode = graphBlockEnd.graphNodes[0]
                 val edgeFlow = EdgeFlow(EdgeFlowType.END, graphNode.line, null)
                 graphBlockEnd.edges.add(edgeFlow)

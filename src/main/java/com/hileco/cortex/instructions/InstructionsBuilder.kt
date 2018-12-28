@@ -7,7 +7,6 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
 import java.math.BigInteger
 import java.util.*
-import java.util.stream.Collectors
 
 class InstructionsBuilder {
     private val instructions: MutableList<() -> Instruction> = ArrayList()
@@ -73,9 +72,9 @@ class InstructionsBuilder {
     }
 
     fun build(): List<Instruction> {
-        return instructions.stream()
+        return instructions.asSequence()
                 .map { it() }
-                .collect(Collectors.toList())
+                .toList()
     }
 
     fun include(others: List<Instruction>) {

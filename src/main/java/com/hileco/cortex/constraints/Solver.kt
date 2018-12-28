@@ -2,9 +2,11 @@ package com.hileco.cortex.constraints
 
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.ReferenceMapping
-import com.microsoft.z3.*
+import com.microsoft.z3.BoolExpr
+import com.microsoft.z3.Context
+import com.microsoft.z3.IntNum
+import com.microsoft.z3.Status
 import java.util.*
-import java.util.stream.Collectors
 
 class Solver : ReferenceMapping {
     override val referencesForward: MutableMap<Expression.Reference, String> = HashMap()
@@ -16,10 +18,7 @@ class Solver : ReferenceMapping {
         solver.add(expression.asZ3Expr(context, this) as BoolExpr)
         val status = solver.check()
         val model = solver.model
-        val constants = Arrays.stream(model.constDecls)
-                .collect(Collectors.toMap<FuncDecl, Expression.Reference, Long>(
-                        { functionDeclaration -> referencesBackward[functionDeclaration.name.toString()] },
-                        { functionDeclaration -> (model.getConstInterp(functionDeclaration) as IntNum).int64 }))
+        val constants = model.constDecls.associateBy({ referencesBackward[it.name.toString()]!! }, { (model.getConstInterp(it) as IntNum).int64 })
         return Solution(constants, status == Status.SATISFIABLE)
     }
 }

@@ -6,18 +6,18 @@ import com.hileco.cortex.analysis.GraphNode
 import java.util.stream.Stream
 
 class EdgeUtility<T : Edge>(private val edgeClass: Class<T>) {
-    fun count(graphNode: GraphNode): Long {
-        return graphNode.edges.stream()
-                .filter { edgeClass.isInstance(it) }
+    fun count(graphNode: GraphNode): Int {
+        return graphNode.edges.asSequence()
+                .filterIsInstance(edgeClass)
                 .count()
     }
 
     fun findAny(graphNode: GraphNode): T? {
-        return graphNode.edges.firstOrNull { edgeClass.isInstance(it) } as T?
+        return graphNode.edges.asSequence().filterIsInstance(edgeClass).firstOrNull()
     }
 
     fun findAny(graph: Graph): T? {
-        return graph.edges.firstOrNull { edgeClass.isInstance(it) } as T?
+        return graph.edges.asSequence().filterIsInstance(edgeClass).firstOrNull()
     }
 
     fun filter(edge: T): Stream<T> {

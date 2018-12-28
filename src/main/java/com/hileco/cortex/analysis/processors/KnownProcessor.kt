@@ -10,26 +10,24 @@ import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
-import java.util.stream.Collectors
 
 class KnownProcessor : Processor {
     private fun noopDownwards(graphNode: GraphNode) {
         unlinkParameters(graphNode)
         graphNode.instruction.set(NOOP())
-        graphNode.parameters().forEach { noopDownwards(it) }
+        graphNode.parameters()
+                .filterNotNull()
+                .forEach { noopDownwards(it) }
     }
 
     private fun unlinkParameters(graphNode: GraphNode) {
-        val parameterEdges = graphNode.edges.stream()
-                .filter { it is EdgeParameters }
-                .collect(Collectors.toList())
-        graphNode.edges.removeAll(parameterEdges)
+        graphNode.edges.removeAll(graphNode.edges.filterIsInstance<EdgeParameters>())
     }
 
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes.stream()
-                    .filter { graphNode -> EdgeParameters.UTIL.count(graphNode) > 0 }
+            graphBlock.graphNodes.asSequence()
+                    .filter { EdgeParameters.UTIL.count(it) > 0 }
                     .filter { it.isSelfContained() }
                     .forEach { graphNode ->
                         val program = Program(graphNode.toInstructions())
@@ -47,7 +45,9 @@ class KnownProcessor : Processor {
                                 .toList()
                         if (instructions.size == 1) {
                             graphNode.instruction.set(instructions[0])
-                            graphNode.parameters().forEach { noopDownwards(it) }
+                            graphNode.parameters()
+                                    .filterNotNull()
+                                    .forEach { noopDownwards(it) }
                             unlinkParameters(graphNode)
                         }
                         // TODO: Replace the entire graphNode also when more instructions are available...

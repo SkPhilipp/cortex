@@ -7,9 +7,6 @@ import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramZone
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
-import java.util.stream.Collectors
-import java.util.stream.Stream
-import kotlin.streams.asSequence
 
 class GraphNode(val instruction: AtomicReference<Instruction>,
                 val line: Int,
@@ -21,60 +18,52 @@ class GraphNode(val instruction: AtomicReference<Instruction>,
 
     private fun addInstructionsByLine(list: MutableList<Pair<Int, AtomicReference<Instruction>>>) {
         list.add(line to instruction)
-        edges.stream()
-                .filter { edge -> edge is EdgeParameters }
-                .map { edge -> edge as EdgeParameters }
-                .flatMap { it.graphNodes.stream() }
-                .forEach { node -> node?.addInstructionsByLine(list) }
+        edges.asSequence()
+                .filterIsInstance(EdgeParameters::class.java)
+                .flatMap { it.graphNodes.asSequence() }
+                .forEach { it?.addInstructionsByLine(list) }
     }
 
-    fun parameters(): MutableList<GraphNode> {
-        return edges.stream()
-                .filter { edge -> edge is EdgeParameters }
-                .map { edge -> edge as EdgeParameters }
-                .flatMap { it.graphNodes.stream() }
-                .collect(Collectors.toList())
+    fun parameters(): List<GraphNode?> {
+        return edges.asSequence()
+                .filterIsInstance(EdgeParameters::class.java)
+                .flatMap { it.graphNodes.asSequence() }
+                .toList()
     }
 
     fun toInstructions(): List<Instruction> {
         val list = ArrayList<Pair<Int, AtomicReference<Instruction>>>()
         addInstructionsByLine(list)
-        return list.stream()
-                .sorted(Comparator.comparingInt { it.first })
-                .map { pair -> pair.second.get() }
-                .collect(Collectors.toList())
+        return list.asSequence()
+                .sortedBy { it.first }
+                .map { it.second.get() }
+                .toList()
     }
 
     private fun allParameters(predicate: (GraphNode) -> Boolean): Boolean {
-        return edges.stream()
-                .asSequence()
+        return edges.asSequence()
                 .filter { it is EdgeParameters }
                 .map { it as EdgeParameters }
-                .flatMap { it.graphNodes.stream().asSequence() }
+                .flatMap { it.graphNodes.asSequence() }
                 .all { it != null && predicate(it) }
     }
 
     fun hasOneParameter(index: Int, predicate: (GraphNode) -> Boolean): Boolean {
-        val nodes = edges.stream()
-                .asSequence()
+        val nodes = edges.asSequence()
                 .filter { it is EdgeParameters }
                 .map { it as EdgeParameters }
                 .map { it.graphNodes[index] }
                 .filterNotNull()
                 .toList()
-        return nodes.size == 1 && nodes.stream().allMatch(predicate)
-    }
-
-    private fun isInstruction(classes: Stream<Class<*>>): Boolean {
-        return classes.anyMatch { aClass -> aClass.isInstance(instruction.get()) }
+        return nodes.size == 1 && nodes.asSequence().all(predicate)
     }
 
     fun isInstruction(classes: Collection<Class<*>>): Boolean {
-        return this.isInstruction(classes.stream())
+        return instruction.get()::class.java in classes
     }
 
     fun isInstruction(vararg classes: Class<*>): Boolean {
-        return this.isInstruction(Arrays.stream(classes))
+        return instruction.get()::class.java in classes
     }
 
     private fun fully(predicate: (GraphNode) -> Boolean): Boolean {

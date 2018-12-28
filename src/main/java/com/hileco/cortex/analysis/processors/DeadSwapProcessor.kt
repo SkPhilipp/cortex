@@ -7,12 +7,12 @@ import com.hileco.cortex.instructions.stack.SWAP
 class DeadSwapProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes.stream()
+            graphBlock.graphNodes.asSequence()
                     .filter {
                         val instruction = it.instruction.get()
                         instruction is SWAP && instruction.topOffsetLeft == instruction.topOffsetRight
                     }
-                    .forEach { swapNode -> swapNode.instruction.set(NOOP()) }
+                    .forEach { it.instruction.set(NOOP()) }
         }
     }
 }

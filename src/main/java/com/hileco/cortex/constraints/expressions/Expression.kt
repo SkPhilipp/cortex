@@ -4,7 +4,6 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import com.microsoft.z3.BoolExpr
 import com.microsoft.z3.Context
 import com.microsoft.z3.Expr
-import java.util.stream.Collectors
 
 interface Expression {
     fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr
@@ -94,15 +93,11 @@ interface Expression {
     data class And(private var inputs: List<Expression>) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            return context.mkAnd(*inputs.stream()
-                    .map { input -> input.asZ3Expr(context, referenceMapping) }
-                    .toArray<BoolExpr> { length -> arrayOfNulls(length) })
+            return context.mkAnd(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
         }
 
         override fun toString(): String {
-            return inputs.stream()
-                    .map { input -> "($input)" }
-                    .collect(Collectors.joining(" && "))
+            return inputs.joinToString(separator = " && ") { "($it)" }
         }
     }
 }

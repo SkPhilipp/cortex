@@ -5,7 +5,6 @@ import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
-import java.util.stream.Collectors
 
 class Graph() {
     val graphBlocks: MutableList<GraphBlock> = ArrayList()
@@ -74,10 +73,10 @@ class Graph() {
     }
 
     fun toInstructions(): List<Instruction> {
-        return graphBlocks.stream()
-                .flatMap { graphBlock -> graphBlock.graphNodes.stream() }
-                .map { graphNode -> graphNode.instruction.get() }
-                .collect(Collectors.toList())
+        return graphBlocks.asSequence()
+                .flatMap { it.graphNodes.asSequence() }
+                .map { it.instruction.get() }
+                .toList()
     }
 
     override fun toString(): String {

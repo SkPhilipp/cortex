@@ -23,7 +23,7 @@ class ProgramGeneratorContext(seed: Long) {
     }
 
     private fun <T : Chanced> of(types: Array<T>): () -> T {
-        val total = Arrays.stream(types).mapToDouble { it.chance() }.sum()
+        val total = types.map { it.chance() }.sum()
         return {
             var choice = this.random.nextDouble() * total
             types.first {

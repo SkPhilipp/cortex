@@ -6,11 +6,10 @@ import com.hileco.cortex.instructions.Instruction
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-import java.util.stream.Collectors
 
 class Document constructor(private val snippetPath: String,
-                                    private val outputStream: OutputStream,
-                                    private val objectMapper: ObjectMapper) {
+                           private val outputStream: OutputStream,
+                           private val objectMapper: ObjectMapper) {
     private val exceptionHandler: (IOException) -> Nothing
 
     init {
@@ -30,10 +29,8 @@ class Document constructor(private val snippetPath: String,
     }
 
     fun source(instructions: List<Instruction>): Document {
-        val source = instructions.stream()
-                .map { Objects.toString(it) }
-                .collect(Collectors.joining("\n"))
-        return this.append("```\n", source, "\n```\n\n")
+        val source = instructions.joinToString(prefix = "```\n", separator = "\n", postfix = "\n```\n\n") { "$it" }
+        return this.append(source)
     }
 
     fun source(source: Any): Document {

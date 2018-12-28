@@ -4,7 +4,6 @@ import com.hileco.cortex.analysis.edges.EdgeFlow
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping
 import com.hileco.cortex.analysis.edges.EdgeFlowType
 import java.util.*
-import java.util.stream.Collectors
 
 class FlowIterator constructor(private val edgeFlowMapping: EdgeFlowMapping,
                                private val beginning: EdgeFlow = EdgeFlow(EdgeFlowType.START, null, 0),
@@ -16,9 +15,9 @@ class FlowIterator constructor(private val edgeFlowMapping: EdgeFlowMapping,
             if (childrenEdgeFlows == null || beginning.target == null) {
                 childrenEdgeFlows = emptySet()
             }
-            children = childrenEdgeFlows.stream()
-                    .map { childEdgeFlow -> FlowIterator(edgeFlowMapping, childEdgeFlow) }
-                    .collect(Collectors.toList())
+            children = childrenEdgeFlows.asSequence()
+                    .map { FlowIterator(edgeFlowMapping, it) }
+                    .toList()
         }
     }
 

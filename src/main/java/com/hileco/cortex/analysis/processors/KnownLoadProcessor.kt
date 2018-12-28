@@ -10,18 +10,20 @@ import java.math.BigInteger
 class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInteger, BigInteger>>) : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes.stream()
+            graphBlock.graphNodes.asSequence()
                     .filter { it.instruction.get() is LOAD }
                     .filter { it.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach {
                         val pushGraphNode = it.parameters()[0]
-                        val load = it.instruction.get() as LOAD
-                        val push = pushGraphNode.instruction.get() as PUSH
-                        val address = BigInteger(push.bytes)
-                        knownData[load.programStoreZone]?.let { knownDataMap ->
-                            knownDataMap[address]?.let { knownData: BigInteger ->
-                                pushGraphNode.instruction.set(NOOP())
-                                it.instruction.set(PUSH(knownData.toByteArray()))
+                        if (pushGraphNode != null) {
+                            val load = it.instruction.get() as LOAD
+                            val push = pushGraphNode.instruction.get() as PUSH
+                            val address = BigInteger(push.bytes)
+                            knownData[load.programStoreZone]?.let { knownDataMap ->
+                                knownDataMap[address]?.let { knownData: BigInteger ->
+                                    pushGraphNode.instruction.set(NOOP())
+                                    it.instruction.set(PUSH(knownData.toByteArray()))
+                                }
                             }
                         }
                     }

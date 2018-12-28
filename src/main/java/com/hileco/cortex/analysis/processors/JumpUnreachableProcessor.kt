@@ -10,13 +10,9 @@ class JumpUnreachableProcessor : Processor {
         EdgeFlowMapping.UTIL.findAny(graph)?.let {
             val targets = HashSet<Int>()
             targets.add(PROGRAM_START)
-            it.flowsToTarget.keys.forEach { target ->
-                if (target != null) {
-                    targets.add(target)
-                }
-            }
+            targets.addAll(it.flowsToTarget.keys.filterNotNull())
             graph.graphBlocks.forEach { graphBlock ->
-                graphBlock.graphNodes.stream().findFirst().ifPresent { startingNode ->
+                graphBlock.graphNodes.firstOrNull()?.let { startingNode ->
                     if (!targets.contains(startingNode.line)) {
                         graphBlock.graphNodes.forEach { graphNode -> graphNode.instruction.set(NOOP()) }
                     }
