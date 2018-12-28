@@ -118,7 +118,7 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
             }
         }
         stringBuilder.append("}")
-        return stringBuilder.toString()
+        return "$stringBuilder"
     }
 
     override fun equals(other: Any?): Boolean {

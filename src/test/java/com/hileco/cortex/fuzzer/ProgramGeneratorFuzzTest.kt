@@ -43,14 +43,13 @@ class ProgramGeneratorFuzzTest {
     fun testFuzzerSample() {
         val programGenerator = ProgramGenerator()
         val generated = programGenerator.generate(0)
-        val first = generated.keySet().iterator().next()
-        val program = generated.get(first)
+        val first = generated.keySet().first()
+        val program = generated[first]
         Documentation.of("fuzzer/sample").source(program!!.instructions)
         Assert.assertTrue(!program.instructions.isEmpty())
     }
 
     companion object {
-
-        private val LIMIT_RUNS = 100000
+        private const val LIMIT_RUNS = 100000
     }
 }

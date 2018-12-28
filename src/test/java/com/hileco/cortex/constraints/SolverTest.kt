@@ -28,7 +28,7 @@ class SolverTest {
         instructions.forEach { expressionGenerator.addInstruction(it) }
         val solver = Solver()
         val solution = solver.solve(expressionGenerator.currentExpression)
-        val onlyValue = solution.possibleValues.values.iterator().next()
+        val onlyValue = solution.possibleValues.values.first()
         Documentation.of(Solver::class.simpleName!!)
                 .headingParagraph(Solver::class.simpleName!!)
                 .paragraph("Example program:").source(instructions)

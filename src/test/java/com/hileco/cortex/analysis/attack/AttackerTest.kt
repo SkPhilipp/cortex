@@ -48,7 +48,7 @@ class AttackerTest {
         val solution = solutions[0]
         Assert.assertTrue(solution.isSolvable)
         Assert.assertEquals(1, solution.possibleValues.size.toLong())
-        val entry = solution.possibleValues.entries.iterator().next()
+        val entry = solution.possibleValues.entries.first()
         Assert.assertEquals(Expression.Reference(CALL_DATA, Expression.Value(1L)), entry.key)
         Assert.assertEquals(java.lang.Long.valueOf(24690L), entry.value)
     }

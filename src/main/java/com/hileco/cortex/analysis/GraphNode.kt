@@ -84,10 +84,10 @@ class GraphNode(val instruction: AtomicReference<Instruction>,
     override fun toString(): String {
         val stringBuilder = StringBuilder()
         this.format(this, stringBuilder, 0)
-        return stringBuilder.toString()
+        return "$stringBuilder"
     }
 
-    fun format(graphNode: GraphNode?, stringBuilder: StringBuilder, offset: Int) {
+    private fun format(graphNode: GraphNode?, stringBuilder: StringBuilder, offset: Int) {
         if (graphNode != null) {
             stringBuilder.append(String.format("[%03d]", graphNode.line))
         } else {

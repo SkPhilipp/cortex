@@ -54,7 +54,7 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
             stringBuilder.append("\n")
         }
         stringBuilder.append("}")
-        return stringBuilder.toString()
+        return "$stringBuilder"
     }
 
     override fun equals(other: Any?): Boolean {

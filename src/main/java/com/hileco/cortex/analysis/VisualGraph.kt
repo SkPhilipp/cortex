@@ -27,7 +27,7 @@ class VisualGraph {
             lines.add(graphNode.line)
             records.add(rec(graphNode.line.toString(), "${graphNode.line}: ${graphNode.instruction.get()}"))
         }
-        val node = node(lines.iterator().next().toString())
+        val node = node("${lines.first()}")
                 .with(Records.of(*records.toTypedArray()))
                 .with(Color.WHITE.fill())
         lines.forEach { line -> vizNodeMapping[line] = node }
@@ -44,7 +44,7 @@ class VisualGraph {
                         val vizLinkSources = nodeMapping.computeIfAbsent(sourceVizNode) { ArrayList() }
                         val targetVizNode = vizNodeMapping[flow.target]!!
                         if (sourceVizNode != targetVizNode) {
-                            vizLinkSources.add(between(port(source.toString()), targetVizNode.port(flow.target.toString(), Compass.WEST)))
+                            vizLinkSources.add(between(port("$source"), targetVizNode.port(flow.target.toString(), Compass.WEST)))
                         }
                     }
                 }

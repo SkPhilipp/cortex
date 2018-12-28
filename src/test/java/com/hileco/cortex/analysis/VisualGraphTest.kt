@@ -12,8 +12,8 @@ class VisualGraphTest {
     fun testMap() {
         val programGenerator = ProgramGenerator()
         val generated = programGenerator.generate(0)
-        val first = generated.keySet().iterator().next()
-        val program = generated.get(first)
+        val first = generated.keySet().first()
+        val program = generated[first]
         val instructions = program!!.instructions
         val basicGraph = BASIC_GRAPH_BUILDER.build(instructions)
         val basicGraphVisualized = VisualGraph()

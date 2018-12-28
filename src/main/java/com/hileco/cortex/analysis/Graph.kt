@@ -86,6 +86,6 @@ class Graph() {
             stringBuilder.append(graphBlock)
             stringBuilder.append("\n")
         }
-        return stringBuilder.toString()
+        return "$stringBuilder"
     }
 }

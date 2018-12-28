@@ -40,7 +40,7 @@ object Documentation {
     fun of(snippetPath: String): Document {
         val separator = System.getProperty("file.separator")
         val path = DOCS_PATH.resolve(snippetPath.replace("/", separator) + ".adoc")
-        return (OPEN_DOCUMENTS).computeIfAbsent(path.toString()) {
+        return (OPEN_DOCUMENTS).computeIfAbsent("$path") {
             try {
                 val file = path.toFile()
                 if (!file.exists()) {

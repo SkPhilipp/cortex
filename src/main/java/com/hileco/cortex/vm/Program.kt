@@ -16,6 +16,6 @@ class Program(val instructions: List<Instruction>,
         for (i in 0 until size) {
             stringBuilder.append(String.format("[%03d] %s\n", i, instructions[i]))
         }
-        return stringBuilder.toString()
+        return "$stringBuilder"
     }
 }
