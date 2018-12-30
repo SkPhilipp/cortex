@@ -11,11 +11,7 @@ class LayeredBytes(var bytes: ByteArray = ByteArray(DEFAULT_TOTAL_SIZE)) {
         bytes = ByteArray(DEFAULT_TOTAL_SIZE)
     }
 
-    fun write(offset: Int, bytesToWrite: ByteArray) {
-        this.write(offset, bytesToWrite, bytesToWrite.size)
-    }
-
-    fun write(offset: Int, bytesToWrite: ByteArray, writeLength: Int) {
+    fun write(offset: Int, bytesToWrite: ByteArray, writeLength: Int = bytesToWrite.size) {
         System.arraycopy(bytesToWrite, 0, bytes, offset, writeLength)
     }
 

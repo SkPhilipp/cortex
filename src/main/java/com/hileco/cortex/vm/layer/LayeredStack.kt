@@ -9,31 +9,28 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
     @Synchronized
     fun push(value: V) {
-        this.size++
         layer[this.size] = value
+        this.size++
     }
 
     @Synchronized
     fun pop(): V? {
-        if (this.size == 0) {
-
-        }
         val value = peek()
-        layer.remove(this.size)
+        layer.remove(this.size - 1)
         this.size--
         return value
     }
 
     @Synchronized
     fun peek(): V? {
-        return if (this.size == 0) null else this[this.size]
+        return if (this.size == 0) null else this[this.size - 1]
 
     }
 
     @Synchronized
     private fun checkBounds(index: Int) {
         if (this.size < index) {
-            throw IndexOutOfBoundsException("size ${this.size} < index $index")
+            throw IndexOutOfBoundsException("size ${this.size} <= index $index")
         }
     }
 
@@ -44,7 +41,7 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
             layer[index]
         } else {
             if (parent == null) {
-                throw IndexOutOfBoundsException("size ${this.size} < index $index")
+                throw IndexOutOfBoundsException("size ${this.size} <= index $index")
             } else {
                 parent[index]
             }
@@ -59,8 +56,8 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
     @Synchronized
     fun swap(topOffsetLeft: Int, topOffsetRight: Int) {
-        val leftIndex = this.size - topOffsetLeft
-        val rightIndex = this.size - topOffsetRight
+        val leftIndex = (this.size - 1) - topOffsetLeft
+        val rightIndex = (this.size - 1) - topOffsetRight
         val left = this[leftIndex]
         val right = this[rightIndex]
         layer[leftIndex] = right
@@ -78,33 +75,18 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
     @Synchronized
     fun duplicate(topOffset: Int) {
-        val value = this[this.size - topOffset]!!
+        val value = this[(this.size - 1) - topOffset]!!
         push(value)
     }
 
-    @Synchronized
-    operator fun contains(element: Int): Boolean {
-        return layer.containsKey(element) || parent != null && parent.contains(element)
-    }
-
     operator fun iterator(): IndexedIterator {
-        return IndexedIterator(1)
-    }
-
-    @Synchronized
-    fun add(v: V): Boolean {
-        push(v)
-        return true
+        return IndexedIterator(0)
     }
 
     @Synchronized
     fun clear() {
         layer.clear()
         this.size = 0
-    }
-
-    fun listIterator(): ListIterator<V> {
-        return IndexedIterator(1)
     }
 
     override fun toString(): String {
@@ -124,8 +106,8 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     override fun equals(other: Any?): Boolean {
         if (other is LayeredStack<*>) {
             if (other.size == this.size) {
-                val ownIterator = listIterator()
-                val otherIterator = other.listIterator()
+                val ownIterator = iterator()
+                val otherIterator = other.iterator()
                 while (ownIterator.hasNext()) {
                     if (ownIterator.next() != otherIterator.next()) {
                         return false
@@ -144,12 +126,12 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
         @Synchronized
         override fun hasNext(): Boolean {
-            return index <= this@LayeredStack.size
+            return index <= this@LayeredStack.size - 1
         }
 
         @Synchronized
         override fun next(): V {
-            if (index > this@LayeredStack.size) {
+            if (!hasNext()) {
                 throw NoSuchElementException()
             }
             val value = this@LayeredStack[index]

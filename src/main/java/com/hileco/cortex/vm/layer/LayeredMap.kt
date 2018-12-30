@@ -23,6 +23,14 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
         layer[key] = value
     }
 
+    fun remove(key: K) {
+        layer.remove(key)
+        val currentParent = parent
+        if (currentParent?.get(key) != null) {
+            deletions.add(key)
+        }
+    }
+
     fun clear() {
         parent = null
         layer.clear()

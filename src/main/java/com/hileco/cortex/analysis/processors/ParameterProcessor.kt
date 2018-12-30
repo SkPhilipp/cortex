@@ -39,7 +39,7 @@ class ParameterProcessor : Processor {
                     }
                     val remainingMissing = Math.min(stackTakes, stackTakes - totalMissing)
                     for (i in 0 until remainingMissing) {
-                        val parameter = stack[stackSize - i]!!
+                        val parameter = stack[stackSize - 1 - i]!!
                         parameter.edges.add(EdgeParameterConsumer(graphNode))
                         parameters.add(parameter)
                     }
