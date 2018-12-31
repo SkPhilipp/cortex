@@ -1,0 +1,14 @@
+package com.hileco.cortex.io.commands
+
+import org.junit.Assert
+import org.junit.Test
+
+class OptmizeCommandTest {
+    @Test
+    fun test() {
+        val command = OptmizeCommand()
+        val instructionStream = RunCommandTest::class.java.getResource("/assembly/winner-immediate.cxasm").openStream()
+        val optimized = command.execute(instructionStream)
+        Assert.assertTrue(optimized.isNotEmpty())
+    }
+}

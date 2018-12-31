@@ -1,4 +1,4 @@
-package com.hileco.cortex.documentation.source
+package com.hileco.cortex.io.serialization
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
