@@ -6,10 +6,10 @@ import com.hileco.cortex.io.commands.AttackCommand
 import com.hileco.cortex.io.commands.OptmizeCommand
 import com.hileco.cortex.io.commands.RunCommand
 
-class Application : CliktCommand() {
+class Cortex : CliktCommand() {
     override fun run() = Unit
 }
 
-fun main(args: Array<String>) = Application()
+fun main(args: Array<String>) = Cortex()
         .subcommands(OptmizeCommand(), AttackCommand(), RunCommand())
         .main(args)

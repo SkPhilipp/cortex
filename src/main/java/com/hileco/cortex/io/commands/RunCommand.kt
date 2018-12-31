@@ -2,6 +2,7 @@ package com.hileco.cortex.io.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import com.hileco.cortex.instructions.ProgramRunner
 import com.hileco.cortex.io.serialization.InstructionParser
@@ -12,10 +13,10 @@ import java.io.File
 import java.io.InputStream
 
 class RunCommand : CliktCommand(name = "run", help = "Generate input for a given sample which conforms with given constraints") {
-    private val source: File? by option(help = "Cortex Assembly source file path, defaults to stdin").file()
+    private val source: File by option(help = "Cortex Assembly source file path").file().required()
 
     override fun run() {
-        execute(source?.inputStream() ?: System.`in`)
+        execute(source.inputStream())
     }
 
     fun execute(instructionStream: InputStream) {
