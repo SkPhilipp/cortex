@@ -10,7 +10,7 @@ import com.hileco.cortex.io.serialization.InstructionParser
 import java.io.File
 import java.io.InputStream
 
-class OptmizeCommand : CliktCommand(name = "analyze", help = "Optimize a sample and output the optmized graph instruction") {
+class OptmizeCommand : CliktCommand(name = "optimize", help = "Optimize a sample and output the optmized graph instruction") {
     private val source: File by option(help = "Cortex Assembly source file path").file().required()
 
     override fun run() {

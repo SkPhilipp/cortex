@@ -34,7 +34,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
 
     companion object {
         val ADDRESS = StackParameter("address", 0)
-        private const val SIZE = 32
+        const val SIZE = 32
     }
 }
 
