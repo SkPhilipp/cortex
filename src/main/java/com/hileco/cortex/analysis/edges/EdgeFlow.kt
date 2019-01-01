@@ -6,8 +6,4 @@ class EdgeFlow(val type: EdgeFlowType,
     override fun toString(): String {
         return "$type ${source ?: "START"} --> ${target ?: "END"}"
     }
-
-    companion object {
-        val UTIL = EdgeUtility(EdgeFlow::class.java)
-    }
 }

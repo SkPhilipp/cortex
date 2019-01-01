@@ -12,9 +12,9 @@ class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInt
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
                     .filter { it.instruction.get() is LOAD }
-                    .filter { it.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
+                    .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach {
-                        val pushGraphNode = it.parameters()[0]
+                        val pushGraphNode = graph.edgeMapping.parameters(it)[0]
                         if (pushGraphNode != null) {
                             val load = it.instruction.get() as LOAD
                             val push = pushGraphNode.instruction.get() as PUSH

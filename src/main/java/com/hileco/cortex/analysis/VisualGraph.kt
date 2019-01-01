@@ -55,10 +55,8 @@ class VisualGraph {
 
     fun map(graph: Graph) {
         graph.graphBlocks.forEach { this.map(it) }
-        graph.edges.forEach {
-            if (it is EdgeFlowMapping) {
-                this.map(it)
-            }
+        graph.edgeMapping.get(EdgeFlowMapping::class.java).forEach {
+            this.map(it)
         }
     }
 

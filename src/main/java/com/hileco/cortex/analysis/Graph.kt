@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.analysis.edges.Edge
+import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import java.util.*
@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class Graph() {
     val graphBlocks: MutableList<GraphBlock> = ArrayList()
-    val edges: MutableList<Edge> = ArrayList()
+    val edgeMapping: EdgeMapping = EdgeMapping()
 
     constructor(instructions: List<Instruction>) : this() {
         val block = ArrayList<AtomicReference<Instruction>>()

@@ -13,8 +13,8 @@ import java.util.*
 
 class ParameterProcessor : Processor {
     override fun process(graph: Graph) {
-        EdgeParameterConsumer.UTIL.clear(graph)
-        EdgeParameters.UTIL.clear(graph)
+        graph.edgeMapping.removeAll(EdgeParameterConsumer::class.java)
+        graph.edgeMapping.removeAll(EdgeParameters::class.java)
         graph.graphBlocks.forEach { graphBlock ->
             val stack = LayeredStack<GraphNode>()
             val graphNodes = graphBlock.graphNodes
@@ -40,10 +40,10 @@ class ParameterProcessor : Processor {
                     val remainingMissing = Math.min(stackTakes, stackTakes - totalMissing)
                     for (i in 0 until remainingMissing) {
                         val parameter = stack[stackSize - 1 - i]!!
-                        parameter.edges.add(EdgeParameterConsumer(graphNode))
+                        graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
                         parameters.add(parameter)
                     }
-                    graphNode.edges.add(EdgeParameters(parameters))
+                    graph.edgeMapping.add(graphNode, EdgeParameters(parameters))
                     stack.clear()
                 }
                 if (!instruction.stackAdds.isEmpty()) {

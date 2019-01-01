@@ -10,7 +10,7 @@ import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 
 class JumpIllegalProcessor : Processor {
     override fun process(graph: Graph) {
-        EdgeFlowMapping.UTIL.findAny(graph)?.let {
+        graph.edgeMapping.get(EdgeFlowMapping::class.java).first().let {
             it.flowsFromSource.forEach { _, edgeFlows ->
                 val jumpEdgeFlows = edgeFlows.filter { edgeFlow -> edgeFlow.type == INSTRUCTION_JUMP }
                 if (jumpEdgeFlows.size == 1) {

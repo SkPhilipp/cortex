@@ -18,7 +18,7 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
     fun solve(graph: Graph): ArrayList<Solution> {
         val solutions = ArrayList<Solution>()
         val instructions = graph.toInstructions()
-        EdgeFlowMapping.UTIL.findAny(graph)?.let {
+        graph.edgeMapping.get(EdgeFlowMapping::class.java).first().let {
             val flowIterator = FlowIterator(it)
             flowIterator.forEachRemaining { edgeFlows ->
                 if (isTargeted(edgeFlows, instructions, it)) {

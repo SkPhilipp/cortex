@@ -7,7 +7,7 @@ import java.util.*
 
 class JumpUnreachableProcessor : Processor {
     override fun process(graph: Graph) {
-        EdgeFlowMapping.UTIL.findAny(graph)?.let {
+        graph.edgeMapping.get(EdgeFlowMapping::class.java).first().let {
             val targets = HashSet<Int>()
             targets.add(PROGRAM_START)
             targets.addAll(it.flowsToTarget.keys.filterNotNull())

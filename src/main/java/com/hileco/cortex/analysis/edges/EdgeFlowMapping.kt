@@ -21,8 +21,4 @@ class EdgeFlowMapping(val flowsFromSource: MutableMap<Int?, MutableSet<EdgeFlow>
         flowsFromSource.computeIfAbsent(edgeFlow.source) { HashSet() }.add(edgeFlow)
         flowsToTarget.computeIfAbsent(edgeFlow.target) { HashSet() }.add(edgeFlow)
     }
-
-    companion object {
-        val UTIL = EdgeUtility(EdgeFlowMapping::class.java)
-    }
 }

@@ -7,6 +7,7 @@ import com.hileco.cortex.analysis.edges.EdgeFlow
 import com.hileco.cortex.analysis.edges.EdgeFlowMapping
 import com.hileco.cortex.analysis.edges.EdgeFlowType
 import com.hileco.cortex.analysis.edges.EdgeFlowType.*
+import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.instructions.calls.CALL
 import com.hileco.cortex.instructions.calls.CALL_RETURN
 import com.hileco.cortex.instructions.debug.HALT
@@ -17,25 +18,25 @@ import com.hileco.cortex.instructions.stack.PUSH
 import java.math.BigInteger
 
 class FlowProcessor : Processor {
-    private fun mapLinesToBlocksForNode(edge: EdgeFlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {
+    private fun mapLinesToBlocksForNode(edgeMapping: EdgeMapping, edge: EdgeFlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {
         val line = graphNode.line
         edge.putLineMapping(line, graphBlock)
         edge.putLineMapping(line, graphNode)
-        graphNode.parameters().asSequence()
+        edgeMapping.parameters(graphNode)
                 .filterNotNull()
-                .forEach { mapLinesToBlocksForNode(edge, graphBlock, it) }
+                .forEach { mapLinesToBlocksForNode(edgeMapping, edge, graphBlock, it) }
     }
 
     override fun process(graph: Graph) {
-        EdgeFlowMapping.UTIL.clear(graph)
-        EdgeFlow.UTIL.clear(graph)
+        graph.edgeMapping.removeAll(EdgeFlowMapping::class.java)
+        graph.edgeMapping.removeAll(EdgeFlow::class.java)
 
         val graphEdge = EdgeFlowMapping()
         val graphBlocks = graph.graphBlocks
 
         // map lines to blocks
         graphBlocks.forEach { graphBlock ->
-            graphBlock.graphNodes.forEach { mapLinesToBlocksForNode(graphEdge, graphBlock, it) }
+            graphBlock.graphNodes.forEach { mapLinesToBlocksForNode(graph.edgeMapping, graphEdge, graphBlock, it) }
         }
 
         // other flow instructions
@@ -47,11 +48,11 @@ class FlowProcessor : Processor {
                         val instructionClass = it.instruction.get().javaClass
                         FLOW_TYPE_MAPPING[instructionClass]?.let { edgeFlowType ->
                             val edgeFlow = EdgeFlow(edgeFlowType, it.line, null)
-                            it.edges.add(edgeFlow)
+                            graph.edgeMapping.add(it, edgeFlow)
                             graphEdge.map(edgeFlow)
                             if (it.isInstruction(*GUARANTEED_ENDS)) {
                                 val blockPartEdgeFlow = EdgeFlow(BLOCK_PART, blockStart, it.line)
-                                it.edges.add(blockPartEdgeFlow)
+                                graph.edgeMapping.add(it, blockPartEdgeFlow)
                                 graphEdge.map(blockPartEdgeFlow)
                             }
                         }
@@ -62,15 +63,15 @@ class FlowProcessor : Processor {
         graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
                     .filter { it.isInstruction(FLOW_CLASSES_JUMPS) }
-                    .filter { it.hasOneParameter(0) { parameter -> parameter.instruction.get() is PUSH } }
+                    .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach {
-                        val targetInstruction = it.parameters()[0]?.instruction?.get()
+                        val targetInstruction = graph.edgeMapping.parameters(it)[0]?.instruction?.get()
                         if (targetInstruction != null) {
                             targetInstruction as PUSH
                             val target = BigInteger(targetInstruction.bytes).toInt()
                             FLOW_TYPE_MAPPING[it.instruction.get().javaClass]?.let { edgeFlowType ->
                                 val edgeFlow = EdgeFlow(edgeFlowType, it.line, target)
-                                it.edges.add(edgeFlow)
+                                graph.edgeMapping.add(it, edgeFlow)
                                 graphEdge.map(edgeFlow)
                             }
                         }
@@ -109,7 +110,7 @@ class FlowProcessor : Processor {
                     val graphNodeB = graphNodesB[0]
                     val edgeFlow = EdgeFlow(EdgeFlowType.BLOCK_END, graphNodeA.line, graphNodeB.line)
                     graphEdge.map(edgeFlow)
-                    graphBlockA.edges.add(edgeFlow)
+                    graph.edgeMapping.add(graphBlockA, edgeFlow)
                 }
             }
         }
@@ -118,7 +119,7 @@ class FlowProcessor : Processor {
         if (graphBlocksLimit > 0) {
             val graphBlockStart = graphBlocks[0]
             val edgeFlow = EdgeFlow(EdgeFlowType.START, null, 0)
-            graphBlockStart.edges.add(edgeFlow)
+            graph.edgeMapping.add(graphBlockStart, edgeFlow)
             graphEdge.map(edgeFlow)
         }
 
@@ -128,12 +129,12 @@ class FlowProcessor : Processor {
             if (graphBlockEnd.graphNodes.none { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
                 val graphNode = graphBlockEnd.graphNodes[0]
                 val edgeFlow = EdgeFlow(EdgeFlowType.END, graphNode.line, null)
-                graphBlockEnd.edges.add(edgeFlow)
+                graph.edgeMapping.add(graphBlockEnd, edgeFlow)
                 graphEdge.map(edgeFlow)
             }
         }
 
-        graph.edges.add(graphEdge)
+        graph.edgeMapping.add(graphEdge)
     }
 
     companion object {

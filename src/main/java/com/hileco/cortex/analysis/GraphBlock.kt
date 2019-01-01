@@ -1,13 +1,11 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.analysis.edges.Edge
 import com.hileco.cortex.instructions.Instruction
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 class GraphBlock {
     val graphNodes: MutableList<GraphNode> = ArrayList()
-    val edges: MutableList<Edge> = ArrayList()
 
     fun include(lineOffset: Int, instructions: List<AtomicReference<Instruction>>) {
         for (i in instructions.indices) {

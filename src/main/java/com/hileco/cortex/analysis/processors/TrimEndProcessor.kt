@@ -6,7 +6,6 @@ import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.jumps.EXIT
 import com.hileco.cortex.instructions.jumps.JUMP
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 class TrimEndProcessor : Processor {
