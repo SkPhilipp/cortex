@@ -30,14 +30,6 @@ Defining these allows for constraints to be added, where a certain Definition mu
 
 These are essentially templates which can be expanded with additional definitions.
 
-# Code Design
-
-Try out Clojure or some other lisp? If just to get the concepts
-
-The following would be nice;
-- More pure functions
-- REPL development in combination with the above two
-
 ----
 
 make a flow processor that maps better, as defined in this document
@@ -82,74 +74,13 @@ in this view:
 - BLOCK A's start allows for flows to BLOCK C's jumping instructions (as BLOCK A AND BLOCK B contain NO unconditional flow instructions)
 - BLOCK B's start allows for flows to BLOCK C's jumping instructions (as BLOCK B contains NO unconditional flow instructions)
 
-    1  vi HelloWorld.java
-    2  javac HelloWorld.java
-    3  native-image HelloWorld
-    4  time java HelloWorld
-        Hello, World!
-
-        real    0m0.049s
-        user    0m0.030s
-        sys     0m0.010s
-    5  time ./helloworld
-        Hello, World!
-
-        real    0m0.003s
-        user    0m0.000s
-        sys     0m0.000s
-
 ----
 
-TODO: instead of a 2d array use a 1d array
-
-ttt = [
-    0, 0, 0,
-    0, 0, 0,
-    0, 0, 0
-]
-
-move(user, request) {
-    if(request < 0 || request >= 9) {
-        error("invalid move request by {}, out of bounds")
-    }
-    if(ttt[request] != 0) {
-        error("invalid move request by {}, already taken", user)
-    }
-    ttt[request] = user
-    for(position in [ [0, 1, 2], [3, 4, 5], [6, 7, 8], // horizontal
-                      [0, 3, 6], [1, 4, 7], [2, 5, 8], // vertical
-                      [0, 4, 8], [2, 4, 6] ] ) {       // diagonal
-        var a =
-        if(ttt[position[0]] == ttt[position[1]]
-           ttt[position[1]] == ttt[position[2]]
-           ttt[position[0]] == ttt[position[2]]
-           ttt[position[0]] == user) {
-            winner(user)
-        }
-    }
-}
-
-// make random(seeded by time) moves, allowed to be impossible for AI user
-
-----
-
-cube = [
-    [ 0, 0, 0, 0, 0, 0 ],
-    [ 1, 1, 1, 1, 1, 1 ],
-    [ 2, 2, 2, 2, 2, 2 ],
-    [ 3, 3, 3, 3, 3, 3 ],
-    [ 4, 4, 4, 4, 4, 4 ],
-    [ 5, 5, 5, 5, 5, 5 ]
-]
-
-turn(face={0,1,2,3,4,5}, direction={clockwise, anticlockwise}) {
-    // turn the face only
-    // turn the 4 sides of the face
-}
-
-// make random(seeded by time) turns
-
-// based on call data loop any amount of times and interpret the data as turns
+vi HelloWorld.java
+javac HelloWorld.java
+native-image HelloWorld
+time java HelloWorld
+time ./helloworld
 
 ----
 
@@ -157,6 +88,8 @@ Make processors pure instead of linking them to objects on the graph
 Remove the need for EdgeUtility by applying Sequences and extension methods to sequences of GraphNode
 Remove the need for an AtomicReference wrapper around a GraphNode instruction
 Concept for instructions which modify the instruction position other than ++
+
+----
 
 cortex attack --source src/test/resources/assembly/winner-basic.cxasm
 cortex run --source src/test/resources/assembly/winner-basic.cxasm

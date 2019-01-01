@@ -62,3 +62,7 @@
   - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
   - Invalid instructions; ex: `JUMP` out of bounds
 
+=== Case Programs
+
+* Random-behaving N in a row program
+* Random-seeded Rubiks Cube program
