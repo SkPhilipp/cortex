@@ -14,7 +14,7 @@ class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInt
                     .filter { it.instruction.get() is LOAD }
                     .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach {
-                        val pushGraphNode = graph.edgeMapping.parameters(it)[0]
+                        val pushGraphNode = graph.edgeMapping.parameters(it).first()
                         if (pushGraphNode != null) {
                             val load = it.instruction.get() as LOAD
                             val push = pushGraphNode.instruction.get() as PUSH

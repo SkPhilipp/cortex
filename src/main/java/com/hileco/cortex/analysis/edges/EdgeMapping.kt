@@ -22,15 +22,15 @@ class EdgeMapping {
     }
 
     fun <T : Edge> remove(key: GraphNode, type: Class<T>, predicate: (T) -> Boolean = { true }) {
-        mapFor(type, key).removeAll { type.isInstance(it) && predicate(it as T) }
+        mapFor(type, key).removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) }
     }
 
     fun <T : Edge> remove(key: GraphBlock, type: Class<T>, predicate: (T) -> Boolean = { true }) {
-        mapFor(type, key).removeAll { type.isInstance(it) && predicate(it as T) }
+        mapFor(type, key).removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) }
     }
 
     fun <T : Edge> remove(type: Class<T>, predicate: (T) -> Boolean = { true }) {
-        mapFor(type, this).removeAll { type.isInstance(it) && predicate(it as T) }
+        mapFor(type, this).removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) }
     }
 
     fun <T : Edge> removeAll(type: Class<T>, predicate: (T) -> Boolean = { true }) {
@@ -73,10 +73,9 @@ class EdgeMapping {
                 .forEach { addInstructionsByLine(it, list) }
     }
 
-    fun parameters(graphNode: GraphNode): List<GraphNode?> {
+    fun parameters(graphNode: GraphNode): Sequence<GraphNode?> {
         return get(graphNode, EdgeParameters::class.java)
                 .flatMap { it.graphNodes.asSequence() }
-                .toList()
     }
 
     fun toInstructions(graphNode: GraphNode): List<Instruction> {
@@ -95,10 +94,10 @@ class EdgeMapping {
     }
 
     fun hasOneParameter(graphNode: GraphNode, index: Int, predicate: (GraphNode) -> Boolean): Boolean {
-        val nodes = get(graphNode, EdgeParameters::class.java)
+        val node = get(graphNode, EdgeParameters::class.java)
                 .map { it.graphNodes[index] }
                 .filterNotNull()
-                .toList()
-        return nodes.size == 1 && nodes.all(predicate)
+                .singleOrNull()
+        return node != null && predicate(node)
     }
 }

@@ -1,6 +1,7 @@
 package com.hileco.cortex.io.commands
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.ByteArraySerializer
 import com.hileco.cortex.analysis.GraphBuilder
@@ -21,6 +22,7 @@ class Commands {
             module.addSerializer(LayeredStackSerializer())
             module.addDeserializer(Instruction::class.java, InstructionDeserializer())
             it.registerModule(module)
+            it.enable(SerializationFeature.INDENT_OUTPUT)
         }
         val OPTIMIZED_GRAPH_BUILDER = GraphBuilder(listOf(
                 ParameterProcessor(),

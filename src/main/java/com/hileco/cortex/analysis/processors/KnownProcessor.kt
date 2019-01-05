@@ -4,7 +4,6 @@ import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.analysis.edges.EdgeParameters
-import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramRunner
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.stack.PUSH
@@ -31,17 +30,10 @@ class KnownProcessor : Processor {
                         val programContext = ProgramContext(program)
                         val processContext = VirtualMachine(programContext)
                         val programRunner = ProgramRunner(processContext)
-                        try {
-                            programRunner.run()
-                        } catch (e: ProgramException) {
-                            throw IllegalStateException("Unknown cause for ProgramException", e)
-                        }
-
-                        val instructions = Sequence { programContext.stack.iterator() }
-                                .map { PUSH(it) }
-                                .toList()
-                        if (instructions.size == 1) {
-                            graphNode.instruction.set(instructions[0])
+                        programRunner.run()
+                        val stackElement = Sequence { programContext.stack.iterator() }.singleOrNull()
+                        if (stackElement != null) {
+                            graphNode.instruction.set(PUSH(stackElement))
                             graph.edgeMapping.parameters(graphNode)
                                     .filterNotNull()
                                     .forEach { noopDownwards(graph.edgeMapping, it) }

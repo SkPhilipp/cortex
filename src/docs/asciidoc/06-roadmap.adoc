@@ -10,7 +10,6 @@
 
 ==== Core
 
-* Functionality to read in and execute instructions (from file, using - to mark standard input)
 * Functionality to print fuzzer-output instructions (to file, using - to mark standard output)
 * Functionality to store and load Virtual Machine state (to and from file, using - to mark standard input and output)
 
@@ -62,7 +61,34 @@
   - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
   - Invalid instructions; ex: `JUMP` out of bounds
 
-=== Case Programs
+=== Barrier Programs
 
-* Random-behaving N in a row program
-* Random-seeded Rubiks Cube program
+Barrier programs are programs which:
+- Could theoretically be solved within a day on modern hardware.
+- Act as a measure of Cortex' solving ability.
+- Are deployed publicly to measure how far theoretical adversaries with Cortex-equivalents have evolved.
+
+Level programs should include the following elements in their win conditions:
+01. Unconditional
+02. Basic Maths
+03. Basic Maths (Pure Assembly)
+04. Overflows
+05. Loops
+06. Memory
+07. In-Library
+08. Predictable Variables
+09. Permanent Disk
+10. Dynamic Disk
+11. Multiple-Call
+12. Risk (ie. 1 in to 10 out)
+13. Recursive Call Overflow
+
+Theoretical examples:
+
+* `winner-immediate.cxasm`
+* `winner-basic.cxasm`
+* Solving in-memory Tic-Tac-Toe against a predictable opponent
+* Solving in-memory Rubik's Cube
+* Solving on-disk Tic-Tac-Toe through multiple calls
+* Solving on-disk Rubik's Cube
+

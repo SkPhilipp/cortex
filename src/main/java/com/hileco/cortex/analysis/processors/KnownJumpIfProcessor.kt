@@ -18,7 +18,7 @@ class KnownJumpIfProcessor : Processor {
                     .filter { it.instruction.get() is JUMP_IF }
                     .filter { graph.edgeMapping.hasOneParameter(it, JUMP_IF.CONDITION.position) { parameter -> graph.edgeMapping.isSelfContained(parameter) } }
                     .forEach {
-                        val decidingNode = graph.edgeMapping.parameters(it)[1]
+                        val decidingNode = graph.edgeMapping.parameters(it).elementAt(1)
                         if (decidingNode != null) {
                             val program = Program(graph.edgeMapping.toInstructions(decidingNode))
                             val programContext = ProgramContext(program)

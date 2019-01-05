@@ -65,9 +65,8 @@ class FlowProcessor : Processor {
                     .filter { it.isInstruction(FLOW_CLASSES_JUMPS) }
                     .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction.get() is PUSH } }
                     .forEach {
-                        val targetInstruction = graph.edgeMapping.parameters(it)[0]?.instruction?.get()
-                        if (targetInstruction != null) {
-                            targetInstruction as PUSH
+                        graph.edgeMapping.parameters(it).elementAt(0)?.let { parameterNode ->
+                            val targetInstruction = parameterNode.instruction.get() as PUSH
                             val target = BigInteger(targetInstruction.bytes).toInt()
                             FLOW_TYPE_MAPPING[it.instruction.get().javaClass]?.let { edgeFlowType ->
                                 val edgeFlow = EdgeFlow(edgeFlowType, it.line, target)
