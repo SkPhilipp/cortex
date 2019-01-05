@@ -18,11 +18,6 @@ class GraphBlock {
     }
 
     override fun toString(): String {
-        val stringBuilder = StringBuilder()
-        for (graphNode in graphNodes) {
-            stringBuilder.append(graphNode)
-            stringBuilder.append('\n')
-        }
-        return "$stringBuilder"
+        return graphNodes.joinToString { "$it\n" }
     }
 }

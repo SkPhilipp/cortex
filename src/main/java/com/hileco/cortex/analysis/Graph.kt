@@ -79,11 +79,6 @@ class Graph() {
     }
 
     override fun toString(): String {
-        val stringBuilder = StringBuilder()
-        for (graphBlock in graphBlocks) {
-            stringBuilder.append(graphBlock)
-            stringBuilder.append("\n")
-        }
-        return "$stringBuilder"
+        return graphBlocks.joinToString { "$it\n" }
     }
 }
