@@ -8,7 +8,6 @@ class GraphBlock {
 
     fun include(lineOffset: Int, instructions: List<Instruction>) {
         for (i in instructions.indices) {
-
             val graphNode = GraphNode(instructions[i], lineOffset + i)
             graphNodes.add(graphNode)
         }

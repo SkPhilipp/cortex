@@ -42,7 +42,7 @@ class FlowProcessor : Processor {
         // other flow instructions
         graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
-                    .filter { it.isInstruction(FLOW_CLASSES_OTHERS) }
+                    .filter { it.instruction::class.java in FLOW_CLASSES_OTHERS }
                     .forEach {
                         val blockStart = graphBlock.graphNodes[0].line
                         val instructionClass = it.instruction.javaClass
@@ -50,7 +50,7 @@ class FlowProcessor : Processor {
                             val edgeFlow = EdgeFlow(edgeFlowType, it.line, null)
                             graph.edgeMapping.add(it, edgeFlow)
                             graphEdge.map(edgeFlow)
-                            if (it.isInstruction(*GUARANTEED_ENDS)) {
+                            if (it.instruction::class.java in GUARANTEED_ENDS) {
                                 val blockPartEdgeFlow = EdgeFlow(BLOCK_PART, blockStart, it.line)
                                 graph.edgeMapping.add(it, blockPartEdgeFlow)
                                 graphEdge.map(blockPartEdgeFlow)
@@ -62,7 +62,7 @@ class FlowProcessor : Processor {
         // map jumps to blocks
         graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
-                    .filter { it.isInstruction(FLOW_CLASSES_JUMPS) }
+                    .filter { it.instruction::class.java in FLOW_CLASSES_JUMPS }
                     .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction is PUSH } }
                     .forEach {
                         graph.edgeMapping.parameters(it).elementAt(0)?.let { parameterNode ->
@@ -83,7 +83,7 @@ class FlowProcessor : Processor {
             if (!graphNodes.isEmpty()) {
                 val graphBlockStart = graphNodes[0].line
                 graphNodes.asSequence()
-                        .filter { graphNode -> graphNode.isInstruction(FLOW_CLASSES_JUMPS) }
+                        .filter { it.instruction::class.java in FLOW_CLASSES_JUMPS }
                         .forEach { graphNode ->
                             val edgeFlow = EdgeFlow(BLOCK_PART, graphBlockStart, graphNode.line)
                             graphEdge.map(edgeFlow)
@@ -101,7 +101,7 @@ class FlowProcessor : Processor {
                 val graphNodesB = graphBlockB.graphNodes
                 if (!graphNodesA.isEmpty()
                         && !graphNodesB.isEmpty()
-                        && graphNodesA.none { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
+                        && graphNodesA.none { it.instruction::class.java in GUARANTEED_ENDS }) {
                     // TODO: Don't map blocks to block here; instead if a block contains no guaranteed ends
                     // TODO:   it should inherit all the mappings of the next block, continuing until either
                     // TODO:   the last block is reached or a block is found which does contain a guaranteed end
@@ -125,7 +125,7 @@ class FlowProcessor : Processor {
         // map the last block's start to the program end (if such end is possible)
         if (graphBlocksLimit > 0) {
             val graphBlockEnd = graphBlocks[graphBlocks.size - 1]
-            if (graphBlockEnd.graphNodes.none { graphNode -> graphNode.isInstruction(*GUARANTEED_ENDS) }) {
+            if (graphBlockEnd.graphNodes.none { it.instruction::class.java in GUARANTEED_ENDS }) {
                 val graphNode = graphBlockEnd.graphNodes[0]
                 val edgeFlow = EdgeFlow(EdgeFlowType.END, graphNode.line, null)
                 graph.edgeMapping.add(graphBlockEnd, edgeFlow)
@@ -139,7 +139,7 @@ class FlowProcessor : Processor {
     companion object {
         private val FLOW_CLASSES_JUMPS = setOf(JUMP::class.java, JUMP_IF::class.java)
         private val FLOW_CLASSES_OTHERS = setOf(HALT::class.java, EXIT::class.java, CALL_RETURN::class.java, CALL::class.java)
-        private val GUARANTEED_ENDS = arrayOf(JUMP::class.java, HALT::class.java, EXIT::class.java, CALL_RETURN::class.java)
+        private val GUARANTEED_ENDS = setOf(JUMP::class.java, HALT::class.java, EXIT::class.java, CALL_RETURN::class.java)
         private val FLOW_TYPE_MAPPING = mapOf(
                 CALL::class.java to INSTRUCTION_CALL,
                 CALL_RETURN::class.java to INSTRUCTION_CALL_RETURN,
