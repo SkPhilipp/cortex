@@ -19,17 +19,16 @@ class ParameterProcessor : Processor {
             val stack = LayeredStack<GraphNode>()
             val graphNodes = graphBlock.graphNodes
             for (graphNode in graphNodes) {
-                val instruction = graphNode.instruction.get()
-                if (instruction is JUMP_DESTINATION || instruction is SWAP) {
+                if (graphNode.instruction is JUMP_DESTINATION || graphNode.instruction is SWAP) {
                     stack.clear()
                     continue
                 }
-                if (instruction is DUPLICATE) {
+                if (graphNode.instruction is DUPLICATE) {
                     stack.clear()
                     stack.push(graphNode)
                     continue
                 }
-                val stackTakes = instruction.stackParameters.size
+                val stackTakes = graphNode.instruction.stackParameters.size
                 if (stackTakes > 0) {
                     val parameters = ArrayList<GraphNode?>()
                     val stackSize = stack.size()
@@ -46,7 +45,7 @@ class ParameterProcessor : Processor {
                     graph.edgeMapping.add(graphNode, EdgeParameters(parameters))
                     stack.clear()
                 }
-                if (!instruction.stackAdds.isEmpty()) {
+                if (!graphNode.instruction.stackAdds.isEmpty()) {
                     stack.push(graphNode)
                 }
             }

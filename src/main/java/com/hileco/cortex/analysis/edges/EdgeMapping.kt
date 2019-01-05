@@ -61,7 +61,7 @@ class EdgeMapping {
     // TODO: And ensure that all child parameter do not have multiple parameter-consumers
     fun isSelfContained(graphNode: GraphNode): Boolean {
         return fully(graphNode) {
-            setOf(ProgramZone.STACK).containsAll(it.instruction.get().instructionModifiers) && it.instruction.get() !is SWAP
+            setOf(ProgramZone.STACK).containsAll(it.instruction.instructionModifiers) && it.instruction !is SWAP
         }
     }
 
@@ -83,7 +83,7 @@ class EdgeMapping {
         addInstructionsByLine(graphNode, list)
         return list.asSequence()
                 .sortedBy { it.line }
-                .map { it.instruction.get() }
+                .map { it.instruction }
                 .toList()
     }
 

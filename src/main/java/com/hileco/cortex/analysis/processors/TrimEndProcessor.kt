@@ -13,13 +13,12 @@ class TrimEndProcessor : Processor {
         graph.graphBlocks.forEach { graphBlock ->
             val trim = AtomicBoolean(false)
             graphBlock.graphNodes.forEach { graphNode ->
-                val instruction = graphNode.instruction
                 if (trim.get()) {
-                    instruction.set(NOOP())
-                } else if (instruction.get() is JUMP
-                        || instruction.get() is HALT
-                        || instruction.get() is EXIT
-                        || instruction.get() is CALL_RETURN) {
+                    graphNode.instruction = NOOP()
+                } else if (graphNode.instruction is JUMP
+                        || graphNode.instruction is HALT
+                        || graphNode.instruction is EXIT
+                        || graphNode.instruction is CALL_RETURN) {
                     trim.set(true)
                 }
             }

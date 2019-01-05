@@ -49,7 +49,7 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
 
     companion object {
         val TARGET_IS_HALT_WINNER: (GraphNode) -> Boolean = {
-            val instruction = it.instruction.get()
+            val instruction = it.instruction
             instruction is HALT && instruction.reason == ProgramException.Reason.WINNER
         }
     }

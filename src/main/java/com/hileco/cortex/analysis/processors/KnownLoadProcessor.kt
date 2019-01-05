@@ -11,18 +11,18 @@ class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInt
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
-                    .filter { it.instruction.get() is LOAD }
-                    .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction.get() is PUSH } }
+                    .filter { it.instruction is LOAD }
+                    .filter { graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction is PUSH } }
                     .forEach {
                         val pushGraphNode = graph.edgeMapping.parameters(it).first()
                         if (pushGraphNode != null) {
-                            val load = it.instruction.get() as LOAD
-                            val push = pushGraphNode.instruction.get() as PUSH
+                            val load = it.instruction as LOAD
+                            val push = pushGraphNode.instruction as PUSH
                             val address = BigInteger(push.bytes)
                             knownData[load.programStoreZone]?.let { knownDataMap ->
                                 knownDataMap[address]?.let { knownData: BigInteger ->
-                                    pushGraphNode.instruction.set(NOOP())
-                                    it.instruction.set(PUSH(knownData.toByteArray()))
+                                    pushGraphNode.instruction = NOOP()
+                                    it.instruction = PUSH(knownData.toByteArray())
                                 }
                             }
                         }

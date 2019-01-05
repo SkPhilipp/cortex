@@ -8,10 +8,10 @@ class DeadSwapProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.flatMap { it.graphNodes }
                 .filter {
-                    val instruction = it.instruction.get()
+                    val instruction = it.instruction
                     instruction is SWAP && instruction.topOffsetLeft == instruction.topOffsetRight
                 }
-                .forEach { it.instruction.set(NOOP()) }
+                .forEach { it.instruction = NOOP() }
     }
 }
 

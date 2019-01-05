@@ -25,7 +25,7 @@ class VisualGraph {
         val lines = ArrayList<Int>()
         for (graphNode in graphBlock.graphNodes) {
             lines.add(graphNode.line)
-            records.add(rec(graphNode.line.toString(), "${graphNode.line}: ${graphNode.instruction.get()}"))
+            records.add(rec(graphNode.line.toString(), "${graphNode.line}: ${graphNode.instruction}"))
         }
         val node = node("${lines.first()}")
                 .with(Records.of(*records.toTypedArray()))

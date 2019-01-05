@@ -4,32 +4,31 @@ import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 
 class Graph() {
     val graphBlocks: MutableList<GraphBlock> = ArrayList()
     val edgeMapping: EdgeMapping = EdgeMapping()
 
     constructor(instructions: List<Instruction>) : this() {
-        val block = ArrayList<AtomicReference<Instruction>>()
+        val block = ArrayList<Instruction>()
         var currentBlockLine = 0
         for (currentLine in 0 until instructions.size) {
-            val instructionReference = AtomicReference(instructions[currentLine])
-            if (instructionReference.get() is JUMP_DESTINATION) {
+            val instruction = instructions[currentLine]
+            if (instruction is JUMP_DESTINATION) {
                 if (!block.isEmpty()) {
                     includeAsBlock(currentBlockLine, block)
                     currentBlockLine = currentLine
                 }
                 block.clear()
             }
-            block.add(instructionReference)
+            block.add(instruction)
         }
         if (!block.isEmpty()) {
             includeAsBlock(currentBlockLine, block)
         }
     }
 
-    private fun includeAsBlock(line: Int, instructions: List<AtomicReference<Instruction>>) {
+    private fun includeAsBlock(line: Int, instructions: List<Instruction>) {
         val block = GraphBlock()
         block.include(line, instructions)
         graphBlocks.add(block)
@@ -75,7 +74,7 @@ class Graph() {
     fun toInstructions(): List<Instruction> {
         return graphBlocks.asSequence()
                 .flatMap { it.graphNodes.asSequence() }
-                .map { it.instruction.get() }
+                .map { it.instruction }
                 .toList()
     }
 

@@ -15,7 +15,7 @@ class KnownJumpIfProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
-                    .filter { it.instruction.get() is JUMP_IF }
+                    .filter { it.instruction is JUMP_IF }
                     .filter { graph.edgeMapping.hasOneParameter(it, JUMP_IF.CONDITION.position) { parameter -> graph.edgeMapping.isSelfContained(parameter) } }
                     .forEach {
                         val decidingNode = graph.edgeMapping.parameters(it).elementAt(1)
@@ -31,10 +31,10 @@ class KnownJumpIfProcessor : Processor {
                             }
                             val result = programContext.stack.peek()
                             if (BigInteger(result) > BigInteger.ZERO) {
-                                graph.edgeMapping.fully(decidingNode) { node -> node.instruction.set(NOOP()); true }
-                                it.instruction.set(JUMP())
+                                graph.edgeMapping.fully(decidingNode) { node -> node.instruction = NOOP(); true }
+                                it.instruction = JUMP()
                             } else {
-                                graph.edgeMapping.fully(it) { node -> node.instruction.set(NOOP()); true }
+                                graph.edgeMapping.fully(it) { node -> node.instruction = NOOP(); true }
                             }
                         }
                     }

@@ -17,9 +17,9 @@ class JumpIllegalProcessor : Processor {
                 if (sourceNode != null) {
                     val targetedNode = edgeFlowMapping.nodeLineMapping[onlyJumpEdgeFlow.target]
                     if (targetedNode == null) {
-                        sourceNode.instruction.set(HALT(ProgramException.Reason.JUMP_OUT_OF_BOUNDS))
-                    } else if (targetedNode.instruction.get() !is JUMP_DESTINATION) {
-                        sourceNode.instruction.set(HALT(ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION))
+                        sourceNode.instruction = HALT(ProgramException.Reason.JUMP_OUT_OF_BOUNDS)
+                    } else if (targetedNode.instruction !is JUMP_DESTINATION) {
+                        sourceNode.instruction = HALT(ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION)
                     }
                 }
             }

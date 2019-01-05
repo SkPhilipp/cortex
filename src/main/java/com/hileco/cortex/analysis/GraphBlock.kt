@@ -2,15 +2,14 @@ package com.hileco.cortex.analysis
 
 import com.hileco.cortex.instructions.Instruction
 import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 
 class GraphBlock {
     val graphNodes: MutableList<GraphNode> = ArrayList()
 
-    fun include(lineOffset: Int, instructions: List<AtomicReference<Instruction>>) {
+    fun include(lineOffset: Int, instructions: List<Instruction>) {
         for (i in instructions.indices) {
-            val instructionReference = instructions[i]
-            val graphNode = GraphNode(instructionReference, lineOffset + i)
+
+            val graphNode = GraphNode(instructions[i], lineOffset + i)
             graphNodes.add(graphNode)
         }
     }

@@ -14,7 +14,7 @@ class JumpUnreachableProcessor : Processor {
             graph.graphBlocks.forEach { graphBlock ->
                 graphBlock.graphNodes.firstOrNull()?.let { startingNode ->
                     if (!targets.contains(startingNode.line)) {
-                        graphBlock.graphNodes.forEach { graphNode -> graphNode.instruction.set(NOOP()) }
+                        graphBlock.graphNodes.forEach { graphNode -> graphNode.instruction = NOOP() }
                     }
                 }
             }

@@ -14,7 +14,7 @@ import com.hileco.cortex.vm.VirtualMachine
 class KnownProcessor : Processor {
     private fun noopDownwards(edgeMapping: EdgeMapping, graphNode: GraphNode) {
         edgeMapping.remove(graphNode, EdgeParameters::class.java)
-        graphNode.instruction.set(NOOP())
+        graphNode.instruction = NOOP()
         edgeMapping.parameters(graphNode)
                 .filterNotNull()
                 .forEach { noopDownwards(edgeMapping, it) }
@@ -33,7 +33,7 @@ class KnownProcessor : Processor {
                         programRunner.run()
                         val stackElement = Sequence { programContext.stack.iterator() }.singleOrNull()
                         if (stackElement != null) {
-                            graphNode.instruction.set(PUSH(stackElement))
+                            graphNode.instruction = PUSH(stackElement)
                             graph.edgeMapping.parameters(graphNode)
                                     .filterNotNull()
                                     .forEach { noopDownwards(graph.edgeMapping, it) }
