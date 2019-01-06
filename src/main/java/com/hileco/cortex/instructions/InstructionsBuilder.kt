@@ -1,10 +1,15 @@
 package com.hileco.cortex.instructions
 
 import com.hileco.cortex.instructions.conditions.IS_ZERO
+import com.hileco.cortex.instructions.io.LOAD
+import com.hileco.cortex.instructions.io.SAVE
 import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
+import com.hileco.cortex.instructions.math.ADD
+import com.hileco.cortex.instructions.math.SUBTRACT
 import com.hileco.cortex.instructions.stack.PUSH
+import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
 import java.util.*
 
@@ -35,6 +40,24 @@ class InstructionsBuilder {
         include { JUMP_DESTINATION() }
     }
 
+    fun increment(programStoreZone: ProgramStoreZone, address: ByteArray) {
+        include { PUSH(address) }
+        include { LOAD(programStoreZone) }
+        include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+        include { ADD() }
+        include { PUSH(address) }
+        include { SAVE(programStoreZone) }
+    }
+
+    fun decrement(programStoreZone: ProgramStoreZone, address: ByteArray) {
+        include { PUSH(address) }
+        include { LOAD(programStoreZone) }
+        include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+        include { SUBTRACT() }
+        include { PUSH(address) }
+        include { SAVE(programStoreZone) }
+    }
+
     fun includeLoop(loopBody: (InstructionsBuilder) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
         markLabel(startLabel)
@@ -57,13 +80,13 @@ class InstructionsBuilder {
         markLabel(endLabel)
     }
 
-    fun includeIf(condition: (InstructionsBuilder) -> Unit, content: (InstructionsBuilder) -> Unit) {
+    fun includeIf(conditionBody: (InstructionsBuilder) -> Unit, blockBody: (InstructionsBuilder) -> Unit) {
         val endLabel = UUID.randomUUID().toString()
-        condition(this)
+        conditionBody(this)
         include { IS_ZERO() }
         pushLabel(endLabel)
         include { JUMP_IF() }
-        content(this)
+        blockBody(this)
         markLabel(endLabel)
     }
 
