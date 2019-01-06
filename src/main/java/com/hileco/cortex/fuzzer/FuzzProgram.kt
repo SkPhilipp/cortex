@@ -24,18 +24,18 @@ enum class FuzzProgram(private val chance: Double,
         functions.forEach { address ->
             context.currentBuilder().include { PUSH(context.random().toByteArray()) }
             context.currentBuilder().include { EQUALS() }
-            context.currentBuilder().PUSH_LABEL("$address")
+            context.currentBuilder().pushLabel("$address")
             context.currentBuilder().include { JUMP_IF() }
         }
-        context.currentBuilder().PUSH_LABEL(PROGRAM_END_LABEL)
+        context.currentBuilder().pushLabel(PROGRAM_END_LABEL)
         context.currentBuilder().include { JUMP() }
         functions.forEach { address ->
-            context.currentBuilder().MARK_LABEL("$address")
+            context.currentBuilder().markLabel("$address")
             context.randomFuzzFunction()(context)
-            context.currentBuilder().PUSH_LABEL(PROGRAM_END_LABEL)
+            context.currentBuilder().pushLabel(PROGRAM_END_LABEL)
             context.currentBuilder().include { JUMP() }
         }
-        context.currentBuilder().MARK_LABEL(PROGRAM_END_LABEL)
+        context.currentBuilder().markLabel(PROGRAM_END_LABEL)
     }),
 
     FUNCTION(1.0, { context ->

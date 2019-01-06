@@ -27,14 +27,16 @@ class AttackerTest {
                 JumpUnreachableProcessor()
         ))
         val instructionsBuilder = InstructionsBuilder()
-        instructionsBuilder.IF({ conditionBuilder ->
-            conditionBuilder.include(listOf(PUSH(BigInteger.valueOf(2).toByteArray()),
-                    PUSH(BigInteger.valueOf(1).toByteArray()),
-                    LOAD(CALL_DATA),
-                    DIVIDE(),
-                    PUSH(BigInteger.valueOf(12345).toByteArray()),
-                    EQUALS()))
-        }, { contentBuilder -> contentBuilder.include(listOf(HALT(WINNER))) })
+        instructionsBuilder.includeIf({ conditionBuilder ->
+            conditionBuilder.include { PUSH(BigInteger.valueOf(2).toByteArray()) }
+            conditionBuilder.include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+            conditionBuilder.include { LOAD(CALL_DATA) }
+            conditionBuilder.include { DIVIDE() }
+            conditionBuilder.include { PUSH(BigInteger.valueOf(12345).toByteArray()) }
+            conditionBuilder.include { EQUALS() }
+        }, { contentBuilder ->
+            contentBuilder.include { HALT(WINNER) }
+        })
         val instructions = instructionsBuilder.build()
         val graph = graphBuilder.build(instructions)
         val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)

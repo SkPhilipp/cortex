@@ -37,16 +37,13 @@ class BarrierTest {
     @Test
     fun barrier02BasicMaths() {
         val builder = InstructionsBuilder()
-        builder.IF({
-            builder.include(
-                    listOf(
-                            PUSH(BigInteger.valueOf(2).toByteArray()),
-                            PUSH(BigInteger.valueOf(1).toByteArray()),
-                            LOAD(CALL_DATA),
-                            DIVIDE(),
-                            PUSH(BigInteger.valueOf(12345).toByteArray()),
-                            EQUALS())
-            )
+        builder.includeIf({
+            builder.include { PUSH(BigInteger.valueOf(2).toByteArray()) }
+            builder.include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+            builder.include { LOAD(CALL_DATA) }
+            builder.include { DIVIDE() }
+            builder.include { PUSH(BigInteger.valueOf(12345).toByteArray()) }
+            builder.include { EQUALS() }
         }, {
             builder.include { HALT(WINNER) }
         })
@@ -56,16 +53,13 @@ class BarrierTest {
     @Test
     fun barrier03OverflowMaths() {
         val builder = InstructionsBuilder()
-        builder.IF({
-            builder.include(
-                    listOf(
-                            PUSH(VirtualMachine.NUMERICAL_LIMIT.min(BigInteger.ONE).toByteArray()),
-                            PUSH(BigInteger.valueOf(1).toByteArray()),
-                            LOAD(CALL_DATA),
-                            ADD(),
-                            PUSH(BigInteger.valueOf(12345).toByteArray()),
-                            EQUALS())
-            )
+        builder.includeIf({
+            builder.include { PUSH(VirtualMachine.NUMERICAL_LIMIT.minus(BigInteger.ONE).toByteArray()) }
+            builder.include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+            builder.include { LOAD(CALL_DATA) }
+            builder.include { ADD() }
+            builder.include { PUSH(BigInteger.valueOf(12345).toByteArray()) }
+            builder.include { EQUALS() }
         }, {
             builder.include { HALT(WINNER) }
         })
@@ -74,41 +68,33 @@ class BarrierTest {
 
     @Test
     fun barrier04Loops() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier05InfiniteLoops() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier06Memory() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier07Library() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier08PredictableRandomness() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier09PermanentDisk() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier10DynamicDisk() {
-        TODO("Implement")
     }
 
     @Test
     fun barrier11MultipleCalls() {
-        TODO("Implement")
     }
 }

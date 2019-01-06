@@ -16,7 +16,7 @@ class InstructionsBuilder {
         instructions.add(supplier)
     }
 
-    fun PUSH_LABEL(name: String) {
+    fun pushLabel(name: String) {
         include {
             val address = labelAddresses[name]
             if (address == null) {
@@ -27,7 +27,7 @@ class InstructionsBuilder {
         }
     }
 
-    fun MARK_LABEL(name: String) {
+    fun markLabel(name: String) {
         if (labelAddresses.containsKey(name)) {
             throw IllegalArgumentException("Name $name is already taken")
         }
@@ -35,36 +35,36 @@ class InstructionsBuilder {
         include { JUMP_DESTINATION() }
     }
 
-    fun LOOP(loopBody: (InstructionsBuilder) -> Unit) {
+    fun includeLoop(loopBody: (InstructionsBuilder) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
-        MARK_LABEL(startLabel)
+        markLabel(startLabel)
         loopBody(this)
-        PUSH_LABEL(startLabel)
+        pushLabel(startLabel)
         include { JUMP() }
     }
 
-    fun LOOP(conditionBody: (InstructionsBuilder) -> Unit, loopBody: (InstructionsBuilder) -> Unit) {
+    fun includeLoop(conditionBody: (InstructionsBuilder) -> Unit, loopBody: (InstructionsBuilder) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
         val endLabel = UUID.randomUUID().toString()
-        MARK_LABEL(startLabel)
+        markLabel(startLabel)
         conditionBody(this)
         include { IS_ZERO() }
-        PUSH_LABEL(endLabel)
+        pushLabel(endLabel)
         include { JUMP_IF() }
         loopBody(this)
-        PUSH_LABEL(startLabel)
+        pushLabel(startLabel)
         include { JUMP() }
-        MARK_LABEL(endLabel)
+        markLabel(endLabel)
     }
 
-    fun IF(condition: (InstructionsBuilder) -> Unit, content: (InstructionsBuilder) -> Unit) {
+    fun includeIf(condition: (InstructionsBuilder) -> Unit, content: (InstructionsBuilder) -> Unit) {
         val endLabel = UUID.randomUUID().toString()
         condition(this)
         include { IS_ZERO() }
-        PUSH_LABEL(endLabel)
+        pushLabel(endLabel)
         include { JUMP_IF() }
         content(this)
-        MARK_LABEL(endLabel)
+        markLabel(endLabel)
     }
 
     fun size(): Int {
@@ -73,9 +73,5 @@ class InstructionsBuilder {
 
     fun build(): List<Instruction> {
         return instructions.map { it() }
-    }
-
-    fun include(others: List<Instruction>) {
-        others.forEach { instruction -> instructions.add { instruction } }
     }
 }
