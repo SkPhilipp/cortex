@@ -30,7 +30,7 @@ class RunCommand : CliktCommand(name = "run", help = "Generate input for a given
         val program = Program(instructions)
         val programContext = ProgramContext(program)
         val processContext = VirtualMachine(programContext)
-        programContext.callData.write(0, callData.bytes)
+        programContext.callData.write(0, callData.read(0, callData.size))
         val programRunner = ProgramRunner(processContext)
         try {
             programRunner.run()

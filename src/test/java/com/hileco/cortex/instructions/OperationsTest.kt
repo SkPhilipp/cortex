@@ -442,13 +442,11 @@ class OperationsTest {
     }
 
     @Test
-    @Throws(ProgramException::class)
     fun runSaveAndLoad() {
         val instructions = listOf(
-                PUSH(BigInteger("10032157633811666223373963209218291332868453566459764444214480010939495088128").toByteArray()),
+                PUSH(BigInteger.valueOf(10).toByteArray()),
                 PUSH(BigInteger.valueOf(1234).toByteArray()),
                 SAVE(MEMORY),
-                PUSH(byteArrayOf(10)),
                 PUSH(BigInteger.valueOf(1234).toByteArray()),
                 LOAD(MEMORY)
         )
@@ -461,7 +459,7 @@ class OperationsTest {
                         " address to read from the area specified ($MEMORY, $DISK, or $CALL_DATA).")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 2)
-        Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
+        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(10))
     }
 }

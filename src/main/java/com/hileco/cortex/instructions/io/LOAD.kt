@@ -23,12 +23,15 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
         }
         val addressBytes = program.stack.pop()
         val address = BigInteger(addressBytes)
-        val layeredBytes: LayeredBytes = when (programStoreZone) {
+        val storage: LayeredBytes = when (programStoreZone) {
             ProgramStoreZone.MEMORY -> program.memory
             ProgramStoreZone.DISK -> program.program.storage
             ProgramStoreZone.CALL_DATA -> program.callData
         }
-        val bytes = layeredBytes.read(address.toInt(), SIZE)
+        if(address.toInt() * SIZE + SIZE > storage.size) {
+            throw ProgramException(program, ProgramException.Reason.STORAGE_ACCESS_OUT_OF_BOUNDS)
+        }
+        val bytes = storage.read(address.toInt() * SIZE, SIZE)
         program.stack.push(bytes)
     }
 

@@ -2,13 +2,15 @@ package com.hileco.cortex.vm.layer
 
 import java.util.*
 
-class LayeredBytes(var bytes: ByteArray = ByteArray(DEFAULT_TOTAL_SIZE)) {
+class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) {
+    val bytes: ByteArray by lazy { ByteArray(size) }
+
     fun read(offset: Int, length: Int): ByteArray {
         return Arrays.copyOfRange(bytes, offset, offset + length)
     }
 
     fun clear() {
-        bytes = ByteArray(DEFAULT_TOTAL_SIZE)
+        System.arraycopy(ByteArray(size), 0, bytes, 0, size)
     }
 
     fun write(offset: Int, bytesToWrite: ByteArray, writeLength: Int = bytesToWrite.size) {
@@ -28,6 +30,6 @@ class LayeredBytes(var bytes: ByteArray = ByteArray(DEFAULT_TOTAL_SIZE)) {
     }
 
     companion object {
-        const val DEFAULT_TOTAL_SIZE = 8192
+        const val DEFAULT_TOTAL_SIZE = 262144
     }
 }

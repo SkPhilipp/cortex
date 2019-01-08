@@ -20,13 +20,17 @@ class SAVE(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
         }
         val addressBytes = program.stack.pop()!!
         val address = BigInteger(addressBytes)
-        val layeredBytes: LayeredBytes = when (programStoreZone) {
+        val storage: LayeredBytes = when (programStoreZone) {
             ProgramStoreZone.MEMORY -> program.memory
             ProgramStoreZone.DISK -> program.program.storage
             ProgramStoreZone.CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $programStoreZone")
         }
         val bytes = program.stack.pop()!!
-        layeredBytes.write(address.toInt(), bytes)
+        val alignmentOffset = LOAD.SIZE - bytes.size
+        if (address.toInt() * LOAD.SIZE + alignmentOffset + bytes.size > storage.size) {
+            throw ProgramException(program, ProgramException.Reason.STORAGE_ACCESS_OUT_OF_BOUNDS)
+        }
+        storage.write(address.toInt() * LOAD.SIZE + alignmentOffset, bytes)
     }
 
     companion object {

@@ -9,6 +9,7 @@ class ProgramException(val programContext: ProgramContext,
 
     enum class Reason {
         JUMP_TO_ILLEGAL_INSTRUCTION,
+        STORAGE_ACCESS_OUT_OF_BOUNDS,
         JUMP_OUT_OF_BOUNDS,
         INSTRUCTION_LIMIT_REACHED_ON_PROCESS_LEVEL,
         INSTRUCTION_LIMIT_REACHED_ON_PROGRAM_LEVEL,
