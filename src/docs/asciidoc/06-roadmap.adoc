@@ -2,26 +2,34 @@
 
 === Core
 
-* Functionality to store and load Virtual Machine state (to and from file, using - to mark standard input and output)
+* Instructions as sealed class
+* Functionality to store resulting Virtual Machine state as a list of instructions, this would essentially allow saving of state
+* Functionality to run multiple programs in sequence on the same Virtual Machine, this would essentially allow loading of state
+* Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could
+  then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
+  Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
+  would have to be revisited. For example; KnownProcessor only replaces self-contained nodes if the result is a single stack element.
 
 === Instructions
 
 * Instruction to push a variable by name onto the stack (ie `VARIABLE TIME`)
-* EVM-based signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
-* Implement signed as well as unsigned byte math
-* Check for issues with current implementation in Java's signed byte math (ie byte = 127 should be an unsigned int of 255)
+* EVM-compatible signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
+* Interpret empty lines as NOOP and allow them in files
 
 === Graph
 
 * Implementation of fallthrough block start to ends mapping as described in FlowProcessor#116 through #118
 * Implementation of JumpThreadingProcessor
-* Processor to replace successive LOADs with DUP, where possible
+* Tests implemented for all Processors below
+* Processor to identify read-only elements in program store zones to eliminate known LOADs
+* Processor to identify write-only elements in program store zones to eliminate dead SAVEs
 * Processor to inline instructions from one program into another
-* Processor to remove instructions which modify a region of the stack never used
-* Processor to replace LOAD's with PUSH's, DUP's where an earlier SAVE writes the value
-* Processor to eliminate dead SAVE's
+* Processor to identify unused stack elements and remove instructions which place them
+* Processor to replace LOADs with PUSHs or DUPs where an earlier SAVE writes the value
 * Processor to eliminate dead code before a HALT or EXIT in the same block, which does not perform any kind of modification
-* Processor to replace VARIABLE's with known values
+* Processor to replace VARIABLEs with known values
+* Processor to hoist instructions over JUMP's and JUMP_IF's (to both destinations) where JUMP_DESTINATIONs are only reachable through a single path
+* Processor to eliminate instructions which are known to never be on a winning path (ex: a program with read-only functions)
 
 === Pathing System
 
