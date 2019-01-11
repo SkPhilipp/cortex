@@ -31,7 +31,7 @@ class TrimEndProcessorTest : ProcessorFuzzTest() {
 
         Documentation.of(TrimEndProcessor::class.simpleName!!)
                 .headingParagraph(TrimEndProcessor::class.simpleName!!)
-                .paragraph("Removes any instructions within the same jump-reachable block following another instruction that guarantees the instructions will" + " not be reached.")
+                .paragraph("Removes any instructions within the same jump-reachable block following another instruction that guarantees the instructions will not be reached.")
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
 

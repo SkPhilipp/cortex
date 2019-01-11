@@ -19,17 +19,10 @@
 === Graph
 
 * Implementation of fallthrough block start to ends mapping as described in FlowProcessor#116 through #118
-* Implementation of JumpThreadingProcessor
-* Tests implemented for all Processors below
-* Processor to identify read-only elements in program store zones to eliminate known LOADs
-* Processor to identify write-only elements in program store zones to eliminate dead SAVEs
-* Processor to inline instructions from one program into another
-* Processor to identify unused stack elements and remove instructions which place them
-* Processor to replace LOADs with PUSHs or DUPs where an earlier SAVE writes the value
-* Processor to eliminate dead code before a HALT or EXIT in the same block, which does not perform any kind of modification
+* Implementation of all @Ignore'd processor tests as well as their implementation
+* Processor to connect SAVEs and LOADs' spaces to eachother in order to begin analysis on data flow through program store zones
 * Processor to replace VARIABLEs with known values
-* Processor to hoist instructions over JUMP's and JUMP_IF's (to both destinations) where JUMP_DESTINATIONs are only reachable through a single path
-* Processor to eliminate instructions which are known to never be on a winning path (ex: a program with read-only functions)
+* Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
 
 === Pathing System
 
@@ -61,4 +54,3 @@
   - Conditions; basic `JUMP_IF` wrapping
   - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
   - Invalid instructions; ex: `JUMP` out of bounds
-
