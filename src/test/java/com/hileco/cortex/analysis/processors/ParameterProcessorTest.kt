@@ -18,8 +18,8 @@ class ParameterProcessorTest : ProcessorFuzzTest() {
         processors.add(ParameterProcessor())
         val graphBuilder = GraphBuilder(processors)
         val graph = graphBuilder.build(listOf(
-                PUSH(BigInteger.ONE.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(1),
+                PUSH(10),
                 JUMP_IF()
         ))
         val graphBlocks = graph.graphBlocks

@@ -43,7 +43,7 @@ class InstructionsBuilder {
     fun increment(programStoreZone: ProgramStoreZone, address: ByteArray) {
         include { PUSH(address) }
         include { LOAD(programStoreZone) }
-        include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+        include { PUSH(1) }
         include { ADD() }
         include { PUSH(address) }
         include { SAVE(programStoreZone) }
@@ -52,7 +52,7 @@ class InstructionsBuilder {
     fun decrement(programStoreZone: ProgramStoreZone, address: ByteArray) {
         include { PUSH(address) }
         include { LOAD(programStoreZone) }
-        include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+        include { PUSH(1) }
         include { SUBTRACT() }
         include { PUSH(address) }
         include { SAVE(programStoreZone) }

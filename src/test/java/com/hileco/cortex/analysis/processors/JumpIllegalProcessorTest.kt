@@ -20,9 +20,9 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
                 JumpIllegalProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.ZERO.toByteArray()),
+                PUSH(0),
                 JUMP(),
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -34,9 +34,9 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.ZERO.toByteArray()),
+                PUSH(0),
                 HALT(JUMP_TO_ILLEGAL_INSTRUCTION),
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         ))
     }
 
@@ -48,16 +48,16 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
                 JumpIllegalProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(10),
                 JUMP(),
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(10),
                 HALT(JUMP_OUT_OF_BOUNDS),
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         ))
     }
 

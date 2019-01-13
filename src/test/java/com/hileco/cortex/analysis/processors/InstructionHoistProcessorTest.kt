@@ -17,7 +17,7 @@ class InstructionHoistProcessorTest : ProcessorFuzzTest() {
                 InstructionHoistProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -29,7 +29,7 @@ class InstructionHoistProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         ))
     }
 

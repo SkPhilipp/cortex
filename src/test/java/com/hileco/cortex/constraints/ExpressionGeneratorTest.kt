@@ -18,8 +18,8 @@ class ExpressionGeneratorTest {
     @Test
     fun testParameterized() {
         val builder = ExpressionGenerator()
-        builder.addInstruction(PUSH(BigInteger.valueOf(123L).toByteArray()))
-        builder.addInstruction(PUSH(BigInteger.valueOf(123L).toByteArray()))
+        builder.addInstruction(PUSH(123))
+        builder.addInstruction(PUSH(123))
         builder.addInstruction(SUBTRACT())
         Assert.assertEquals("(123 - 123)", builder.currentExpression.toString())
     }
@@ -27,11 +27,11 @@ class ExpressionGeneratorTest {
     @Test
     fun testPop() {
         val builder = ExpressionGenerator()
-        builder.addInstruction(PUSH(BigInteger.valueOf(321L).toByteArray()))
-        builder.addInstruction(PUSH(BigInteger.valueOf(1L).toByteArray()))
+        builder.addInstruction(PUSH(321))
+        builder.addInstruction(PUSH(1))
         builder.addInstruction(POP())
-        builder.addInstruction(PUSH(BigInteger.valueOf(123L).toByteArray()))
-        builder.addInstruction(PUSH(BigInteger.valueOf(1L).toByteArray()))
+        builder.addInstruction(PUSH(123))
+        builder.addInstruction(PUSH(1))
         builder.addInstruction(POP())
         builder.addInstruction(SUBTRACT())
         Assert.assertEquals("(123 - 321)", builder.currentExpression.toString())
@@ -40,7 +40,7 @@ class ExpressionGeneratorTest {
     @Test
     fun testReferences() {
         val builder = ExpressionGenerator()
-        builder.addInstruction(PUSH(BigInteger.valueOf(10L).toByteArray()))
+        builder.addInstruction(PUSH(10))
         builder.addInstruction(LOAD(ProgramStoreZone.CALL_DATA))
         Assert.assertEquals("CALL_DATA[10]", builder.currentExpression.toString())
     }
@@ -48,7 +48,7 @@ class ExpressionGeneratorTest {
     @Test
     fun testMissing() {
         val builder = ExpressionGenerator()
-        builder.addInstruction(PUSH(BigInteger.valueOf(123L).toByteArray()))
+        builder.addInstruction(PUSH(123))
         builder.addInstruction(SUBTRACT())
         Assert.assertEquals("(123 - STACK[0])", builder.currentExpression.toString())
     }
@@ -56,11 +56,11 @@ class ExpressionGeneratorTest {
     @Test
     fun testMultipleExpressions() {
         val instructions = listOf(
-                PUSH(BigInteger.valueOf(456L).toByteArray()),
-                PUSH(BigInteger.valueOf(456L).toByteArray()),
+                PUSH(456),
+                PUSH(456),
                 ADD(),
-                PUSH(BigInteger.valueOf(123L).toByteArray()),
-                PUSH(BigInteger.valueOf(123L).toByteArray()),
+                PUSH(123),
+                PUSH(123),
                 SUBTRACT())
         val builder = ExpressionGenerator()
         instructions.forEach { builder.addInstruction(it) }
@@ -75,8 +75,8 @@ class ExpressionGeneratorTest {
     @Test
     fun testDuplicate() {
         val builder = ExpressionGenerator()
-        builder.addInstruction(PUSH(BigInteger.valueOf(456L).toByteArray()))
-        builder.addInstruction(PUSH(BigInteger.valueOf(456L).toByteArray()))
+        builder.addInstruction(PUSH(456))
+        builder.addInstruction(PUSH(456))
         builder.addInstruction(ADD())
         builder.addInstruction(DUPLICATE(0))
         Assert.assertEquals("(456 + 456)", builder.viewExpression(0).toString())
@@ -86,11 +86,11 @@ class ExpressionGeneratorTest {
     @Test
     fun testSwap() {
         val builder = ExpressionGenerator()
-        builder.addInstruction(PUSH(BigInteger.valueOf(456L).toByteArray()))
-        builder.addInstruction(PUSH(BigInteger.valueOf(456L).toByteArray()))
+        builder.addInstruction(PUSH(456))
+        builder.addInstruction(PUSH(456))
         builder.addInstruction(ADD())
-        builder.addInstruction(PUSH(BigInteger.valueOf(123L).toByteArray()))
-        builder.addInstruction(PUSH(BigInteger.valueOf(123L).toByteArray()))
+        builder.addInstruction(PUSH(123))
+        builder.addInstruction(PUSH(123))
         builder.addInstruction(SUBTRACT())
         builder.addInstruction(SWAP(0, 1))
         Assert.assertEquals("(123 - 123)", builder.viewExpression(1).toString())

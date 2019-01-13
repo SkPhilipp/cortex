@@ -11,6 +11,9 @@ import com.hileco.cortex.vm.VirtualMachine
 import java.math.BigInteger
 
 data class PUSH(val bytes: ByteArray) : Instruction() {
+
+    constructor(value: Long) : this(BigInteger.valueOf(value).toByteArray())
+
     override val stackAdds: List<Int>
         get() = listOf(-1)
 

@@ -2,7 +2,6 @@
 
 === Core
 
-* Instructions as sealed class
 * Functionality to store resulting Virtual Machine state as a list of instructions, this would essentially allow saving of state
 * Functionality to run multiple programs in sequence on the same Virtual Machine, this would essentially allow loading of state
 * Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could

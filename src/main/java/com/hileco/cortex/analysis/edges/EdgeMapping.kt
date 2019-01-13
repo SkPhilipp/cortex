@@ -34,7 +34,7 @@ class EdgeMapping {
     }
 
     fun <T : Edge> removeAll(type: Class<T>, predicate: (T) -> Boolean = { true }) {
-        mapping[type]?.forEach { entry -> entry.value.removeAll { type.isInstance(it) && predicate(it as T) } }
+        mapping[type]?.forEach { entry -> entry.value.removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) } }
     }
 
     fun <T : Edge> get(key: GraphNode, type: Class<T>): Sequence<T> {

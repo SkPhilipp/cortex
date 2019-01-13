@@ -20,11 +20,11 @@ class TrimEndProcessorTest : ProcessorFuzzTest() {
         ))
         val original = listOf(
                 EXIT(),
-                PUSH(BigInteger.TEN.toByteArray()),
-                PUSH(BigInteger.ONE.toByteArray()),
+                PUSH(10),
+                PUSH(1),
                 JUMP_DESTINATION(),
-                PUSH(BigInteger.TEN.toByteArray()),
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(10),
+                PUSH(1)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -40,8 +40,8 @@ class TrimEndProcessorTest : ProcessorFuzzTest() {
                 NOOP(),
                 NOOP(),
                 JUMP_DESTINATION(),
-                PUSH(BigInteger.TEN.toByteArray()),
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(10),
+                PUSH(1)
         ))
     }
 

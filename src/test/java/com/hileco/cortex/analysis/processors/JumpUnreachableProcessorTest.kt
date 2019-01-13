@@ -20,7 +20,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 JumpUnreachableProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.valueOf(3).toByteArray()),
+                PUSH(3),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
@@ -35,7 +35,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.valueOf(3).toByteArray()),
+                PUSH(3),
                 JUMP(),
                 NOOP(),
                 JUMP_DESTINATION()
@@ -50,13 +50,13 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 JumpUnreachableProcessor()
         ))
         val graph = graphBuilder.build(listOf(
-                PUSH(BigInteger.valueOf(2).toByteArray()),
+                PUSH(2),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
         ))
         Assert.assertEquals(graph.toInstructions(), listOf(
-                PUSH(BigInteger.valueOf(2).toByteArray()),
+                PUSH(2),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()

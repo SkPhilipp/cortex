@@ -23,7 +23,7 @@ class InstructionsBuilderTest {
                 PUSH(byteArrayOf(123)),
                 PUSH(byteArrayOf(123)),
                 EQUALS(),
-                PUSH(BigInteger.valueOf(10L).toByteArray()),
+                PUSH(10),
                 JUMP_IF(),
                 NOOP(),
                 NOOP(),
@@ -47,7 +47,7 @@ class InstructionsBuilderTest {
                 PUSH(byteArrayOf(123)),
                 PUSH(byteArrayOf(124)),
                 EQUALS(),
-                PUSH(BigInteger.valueOf(10L).toByteArray()),
+                PUSH(10),
                 JUMP_IF(),
                 NOOP(),
                 NOOP(),
@@ -76,7 +76,7 @@ class InstructionsBuilderTest {
                 PUSH(byteArrayOf(1, 0)),
                 EQUALS(),
                 IS_ZERO(),
-                PUSH(BigInteger.valueOf(1L).toByteArray()),
+                PUSH(1),
                 JUMP_IF()
         ))
         val programContext = ProgramContext(program)

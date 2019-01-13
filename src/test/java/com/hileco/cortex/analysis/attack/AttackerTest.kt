@@ -16,7 +16,6 @@ import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class AttackerTest {
     @Test
@@ -28,11 +27,11 @@ class AttackerTest {
         ))
         val instructionsBuilder = InstructionsBuilder()
         instructionsBuilder.includeIf({ conditionBuilder ->
-            conditionBuilder.include { PUSH(BigInteger.valueOf(2).toByteArray()) }
-            conditionBuilder.include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+            conditionBuilder.include { PUSH(2) }
+            conditionBuilder.include { PUSH(1) }
             conditionBuilder.include { LOAD(CALL_DATA) }
             conditionBuilder.include { DIVIDE() }
-            conditionBuilder.include { PUSH(BigInteger.valueOf(12345).toByteArray()) }
+            conditionBuilder.include { PUSH(12345) }
             conditionBuilder.include { EQUALS() }
         }, { contentBuilder ->
             contentBuilder.include { HALT(WINNER) }

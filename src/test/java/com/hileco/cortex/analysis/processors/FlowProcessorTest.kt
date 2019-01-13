@@ -19,11 +19,11 @@ class FlowProcessorTest : ProcessorFuzzTest() {
                 FlowProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.valueOf(3).toByteArray()),
+                PUSH(3),
                 JUMP(),
-                PUSH(BigInteger.valueOf(10).toByteArray()),
+                PUSH(10),
                 JUMP_DESTINATION(),
-                PUSH(BigInteger.valueOf(1).toByteArray()))
+                PUSH(1))
         val graph = graphBuilder.build(original)
         Documentation.of(FlowProcessor::class.simpleName!!)
                 .headingParagraph(FlowProcessor::class.simpleName!!)

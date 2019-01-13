@@ -29,7 +29,7 @@ enum class FuzzFunction(private val chance: Double,
             val choices = context.atlas().keySet()
             if (!choices.isEmpty()) {
                 val address = choices.toTypedArray()[context.randomIntBetween(0, choices.size)]
-                include { PUSH(BigInteger.ZERO.toByteArray()) }
+                include { PUSH(0) }
                 include { PUSH(address.toByteArray()) }
                 include { CALL() }
             } else {

@@ -20,7 +20,7 @@ class KnownLoadProcessorTest : ProcessorFuzzTest() {
                 KnownLoadProcessor(configuration)
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray()),
+                PUSH(1),
                 LOAD(DISK)
         )
         val graph = graphBuilder.build(original)
@@ -33,7 +33,7 @@ class KnownLoadProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
         Assert.assertEquals(instructions, listOf(
                 NOOP(),
-                PUSH(BigInteger.ZERO.toByteArray())
+                PUSH(0)
         ))
     }
 

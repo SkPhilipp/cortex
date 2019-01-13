@@ -15,10 +15,10 @@ class SolverTest {
     @Test
     fun testSolve() {
         val instructions = listOf(
-                PUSH(BigInteger.valueOf(10L).toByteArray()),
-                PUSH(BigInteger.valueOf(0xffffffL).toByteArray()),
-                PUSH(BigInteger.valueOf(10L).toByteArray()),
-                PUSH(BigInteger.valueOf(0L).toByteArray()),
+                PUSH(10),
+                PUSH(0xffffff),
+                PUSH(10),
+                PUSH(0),
                 LOAD(CALL_DATA),
                 ADD(),
                 MODULO(),

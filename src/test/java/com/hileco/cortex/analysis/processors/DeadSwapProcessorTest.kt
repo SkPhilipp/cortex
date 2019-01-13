@@ -18,8 +18,8 @@ class DeadSwapProcessorTest : ProcessorFuzzTest() {
 
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(1),
+                PUSH(10),
                 SWAP(0, 0)
         )
         val graph = graphBuilder.build(original)
@@ -32,8 +32,8 @@ class DeadSwapProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.ONE.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(1),
+                PUSH(10),
                 NOOP()
         ))
     }

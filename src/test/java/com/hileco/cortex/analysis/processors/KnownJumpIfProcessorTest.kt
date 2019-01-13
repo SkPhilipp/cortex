@@ -20,8 +20,8 @@ class KnownJumpIfProcessorTest : ProcessorFuzzTest() {
 
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(1),
+                PUSH(10),
                 JUMP_IF()
         )
         val graph = graphBuilder.build(original)
@@ -35,7 +35,7 @@ class KnownJumpIfProcessorTest : ProcessorFuzzTest() {
 
         Assert.assertEquals(instructions, listOf(
                 NOOP(),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(10),
                 JUMP()
         ))
     }

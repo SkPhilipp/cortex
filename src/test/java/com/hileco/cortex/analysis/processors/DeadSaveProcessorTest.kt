@@ -22,7 +22,7 @@ class DeadSaveProcessorTest : ProcessorFuzzTest() {
                 DeadSaveProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -34,7 +34,7 @@ class DeadSaveProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         ))
     }
 

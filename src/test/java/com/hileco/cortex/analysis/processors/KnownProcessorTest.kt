@@ -8,8 +8,6 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
-import java.math.BigInteger
-
 class KnownProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
@@ -18,8 +16,8 @@ class KnownProcessorTest : ProcessorFuzzTest() {
                 KnownProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(1),
+                PUSH(10),
                 ADD()
         )
         val graph = graphBuilder.build(original)
@@ -32,7 +30,7 @@ class KnownProcessorTest : ProcessorFuzzTest() {
         Assert.assertEquals(instructions, listOf(
                 NOOP(),
                 NOOP(),
-                PUSH(BigInteger.valueOf(11).toByteArray())
+                PUSH(11)
         ))
     }
 

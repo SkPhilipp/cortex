@@ -41,11 +41,11 @@ class BarrierTest {
     fun barrier02BasicMaths() {
         val builder = InstructionsBuilder()
         builder.includeIf(conditionBody = {
-            builder.include { PUSH(BigInteger.valueOf(2).toByteArray()) }
-            builder.include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+            builder.include { PUSH(2) }
+            builder.include { PUSH(1) }
             builder.include { LOAD(CALL_DATA) }
             builder.include { DIVIDE() }
-            builder.include { PUSH(BigInteger.valueOf(12345).toByteArray()) }
+            builder.include { PUSH(12345) }
             builder.include { EQUALS() }
         }, blockBody = {
             builder.include { HALT(WINNER) }
@@ -58,10 +58,10 @@ class BarrierTest {
         val builder = InstructionsBuilder()
         builder.includeIf(conditionBody = {
             builder.include { PUSH(VirtualMachine.NUMERICAL_LIMIT.minus(BigInteger.ONE).toByteArray()) }
-            builder.include { PUSH(BigInteger.valueOf(1).toByteArray()) }
+            builder.include { PUSH(1) }
             builder.include { LOAD(CALL_DATA) }
             builder.include { ADD() }
-            builder.include { PUSH(BigInteger.valueOf(12345).toByteArray()) }
+            builder.include { PUSH(12345) }
             builder.include { EQUALS() }
         }, blockBody = {
             builder.include { HALT(WINNER) }
@@ -72,27 +72,27 @@ class BarrierTest {
     @Test
     fun barrier04Loops() {
         val builder = InstructionsBuilder()
-        builder.include { PUSH(BigInteger.valueOf(0).toByteArray()) }
+        builder.include { PUSH(0) }
         builder.include { LOAD(CALL_DATA) }
-        builder.include { PUSH(BigInteger.valueOf(0).toByteArray()) }
+        builder.include { PUSH(0) }
         builder.include { SAVE(MEMORY) }
-        builder.include { PUSH(BigInteger.valueOf(0).toByteArray()) }
-        builder.include { PUSH(BigInteger.valueOf(1000).toByteArray()) }
+        builder.include { PUSH(0) }
+        builder.include { PUSH(1000) }
         builder.include { SAVE(MEMORY) }
         builder.includeLoop(conditionBody = {
             builder.decrement(MEMORY, BigInteger.valueOf(0).toByteArray())
-            builder.include { PUSH(BigInteger.valueOf(0).toByteArray()) }
+            builder.include { PUSH(0) }
             builder.include { LOAD(MEMORY) }
-            builder.include { PUSH(BigInteger.valueOf(0).toByteArray()) }
+            builder.include { PUSH(0) }
             builder.include { EQUALS() }
             builder.include { IS_ZERO() }
         }, loopBody = {
             builder.increment(MEMORY, BigInteger.valueOf(1000).toByteArray())
         })
         builder.includeIf(conditionBody = {
-            builder.include { PUSH(BigInteger.valueOf(1000).toByteArray()) }
+            builder.include { PUSH(1000) }
             builder.include { LOAD(MEMORY) }
-            builder.include { PUSH(BigInteger.valueOf(5).toByteArray()) }
+            builder.include { PUSH(5) }
             builder.include { EQUALS() }
         }, blockBody = {
             builder.include { HALT(WINNER) }

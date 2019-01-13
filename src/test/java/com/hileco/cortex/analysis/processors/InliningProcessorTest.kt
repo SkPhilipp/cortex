@@ -6,7 +6,6 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
-import java.math.BigInteger
 
 class InliningProcessorTest : ProcessorFuzzTest() {
     @Ignore
@@ -17,7 +16,7 @@ class InliningProcessorTest : ProcessorFuzzTest() {
                 InliningProcessor()
         ))
         val original = listOf(
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -29,7 +28,7 @@ class InliningProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(BigInteger.ONE.toByteArray())
+                PUSH(1)
         ))
     }
 

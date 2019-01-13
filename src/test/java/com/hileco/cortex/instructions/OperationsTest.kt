@@ -261,7 +261,7 @@ class OperationsTest {
     fun runAddOverflowing() {
         val instructions = listOf(
                 PUSH(NUMERICAL_LIMIT.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(10),
                 ADD())
         val stack = this.run(instructions).stack
         Assert.assertArrayEquals(BigInteger.valueOf(9).toByteArray(), stack.pop())
@@ -305,7 +305,7 @@ class OperationsTest {
     fun runMultiplyOverflowing() {
         val instructions = listOf(
                 PUSH(NUMERICAL_LIMIT.toByteArray()),
-                PUSH(BigInteger.TEN.toByteArray()),
+                PUSH(10),
                 MULTIPLY())
         val stack = this.run(instructions).stack
         val expected = NUMERICAL_LIMIT.multiply(BigInteger.TEN).mod(NUMERICAL_LIMIT.add(BigInteger.ONE))
@@ -444,10 +444,10 @@ class OperationsTest {
     @Test
     fun runSaveAndLoad() {
         val instructions = listOf(
-                PUSH(BigInteger.valueOf(10).toByteArray()),
-                PUSH(BigInteger.valueOf(1234).toByteArray()),
+                PUSH(10),
+                PUSH(1234),
                 SAVE(MEMORY),
-                PUSH(BigInteger.valueOf(1234).toByteArray()),
+                PUSH(1234),
                 LOAD(MEMORY)
         )
         val stack = this.run(instructions).stack
