@@ -10,7 +10,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
     fun process() {
         Documentation.of(JumpThreadingProcessor::class.simpleName!!)
                 .headingParagraph(JumpThreadingProcessor::class.simpleName!!)
-                .paragraph("Finds JUMP and JUMP_IF instructions whose addresses are blocks that immediately JUMP again. When this is the case the address of " + "the first JUMP or JUMP_IF is replaced with the address of the second JUMP")
+                .paragraph("Finds JUMP and JUMP_IF instructions whose addresses are blocks that immediately JUMP again. When this is the case the address of the first JUMP or JUMP_IF is replaced with the address of the second JUMP")
     }
 
     override fun fuzzTestableProcessor(): Processor {

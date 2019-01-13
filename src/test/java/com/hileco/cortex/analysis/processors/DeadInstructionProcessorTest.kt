@@ -2,24 +2,25 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
+import com.hileco.cortex.instructions.debug.HALT
+import com.hileco.cortex.instructions.debug.NOOP
+import com.hileco.cortex.instructions.io.SAVE
 import com.hileco.cortex.instructions.stack.PUSH
+import com.hileco.cortex.vm.ProgramStoreZone.DISK
 import org.junit.Assert
-import org.junit.Ignore
 import org.junit.Test
 
-@Ignore
 class DeadInstructionProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
-        // a: [PUSH 10, PUSH 0] ==> [NOOP, NOOP]
-        // b: [PUSH 10, PUSH 0, HALT WINNER] ==> [NOOP, NOOP, HALT WINNER]
-        // b: [HALT WINNER, PUSH 10, PUSH 0] ==> No Change (see TrimEndProcessor)
-        // c: [PUSH 10, PUSH 0, SAVE DISK, HALT WINNER] ==> No Change
         val graphBuilder = GraphBuilder(listOf(
                 DeadInstructionProcessor()
         ))
         val original = listOf(
-                PUSH(1)
+                PUSH(10),
+                PUSH(1),
+                HALT(WINNER)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -30,9 +31,39 @@ class DeadInstructionProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
 
-        Assert.assertEquals(instructions, listOf(
-                PUSH(1)
+        Assert.assertEquals(instructions, listOf(NOOP(), NOOP(), HALT(WINNER)))
+    }
+
+    @Test
+    fun processImplicitExit() {
+        val graphBuilder = GraphBuilder(listOf(
+                DeadInstructionProcessor()
         ))
+        val original = listOf(
+                PUSH(10),
+                PUSH(1)
+        )
+        val graph = graphBuilder.build(original)
+        val instructions = graph.toInstructions()
+
+        Assert.assertEquals(instructions, listOf(NOOP(), NOOP()))
+    }
+
+    @Test
+    fun processExplicitExitWithDiskChange() {
+        val graphBuilder = GraphBuilder(listOf(
+                DeadInstructionProcessor()
+        ))
+        val original = listOf(
+                PUSH(10),
+                PUSH(1),
+                SAVE(DISK),
+                HALT(WINNER)
+        )
+        val graph = graphBuilder.build(original)
+        val instructions = graph.toInstructions()
+
+        Assert.assertEquals(instructions, original)
     }
 
     override fun fuzzTestableProcessor(): Processor {
