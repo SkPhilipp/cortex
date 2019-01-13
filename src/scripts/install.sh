@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+add-apt-repository ppa:openjdk-r/ppa -y
 apt update
-apt -y install openjdk-10-jre-headless unzip gcc nginx
+apt -y install openjdk-11-jre-headless unzip gcc nginx
 
 # User Management
 useradd -m --shell /bin/bash cortex

@@ -21,13 +21,27 @@ include::{snippets}/KnownJumpIfProcessor.adoc[]
 
 include::{snippets}/JumpUnreachableProcessor.adoc[]
 
-include::{snippets}/JumpThreadingProcessor.adoc[]
-
 include::{snippets}/JumpIllegalProcessor.adoc[]
 
 include::{snippets}/TrimEndProcessor.adoc[]
 
 include::{snippets}/DeadSwapProcessor.adoc[]
+
+include::{snippets}/DeadInstructionProcessor.adoc[]
+
+include::{snippets}/ThreadingProcessor.adoc[]
+
+// include::{snippets}/CompositeConstraintProcessor.adoc[]
+//
+// include::{snippets}/DeadLoadProcessor.adoc[]
+//
+// include::{snippets}/DeadPathConstraintProcessor.adoc[]
+//
+// include::{snippets}/DeadSaveProcessor.adoc[]
+//
+// include::{snippets}/InliningProcessor.adoc[]
+//
+// include::{snippets}/InstructionHoistProcessor.adoc[]
 
 === Visualization
 
