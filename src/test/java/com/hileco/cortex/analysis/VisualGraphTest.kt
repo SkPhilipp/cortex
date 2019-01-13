@@ -39,7 +39,7 @@ class VisualGraphTest {
                 TrimEndProcessor(),
                 DeadSwapProcessor(),
                 JumpIllegalProcessor(),
-                JumpThreadingProcessor(),
+                ThreadingProcessor(),
                 JumpUnreachableProcessor(),
                 KnownJumpIfProcessor(),
                 KnownLoadProcessor(mapOf()),

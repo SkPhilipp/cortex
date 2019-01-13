@@ -20,6 +20,9 @@ data class PUSH(val bytes: ByteArray) : Instruction() {
     override val instructionModifiers: List<ProgramZone>
         get() = listOf(STACK)
 
+    val value: Long
+        get() = BigInteger(bytes).toLong()
+
     @Throws(ProgramException::class)
     override fun execute(process: VirtualMachine, program: ProgramContext) {
         program.stack.push(bytes)

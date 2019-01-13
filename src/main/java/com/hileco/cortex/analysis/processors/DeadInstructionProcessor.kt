@@ -6,6 +6,7 @@ import com.hileco.cortex.instructions.calls.CALL_RETURN
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.jumps.EXIT
+import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.vm.ProgramZone.MEMORY
 import com.hileco.cortex.vm.ProgramZone.STACK
 
@@ -13,7 +14,7 @@ class DeadInstructionProcessor : Processor {
     private fun noopUpwards(startIndex: Int, graphBlock: GraphBlock) {
         for (i in startIndex downTo 0) {
             val graphNode = graphBlock.graphNodes[i]
-            if (setOf(STACK, MEMORY).containsAll(graphNode.instruction.instructionModifiers)) {
+            if (setOf(STACK, MEMORY).containsAll(graphNode.instruction.instructionModifiers) && graphNode.instruction !is JUMP_DESTINATION) {
                 graphNode.instruction = NOOP()
             } else {
                 break

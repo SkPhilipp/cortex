@@ -42,6 +42,14 @@ class Graph() {
         return index
     }
 
+    fun blockAt(line: Int): GraphBlock? {
+        return graphBlocks.firstOrNull { graphBlock: GraphBlock ->
+            graphBlock.graphNodes.any { graphNode: GraphNode ->
+                graphNode.line == line
+            }
+        }
+    }
+
     fun mergeUpwards(graphBlock: GraphBlock) {
         val index = this.indexOf(graphBlock)
         if (index == 0) {
