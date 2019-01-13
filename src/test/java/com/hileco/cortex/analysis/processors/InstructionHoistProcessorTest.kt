@@ -6,10 +6,9 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
-import java.math.BigInteger
 
+@Ignore
 class InstructionHoistProcessorTest : ProcessorFuzzTest() {
-    @Ignore
     @Test
     fun process() {
         // [PUSH 1, PUSH 4, JUMP, JUMP_DESTINATION, NOOP] ==> [NOOP, PUSH 4, JUMP, JUMP_DESTINATION, PUSH 1]

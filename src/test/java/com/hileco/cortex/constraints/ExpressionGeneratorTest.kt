@@ -12,8 +12,6 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import org.junit.Assert
 import org.junit.Test
 
-import java.math.BigInteger
-
 class ExpressionGeneratorTest {
     @Test
     fun testParameterized() {

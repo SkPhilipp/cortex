@@ -7,7 +7,6 @@ import com.hileco.cortex.instructions.jumps.EXIT
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramStoreZone
-import java.math.BigInteger
 
 enum class FuzzFunction(private val chance: Double,
                         private val implementation: (ProgramGeneratorContext) -> Unit) : Chanced, (ProgramGeneratorContext) -> Unit {

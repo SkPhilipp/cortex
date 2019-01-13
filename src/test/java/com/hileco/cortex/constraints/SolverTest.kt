@@ -9,7 +9,6 @@ import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class SolverTest {
     @Test

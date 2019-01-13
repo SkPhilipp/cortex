@@ -28,7 +28,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
             ProgramStoreZone.DISK -> program.program.storage
             ProgramStoreZone.CALL_DATA -> program.callData
         }
-        if(address.toInt() * SIZE + SIZE > storage.size) {
+        if (address.toInt() * SIZE + SIZE > storage.size) {
             throw ProgramException(program, ProgramException.Reason.STORAGE_ACCESS_OUT_OF_BOUNDS)
         }
         val bytes = storage.read(address.toInt() * SIZE, SIZE)

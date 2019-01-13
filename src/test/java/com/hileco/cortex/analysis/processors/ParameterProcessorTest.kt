@@ -8,7 +8,6 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 import java.util.*
 
 class ParameterProcessorTest : ProcessorFuzzTest() {

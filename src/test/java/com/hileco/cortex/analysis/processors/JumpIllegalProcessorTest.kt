@@ -9,7 +9,6 @@ import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class JumpIllegalProcessorTest : ProcessorFuzzTest() {
     @Test

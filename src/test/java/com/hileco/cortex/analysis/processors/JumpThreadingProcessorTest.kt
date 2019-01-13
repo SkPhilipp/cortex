@@ -4,8 +4,8 @@ import com.hileco.cortex.documentation.Documentation
 import org.junit.Ignore
 import org.junit.Test
 
+@Ignore
 class JumpThreadingProcessorTest : ProcessorFuzzTest() {
-    @Ignore
     @Test
     fun process() {
         Documentation.of(JumpThreadingProcessor::class.simpleName!!)

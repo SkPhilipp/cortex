@@ -8,8 +8,6 @@ import com.hileco.cortex.instructions.stack.SWAP
 import org.junit.Assert
 import org.junit.Test
 
-import java.math.BigInteger
-
 class DeadSwapProcessorTest : ProcessorFuzzTest() {
     @Test
     fun testProcess() {

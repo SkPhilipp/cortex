@@ -6,10 +6,9 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
-import java.math.BigInteger
 
+@Ignore
 class DeadInstructionProcessorTest : ProcessorFuzzTest() {
-    @Ignore
     @Test
     fun process() {
         // a: [PUSH 10, PUSH 0] ==> [NOOP, NOOP]
@@ -27,8 +26,7 @@ class DeadInstructionProcessorTest : ProcessorFuzzTest() {
 
         Documentation.of(DeadInstructionProcessor::class.java.simpleName)
                 .headingParagraph(DeadInstructionProcessor::class.java.simpleName)
-                .paragraph("Removes instructions before a HALT or EXIT in the same block, which do not perform any kind of permanent modification." +
-                        " Removes instructions after a HALT or EXIT in the same block.")
+                .paragraph("Removes instructions before a HALT or EXIT in the same block, which do not perform any kind of permanent modification.")
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
 

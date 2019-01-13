@@ -13,7 +13,6 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class InstructionsBuilderTest {
     @Test

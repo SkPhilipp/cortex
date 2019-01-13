@@ -13,6 +13,7 @@ class LayeredBytesReaderTest {
         val read = layeredBytes.read(0, LOAD.SIZE)
         Assert.assertEquals(BigInteger("12345"), BigInteger(read))
     }
+
     @Test
     fun testMany() {
         val layeredBytesReader = LayeredBytesReader()

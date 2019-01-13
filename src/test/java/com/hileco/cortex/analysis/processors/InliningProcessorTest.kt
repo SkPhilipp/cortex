@@ -7,8 +7,8 @@ import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
 
+@Ignore
 class InliningProcessorTest : ProcessorFuzzTest() {
-    @Ignore
     @Test
     fun process() {
         // a: <program calling fixed address>, <program at fixed address with call_return> ==> <program which has inlined instructions of the other one>

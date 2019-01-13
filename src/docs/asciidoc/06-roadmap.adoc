@@ -2,8 +2,7 @@
 
 === Core
 
-* Functionality to store resulting Virtual Machine state as a list of instructions, this would essentially allow saving of state
-* Functionality to run multiple programs in sequence on the same Virtual Machine, this would essentially allow loading of state
+* Functionality to save and load Virtual Machine state
 * Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could
   then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
   Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
@@ -29,8 +28,6 @@
 
 === Constraint System
 
-* Implement a processor which generates composite constraint Expressions for every subpath and bind it to the Graph.
-* Implement a processor which eliminates impossible paths based on composite constraint Expressions.
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction

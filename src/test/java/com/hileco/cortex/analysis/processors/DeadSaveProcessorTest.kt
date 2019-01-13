@@ -6,10 +6,9 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
-import java.math.BigInteger
 
+@Ignore
 class DeadSaveProcessorTest : ProcessorFuzzTest() {
-    @Ignore
     @Test
     fun process() {
         // a: [PUSH 0, PUSH 3, SAVE MEMORY, PUSH 1, LOAD MEMORY] ==> [NOOP, NOOP, NOOP, PUSH 1, LOAD MEMORY]
