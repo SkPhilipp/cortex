@@ -80,6 +80,7 @@
 
 * Implementation of fallthrough block start to ends mapping as described in FlowProcessor#116 through #118
 * Implementation of all @Ignore'd processor tests as well as their implementation
+* Improvements to ThreadingProcessor to treat the last instruction as a possibly inlineable EXIT
 * Processor to connect SAVEs and LOADs' spaces to eachother in order to begin analysis on data flow through program store zones
 * Processor to replace VARIABLEs with known values
 * Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
