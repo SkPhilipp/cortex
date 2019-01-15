@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.ByteArraySerializer
-import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.analysis.processors.*
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.io.serialization.ExpressionSerializer
 import com.hileco.cortex.io.serialization.InstructionDeserializer
@@ -24,18 +22,5 @@ class Commands {
             it.registerModule(module)
             it.enable(SerializationFeature.INDENT_OUTPUT)
         }
-        val OPTIMIZED_GRAPH_BUILDER = GraphBuilder(listOf(
-                ParameterProcessor(),
-                FlowProcessor(),
-                TrimEndProcessor(),
-                DeadSwapProcessor(),
-                JumpIllegalProcessor(),
-                ThreadingProcessor(),
-                JumpUnreachableProcessor(),
-                KnownJumpIfProcessor(),
-                KnownLoadProcessor(mapOf()),
-                KnownProcessor(),
-                FlowProcessor()
-        ))
     }
 }

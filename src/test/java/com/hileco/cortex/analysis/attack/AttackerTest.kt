@@ -2,7 +2,6 @@ package com.hileco.cortex.analysis.attack
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.processors.FlowProcessor
-import com.hileco.cortex.analysis.processors.JumpUnreachableProcessor
 import com.hileco.cortex.analysis.processors.ParameterProcessor
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.documentation.Documentation
@@ -22,8 +21,7 @@ class AttackerTest {
     fun test() {
         val graphBuilder = GraphBuilder(listOf(
                 ParameterProcessor(),
-                FlowProcessor(),
-                JumpUnreachableProcessor()
+                FlowProcessor()
         ))
         val instructionsBuilder = InstructionsBuilder()
         instructionsBuilder.includeIf({ conditionBuilder ->
@@ -51,6 +49,6 @@ class AttackerTest {
         Assert.assertEquals(1, solution.possibleValues.size.toLong())
         val entry = solution.possibleValues.entries.first()
         Assert.assertEquals(Expression.Reference(CALL_DATA, Expression.Value(1L)), entry.key)
-        Assert.assertEquals(java.lang.Long.valueOf(24690L), entry.value)
+        Assert.assertEquals(24690L, entry.value)
     }
 }

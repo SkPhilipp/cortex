@@ -10,7 +10,7 @@ import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
 
-class ThreadingProcessor : Processor {
+class JumpThreadingProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock: GraphBlock ->
             graphBlock.graphNodes.forEachTwo { graphNodePush, graphNodeJump ->

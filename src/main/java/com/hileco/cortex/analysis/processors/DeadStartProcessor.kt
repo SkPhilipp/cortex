@@ -10,7 +10,7 @@ import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.vm.ProgramZone.MEMORY
 import com.hileco.cortex.vm.ProgramZone.STACK
 
-class DeadInstructionProcessor : Processor {
+class DeadStartProcessor : Processor {
     private fun noopUpwards(startIndex: Int, graphBlock: GraphBlock) {
         for (i in startIndex downTo 0) {
             val graphNode = graphBlock.graphNodes[i]

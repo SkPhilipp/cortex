@@ -15,33 +15,34 @@ include::{snippets}/FlowProcessor.adoc[]
 
 include::{snippets}/KnownProcessor.adoc[]
 
-include::{snippets}/KnownLoadProcessor.adoc[]
-
 include::{snippets}/KnownJumpIfProcessor.adoc[]
 
-include::{snippets}/JumpUnreachableProcessor.adoc[]
+include::{snippets}/KnownLoadProcessor.adoc[]
 
-include::{snippets}/JumpIllegalProcessor.adoc[]
+include::{snippets}/DeadStartProcessor.adoc[]
 
-include::{snippets}/TrimEndProcessor.adoc[]
+include::{snippets}/DeadEndProcessor.adoc[]
+
+// include::{snippets}/DeadSaveProcessor.adoc[]
+
+// include::{snippets}/DeadLoadProcessor.adoc[]
 
 include::{snippets}/DeadSwapProcessor.adoc[]
 
-include::{snippets}/DeadInstructionProcessor.adoc[]
+include::{snippets}/JumpIllegalProcessor.adoc[]
 
-include::{snippets}/ThreadingProcessor.adoc[]
+include::{snippets}/JumpUnreachableProcessor.adoc[]
 
-// include::{snippets}/CompositeConstraintProcessor.adoc[]
-//
-// include::{snippets}/DeadLoadProcessor.adoc[]
-//
-// include::{snippets}/DeadPathConstraintProcessor.adoc[]
-//
-// include::{snippets}/DeadSaveProcessor.adoc[]
-//
+include::{snippets}/JumpThreadingProcessor.adoc[]
+
+// include::{snippets}/InstructionHoistProcessor.adoc[]
+
 // include::{snippets}/InliningProcessor.adoc[]
 //
-// include::{snippets}/InstructionHoistProcessor.adoc[]
+// include::{snippets}/CompositeConstraintProcessor.adoc[]
+
+// include::{snippets}/DeadPathConstraintProcessor.adoc[]
+
 
 === Visualization
 

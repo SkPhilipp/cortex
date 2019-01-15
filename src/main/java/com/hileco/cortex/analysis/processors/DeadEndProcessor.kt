@@ -7,7 +7,7 @@ import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.jumps.EXIT
 import com.hileco.cortex.instructions.jumps.JUMP
 
-class TrimEndProcessor : Processor {
+class DeadEndProcessor : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             var trim = false

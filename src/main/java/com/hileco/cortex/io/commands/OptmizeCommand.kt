@@ -4,8 +4,8 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
+import com.hileco.cortex.analysis.GraphBuilder.Companion.OPTIMIZED_GRAPH_BUILDER
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.io.commands.Commands.Companion.OPTIMIZED_GRAPH_BUILDER
 import com.hileco.cortex.io.serialization.InstructionParser
 import java.io.File
 import java.io.InputStream

@@ -9,12 +9,11 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
-class TrimEndProcessorTest : ProcessorFuzzTest() {
+class DeadEndProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
         val graphBuilder = GraphBuilder(listOf(
-                TrimEndProcessor()
-
+                DeadEndProcessor()
         ))
         val original = listOf(
                 EXIT(),
@@ -27,8 +26,8 @@ class TrimEndProcessorTest : ProcessorFuzzTest() {
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
 
-        Documentation.of(TrimEndProcessor::class.simpleName!!)
-                .headingParagraph(TrimEndProcessor::class.simpleName!!)
+        Documentation.of(DeadEndProcessor::class.simpleName!!)
+                .headingParagraph(DeadEndProcessor::class.simpleName!!)
                 .paragraph("Removes any instructions within the same jump-reachable block following another instruction that guarantees the instructions will not be reached.")
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
@@ -44,6 +43,6 @@ class TrimEndProcessorTest : ProcessorFuzzTest() {
     }
 
     override fun fuzzTestableProcessor(): Processor {
-        return TrimEndProcessor()
+        return DeadEndProcessor()
     }
 }

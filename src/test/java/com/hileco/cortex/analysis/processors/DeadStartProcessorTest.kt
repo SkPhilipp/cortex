@@ -11,11 +11,11 @@ import com.hileco.cortex.vm.ProgramStoreZone.DISK
 import org.junit.Assert
 import org.junit.Test
 
-class DeadInstructionProcessorTest : ProcessorFuzzTest() {
+class DeadStartProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
         val graphBuilder = GraphBuilder(listOf(
-                DeadInstructionProcessor()
+                DeadStartProcessor()
         ))
         val original = listOf(
                 PUSH(10),
@@ -25,8 +25,8 @@ class DeadInstructionProcessorTest : ProcessorFuzzTest() {
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
 
-        Documentation.of(DeadInstructionProcessor::class.java.simpleName)
-                .headingParagraph(DeadInstructionProcessor::class.java.simpleName)
+        Documentation.of(DeadStartProcessor::class.java.simpleName)
+                .headingParagraph(DeadStartProcessor::class.java.simpleName)
                 .paragraph("Removes instructions before a HALT or EXIT in the same block, which do not perform any kind of permanent modification.")
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
@@ -37,7 +37,7 @@ class DeadInstructionProcessorTest : ProcessorFuzzTest() {
     @Test
     fun processImplicitExit() {
         val graphBuilder = GraphBuilder(listOf(
-                DeadInstructionProcessor()
+                DeadStartProcessor()
         ))
         val original = listOf(
                 PUSH(10),
@@ -52,7 +52,7 @@ class DeadInstructionProcessorTest : ProcessorFuzzTest() {
     @Test
     fun processExplicitExitWithDiskChange() {
         val graphBuilder = GraphBuilder(listOf(
-                DeadInstructionProcessor()
+                DeadStartProcessor()
         ))
         val original = listOf(
                 PUSH(10),
@@ -67,6 +67,6 @@ class DeadInstructionProcessorTest : ProcessorFuzzTest() {
     }
 
     override fun fuzzTestableProcessor(): Processor {
-        return DeadInstructionProcessor()
+        return DeadStartProcessor()
     }
 }

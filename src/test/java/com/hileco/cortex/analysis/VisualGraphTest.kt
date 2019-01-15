@@ -1,6 +1,7 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.analysis.processors.*
+import com.hileco.cortex.analysis.GraphBuilder.Companion.BASIC_GRAPH_BUILDER
+import com.hileco.cortex.analysis.GraphBuilder.Companion.OPTIMIZED_GRAPH_BUILDER
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.fuzzer.ProgramGenerator
 import org.junit.Test
@@ -26,25 +27,5 @@ class VisualGraphTest {
                 .paragraph("Program:").source(instructions)
                 .paragraph("Visualization: (As basic graph)").image(basicGraphVisualized.toBytes())
                 .paragraph("Visualization: (As optimized graph)").image(optimizedGraphVisualized.toBytes())
-    }
-
-    companion object {
-        private val BASIC_GRAPH_BUILDER = GraphBuilder(listOf(
-                ParameterProcessor(),
-                FlowProcessor()
-        ))
-        private val OPTIMIZED_GRAPH_BUILDER = GraphBuilder(listOf(
-                ParameterProcessor(),
-                FlowProcessor(),
-                TrimEndProcessor(),
-                DeadSwapProcessor(),
-                JumpIllegalProcessor(),
-                ThreadingProcessor(),
-                JumpUnreachableProcessor(),
-                KnownJumpIfProcessor(),
-                KnownLoadProcessor(mapOf()),
-                KnownProcessor(),
-                FlowProcessor()
-        ))
     }
 }

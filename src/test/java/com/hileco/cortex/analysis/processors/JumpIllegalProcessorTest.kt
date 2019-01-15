@@ -28,7 +28,7 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
 
         Documentation.of(JumpIllegalProcessor::class.simpleName!!)
                 .headingParagraph(JumpIllegalProcessor::class.simpleName!!)
-                .paragraph("Replaces JUMP instructions with HALTs when they are known to always jump to non-JUMP_DESTINATION instructions or" + " when they are known to jump out of bounds.")
+                .paragraph("Replaces JUMP instructions with HALTs when they are known to always jump to non-JUMP_DESTINATION instructions or when they are known to jump out of bounds.")
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
 

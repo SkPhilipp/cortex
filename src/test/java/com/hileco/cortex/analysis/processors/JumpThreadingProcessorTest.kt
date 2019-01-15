@@ -13,11 +13,11 @@ import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ThreadingProcessorTest : ProcessorFuzzTest() {
+class JumpThreadingProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
         val graphBuilder = GraphBuilder(listOf(
-                ThreadingProcessor()
+                JumpThreadingProcessor()
         ))
         val original = listOf(
                 PUSH(2),
@@ -44,7 +44,7 @@ class ThreadingProcessorTest : ProcessorFuzzTest() {
     @Test
     fun processInfiniteLoop() {
         val graphBuilder = GraphBuilder(listOf(
-                ThreadingProcessor()
+                JumpThreadingProcessor()
         ))
         val original = listOf(
                 JUMP_DESTINATION(),
@@ -61,7 +61,7 @@ class ThreadingProcessorTest : ProcessorFuzzTest() {
     @Test
     fun processHalt() {
         val graphBuilder = GraphBuilder(listOf(
-                ThreadingProcessor()
+                JumpThreadingProcessor()
         ))
         val original = listOf(
                 PUSH(2),
@@ -84,7 +84,7 @@ class ThreadingProcessorTest : ProcessorFuzzTest() {
     @Test
     fun processExit() {
         val graphBuilder = GraphBuilder(listOf(
-                ThreadingProcessor()
+                JumpThreadingProcessor()
         ))
         val original = listOf(
                 PUSH(2),
@@ -107,7 +107,7 @@ class ThreadingProcessorTest : ProcessorFuzzTest() {
     @Test
     fun processConditionalJump() {
         val graphBuilder = GraphBuilder(listOf(
-                ThreadingProcessor()
+                JumpThreadingProcessor()
         ))
         val original = listOf(
                 PUSH(1),
@@ -122,8 +122,8 @@ class ThreadingProcessorTest : ProcessorFuzzTest() {
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
 
-        Documentation.of(ThreadingProcessor::class.simpleName!!)
-                .headingParagraph(ThreadingProcessor::class.simpleName!!)
+        Documentation.of(JumpThreadingProcessor::class.simpleName!!)
+                .headingParagraph(JumpThreadingProcessor::class.simpleName!!)
                 .paragraph("Finds JUMP and JUMP_IF instructions whose addresses are blocks that immediately JUMP again." +
                         " When this is the case the address of the first JUMP or JUMP_IF is replaced with the address of the second JUMP." +
                         " Additionally, any JUMPs to blocks which immediately EXIT, HALT will also be replaced with the respective instruction.")
@@ -142,6 +142,6 @@ class ThreadingProcessorTest : ProcessorFuzzTest() {
     }
 
     override fun fuzzTestableProcessor(): Processor {
-        return ThreadingProcessor()
+        return JumpThreadingProcessor()
     }
 }
