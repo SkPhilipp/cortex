@@ -1,6 +1,67 @@
 == Roadmap
 
-=== Core
+=== Project
+
+.Road to Full Cortex
+|===
+|Component|Test|CXASM Implementation|Live Implementation
+
+|Virtual Machine
+|Run of program with library, stack, calls, memory & disk manipulation
+|Done
+|
+
+|Solve Engine
+|Solution input verified by Virtual Machine execution, generated for a basic barrier program
+|Done
+|
+
+|Solve Program Generator
+|Solve Engine based solution, generated for a basic barrier program
+|
+|
+
+|Program & State Database
+|Multiple stateful barrier programs loaded into the database
+|
+|
+
+|Autonomous Solver
+|Solve Program Generator based programs generated for barrier programs loaded into the database
+|
+|
+
+4+|_Nice to haves_
+
+2+|Instruction Optimization Engine
+|Done
+|
+
+2+|Fuzzer
+|Done
+|
+
+2+|Program Database Deduplication
+|
+|
+
+2+|Cross-network Clustered Execution
+|
+|
+
+2+|Live Timestamp Influencing
+|
+|
+
+2+|Multi-Call Generated Solutions
+|
+|
+
+|===
+
+=== Improvements
+
+==== Core
 
 * Functionality to save and load Virtual Machine state
 * Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could
@@ -8,13 +69,14 @@
   Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
   would have to be revisited. For example; KnownProcessor only replaces self-contained nodes if the result is a single stack element.
 
-=== Instructions
+==== Instructions
 
+* Replace EXIT with HALT EXIT
 * Instruction to push a variable by name onto the stack (ie `VARIABLE TIME`)
 * EVM-compatible signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
 * Interpret empty lines as NOOP and allow them in files
 
-=== Graph
+==== Graph
 
 * Implementation of fallthrough block start to ends mapping as described in FlowProcessor#116 through #118
 * Implementation of all @Ignore'd processor tests as well as their implementation
@@ -22,23 +84,23 @@
 * Processor to replace VARIABLEs with known values
 * Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
 
-=== Pathing System
+==== Pathing System
 
 * Path finding mechanism should account for loops
 
-=== Constraint System
+==== Constraint System
 
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction
 * Implementing overflow as part of Expression building (Possibly already implemented via Z3 Int typing)
 
-=== Attacks
+==== Attacks
 
 * Attack Generator which accounts for a given target instruction's input data (ie CALL with parameter CALL.ADDRESS = given address)
 * Mapping EVM compatible smart contracts to Cortex programs
 
-=== Fuzzer
+==== Fuzzer
 
 * Modular fuzzer on which features can be enabled, to construct programs of certain difficulties.
 * Fuzzer should output a higher level tree of instruction types to be generated. This would allow it to generate more realistic programs in which
