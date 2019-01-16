@@ -1,63 +1,20 @@
 == Roadmap
 
-=== Project
+=== Milestones
 
-.Road to Full Cortex
-|===
-|Component|Test|CXASM Implementation|Live Implementation
-
-|Virtual Machine
-|Run of program with library, stack, calls, memory & disk manipulation
-|Done
-|
-
-|Solve Engine
-|Solution input verified by Virtual Machine execution, generated for a basic barrier program
-|Done
-|
-
-|Solve Program Generator
-|Solve Engine based solution, generated for a basic barrier program
-|
-|
-
-|Program & State Database
-|Multiple stateful barrier programs loaded into the database
-|
-|
-
-|Autonomous Solver
-|Solve Program Generator based programs generated for barrier programs loaded into the database
-|
-|
-
-4+|_Nice to haves_
-
-2+|Instruction Optimization Engine
-|Done
-|
-
-2+|Fuzzer
-|Done
-|
-
-2+|Program Database Deduplication
-|
-|
-
-2+|Cross-network Clustered Execution
-|
-|
-
-2+|Live Timestamp Influencing
-|
-|
-
-2+|Multi-Call Generated Solutions
-|
-|
-
-|===
+- [x] Virtual Machine running programs with stack manipulation
+- [x] Virtual Machine running programs with disk and memory manipulation
+- [ ] Virtual Machine running programs calling programs as libraries
+- [x] Virtual Machine running programs running from assembly files
+- [x] Generated solution for manually built expression
+- [x] Generated solution for barrier program with basic math based win condition
+- [x] Generated solution for barrier program verified by virtual machine simulation
+- [ ] Generated solution for barrier program generated as another program
+- [ ] Generated solution for barrier program involving multiple calls
+- [ ] Document database containing all barrier programs' source
+- [ ] Document database containing all barrier programs' state
+- [ ] Generated solution for a state-bound barrier program in database
+- [ ] Automated solving and progress tracking of all barrier programs in database
 
 === Improvements
 
@@ -71,7 +28,7 @@
 
 ==== Instructions
 
-* Replace EXIT with HALT EXIT
+* OperationsTest organized like instruction classes
 * Instruction to push a variable by name onto the stack (ie `VARIABLE TIME`)
 * EVM-compatible signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
 * Interpret empty lines as NOOP and allow them in files
@@ -113,3 +70,9 @@
   - Conditions; basic `JUMP_IF` wrapping
   - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
   - Invalid instructions; ex: `JUMP` out of bounds
+
+==== Autonomous Solving
+
+* Deduplication of programs with matching assembly
+* Clustered solving with shared remote database
+
