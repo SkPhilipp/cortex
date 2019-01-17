@@ -44,6 +44,8 @@ include::{snippets}/instructions/bitwise-and.adoc[]
 
 include::{snippets}/instructions/bitwise-xor.adoc[]
 
+include::{snippets}/instructions/jump-destination.adoc[]
+
 include::{snippets}/instructions/jump.adoc[]
 
 include::{snippets}/instructions/jump-if.adoc[]

@@ -28,7 +28,6 @@
 
 ==== Instructions
 
-* OperationsTest organized like instruction classes
 * Instruction to push a variable by name onto the stack (ie `VARIABLE TIME`)
 * EVM-compatible signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
 * Interpret empty lines as NOOP and allow them in files
