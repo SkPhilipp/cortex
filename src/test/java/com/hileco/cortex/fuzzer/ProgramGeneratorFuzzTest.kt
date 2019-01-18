@@ -50,6 +50,6 @@ class ProgramGeneratorFuzzTest {
     }
 
     companion object {
-        private const val LIMIT_RUNS = 100000
+        private const val LIMIT_RUNS = 1000
     }
 }

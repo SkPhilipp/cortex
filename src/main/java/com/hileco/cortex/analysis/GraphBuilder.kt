@@ -18,7 +18,6 @@ class GraphBuilder(val processors: List<Processor>) {
 
         val OPTIMIZED_GRAPH_BUILDER = GraphBuilder(listOf(
                 ParameterProcessor(),
-                FlowProcessor(),
 
                 KnownProcessor(),
                 KnownJumpIfProcessor(),
@@ -30,17 +29,17 @@ class GraphBuilder(val processors: List<Processor>) {
                 DeadSaveProcessor(),
                 DeadSwapProcessor(),
 
+                JumpThreadingProcessor(),
+                FlowProcessor(),
                 JumpIllegalProcessor(),
                 JumpUnreachableProcessor(),
-                JumpThreadingProcessor(),
                 InstructionHoistProcessor(),
                 InliningProcessor(),
+                CompositeConstraintProcessor(),
+                DeadPathConstraintProcessor(),
 
                 ParameterProcessor(),
-                FlowProcessor(),
-
-                CompositeConstraintProcessor(),
-                DeadPathConstraintProcessor()
+                FlowProcessor()
         ))
     }
 }
