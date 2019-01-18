@@ -10,6 +10,6 @@ class EXIT : Instruction() {
         get() = listOf(ProgramZone.PROGRAM_CONTEXT)
 
     override fun execute(process: VirtualMachine, program: ProgramContext) {
-        process.programs.clear()
+        process.programs.pop()
     }
 }
