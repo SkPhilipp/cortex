@@ -2,13 +2,11 @@ package com.hileco.cortex.instructions.stack
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
-import com.hileco.cortex.instructions.ProgramException
 import org.junit.Assert
 import org.junit.Test
 
 class DUPLICATETest : InstructionTest() {
     @Test
-    @Throws(ProgramException::class)
     fun run() {
         val instructions = listOf(
                 PUSH(byteArrayOf(100)),

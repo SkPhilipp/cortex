@@ -26,8 +26,8 @@ class ProgramGeneratorFuzzTest {
                     val program = generated[programAddress]!!
                     val callerContext = ProgramContext(caller)
                     val programContext = ProgramContext(program)
-                    val processContext = VirtualMachine(callerContext, programContext)
-                    val programRunner = ProgramRunner(processContext)
+                    val virtualMachine = VirtualMachine(callerContext, programContext)
+                    val programRunner = ProgramRunner(virtualMachine)
                     programRunner.run()
                 } catch (e: ProgramException) {
                     exceptions++

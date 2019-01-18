@@ -56,4 +56,8 @@ include::{snippets}/instructions/halt.adoc[]
 
 include::{snippets}/instructions/save-and-load.adoc[]
 
+include::{snippets}/instructions/call.adoc[]
+
+include::{snippets}/instructions/call-return.adoc[]
+
 include::{snippets}/instructions/noop.adoc[]

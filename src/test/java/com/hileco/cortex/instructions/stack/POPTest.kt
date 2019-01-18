@@ -8,7 +8,6 @@ import org.junit.Test
 
 class POPTest : InstructionTest() {
     @Test
-    @Throws(ProgramException::class)
     fun run() {
         val instructions = listOf(
                 PUSH(byteArrayOf(1)),

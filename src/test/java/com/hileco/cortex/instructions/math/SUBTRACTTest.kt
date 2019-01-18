@@ -2,14 +2,12 @@ package com.hileco.cortex.instructions.math
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
-import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
 class SUBTRACTTest : InstructionTest() {
     @Test
-    @Throws(ProgramException::class)
     fun run() {
         val instructions = listOf(
                 PUSH(byteArrayOf(1)),

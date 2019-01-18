@@ -5,11 +5,9 @@ import com.hileco.cortex.analysis.GraphBuilder.Companion.OPTIMIZED_GRAPH_BUILDER
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.fuzzer.ProgramGenerator
 import org.junit.Test
-import java.io.IOException
 
 class VisualGraphTest {
     @Test
-    @Throws(IOException::class)
     fun testMap() {
         val programGenerator = ProgramGenerator()
         val generated = programGenerator.generate(0)

@@ -22,8 +22,8 @@ class KnownJumpIfProcessor : Processor {
                         if (decidingNode != null) {
                             val program = Program(graph.edgeMapping.toInstructions(decidingNode))
                             val programContext = ProgramContext(program)
-                            val processContext = VirtualMachine(programContext)
-                            val programRunner = ProgramRunner(processContext)
+                            val virtualMachine = VirtualMachine(programContext)
+                            val programRunner = ProgramRunner(virtualMachine)
                             try {
                                 programRunner.run()
                             } catch (e: ProgramException) {

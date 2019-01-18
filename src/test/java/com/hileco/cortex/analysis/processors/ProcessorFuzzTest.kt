@@ -19,9 +19,9 @@ abstract class ProcessorFuzzTest {
         for (programAddress in atlas.keySet()) {
             val program = atlas[programAddress]
             val programContext = ProgramContext(program!!)
-            val processContext = VirtualMachine(callerContext, programContext)
+            val virtualMachine = VirtualMachine(callerContext, programContext)
             try {
-                val programRunner = ProgramRunner(processContext)
+                val programRunner = ProgramRunner(virtualMachine)
                 programRunner.run()
             } catch (ignored: ProgramException) {
             }

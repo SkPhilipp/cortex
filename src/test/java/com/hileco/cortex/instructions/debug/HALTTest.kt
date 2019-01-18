@@ -7,7 +7,6 @@ import org.junit.Test
 
 class HALTTest : InstructionTest() {
     @Test(expected = ProgramException::class)
-    @Throws(ProgramException::class)
     fun run() {
         val instructions = listOf(
                 HALT(ProgramException.Reason.STACK_LIMIT_REACHED))

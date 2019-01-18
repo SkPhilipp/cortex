@@ -28,8 +28,8 @@ class KnownProcessor : Processor {
                     .forEach { graphNode ->
                         val program = Program(graph.edgeMapping.toInstructions(graphNode))
                         val programContext = ProgramContext(program)
-                        val processContext = VirtualMachine(programContext)
-                        val programRunner = ProgramRunner(processContext)
+                        val virtualMachine = VirtualMachine(programContext)
+                        val programRunner = ProgramRunner(virtualMachine)
                         programRunner.run()
                         val stackElement = Sequence { programContext.stack.iterator() }.singleOrNull()
                         if (stackElement != null) {

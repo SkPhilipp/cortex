@@ -16,7 +16,6 @@ import org.junit.Test
 
 class InstructionsBuilderTest {
     @Test
-    @Throws(ProgramException::class)
     fun testJump() {
         val program = Program(listOf(
                 PUSH(byteArrayOf(123)),
@@ -32,15 +31,14 @@ class InstructionsBuilderTest {
                 JUMP_DESTINATION()
         ))
         val programContext = ProgramContext(program)
-        val processContext = VirtualMachine(programContext)
-        val programRunner = ProgramRunner(processContext)
+        val virtualMachine = VirtualMachine(programContext)
+        val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionPosition.toLong())
         Assert.assertEquals(6, programContext.instructionsExecuted.toLong())
     }
 
     @Test
-    @Throws(ProgramException::class)
     fun testNoJump() {
         val program = Program(listOf(
                 PUSH(byteArrayOf(123)),
@@ -56,15 +54,14 @@ class InstructionsBuilderTest {
                 JUMP_DESTINATION()
         ))
         val programContext = ProgramContext(program)
-        val processContext = VirtualMachine(programContext)
-        val programRunner = ProgramRunner(processContext)
+        val virtualMachine = VirtualMachine(programContext)
+        val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionPosition.toLong())
         Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionsExecuted.toLong())
     }
 
     @Test
-    @Throws(ProgramException::class)
     fun testLoop() {
         val program = Program(listOf(
                 PUSH(byteArrayOf(0)),
@@ -79,8 +76,8 @@ class InstructionsBuilderTest {
                 JUMP_IF()
         ))
         val programContext = ProgramContext(program)
-        val processContext = VirtualMachine(programContext)
-        val programRunner = ProgramRunner(processContext)
+        val virtualMachine = VirtualMachine(programContext)
+        val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionPosition.toLong())
         Assert.assertEquals(((program.instructions.size - 1) * 256 + 1).toLong(), programContext.instructionsExecuted.toLong())

@@ -12,9 +12,9 @@ open class InstructionTest {
     fun run(instructions: List<Instruction>, customSetup: (VirtualMachine, ProgramContext) -> Unit): ProgramContext {
         val program = Program(instructions)
         val programContext = ProgramContext(program)
-        val processContext = VirtualMachine(programContext)
-        customSetup(processContext, programContext)
-        val programRunner = ProgramRunner(processContext)
+        val virtualMachine = VirtualMachine(programContext)
+        customSetup(virtualMachine, programContext)
+        val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         return programContext
     }

@@ -2,7 +2,6 @@ package com.hileco.cortex.instructions.math
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
-import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.VirtualMachine
 import org.junit.Assert
@@ -11,7 +10,6 @@ import java.math.BigInteger
 
 class ADDTest : InstructionTest() {
     @Test
-    @Throws(ProgramException::class)
     fun run() {
         val instructions = listOf(
                 PUSH(byteArrayOf(100)),
@@ -28,7 +26,6 @@ class ADDTest : InstructionTest() {
     }
 
     @Test
-    @Throws(ProgramException::class)
     fun runOverflow() {
         val instructions = listOf(
                 PUSH(VirtualMachine.NUMERICAL_LIMIT.toByteArray()),

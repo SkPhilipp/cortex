@@ -29,9 +29,9 @@ class RunCommand : CliktCommand(name = "run", help = "Generate input for a given
         val instructions = instructionStream.reader().readLines().map { instructionParser.parse(it) }
         val program = Program(instructions)
         val programContext = ProgramContext(program)
-        val processContext = VirtualMachine(programContext)
+        val virtualMachine = VirtualMachine(programContext)
         programContext.callData.write(0, callData.read(0, callData.size))
-        val programRunner = ProgramRunner(processContext)
+        val programRunner = ProgramRunner(virtualMachine)
         try {
             programRunner.run()
         } catch (e: ProgramException) {

@@ -37,6 +37,7 @@ class CALL_RETURN : Instruction() {
             val dataExpanded = Arrays.copyOf(data, wSize.toInt())
             val wOffset = nextContext.returnDataOffset
             nextContext.memory.write(wOffset.toInt(), dataExpanded, wSize.toInt())
+            nextContext.instructionPosition++
         }
     }
 
