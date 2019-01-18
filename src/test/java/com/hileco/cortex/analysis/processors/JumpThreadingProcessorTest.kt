@@ -25,7 +25,8 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JUMP_DESTINATION(),
                 PUSH(5),
                 JUMP(),
-                JUMP_DESTINATION()
+                JUMP_DESTINATION(),
+                PUSH(1234)
         )
 
         val graph = graphBuilder.build(original)
@@ -37,7 +38,8 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JUMP_DESTINATION(),
                 PUSH(5),
                 JUMP(),
-                JUMP_DESTINATION()
+                JUMP_DESTINATION(),
+                PUSH(1234)
         ))
     }
 
@@ -105,6 +107,29 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
     }
 
     @Test
+    fun processImplicitExit() {
+        val graphBuilder = GraphBuilder(listOf(
+                JumpThreadingProcessor()
+        ))
+        val original = listOf(
+                PUSH(2),
+                JUMP(),
+                JUMP_DESTINATION(),
+                NOOP()
+        )
+
+        val graph = graphBuilder.build(original)
+        val instructions = graph.toInstructions()
+
+        assertEquals(instructions, listOf(
+                NOOP(),
+                EXIT(),
+                JUMP_DESTINATION(),
+                NOOP()
+        ))
+    }
+
+    @Test
     fun processConditionalJump() {
         val graphBuilder = GraphBuilder(listOf(
                 JumpThreadingProcessor()
@@ -126,7 +151,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 .headingParagraph(JumpThreadingProcessor::class.simpleName!!)
                 .paragraph("Finds JUMP and JUMP_IF instructions whose addresses are blocks that immediately JUMP again." +
                         " When this is the case the address of the first JUMP or JUMP_IF is replaced with the address of the second JUMP." +
-                        " Additionally, any JUMPs to blocks which immediately EXIT, HALT will also be replaced with the respective instruction.")
+                        " Additionally, any JUMPs to blocks which immediately or implicitly EXIT, or HALT will be replaced with that respective instruction.")
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
 
@@ -135,8 +160,8 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 PUSH(6),
                 JUMP_IF(),
                 JUMP_DESTINATION(),
-                PUSH(6),
-                JUMP(),
+                NOOP(),
+                EXIT(),
                 JUMP_DESTINATION()
         ))
     }
