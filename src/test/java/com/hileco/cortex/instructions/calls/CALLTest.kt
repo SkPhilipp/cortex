@@ -2,37 +2,46 @@ package com.hileco.cortex.instructions.calls
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
-import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.ProgramRunner
-import com.hileco.cortex.instructions.debug.HALT
+import com.hileco.cortex.instructions.io.LOAD
+import com.hileco.cortex.instructions.io.SAVE
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.VirtualMachine
+import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger
 
 class CALLTest : InstructionTest() {
-    @Test(expected = ProgramException::class)
+    @Test
     fun runCallIntoWinner() {
         val callerInstructions = listOf(
+                PUSH(123),
+                PUSH(10),
+                SAVE(MEMORY),
                 PUSH(0),
                 PUSH(0),
-                PUSH(0),
-                PUSH(0),
+                PUSH(LOAD.SIZE.toLong()),
+                PUSH(10),
                 PUSH(0),
                 PUSH(LIBRARY_ADDRESS),
                 CALL()
         )
         val libraryInstructions = listOf(
-                HALT(WINNER)
+                PUSH(0),
+                LOAD(CALL_DATA)
         )
         val callerProgram = Program(callerInstructions)
         val callerProgramContext = ProgramContext(callerProgram)
         val virtualMachine = VirtualMachine(callerProgramContext)
         val libraryProgram = Program(libraryInstructions)
         virtualMachine.atlas[BigInteger.valueOf(LIBRARY_ADDRESS)] = libraryProgram
+        val programRunner = ProgramRunner(virtualMachine)
+        programRunner.run()
+        val stack = virtualMachine.programs.peek()!!.stack
         Documentation.of("instructions/call")
                 .headingParagraph("CALL").paragraph("The CALL operation allows for interaction between programs. An area of MEMORY (marked by offset" +
                         " and size) in the calling program may be made available through CALL_DATA to the callee. A second area of MEMORY (marked by offset and" +
@@ -40,8 +49,9 @@ class CALLTest : InstructionTest() {
                         " callee program. Additionally, value owned by the calling program may be transferred to the callee program.")
                 .paragraph("Example calling program:").source(callerInstructions)
                 .paragraph("Example callee program at $LIBRARY_ADDRESS:").source(libraryInstructions)
-        val programRunner = ProgramRunner(virtualMachine)
-        programRunner.run()
+                .paragraph("Resulting stack:").source(stack)
+        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(123))
     }
 
     companion object {

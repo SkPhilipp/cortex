@@ -5,6 +5,7 @@ import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.CALL_RECIPIENT_MISSING
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
 import com.hileco.cortex.instructions.StackParameter
+import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.*
@@ -35,7 +36,7 @@ class CALL : Instruction() {
         val sourceAddress = program.program.address
         recipient.transfers.push(sourceAddress to valueTransferred)
         val newContext = ProgramContext(recipient)
-        val inputData = program.memory.read(inOffset.toInt(), inSize.toInt())
+        val inputData = program.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
         newContext.callData.clear()
         newContext.callData.write(0, inputData)
         process.programs.push(newContext)
