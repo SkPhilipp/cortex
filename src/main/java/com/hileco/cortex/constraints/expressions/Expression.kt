@@ -4,13 +4,14 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import com.microsoft.z3.BoolExpr
 import com.microsoft.z3.Context
 import com.microsoft.z3.Expr
+import java.lang.Long.toString
 
 interface Expression {
     fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr
 
-    data class Input(private var representation: String,
-                     private var converter: (Context, Expr) -> Expr,
-                     private var input: Expression) : Expression {
+    data class Input(val representation: String,
+                     val converter: (Context, Expr) -> Expr,
+                     val input: Expression) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val inputExpr = input.asZ3Expr(context, referenceMapping)
@@ -22,10 +23,10 @@ interface Expression {
         }
     }
 
-    data class LeftRight(private var representation: String,
-                         private var converter: (Context, Expr, Expr) -> Expr,
-                         private var left: Expression,
-                         private var right: Expression) : Expression {
+    data class LeftRight(val representation: String,
+                         val converter: (Context, Expr, Expr) -> Expr,
+                         val left: Expression,
+                         val right: Expression) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
@@ -38,8 +39,8 @@ interface Expression {
         }
     }
 
-    data class Reference(private var type: ProgramStoreZone,
-                         private var address: Expression) : Expression {
+    data class Reference(val type: ProgramStoreZone,
+                         val address: Expression) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val reference = referenceMapping.referencesForward.computeIfAbsent(this@Reference) { unmappedReference ->
@@ -56,18 +57,18 @@ interface Expression {
         }
     }
 
-    data class Value(private var constant: Long) : Expression {
+    data class Value(val constant: Long) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkInt(constant)
         }
 
         override fun toString(): String {
-            return java.lang.Long.toString(constant)
+            return toString(constant)
         }
     }
 
-    data class Stack(private val address: Int = 0) : Expression {
+    data class Stack(val address: Int = 0) : Expression {
 
         override fun toString(): String {
             return "STACK[$address]"
@@ -78,7 +79,7 @@ interface Expression {
         }
     }
 
-    data class Not(private val input: Expression) : Expression {
+    data class Not(val input: Expression) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val inputExpr = input.asZ3Expr(context, referenceMapping)
@@ -90,7 +91,7 @@ interface Expression {
         }
     }
 
-    data class And(private var inputs: List<Expression>) : Expression {
+    data class And(var inputs: List<Expression>) : Expression {
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkAnd(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
