@@ -9,7 +9,7 @@
 - [x] Generated solution for manually built expression
 - [x] Generated solution for barrier program with basic math based win condition
 - [x] Generated solution for barrier program verified by virtual machine simulation
-- [ ] Generated solution for barrier program generated as another program
+- [x] Generated solution for barrier program generated as another program
 - [ ] Document database containing all barrier programs' source
 - [ ] Document database containing all barrier programs' state
 - [ ] Automated solving and progress tracking of all barrier programs in database
