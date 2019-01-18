@@ -4,17 +4,17 @@
 
 - [x] Virtual Machine running programs with stack manipulation
 - [x] Virtual Machine running programs with disk and memory manipulation
-- [ ] Virtual Machine running programs calling programs as libraries
+- [x] Virtual Machine running programs calling programs as libraries
 - [x] Virtual Machine running programs running from assembly files
 - [x] Generated solution for manually built expression
 - [x] Generated solution for barrier program with basic math based win condition
 - [x] Generated solution for barrier program verified by virtual machine simulation
 - [ ] Generated solution for barrier program generated as another program
-- [ ] Generated solution for barrier program involving multiple calls
 - [ ] Document database containing all barrier programs' source
 - [ ] Document database containing all barrier programs' state
-- [ ] Generated solution for a state-bound barrier program in database
 - [ ] Automated solving and progress tracking of all barrier programs in database
+- [ ] Generated solution for a barrier program involving database-stored state
+- [ ] Generated solution for a barrier program involving multiple calls
 
 === Improvements
 
