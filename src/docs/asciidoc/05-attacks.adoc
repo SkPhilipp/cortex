@@ -14,3 +14,5 @@ if(args[1] / 2 == 12345) {
 Cortex will try to reach `HALT WINNER`.
 
 include::{snippets}/Attacker.adoc[]
+
+include::{snippets}/AttackProgramBuilder.adoc[]

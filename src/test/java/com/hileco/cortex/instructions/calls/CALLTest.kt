@@ -48,7 +48,7 @@ class CALLTest : InstructionTest() {
                         " size) may also be designated for the callee to return data into. CALL transfers program execution from the caller to the start of the " +
                         " callee program. Additionally, value owned by the calling program may be transferred to the callee program.")
                 .paragraph("Example calling program:").source(callerInstructions)
-                .paragraph("Example callee program at $LIBRARY_ADDRESS:").source(libraryInstructions)
+                .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 1)
         Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(123))

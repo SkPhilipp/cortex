@@ -48,7 +48,7 @@ class CALL_RETURNTest : InstructionTest() {
                         " the calling program. CALL_RETURN takes an area of MEMORY (marked by offset and size) of the callee and places this into the" +
                         " CALL-specified area of MEMORY. CALL_RETURN ends program execution from the callee and resumes program execution of the caller.")
                 .paragraph("Example calling program:").source(callerInstructions)
-                .paragraph("Example callee program at ${CALLTest.LIBRARY_ADDRESS}:").source(libraryInstructions)
+                .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(callerProgramContext.stack)
         Assert.assertEquals(callerProgramContext.stack.size().toLong(), 1)
         Assert.assertEquals(BigInteger(callerProgramContext.stack.pop()), BigInteger.valueOf(12345))

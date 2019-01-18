@@ -39,7 +39,7 @@ build {
 }
 
 test {
-    maxParallelForks(6)
+    maxParallelForks(3)
 }
 
 compileKotlin {
