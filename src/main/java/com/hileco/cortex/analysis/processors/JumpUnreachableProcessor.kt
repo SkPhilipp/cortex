@@ -11,12 +11,13 @@ class JumpUnreachableProcessor : Processor {
             val targets = HashSet<Int>()
             targets.add(PROGRAM_START)
             targets.addAll(it.flowsToTarget.keys.filterNotNull())
-            graph.graphBlocks.forEach { graphBlock ->
-                graphBlock.graphNodes.firstOrNull()?.let { startingNode ->
-                    if (!targets.contains(startingNode.line)) {
-                        graphBlock.graphNodes.forEach { graphNode -> graphNode.instruction = NOOP() }
-                    }
-                }
+            val unreachableBlocks = graph.graphBlocks.filterNot { graphBlock ->
+                val startNode = graphBlock.graphNodes.first()
+                targets.contains(startNode.line)
+            }
+            unreachableBlocks.forEach { graphBlock ->
+                graphBlock.graphNodes.forEach { graphNode -> graphNode.instruction = NOOP() }
+                graph.mergeUpwards(graphBlock)
             }
         }
     }

@@ -60,25 +60,6 @@ class Graph() {
         graphBlocks.remove(graphBlock)
     }
 
-    fun mergeDownwards(graphBlock: GraphBlock) {
-        val index = this.indexOf(graphBlock)
-        if (index + 1 >= graphBlocks.size) {
-            return
-        }
-        val target = graphBlocks[index + 1]
-        graphBlock.append(target)
-        graphBlocks.remove(target)
-    }
-
-    fun remove(graphBlock: GraphBlock) {
-        graphBlocks.remove(graphBlock)
-    }
-
-    fun replace(original: GraphBlock, replacement: GraphBlock) {
-        val index = this.indexOf(original)
-        graphBlocks[index] = replacement
-    }
-
     fun toInstructions(): List<Instruction> {
         return graphBlocks.asSequence()
                 .flatMap { it.graphNodes.asSequence() }

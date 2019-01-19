@@ -38,6 +38,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 NOOP(),
                 JUMP_DESTINATION()
         ))
+        Assert.assertEquals(graph.graphBlocks.size, 2)
     }
 
     @Test
