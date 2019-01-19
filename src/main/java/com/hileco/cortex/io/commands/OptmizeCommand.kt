@@ -1,27 +1,24 @@
 package com.hileco.cortex.io.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.types.file
 import com.hileco.cortex.analysis.GraphBuilder.Companion.OPTIMIZED_GRAPH_BUILDER
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.io.serialization.InstructionParser
-import java.io.File
-import java.io.InputStream
+import com.hileco.cortex.io.serialization.ProgramReferenceLoader
+import com.hileco.cortex.vm.Program
 
 class OptmizeCommand : CliktCommand(name = "optimize", help = "Optimize a sample and output the optmized graph instruction") {
-    private val source: File by option(help = "Cortex Assembly source file path").file().required()
+    private val program: Program by option(help = "Cortex Assembly source file path").convert { ProgramReferenceLoader().load(it) }.required()
 
     override fun run() {
-        val optimizedInstructions = execute(source.inputStream())
+        val optimizedInstructions = execute(program)
         optimizedInstructions.forEach { echo(it) }
     }
 
-    fun execute(instructionStream: InputStream): List<Instruction> {
-        val instructionParser = InstructionParser()
-        val instructions = instructionStream.reader().readLines().map { instructionParser.parse(it) }
-        val graph = OPTIMIZED_GRAPH_BUILDER.build(instructions)
+    fun execute(program: Program): List<Instruction> {
+        val graph = OPTIMIZED_GRAPH_BUILDER.build(program.instructions)
         return graph.toInstructions()
     }
 }

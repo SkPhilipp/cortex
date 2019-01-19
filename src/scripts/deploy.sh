@@ -4,5 +4,5 @@
 ./gradlew clean asciidoctor
 
 # Deploy Documentation
-ssh root@cortex "rm -rf /var/www/html/*"
-scp -r ./build/asciidoc/html5/. root@cortex:/var/www/html
+ssh root@cortex-production "rm -rf /var/www/html/*"
+scp -r ./build/asciidoc/html5/. root@cortex-production:/var/www/html

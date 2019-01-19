@@ -10,9 +10,9 @@
 - [x] Generated solution for barrier program with basic math based win condition
 - [x] Generated solution for barrier program verified by virtual machine simulation
 - [x] Generated solution for barrier program generated as another program
-- [ ] Document database containing all barrier programs' source
+- [x] Document database containing all barrier programs' source
+- [ ] Automated solving and solution tracking of all barrier programs in database
 - [ ] Document database containing all barrier programs' state
-- [ ] Automated solving and progress tracking of all barrier programs in database
 - [ ] Generated solution for a barrier program involving database-stored state
 - [ ] Generated solution for a barrier program involving multiple calls
 
@@ -55,6 +55,7 @@
 
 * Attack Generator which accounts for a given target instruction's input data (ie CALL with parameter CALL.ADDRESS = given address)
 * Mapping EVM compatible smart contracts to Cortex programs
+* Programs which do not require any solving constraint are currently not solveable
 
 ==== Fuzzer
 

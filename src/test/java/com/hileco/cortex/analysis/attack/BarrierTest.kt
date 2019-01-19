@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis.attack
 
-import com.hileco.cortex.instructions.Instruction
+import com.hileco.cortex.database.Database
 import com.hileco.cortex.instructions.InstructionsBuilder
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.conditions.EQUALS
@@ -11,30 +11,27 @@ import com.hileco.cortex.instructions.io.SAVE
 import com.hileco.cortex.instructions.math.ADD
 import com.hileco.cortex.instructions.math.DIVIDE
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.io.serialization.InstructionParser
+import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.VirtualMachine
-import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger
 
 class BarrierTest {
-    private fun assertBarrierFile(path: String, instructions: List<Instruction>) {
-        val instructionParser = InstructionParser()
-        val fileInstructions = this::class.java.getResource(path)
-                .openStream()
-                .reader()
-                .readLines()
-                .map { instructionParser.parse(it) }
-        Assert.assertEquals(fileInstructions, instructions)
+    companion object {
+        val BARRIER_01_ADDRESS = BigInteger.valueOf(1001)
+        val BARRIER_02_ADDRESS = BigInteger.valueOf(1002)
+        val BARRIER_03_ADDRESS = BigInteger.valueOf(1003)
+        val BARRIER_04_ADDRESS = BigInteger.valueOf(1004)
     }
 
     @Test
     fun barrier01Unconditional() {
         val builder = InstructionsBuilder()
         builder.include { HALT(WINNER) }
-        assertBarrierFile("/assembly/barrier-01-immediate.cxasm", builder.build())
+        val program = Program(builder.build(), BARRIER_01_ADDRESS)
+        Database.programRepository.save(program)
     }
 
     @Test
@@ -50,7 +47,8 @@ class BarrierTest {
         }, blockBody = {
             builder.include { HALT(WINNER) }
         })
-        assertBarrierFile("/assembly/barrier-02-basic.cxasm", builder.build())
+        val program = Program(builder.build(), BARRIER_02_ADDRESS)
+        Database.programRepository.save(program)
     }
 
     @Test
@@ -66,7 +64,8 @@ class BarrierTest {
         }, blockBody = {
             builder.include { HALT(WINNER) }
         })
-        assertBarrierFile("/assembly/barrier-03-overflow.cxasm", builder.build())
+        val program = Program(builder.build(), BARRIER_03_ADDRESS)
+        Database.programRepository.save(program)
     }
 
     @Test
@@ -97,7 +96,8 @@ class BarrierTest {
         }, blockBody = {
             builder.include { HALT(WINNER) }
         })
-        assertBarrierFile("/assembly/barrier-04-loops.cxasm", builder.build())
+        val program = Program(builder.build(), BARRIER_04_ADDRESS)
+        Database.programRepository.save(program)
     }
 
     @Test

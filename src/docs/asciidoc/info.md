@@ -91,6 +91,14 @@ Concept for instructions which modify the instruction position other than ++
 
 ----
 
-cortex attack --source src/test/resources/assembly/winner-basic.cxasm
-cortex run --source src/test/resources/assembly/winner-basic.cxasm
-cortex run --source src/test/resources/assembly/winner-basic.cxasm --call-data 1=24690
+cortex attack --program src/test/resources/assembly/winner-basic.cxasm
+cortex attack --program @1002
+cortex run --program src/test/resources/assembly/winner-basic.cxasm
+cortex run --program @1001
+cortex run --program src/test/resources/assembly/winner-basic.cxasm --call-data 1=24690
+
+> cortex attack --program src/test/resources/assembly/winner-basic.cxasm
+[{"possibleValues":{"CALL_DATA[1]":24690},"solvable":true}]
+> cortex run --program src/test/resources/assembly/winner-basic.cxasm --call-data 1=24690
+Exception at position 9, reason: WINNER
+> cortex optimize --program src/test/resources/assembly/optimize-basic.cxasm

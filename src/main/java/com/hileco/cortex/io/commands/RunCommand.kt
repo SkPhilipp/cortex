@@ -5,29 +5,23 @@ import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.types.file
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramRunner
-import com.hileco.cortex.io.serialization.InstructionParser
+import com.hileco.cortex.io.serialization.ProgramReferenceLoader
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
 import com.hileco.cortex.vm.layer.LayeredBytes
-import java.io.File
-import java.io.InputStream
 
 class RunCommand : CliktCommand(name = "run", help = "Generate input for a given sample which conforms with given constraints") {
-    private val source: File by option(help = "Cortex Assembly source file path").file().required()
-    private val callData: LayeredBytes by option(help = "Cortex Assembly source file path").convert { LayeredBytesReader().read(it) }.default(LayeredBytes())
+    private val program: Program by option(help = "Cortex Assembly source file path").convert { ProgramReferenceLoader().load(it) }.required()
+    private val callData: LayeredBytes by option(help = "Call data").convert { LayeredBytesReader().read(it) }.default(LayeredBytes())
 
     override fun run() {
-        execute(source.inputStream(), callData)
+        execute(program, callData)
     }
 
-    fun execute(instructionStream: InputStream, callData: LayeredBytes) {
-        val instructionParser = InstructionParser()
-        val instructions = instructionStream.reader().readLines().map { instructionParser.parse(it) }
-        val program = Program(instructions)
+    fun execute(program: Program, callData: LayeredBytes) {
         val programContext = ProgramContext(program)
         val virtualMachine = VirtualMachine(programContext)
         programContext.callData.write(0, callData.read(0, callData.size))
