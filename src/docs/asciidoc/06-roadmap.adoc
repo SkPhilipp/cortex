@@ -12,7 +12,7 @@
 - [x] Generated solution for barrier program generated as another program
 - [x] Document database containing all barrier programs' source
 - [ ] Automated solving and solution tracking of all barrier programs in database
-- [ ] Document database containing all barrier programs' state
+- [ ] Document database containing all barrier programs' disk and transaction state
 - [ ] Generated solution for a barrier program involving database-stored state
 - [ ] Generated solution for a barrier program involving multiple calls
 
