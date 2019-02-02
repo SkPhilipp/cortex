@@ -3,16 +3,32 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<p>Program Samples</p>
-<ul>
-	{% for sample in samples %}
-	<li><a href="/samples/view/{{ sample.id }}">{{ sample.name }}</a></li>
-	{% endfor %}
-</ul>
-<p>Program Submissions</p>
-<ul>
-	{% for program in programs %}
-	<li><a href="/programs/view/{{ program.id }}">{{ program.id }}</a></li>
-	{% endfor %}
-</ul>
+<div class="row">
+	<div class="col-md-12 text-center">
+		<p>
+			Blockchain-based programs ("smart contracts") open up new attack surfaces. Their executables must be small in size, and public. Their storage space is publicly readable, and every interaction with them is recorded. Cortex is a system to analyse such software & make it do what you want.
+			This site is only to demonstrate Cortex' current capabilities.
+			Visit the <a href="https://cortex.minesec.net/">documentation site</a> to learn more.
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6 offset-md-3">
+		<p>Program Samples:</p>
+		<ul>
+			{% for sample in samples %}
+			<li><a href="/samples/view/{{ sample.id }}">{{ sample.name }}</a></li>
+			{% endfor %}
+		</ul>
+		<p>Program Submissions:</p>
+		<ul>
+			{% for program in programs %}
+			<li><a href="/programs/view/{{ program.id }}">{{ program.id }}</a></li>
+			{% endfor %}
+		</ul>
+		<p>
+			<a href="/programs/new">Create a program</a>
+		</p>
+	</div>
+</div>
 {% endblock %}

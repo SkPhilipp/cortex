@@ -1,6 +1,7 @@
 package com.hileco.cortex.server
 
 import com.hileco.cortex.analysis.GraphBuilder
+import com.hileco.cortex.analysis.VisualGraph
 import com.hileco.cortex.analysis.attack.Attacker
 import com.hileco.cortex.database.Database
 import com.hileco.cortex.instructions.ProgramException
@@ -13,6 +14,7 @@ import com.hileco.cortex.vm.VirtualMachine
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import java.math.BigInteger
+import java.util.*
 import java.util.regex.Pattern
 
 data class UiProgram(val id: String, val source: String) {
@@ -130,6 +132,19 @@ fun main() {
                 }
                 ctx.contentType("application/json")
                 ctx.result(OBJECT_MAPPER.writeValueAsString(result))
+            }
+            post("/graph") { ctx ->
+                val source = ctx.formParam("source") ?: "NOOP"
+                val instructionParser = InstructionParser()
+                val instructions = source.split(Pattern.compile("[\r\n]+")).map { instructionParser.parse(it) }
+                val program = Program(instructions)
+                val graph = GraphBuilder.OPTIMIZED_GRAPH_BUILDER.build(program.instructions)
+                val visualGraph = VisualGraph()
+                visualGraph.map(graph)
+                ctx.contentType("text/html")
+                ctx.result(templates.render("programs-graph.html", mapOf(
+                        "image" to Base64.getEncoder().encodeToString(visualGraph.toBytes())
+                )))
             }
         }
         path("/samples") {

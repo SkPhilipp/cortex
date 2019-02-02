@@ -16,20 +16,14 @@
 	<body style="background-color: #f8f9fa">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-6 offset-md-3">
-					<div class="text-center">
-						<h1>Cortex</h1>
-						<p>
-							<a href="/">Index</a> /
-							<a href="/programs/new">Create</a> /
-							<a href="https://cortex.minesec.net/">Documentation</a>
-						</p>
-						<br/>
+				<div class="col-md-12">
+					<div class="text-center" style="margin: 20px;">
+						<h1><a href="/">Cortex</a></h1>
 					</div>
-					{% block content %}
-					{% endblock %}
 				</div>
 			</div>
+			{% block content %}
+			{% endblock %}
 		</div>
 	</body>
 </html>
