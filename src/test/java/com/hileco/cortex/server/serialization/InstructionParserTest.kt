@@ -1,7 +1,8 @@
-package com.hileco.cortex.io.serialization
+package com.hileco.cortex.server.serialization
 
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.debug.HALT
+import com.hileco.cortex.server.serialization.InstructionParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -1,0 +1,14 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Program: {{ program.name }}{% endblock %}
+
+{% block content %}
+<form action="/programs/solve" method="POST">
+	<label>Source<br />
+		<textarea rows="10" name="source">{{ program.source }}</textarea>
+	</label><br />
+	<input type="submit" value="Solve" />
+	<input type="submit" value="Run (Without call data)" formaction="/programs/run" />
+	<input type="submit" value="Optimize" formaction="/programs/optimize" />
+</form>
+{% endblock %}

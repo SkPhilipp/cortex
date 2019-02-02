@@ -1,0 +1,11 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Program Samples{% endblock %}
+
+{% block content %}
+<ul>
+	{% for sample in samples %}
+	<li><a href="/samples/view/{{ sample.id }}">{{ sample.id }} · {{ sample.name }}</a></li>
+	{% endfor %}
+</ul>
+{% endblock %}

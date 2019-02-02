@@ -1,4 +1,4 @@
-package com.hileco.cortex.io.commands
+package com.hileco.cortex.server.serialization
 
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.vm.layer.LayeredBytes

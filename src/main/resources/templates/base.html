@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<title>{% block title %}:-){% endblock %} · Cortex</title>
+		<style>
+			textarea {
+				width: 500px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>{% block title %}:-){% endblock %} · Cortex</h1>
+		<ul>
+			<li><a href="/">Index</a></li>
+			<li><a href="/programs/new">Create Program</a></li>
+			<li><a href="https://cortex.minesec.net/">Documentation Website</a></li>
+		</ul>
+		{% block content %}
+		{% endblock %}
+	</body>
+</html>

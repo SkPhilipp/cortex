@@ -1,4 +1,4 @@
-package com.hileco.cortex.io.serialization
+package com.hileco.cortex.server.serialization
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
