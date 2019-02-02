@@ -5,11 +5,11 @@
 {% block content %}
 <form action="/programs/new" method="POST">
 	<label>Id<br />
-		<input type="number" name="id">
+		<input class="form-control" type="number" name="id">
 	</label><br />
 	<label>Source<br />
-		<textarea name="source"></textarea>
+		<textarea class="form-control" name="source"></textarea>
 	</label><br />
-	<input type="submit" />
+	<input class="btn btn-primary" type="submit" />
 </form>
 {% endblock %}

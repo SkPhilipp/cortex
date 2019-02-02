@@ -4,20 +4,32 @@
 		<meta charset="UTF-8">
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 		<title>{% block title %}:-){% endblock %} · Cortex</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 		<style>
 			textarea {
-				width: 500px;
+				min-height: 400px;
+				min-width: 500px;
+				font-family: "Courier New", monospace;
 			}
 		</style>
 	</head>
-	<body>
-		<h1>{% block title %}:-){% endblock %} · Cortex</h1>
-		<ul>
-			<li><a href="/">Index</a></li>
-			<li><a href="/programs/new">Create Program</a></li>
-			<li><a href="https://cortex.minesec.net/">Documentation Website</a></li>
-		</ul>
-		{% block content %}
-		{% endblock %}
+	<body style="background-color: #f8f9fa">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 offset-md-3">
+					<div class="text-center">
+						<h1>Cortex</h1>
+						<p>
+							<a href="/">Index</a> /
+							<a href="/programs/new">Create</a> /
+							<a href="https://cortex.minesec.net/">Documentation</a>
+						</p>
+						<br/>
+					</div>
+					{% block content %}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

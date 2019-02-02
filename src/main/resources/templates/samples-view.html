@@ -1,18 +1,19 @@
 {% extends "templates/base.html" %}
 
-{% block title %}Program Sample: {{ sample.name }}{% endblock %}
+{% block title %}Sample "{{ sample.name }}"{% endblock %}
 
 {% block content %}
 <form action="/programs/solve" method="POST">
-	<p>Name: {{ sample.name }}</p>
-	<p>Description: {{ sample.description }}</p>
-	<p>Pseudocode:</p>
+	<p>
+		"{{ sample.description }}"<br/>
+		Pseudocode:
+	</p>
 	<pre>{{ sample.pseudocode }}</pre>
 	<label>Source<br />
-		<textarea rows="10" name="source">{{ sample.source }}</textarea>
+		<textarea class="form-control" rows="10" name="source">{{ sample.source }}</textarea>
 	</label><br />
-	<input type="submit" value="Solve" />
-	<input type="submit" value="Run (Without call data)" formaction="/programs/run" />
-	<input type="submit" value="Optimize" formaction="/programs/optimize" />
+	<input type="submit" class="btn btn-primary" value="Solve" />
+	<input type="submit" class="btn btn-primary" value="Run" formaction="/programs/run" />
+	<input type="submit" class="btn btn-primary" value="Optimize" formaction="/programs/optimize" />
 </form>
 {% endblock %}

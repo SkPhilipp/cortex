@@ -30,7 +30,9 @@ fun main() {
                 "programs" to Database.programRepository.findAll().map { UiProgram(it) }.toList(),
                 "samples" to listOf(
                         UiSample("5fa6e92e-4f6f-4e04-9ba5-630cd406712e",
-                                "",
+                                "IF(CALL_DATA[1] / 2 == 12345) {\n" +
+                                        "    HALT(WINNER)\n" +
+                                        "}",
                                 "PUSH 2\n" +
                                         "PUSH 1\n" +
                                         "LOAD CALL_DATA\n" +
@@ -42,8 +44,8 @@ fun main() {
                                         "JUMP_IF\n" +
                                         "HALT WINNER\n" +
                                         "JUMP_DESTINATION",
-                                "Noop",
-                                "Literally does nothing.")
+                                "Barrier 1",
+                                "Basic math.")
                 )
         )))
     }
@@ -135,7 +137,9 @@ fun main() {
                 ctx.contentType("text/html")
                 ctx.result(templates.render("samples-view.html", mapOf(
                         "sample" to UiSample("5fa6e92e-4f6f-4e04-9ba5-630cd406712e",
-                                "",
+                                "IF(CALL_DATA[1] / 2 == 12345) {\n" +
+                                        "    HALT(WINNER)\n" +
+                                        "}",
                                 "PUSH 2\n" +
                                         "PUSH 1\n" +
                                         "LOAD CALL_DATA\n" +
@@ -147,8 +151,8 @@ fun main() {
                                         "JUMP_IF\n" +
                                         "HALT WINNER\n" +
                                         "JUMP_DESTINATION",
-                                "Noop",
-                                "Literally does nothing.")
+                                "Barrier 1",
+                                "Basic math.")
                 )))
             }
         }

@@ -3,13 +3,13 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<h2>Program Samples</h2>
+<p>Program Samples</p>
 <ul>
 	{% for sample in samples %}
-	<li><a href="/samples/view/{{ sample.id }}">{{ sample.id }} · {{ sample.name }}</a></li>
+	<li><a href="/samples/view/{{ sample.id }}">{{ sample.name }}</a></li>
 	{% endfor %}
 </ul>
-<h2>Program Submissions</h2>
+<p>Program Submissions</p>
 <ul>
 	{% for program in programs %}
 	<li><a href="/programs/view/{{ program.id }}">{{ program.id }}</a></li>
