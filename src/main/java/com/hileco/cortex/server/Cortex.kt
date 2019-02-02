@@ -6,6 +6,8 @@ import com.hileco.cortex.analysis.attack.Attacker
 import com.hileco.cortex.database.Database
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramRunner
+import com.hileco.cortex.server.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.server.BarrierProgram.Companion.BARRIER_02
 import com.hileco.cortex.server.Templates.Companion.OBJECT_MAPPER
 import com.hileco.cortex.server.serialization.InstructionParser
 import com.hileco.cortex.vm.Program
@@ -18,37 +20,27 @@ import java.util.*
 import java.util.regex.Pattern
 
 data class UiProgram(val id: String, val source: String) {
-    constructor(program: Program) : this(program.address.toString(), program.instructions.joinToString(separator = "\n") { "$it" })
+    constructor(program: Program) :
+            this(program.address.toString(), program.instructions.joinToString(separator = "\n") { "$it" })
 }
 
-data class UiSample(val id: String, val pseudocode: String, val source: String, val name: String, val description: String)
+data class UiSample(val id: String, val pseudocode: String, val source: String, val name: String, val description: String) {
+    constructor(id: String, name: String, barrierProgram: BarrierProgram) :
+            this(id, barrierProgram.pseudocode, barrierProgram.instructions.joinToString(separator = "\n") { "$it" }, name, barrierProgram.description)
+}
 
 fun main() {
+    val samples = mapOf(
+            "barrier-01" to UiSample("barrier-01", "Barrier 01", BARRIER_01),
+            "barrier-02" to UiSample("barrier-02", "Barrier 02", BARRIER_02)
+    )
     val templates = Templates()
     val app = Javalin.create().start(8080)
     app.get("/") { ctx ->
         ctx.contentType("text/html")
         ctx.result(templates.render("index.html", mapOf(
                 "programs" to Database.programRepository.findAll().map { UiProgram(it) }.toList(),
-                "samples" to listOf(
-                        UiSample("5fa6e92e-4f6f-4e04-9ba5-630cd406712e",
-                                "IF(CALL_DATA[1] / 2 == 12345) {\n" +
-                                        "    HALT(WINNER)\n" +
-                                        "}",
-                                "PUSH 2\n" +
-                                        "PUSH 1\n" +
-                                        "LOAD CALL_DATA\n" +
-                                        "DIVIDE\n" +
-                                        "PUSH 12345\n" +
-                                        "EQUALS\n" +
-                                        "IS_ZERO\n" +
-                                        "PUSH 10\n" +
-                                        "JUMP_IF\n" +
-                                        "HALT WINNER\n" +
-                                        "JUMP_DESTINATION",
-                                "Barrier 1",
-                                "Basic math.")
-                )
+                "samples" to samples.values
         )))
     }
     app.routes {
@@ -149,26 +141,16 @@ fun main() {
         }
         path("/samples") {
             get("/view/:id") { ctx ->
-                ctx.contentType("text/html")
-                ctx.result(templates.render("samples-view.html", mapOf(
-                        "sample" to UiSample("5fa6e92e-4f6f-4e04-9ba5-630cd406712e",
-                                "IF(CALL_DATA[1] / 2 == 12345) {\n" +
-                                        "    HALT(WINNER)\n" +
-                                        "}",
-                                "PUSH 2\n" +
-                                        "PUSH 1\n" +
-                                        "LOAD CALL_DATA\n" +
-                                        "DIVIDE\n" +
-                                        "PUSH 12345\n" +
-                                        "EQUALS\n" +
-                                        "IS_ZERO\n" +
-                                        "PUSH 10\n" +
-                                        "JUMP_IF\n" +
-                                        "HALT WINNER\n" +
-                                        "JUMP_DESTINATION",
-                                "Barrier 1",
-                                "Basic math.")
-                )))
+                val id = ctx.pathParam("id")
+                val sample = samples[id]
+                if (sample != null) {
+                    ctx.contentType("text/html")
+                    ctx.result(templates.render("samples-view.html", mapOf(
+                            "sample" to sample
+                    )))
+                } else {
+                    ctx.status(404)
+                }
             }
         }
     }
