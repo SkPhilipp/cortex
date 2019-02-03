@@ -18,13 +18,13 @@ import java.math.BigInteger
 
 data class BarrierProgram(val description: String, val pseudocode: String, val instructions: List<Instruction>) {
     companion object {
-        val BARRIER_00 = BarrierProgram("Unconditional Win",
+        val BARRIER_00 = BarrierProgram("An unconditional win.",
                 """HALT(WINNER)""",
                 InstructionsBuilder().let { builder ->
                     builder.include { HALT(ProgramException.Reason.WINNER) }
                     builder.build()
                 })
-        val BARRIER_01 = BarrierProgram("Basic math.",
+        val BARRIER_01 = BarrierProgram("Basic math on a single input.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
                   |     HALT(WINNER)
                   | }""".trimMargin(),
@@ -41,7 +41,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     builder.build()
                 })
-        val BARRIER_02 = BarrierProgram("Basic math, with two inputs.",
+        val BARRIER_02 = BarrierProgram("Basic math on multiple inputs.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
                   |     IF(CALL_DATA[2] % 500 == 12) {
                   |         HALT(WINNER)
@@ -69,7 +69,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     builder.build()
                 })
-        val BARRIER_03 = BarrierProgram("Exploiting integer overflow.",
+        val BARRIER_03 = BarrierProgram("Vulnerable to integer overflow.",
                 """ IF(CALL_DATA[1] + ONE_BELOW_OVERFLOW_LIMIT == 12345) {
                   |     HALT(WINNER)
                   | }""".trimMargin(),
@@ -86,7 +86,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     builder.build()
                 })
-        val BARRIER_04 = BarrierProgram("Loops & memory.",
+        val BARRIER_04 = BarrierProgram("Involved memory and loops, more complex data flow analysis.",
                 """ x = CALL_DATA[0]
                   | y = 0
                   | WHILE(--x != 0) {
@@ -124,5 +124,12 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     builder.build()
                 }
         )
+        val BARRIER_05 = BarrierProgram("Contains somewhat conditional infinite loops.", "".trimIndent(), listOf())
+        val BARRIER_06 = BarrierProgram("Requires more complex memory data flow analysis.", "".trimIndent(), listOf())
+        val BARRIER_07 = BarrierProgram("This program calls an external program.", "".trimIndent(), listOf())
+        val BARRIER_08 = BarrierProgram("Contains a predictable pseudorandom number generator.", "".trimIndent(), listOf())
+        val BARRIER_09 = BarrierProgram("Outcome is influenced by preconfigured disk state.", "".trimIndent(), listOf())
+        val BARRIER_10 = BarrierProgram("Requires interaction with preconfigured disk state.", "".trimIndent(), listOf())
+        val BARRIER_11 = BarrierProgram("Requires multiple calls to solve.", "".trimIndent(), listOf())
     }
 }

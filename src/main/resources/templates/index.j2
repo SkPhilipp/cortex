@@ -8,7 +8,11 @@
 		<p>Program Samples:</p>
 		<ul>
 			{% for sample in samples %}
+			{% if sample.implemented %}
 			<li><a href="/samples/view/{{ sample.id }}">{{ sample.name }}</a></li>
+			{% else %}
+			<li>{{ sample.name }}</li>
+			{% endif %}
 			{% endfor %}
 		</ul>
 		{% if mode == "full" %}
