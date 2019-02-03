@@ -39,6 +39,7 @@ fun main() {
     app.get("/") { ctx ->
         ctx.contentType("text/html")
         ctx.result(templates.render("index.html", mapOf(
+                "admin" to ("1" == ctx.queryParam("admin")),
                 "programs" to Database.programRepository.findAll().map { UiProgram(it) }.toList(),
                 "samples" to samples.values
         )))
