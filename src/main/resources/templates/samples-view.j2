@@ -1,13 +1,18 @@
-{% extends "templates/base.html" %}
+{% extends "templates/base.j2" %}
 
-{% block title %}Program {{ program.id }}{% endblock %}
+{% block title %}Sample "{{ sample.name }}"{% endblock %}
 
 {% block content %}
 <div class="row">
 	<div class="col-md-6 offset-md-3">
 		<form action="/programs/solve" method="POST">
+			<p>
+				"{{ sample.description }}"<br />
+				Pseudocode:
+			</p>
+			<pre>{{ sample.pseudocode }}</pre>
 			<label>Source<br />
-				<textarea class="form-control" rows="10" name="source">{{ program.source }}</textarea>
+				<textarea class="form-control" rows="10" name="source">{{ sample.source }}</textarea>
 			</label><br />
 			<input type="submit" class="btn btn-primary" value="Solve" />
 			<input type="submit" class="btn btn-primary" value="Run" formaction="/programs/run" />

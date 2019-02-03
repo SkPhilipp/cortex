@@ -1,4 +1,4 @@
-{% extends "templates/base.html" %}
+{% extends "templates/base.j2" %}
 
 {% block title %}Index{% endblock %}
 
@@ -11,7 +11,7 @@
 			<li><a href="/samples/view/{{ sample.id }}">{{ sample.name }}</a></li>
 			{% endfor %}
 		</ul>
-		{% if admin %}
+		{% if mode == "full" %}
 		<p>Program Submissions:</p>
 		<ul>
 			{% for program in programs %}

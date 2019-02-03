@@ -1,4 +1,4 @@
-package com.hileco.cortex.server
+package com.hileco.cortex.analysis
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.InstructionsBuilder
