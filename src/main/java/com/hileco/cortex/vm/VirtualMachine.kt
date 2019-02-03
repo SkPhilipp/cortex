@@ -19,23 +19,8 @@ class VirtualMachine(vararg programContexts: ProgramContext) {
         }
     }
 
-    fun dump() {
-        var programIndex = 0
-        for (program in programs) {
-            var stackIndex = 0
-            val iterator = program.stack.iterator()
-            while (iterator.hasNext()) {
-                val element = iterator.next()
-                val bigInteger = BigInteger(element)
-                println("{$programIndex} [$stackIndex] = $bigInteger")
-                stackIndex++
-            }
-            programIndex++
-        }
-    }
-
     companion object {
         const val INSTRUCTION_LIMIT = 1000000
-        val NUMERICAL_LIMIT: BigInteger = BigInteger(byteArrayOf(2)).pow(256).subtract(BigInteger.ONE)
+        val NUMERICAL_LIMIT: BigInteger = BigInteger(byteArrayOf(2)).pow(256)
     }
 }

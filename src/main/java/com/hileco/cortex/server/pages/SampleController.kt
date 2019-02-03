@@ -24,8 +24,11 @@ class SampleController {
 
     companion object {
         val SAMPLES = mapOf(
+                "barrier-00" to UiSample("barrier-00", "Barrier 00", BarrierProgram.BARRIER_00),
                 "barrier-01" to UiSample("barrier-01", "Barrier 01", BarrierProgram.BARRIER_01),
-                "barrier-02" to UiSample("barrier-02", "Barrier 02", BarrierProgram.BARRIER_02)
+                "barrier-02" to UiSample("barrier-02", "Barrier 02", BarrierProgram.BARRIER_02),
+                "barrier-03" to UiSample("barrier-03", "Barrier 03", BarrierProgram.BARRIER_03),
+                "barrier-04" to UiSample("barrier-04", "Barrier 04", BarrierProgram.BARRIER_04)
         )
     }
 }
