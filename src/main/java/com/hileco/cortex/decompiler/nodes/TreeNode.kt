@@ -1,21 +1,43 @@
 package com.hileco.cortex.decompiler.nodes
 
+import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 
-open class TreeNode(val nodes: List<TreeNode> = listOf(),
-                    private val name: String = "UNDEFINED") {
+abstract class TreeNode {
 
-    fun display(printStream: PrintStream, offset: Int = 0) {
+    protected fun printlnOffset(printStream: PrintStream, text: String, offset: Int = 0) {
+        for (i in 1..offset) {
+            printStream.print(" ")
+        }
+        printStream.println(text)
+    }
+
+    protected fun printBlock(printStream: PrintStream, name: String, nodes: List<TreeNode>, offset: Int = 0) {
+        for (i in 1..offset) {
+            printStream.print(" ")
+        }
         printStream.print(name)
         if (!nodes.isEmpty()) {
-            printStream.println("{")
+            printStream.println(" {")
             nodes.forEach {
-                it.display(printStream, offset + 2)
+                it.print(printStream, offset + 2)
+            }
+            for (i in 1..offset) {
+                printStream.print(" ")
             }
             printStream.println("}")
         } else {
             printStream.println()
         }
+    }
+
+    abstract fun print(printStream: PrintStream, offset: Int = -2)
+
+    override fun toString(): String {
+        val outputStream = ByteArrayOutputStream()
+        val printStream = PrintStream(outputStream)
+        print(printStream)
+        return "$outputStream"
     }
 }

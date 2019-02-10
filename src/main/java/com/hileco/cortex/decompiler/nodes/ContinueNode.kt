@@ -1,3 +1,9 @@
 package com.hileco.cortex.decompiler.nodes
 
-class ContinueNode : TreeNode()
+import java.io.PrintStream
+
+class ContinueNode : TreeNode() {
+    override fun print(printStream: PrintStream, offset: Int) {
+        printlnOffset(printStream, "CONTINUE", offset + 2)
+    }
+}
