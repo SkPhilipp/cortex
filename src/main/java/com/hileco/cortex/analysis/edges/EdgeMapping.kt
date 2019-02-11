@@ -3,7 +3,6 @@ package com.hileco.cortex.analysis.edges
 import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramZone
 
@@ -62,9 +61,8 @@ class EdgeMapping {
     // TODO: And ensure that all child parameters do not have multiple parameter-consumers
     fun isSelfContained(graphNode: GraphNode): Boolean {
         return fully(graphNode) {
-            setOf(ProgramZone.STACK).containsAll(it.instruction.instructionModifiers)
-                    && it.instruction !is SWAP
-                    && it.instruction !is DUPLICATE
+            val instruction = it.instruction
+            setOf(ProgramZone.STACK).containsAll(instruction.instructionModifiers) && instruction !is SWAP
         }
     }
 

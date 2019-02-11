@@ -30,26 +30,27 @@ class ParameterProcessor : Processor {
                         val parameter = stack[(stack.size() - 1) - instruction.topOffset]
                         graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
                         graph.edgeMapping.add(graphNode, EdgeParameters(listOf(parameter)))
-                        stack.clear()
                         stack.push(graphNode)
                     }
                 } else {
-                    val stackTakes = instruction.stackParameters.size
-                    if (stackTakes > 0) {
+                    val stackParametersSize = instruction.stackParameters.size
+                    if (stackParametersSize > 0) {
                         val parameters = ArrayList<GraphNode?>()
                         val stackSize = stack.size()
-                        val totalMissing = stackTakes - stackSize
+                        val totalMissing = stackParametersSize - stackSize
                         for (i in 0 until totalMissing) {
                             parameters.add(null)
                         }
-                        val remainingMissing = Math.min(stackTakes, stackTakes - totalMissing)
-                        for (i in 0 until remainingMissing) {
+                        val totalAvailable = Math.min(stackParametersSize, stackParametersSize - totalMissing)
+                        for (i in 0 until totalAvailable) {
                             val parameter = stack[stackSize - 1 - i]
                             graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
                             parameters.add(parameter)
                         }
                         graph.edgeMapping.add(graphNode, EdgeParameters(parameters))
-                        stack.clear()
+                        for (i in 0 until totalAvailable) {
+                            stack.pop()
+                        }
                     }
                     if (!instruction.stackAdds.isEmpty()) {
                         stack.push(graphNode)
