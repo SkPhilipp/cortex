@@ -27,8 +27,8 @@ abstract class ConditionInstruction : Instruction() {
         if (program.stack.size() < 2) {
             throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
         }
-        val left = program.stack.pop()!!
-        val right = program.stack.pop()!!
+        val left = program.stack.pop()
+        val right = program.stack.pop()
         val equals = innerExecute(left, right)
         program.stack.push(if (equals) TRUE.clone() else FALSE.clone())
     }

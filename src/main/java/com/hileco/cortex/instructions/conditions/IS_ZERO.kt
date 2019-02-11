@@ -22,7 +22,7 @@ class IS_ZERO : Instruction() {
         if (program.stack.size() < 1) {
             throw ProgramException(program, ProgramException.Reason.STACK_TOO_FEW_ELEMENTS)
         }
-        val top = program.stack.pop()!!
+        val top = program.stack.pop()
         val isZero = !top.any { byte -> byte > 0 }
         val resultReference = if (isZero) ConditionInstruction.TRUE else ConditionInstruction.FALSE
         program.stack.push(resultReference.clone())

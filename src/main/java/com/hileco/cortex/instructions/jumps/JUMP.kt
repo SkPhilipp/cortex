@@ -21,7 +21,7 @@ class JUMP : JumpingInstruction() {
         if (program.stack.size() < 1) {
             throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
         }
-        val nextInstructionPosition = BigInteger(program.stack.pop()!!).toInt()
+        val nextInstructionPosition = BigInteger(program.stack.pop()).toInt()
         performJump(program, nextInstructionPosition)
     }
 

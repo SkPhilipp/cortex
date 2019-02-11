@@ -23,7 +23,7 @@ class BITWISE_NOT : Instruction() {
         if (program.stack.size() < 1) {
             throw ProgramException(program, ProgramException.Reason.STACK_TOO_FEW_ELEMENTS)
         }
-        val element = program.stack.pop()!!
+        val element = program.stack.pop()
         val result = ByteArray(element.size)
         for (i in result.indices) {
             result[i] = element[i].inv()

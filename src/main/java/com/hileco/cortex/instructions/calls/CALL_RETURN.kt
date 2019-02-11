@@ -27,8 +27,8 @@ class CALL_RETURN : Instruction() {
         val offset = BigInteger(program.stack.pop())
         val size = BigInteger(program.stack.pop())
         process.programs.pop()
-        val nextContext = process.programs.peek()
-        if (nextContext != null) {
+        if (!process.programs.isEmpty()) {
+            val nextContext = process.programs.peek()
             val data = program.memory.read(offset.toInt(), size.toInt())
             val wSize = nextContext.returnDataSize
             if (data.size > wSize.toInt()) {

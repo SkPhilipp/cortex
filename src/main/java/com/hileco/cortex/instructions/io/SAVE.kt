@@ -18,14 +18,14 @@ class SAVE(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
         if (program.stack.size() < 2) {
             throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
         }
-        val addressBytes = program.stack.pop()!!
+        val addressBytes = program.stack.pop()
         val address = BigInteger(addressBytes)
         val storage: LayeredBytes = when (programStoreZone) {
             ProgramStoreZone.MEMORY -> program.memory
             ProgramStoreZone.DISK -> program.program.storage
             ProgramStoreZone.CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $programStoreZone")
         }
-        val bytes = program.stack.pop()!!
+        val bytes = program.stack.pop()
         val alignmentOffset = LOAD.SIZE - bytes.size
         if (address.toInt() * LOAD.SIZE + alignmentOffset + bytes.size > storage.size) {
             throw ProgramException(program, ProgramException.Reason.STORAGE_ACCESS_OUT_OF_BOUNDS)

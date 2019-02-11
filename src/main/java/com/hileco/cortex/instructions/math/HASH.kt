@@ -28,7 +28,7 @@ data class HASH(private val hashMethod: String) : Instruction() {
             if (program.stack.size() < 1) {
                 throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
             }
-            messageDigest.update(program.stack.pop()!!)
+            messageDigest.update(program.stack.pop())
             program.stack.push(messageDigest.digest())
         } catch (e: NoSuchAlgorithmException) {
             throw IllegalArgumentException("Unknown hash method: $hashMethod", e)

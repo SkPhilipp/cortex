@@ -26,8 +26,8 @@ abstract class BitInstruction : Instruction() {
         if (program.stack.size() < 2) {
             throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
         }
-        val left = program.stack.pop()!!
-        val right = program.stack.pop()!!
+        val left = program.stack.pop()
+        val right = program.stack.pop()
         val result = ByteArray(Math.max(left.size, right.size))
 
         for (i in result.indices) {

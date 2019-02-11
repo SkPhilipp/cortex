@@ -13,11 +13,11 @@ class LayeredStackTest {
         val stackB = LayeredStack(rootStack)
         assertEquals(2, stackA.pop())
         assertEquals(1, stackA.pop())
-        assertNull(stackA.pop())
+        assertTrue(stackA.isEmpty())
         assertEquals(1, stackB.pop())
-        assertNull(stackB.pop())
+        assertTrue(stackB.isEmpty())
         assertEquals(1, rootStack.pop())
-        assertNull(rootStack.pop())
+        assertTrue(rootStack.isEmpty())
     }
 
     @Test

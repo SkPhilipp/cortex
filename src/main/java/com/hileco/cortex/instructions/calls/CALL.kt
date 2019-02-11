@@ -24,12 +24,12 @@ class CALL : Instruction() {
         if (program.stack.size() < 6) {
             throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
         }
-        val recipientAddress = BigInteger(program.stack.pop()!!)
-        val valueTransferred = BigInteger(program.stack.pop()!!)
-        val inOffset = BigInteger(program.stack.pop()!!)
-        val inSize = BigInteger(program.stack.pop()!!)
-        val outOffset = BigInteger(program.stack.pop()!!)
-        val outSize = BigInteger(program.stack.pop()!!)
+        val recipientAddress = BigInteger(program.stack.pop())
+        val valueTransferred = BigInteger(program.stack.pop())
+        val inOffset = BigInteger(program.stack.pop())
+        val inSize = BigInteger(program.stack.pop())
+        val outOffset = BigInteger(program.stack.pop())
+        val outSize = BigInteger(program.stack.pop())
         program.returnDataOffset = outOffset
         program.returnDataSize = outSize
         val recipient = process.atlas[recipientAddress] ?: throw ProgramException(program, CALL_RECIPIENT_MISSING)

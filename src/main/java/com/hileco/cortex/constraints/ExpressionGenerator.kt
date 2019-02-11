@@ -28,7 +28,7 @@ class ExpressionGenerator {
 
     val currentExpression: Expression
         get() {
-            return stack.peek() ?: Stack(0)
+            return if (stack.isEmpty()) Stack(0) else stack.peek()
         }
 
     fun viewExpression(offset: Int): Expression {
@@ -40,7 +40,7 @@ class ExpressionGenerator {
     }
 
     private fun pop(): Expression {
-        return if (stack.size() > 0) stack.pop()!! else Stack(missing++)
+        return if (stack.isEmpty()) Stack(missing++) else stack.pop()
     }
 
     private fun leftRight(representation: String, converter: (Context, Expr, Expr) -> Expr) {

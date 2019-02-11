@@ -7,15 +7,18 @@ import com.hileco.cortex.vm.VirtualMachine
 class ProgramRunner(private val virtualMachine: VirtualMachine) {
     @Throws(ProgramException::class)
     fun run() {
-        var context: ProgramContext? = virtualMachine.programs.peek()
-        while (context != null && context.instructionPosition < context.program.instructions.size) {
+        if (virtualMachine.programs.isEmpty()) {
+            return
+        }
+        var context: ProgramContext = virtualMachine.programs.peek()
+        while (context.instructionPosition < context.program.instructions.size) {
             val currentInstructionPosition = context.instructionPosition
             val current = context.program.instructions[currentInstructionPosition]
             current.execute(virtualMachine, context)
-            context = virtualMachine.programs.peek()
-            if (context == null) {
+            if (virtualMachine.programs.isEmpty()) {
                 break
             }
+            context = virtualMachine.programs.peek()
             if (context.instructionPosition == currentInstructionPosition) {
                 context.instructionPosition = currentInstructionPosition + 1
             }

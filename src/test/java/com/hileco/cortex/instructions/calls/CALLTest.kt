@@ -41,7 +41,7 @@ class CALLTest : InstructionTest() {
         virtualMachine.atlas[BigInteger.valueOf(LIBRARY_ADDRESS)] = libraryProgram
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        val stack = virtualMachine.programs.peek()!!.stack
+        val stack = virtualMachine.programs.peek().stack
         Documentation.of("instructions/call")
                 .headingParagraph("CALL").paragraph("The CALL operation allows for interaction between programs. An area of MEMORY (marked by offset" +
                         " and size) in the calling program may be made available through CALL_DATA to the callee. A second area of MEMORY (marked by offset and" +

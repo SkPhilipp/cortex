@@ -14,7 +14,7 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     }
 
     @Synchronized
-    fun pop(): V? {
+    fun pop(): V {
         val value = peek()
         layer.remove(this.size - 1)
         this.size--
@@ -22,21 +22,13 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     }
 
     @Synchronized
-    fun peek(): V? {
-        return if (this.size == 0) null else this[this.size - 1]
+    fun peek(): V {
+        return if (this.size == 0) throw IndexOutOfBoundsException("size 0 <= index 0") else this[this.size - 1]
 
-    }
-
-    @Synchronized
-    private fun checkBounds(index: Int) {
-        if (this.size < index) {
-            throw IndexOutOfBoundsException("size ${this.size} <= index $index")
-        }
     }
 
     @Synchronized
     operator fun get(index: Int): V {
-        checkBounds(index)
         return layer[index] ?: if (parent == null) {
             throw IndexOutOfBoundsException("size ${this.size} <= index $index")
         } else {
@@ -46,7 +38,9 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
     @Synchronized
     operator fun set(index: Int, value: V) {
-        checkBounds(index)
+        if (this.size < index) {
+            throw IndexOutOfBoundsException("size ${this.size} <= index $index")
+        }
         layer[index] = value
     }
 
@@ -66,7 +60,7 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
     @Synchronized
     fun isEmpty(): Boolean {
-        return layer.isEmpty() && (parent == null || parent.size == 0)
+        return this.size == 0
     }
 
     @Synchronized
