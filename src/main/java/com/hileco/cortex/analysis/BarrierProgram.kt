@@ -75,7 +75,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     blockWhile(conditionBody = {
                         save(MEMORY, subtract(push(1), load(MEMORY, push(varX))), push(varX))
                         load(MEMORY, push(varX))
-                    }, loopBody = {
+                    }, loopBody = { _, _ ->
                         save(MEMORY, add(push(1), load(MEMORY, push(varY))), push(varY))
                     })
                     blockIf(conditionBody = {

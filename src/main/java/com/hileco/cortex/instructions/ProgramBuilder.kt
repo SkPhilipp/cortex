@@ -235,6 +235,19 @@ class ProgramBuilder {
         instructions.add { SWAP(0, 1) }
     }
 
+    fun blockLoop(loopBody: (doContinue: () -> Unit, doBreak: () -> Unit) -> Unit) {
+        val startLabel = UUID.randomUUID().toString()
+        val endLabel = UUID.randomUUID().toString()
+        jumpDestination(startLabel)
+        loopBody({
+            jump(startLabel)
+        }, {
+            jump(endLabel)
+        })
+        jump(startLabel)
+        jumpDestination(endLabel)
+    }
+
     fun blockLoop(loopBody: () -> Unit) {
         val startLabel = UUID.randomUUID().toString()
         jumpDestination(startLabel)
@@ -243,14 +256,31 @@ class ProgramBuilder {
     }
 
     fun blockWhile(conditionBody: () -> Unit,
-                   loopBody: () -> Unit) {
+                   loopBody: (doContinue: () -> Unit, doBreak: () -> Unit) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
         val endLabel = UUID.randomUUID().toString()
         jumpDestination(startLabel)
         conditionBody()
         jumpIf(isZero(), endLabel)
-        loopBody()
+        loopBody({
+            jump(startLabel)
+        }, {
+            jump(endLabel)
+        })
         jump(startLabel)
+        jumpDestination(endLabel)
+    }
+
+    fun blockDoWhile(body: (doContinue: () -> Unit, doBreak: () -> Unit) -> Unit) {
+        val startLabel = UUID.randomUUID().toString()
+        val endLabel = UUID.randomUUID().toString()
+        jumpDestination(startLabel)
+        body({
+            jump(startLabel)
+        }, {
+            jump(endLabel)
+        })
+        jumpIf(label = startLabel)
         jumpDestination(endLabel)
     }
 
