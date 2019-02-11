@@ -1,6 +1,6 @@
 package com.hileco.cortex.fuzzer
 
-import com.hileco.cortex.instructions.InstructionsBuilder
+import com.hileco.cortex.instructions.ProgramBuilder
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.layer.LayeredMap
 import java.math.BigInteger
@@ -8,7 +8,7 @@ import java.util.*
 import java.util.stream.IntStream
 
 class ProgramGeneratorContext(seed: Long) {
-    var builder: InstructionsBuilder = InstructionsBuilder()
+    var builder: ProgramBuilder = ProgramBuilder()
     private val atlas: LayeredMap<BigInteger, Program> = LayeredMap()
     private val random: Random = Random(seed)
     private val randomFuzzProgramLayout: () -> FuzzProgram

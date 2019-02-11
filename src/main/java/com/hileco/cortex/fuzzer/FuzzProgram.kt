@@ -1,11 +1,6 @@
 package com.hileco.cortex.fuzzer
 
-import com.hileco.cortex.instructions.conditions.EQUALS
-import com.hileco.cortex.instructions.io.LOAD
-import com.hileco.cortex.instructions.jumps.JUMP
-import com.hileco.cortex.instructions.jumps.JUMP_IF
-import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import java.math.BigInteger
 import java.util.*
 
@@ -16,32 +11,29 @@ enum class FuzzProgram(private val chance: Double,
      */
     FUNCTION_TABLE(12.0, { context ->
         context.forRandom(1, LIMIT_INITIAL_CALL_DATA_LOAD) {
-            context.builder.include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
-            context.builder.include { LOAD(ProgramStoreZone.CALL_DATA) }
+            context.builder.push(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray())
+            context.builder.load(CALL_DATA)
         }
         val functions = ArrayList<BigInteger>()
         context.forRandom(1, LIMIT_INITIAL_FUNCTIONS) { functions.add(context.random()) }
         functions.forEach { address ->
-            context.builder.include { PUSH(context.random().toByteArray()) }
-            context.builder.include { EQUALS() }
-            context.builder.pushLabel("$address")
-            context.builder.include { JUMP_IF() }
+            context.builder.push(context.random().toByteArray())
+            context.builder.equals()
+            context.builder.jumpIf(label = "$address")
         }
-        context.builder.pushLabel(PROGRAM_END_LABEL)
-        context.builder.include { JUMP() }
+        context.builder.jump(PROGRAM_END_LABEL)
         functions.forEach { address ->
-            context.builder.markLabel("$address")
+            context.builder.jumpDestination("$address")
             context.randomFuzzFunction()(context)
-            context.builder.pushLabel(PROGRAM_END_LABEL)
-            context.builder.include { JUMP() }
+            context.builder.jump(PROGRAM_END_LABEL)
         }
-        context.builder.markLabel(PROGRAM_END_LABEL)
+        context.builder.jumpDestination(PROGRAM_END_LABEL)
     }),
 
     FUNCTION(1.0, { context ->
         context.forRandom(1, LIMIT_INITIAL_CALL_DATA_LOAD) {
-            context.builder.include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
-            context.builder.include { LOAD(ProgramStoreZone.CALL_DATA) }
+            context.builder.push(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray())
+            context.builder.load(CALL_DATA)
         }
         context.randomFuzzFunction()(context)
     });
