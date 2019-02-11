@@ -1,5 +1,6 @@
 package com.hileco.cortex.vm.layer
 
+import java.math.BigInteger
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -84,7 +85,12 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
         stringBuilder.append("LayeredStack{")
         val iterator = this.iterator()
         while (iterator.hasNext()) {
-            stringBuilder.append(iterator.next())
+            val next = iterator.next()
+            if (next is ByteArray) {
+                stringBuilder.append(BigInteger(next))
+            } else {
+                stringBuilder.append(next)
+            }
             if (iterator.hasNext()) {
                 stringBuilder.append(", ")
             }

@@ -1,5 +1,6 @@
 package com.hileco.cortex.instructions
 
+import com.hileco.cortex.instructions.ProgramBuilder.FunctionCallConvention.*
 import com.hileco.cortex.instructions.bits.BITWISE_AND
 import com.hileco.cortex.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.instructions.bits.BITWISE_OR
@@ -24,6 +25,7 @@ import com.hileco.cortex.instructions.stack.POP
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import java.math.BigInteger
 import java.util.*
 
@@ -302,7 +304,60 @@ class ProgramBuilder {
         jumpDestination(endLabel)
     }
 
+    enum class FunctionCallConvention {
+        STACK_ADDRESS_WITH_RETURN,
+        STACK_ADDRESS_NO_RETURN,
+        MEMORY_INDEX_AND_ADDRESS
+    }
+
+    fun internalFunction(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN) {
+        exit()
+        jumpDestination(label)
+        body()
+        when (callConvention) {
+            STACK_ADDRESS_WITH_RETURN -> {
+                swap(0, 1)
+            }
+            STACK_ADDRESS_NO_RETURN -> {
+            }
+            MEMORY_INDEX_AND_ADDRESS -> {
+                push(FUNCTION_CALL_INDEX)
+                load(MEMORY)
+                load(MEMORY)
+                save(MEMORY, subtract(push(1), load(MEMORY, push(FUNCTION_CALL_INDEX))), push(FUNCTION_CALL_INDEX))
+            }
+        }
+        jump()
+    }
+
+    fun configureCallConvention() {
+        save(MEMORY, push(FUNCTION_CALL_INDEX + 1), push(FUNCTION_CALL_INDEX))
+    }
+
+    fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN) {
+        val returnLabel = UUID.randomUUID().toString()
+        when (callConvention) {
+            STACK_ADDRESS_WITH_RETURN -> {
+                push(returnLabel)
+            }
+            STACK_ADDRESS_NO_RETURN -> {
+                push(returnLabel)
+            }
+            MEMORY_INDEX_AND_ADDRESS -> {
+                save(MEMORY, add(load(MEMORY, push(FUNCTION_CALL_INDEX)), push(1)), push(FUNCTION_CALL_INDEX))
+                save(MEMORY, push(returnLabel), load(MEMORY, push(FUNCTION_CALL_INDEX)))
+            }
+        }
+        body()
+        jump(push(label))
+        jumpDestination(returnLabel)
+    }
+
     fun build(): List<Instruction> {
         return instructions.map { it() }
+    }
+
+    companion object {
+        const val FUNCTION_CALL_INDEX = 8005L
     }
 }
