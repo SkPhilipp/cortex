@@ -5,7 +5,7 @@ import kotlin.collections.HashMap
 
 class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     private var size: Int = parent?.size ?: 0
-    private val layer: MutableMap<Int, V?> = HashMap()
+    private val layer: MutableMap<Int, V> = HashMap()
 
     @Synchronized
     fun push(value: V) {
@@ -35,21 +35,17 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     }
 
     @Synchronized
-    operator fun get(index: Int): V? {
+    operator fun get(index: Int): V {
         checkBounds(index)
-        return if (layer.containsKey(index)) {
-            layer[index]
+        return layer[index] ?: if (parent == null) {
+            throw IndexOutOfBoundsException("size ${this.size} <= index $index")
         } else {
-            if (parent == null) {
-                throw IndexOutOfBoundsException("size ${this.size} <= index $index")
-            } else {
-                parent[index]
-            }
+            parent[index]
         }
     }
 
     @Synchronized
-    operator fun set(index: Int, value: V?) {
+    operator fun set(index: Int, value: V) {
         checkBounds(index)
         layer[index] = value
     }
@@ -75,7 +71,7 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
 
     @Synchronized
     fun duplicate(topOffset: Int) {
-        val value = this[(this.size - 1) - topOffset]!!
+        val value = this[(this.size - 1) - topOffset]
         push(value)
     }
 
@@ -148,7 +144,7 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
                 throw NoSuchElementException()
             }
             index--
-            return this@LayeredStack[index]!!
+            return this@LayeredStack[index]
         }
 
         override fun nextIndex(): Int {

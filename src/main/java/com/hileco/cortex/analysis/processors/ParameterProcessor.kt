@@ -19,34 +19,41 @@ class ParameterProcessor : Processor {
             val stack = LayeredStack<GraphNode>()
             val graphNodes = graphBlock.graphNodes
             for (graphNode in graphNodes) {
-                if (graphNode.instruction is JUMP_DESTINATION || graphNode.instruction is SWAP) {
+                val instruction = graphNode.instruction
+                if (instruction is JUMP_DESTINATION || instruction is SWAP) {
                     stack.clear()
-                    continue
-                }
-                if (graphNode.instruction is DUPLICATE) {
-                    stack.clear()
-                    stack.push(graphNode)
-                    continue
-                }
-                val stackTakes = graphNode.instruction.stackParameters.size
-                if (stackTakes > 0) {
-                    val parameters = ArrayList<GraphNode?>()
-                    val stackSize = stack.size()
-                    val totalMissing = stackTakes - stackSize
-                    for (i in 0 until totalMissing) {
-                        parameters.add(null)
-                    }
-                    val remainingMissing = Math.min(stackTakes, stackTakes - totalMissing)
-                    for (i in 0 until remainingMissing) {
-                        val parameter = stack[stackSize - 1 - i]!!
+                } else if (instruction is DUPLICATE) {
+                    if (stack.size() <= instruction.topOffset) {
+                        stack.clear()
+                        stack.push(graphNode)
+                    } else {
+                        val parameter = stack[(stack.size() - 1) - instruction.topOffset]
                         graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
-                        parameters.add(parameter)
+                        graph.edgeMapping.add(graphNode, EdgeParameters(listOf(parameter)))
+                        stack.clear()
+                        stack.push(graphNode)
                     }
-                    graph.edgeMapping.add(graphNode, EdgeParameters(parameters))
-                    stack.clear()
-                }
-                if (!graphNode.instruction.stackAdds.isEmpty()) {
-                    stack.push(graphNode)
+                } else {
+                    val stackTakes = instruction.stackParameters.size
+                    if (stackTakes > 0) {
+                        val parameters = ArrayList<GraphNode?>()
+                        val stackSize = stack.size()
+                        val totalMissing = stackTakes - stackSize
+                        for (i in 0 until totalMissing) {
+                            parameters.add(null)
+                        }
+                        val remainingMissing = Math.min(stackTakes, stackTakes - totalMissing)
+                        for (i in 0 until remainingMissing) {
+                            val parameter = stack[stackSize - 1 - i]
+                            graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
+                            parameters.add(parameter)
+                        }
+                        graph.edgeMapping.add(graphNode, EdgeParameters(parameters))
+                        stack.clear()
+                    }
+                    if (!instruction.stackAdds.isEmpty()) {
+                        stack.push(graphNode)
+                    }
                 }
             }
         }
