@@ -9,10 +9,11 @@ abstract class ModelNode {
     }
 }
 
-class Conditional(val condition: List<ModelNode>,
-                  val branches: Map<BigInteger?, List<ModelNode>>) : ModelNode() {
+class Branches(val condition: List<ModelNode>,
+               val mappedNodes: Map<BigInteger?, List<ModelNode>>) : ModelNode() {
     override fun contains(predicate: Predicate<ModelNode>): Boolean {
-        return condition.any { predicate.test(it) } || branches.values.any { branch -> branch.any { predicate.test(it) } }
+        return mappedNodes.values.any { branch -> branch.any { predicate.test(it) } }
+                || condition.any { predicate.test(it) }
     }
 }
 
@@ -37,3 +38,9 @@ enum class LoopReturnType {
 }
 
 class LoopReturn(val line: Int, val type: LoopReturnType) : ModelNode()
+
+class Program(val nodes: List<ModelNode>) : ModelNode() {
+    override fun contains(predicate: Predicate<ModelNode>): Boolean {
+        return nodes.any { predicate.test(it) }
+    }
+}

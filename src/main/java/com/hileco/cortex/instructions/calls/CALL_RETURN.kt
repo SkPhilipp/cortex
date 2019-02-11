@@ -42,7 +42,7 @@ class CALL_RETURN : Instruction() {
     }
 
     companion object {
-        val OFFSET = StackParameter("size", 0)
-        val SIZE = StackParameter("offset", 1)
+        val OFFSET = StackParameter("offset", 0)
+        val SIZE = StackParameter("size", 1)
     }
 }
