@@ -18,10 +18,7 @@ import com.hileco.cortex.instructions.jumps.EXIT
 import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
-import com.hileco.cortex.instructions.math.HASH
-import com.hileco.cortex.instructions.math.MODULO
-import com.hileco.cortex.instructions.math.MULTIPLY
-import com.hileco.cortex.instructions.math.SUBTRACT
+import com.hileco.cortex.instructions.math.*
 import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.POP
 import com.hileco.cortex.instructions.stack.PUSH
@@ -156,13 +153,13 @@ class ProgramBuilder {
 
     fun add(right: ProgramBuilderHandle = handle,
             left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
-        instructions.add { BITWISE_AND() }
+        instructions.add { ADD() }
         return handle
     }
 
     fun divide(right: ProgramBuilderHandle = handle,
                left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
-        instructions.add { BITWISE_AND() }
+        instructions.add { DIVIDE() }
         return handle
     }
 
@@ -234,6 +231,45 @@ class ProgramBuilder {
     fun swap(right: ProgramBuilderHandle = handle,
              left: ProgramBuilderHandle = handle) {
         instructions.add { SWAP(0, 1) }
+    }
+
+    fun blockLoop(loopBody: () -> Unit) {
+        val startLabel = UUID.randomUUID().toString()
+        jumpDestination(startLabel)
+        loopBody()
+        jump(startLabel)
+    }
+
+    fun blockLoop(conditionBody: () -> Unit,
+                  loopBody: () -> Unit) {
+        val startLabel = UUID.randomUUID().toString()
+        val endLabel = UUID.randomUUID().toString()
+        jumpDestination(startLabel)
+        conditionBody()
+        jumpIf(isZero(), endLabel)
+        loopBody()
+        jump(startLabel)
+        jumpDestination(endLabel)
+    }
+
+    fun blockIf(conditionBody: () -> Unit, thenBody: () -> Unit) {
+        val endLabel = UUID.randomUUID().toString()
+        conditionBody()
+        jumpIf(isZero(), endLabel)
+        thenBody()
+        jumpDestination(endLabel)
+    }
+
+    fun blockIfElse(conditionBody: () -> Unit, thenBody: () -> Unit, elseBody: () -> Unit) {
+        val endLabel = UUID.randomUUID().toString()
+        val elseLabel = UUID.randomUUID().toString()
+        conditionBody()
+        jumpIf(isZero(), elseLabel)
+        thenBody()
+        jump(endLabel)
+        jumpDestination(elseLabel)
+        elseBody()
+        jumpDestination(endLabel)
     }
 
     fun build(): List<Instruction> {
