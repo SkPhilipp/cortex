@@ -18,11 +18,13 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
         } else null
     }
 
+    @Synchronized
     operator fun set(key: K, value: V) {
         deletions.remove(key)
         layer[key] = value
     }
 
+    @Synchronized
     fun remove(key: K) {
         layer.remove(key)
         val currentParent = parent
@@ -31,21 +33,22 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
         }
     }
 
+    @Synchronized
     fun clear() {
         parent = null
         layer.clear()
         deletions.clear()
     }
 
+    @Synchronized
     fun keySet(): Set<K> {
         val keys = HashSet<K>()
-        if (parent != null) {
-            keys.addAll(parent!!.keySet())
+        val currentParent = parent
+        if (currentParent != null) {
+            keys.addAll(currentParent.keySet())
         }
         keys.addAll(layer.keys)
-        if (parent != null) {
-            keys.removeAll(deletions)
-        }
+        keys.removeAll(deletions)
         return keys
     }
 
