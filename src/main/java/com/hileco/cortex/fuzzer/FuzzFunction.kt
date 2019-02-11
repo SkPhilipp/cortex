@@ -10,12 +10,12 @@ import com.hileco.cortex.vm.ProgramStoreZone
 
 enum class FuzzFunction(private val chance: Double,
                         private val implementation: (ProgramGeneratorContext) -> Unit) : Chanced, (ProgramGeneratorContext) -> Unit {
-    EXIT_ONLY(0.3, { context -> context.currentBuilder().include { EXIT() } }),
+    EXIT_ONLY(0.3, { context -> context.builder.include { EXIT() } }),
 
-    RETURN_ONLY(3.0, { context -> context.currentBuilder().include { CALL_RETURN() } }),
+    RETURN_ONLY(3.0, { context -> context.builder.include { CALL_RETURN() } }),
 
     CALL_WITH_FUNDS(1.0, { context ->
-        with(context.currentBuilder()) {
+        with(context.builder) {
             include { PUSH(context.random().toByteArray()) }
             include { PUSH(context.random().toByteArray()) }
             include { SWAP(0, context.randomIntBetween(1, STACK_SWAP_UPPER_BOUND)) }
@@ -24,7 +24,7 @@ enum class FuzzFunction(private val chance: Double,
     }),
 
     CALL_LIBRARY(1.0, { context ->
-        with(context.currentBuilder()) {
+        with(context.builder) {
             val choices = context.atlas().keySet()
             if (!choices.isEmpty()) {
                 val address = choices.toTypedArray()[context.randomIntBetween(0, choices.size)]
@@ -37,7 +37,7 @@ enum class FuzzFunction(private val chance: Double,
         }
     }),
 
-    SAVE_ONLY(3.0, { context -> context.currentBuilder().include { SAVE(ProgramStoreZone.DISK) } });
+    SAVE_ONLY(3.0, { context -> context.builder.include { SAVE(ProgramStoreZone.DISK) } });
 
     override fun chance(): Double {
         return this.chance

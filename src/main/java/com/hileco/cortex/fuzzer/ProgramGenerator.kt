@@ -9,12 +9,11 @@ class ProgramGenerator {
     fun generate(seed: Long): LayeredMap<BigInteger, Program> {
         val context = ProgramGeneratorContext(seed)
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS) {
-            context.pushBuilder(InstructionsBuilder())
+            context.builder = InstructionsBuilder()
             context.randomFuzzProgram()(context)
             val address = context.random()
-            val generated = Program(context.currentBuilder().build(), address)
+            val generated = Program(context.builder.build(), address)
             context.atlas()[address] = generated
-            context.popBuilder()
         }
         return context.atlas()
     }

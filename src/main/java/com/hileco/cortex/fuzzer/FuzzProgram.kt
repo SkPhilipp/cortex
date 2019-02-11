@@ -16,32 +16,32 @@ enum class FuzzProgram(private val chance: Double,
      */
     FUNCTION_TABLE(12.0, { context ->
         context.forRandom(1, LIMIT_INITIAL_CALL_DATA_LOAD) {
-            context.currentBuilder().include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
-            context.currentBuilder().include { LOAD(ProgramStoreZone.CALL_DATA) }
+            context.builder.include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
+            context.builder.include { LOAD(ProgramStoreZone.CALL_DATA) }
         }
         val functions = ArrayList<BigInteger>()
         context.forRandom(1, LIMIT_INITIAL_FUNCTIONS) { functions.add(context.random()) }
         functions.forEach { address ->
-            context.currentBuilder().include { PUSH(context.random().toByteArray()) }
-            context.currentBuilder().include { EQUALS() }
-            context.currentBuilder().pushLabel("$address")
-            context.currentBuilder().include { JUMP_IF() }
+            context.builder.include { PUSH(context.random().toByteArray()) }
+            context.builder.include { EQUALS() }
+            context.builder.pushLabel("$address")
+            context.builder.include { JUMP_IF() }
         }
-        context.currentBuilder().pushLabel(PROGRAM_END_LABEL)
-        context.currentBuilder().include { JUMP() }
+        context.builder.pushLabel(PROGRAM_END_LABEL)
+        context.builder.include { JUMP() }
         functions.forEach { address ->
-            context.currentBuilder().markLabel("$address")
+            context.builder.markLabel("$address")
             context.randomFuzzFunction()(context)
-            context.currentBuilder().pushLabel(PROGRAM_END_LABEL)
-            context.currentBuilder().include { JUMP() }
+            context.builder.pushLabel(PROGRAM_END_LABEL)
+            context.builder.include { JUMP() }
         }
-        context.currentBuilder().markLabel(PROGRAM_END_LABEL)
+        context.builder.markLabel(PROGRAM_END_LABEL)
     }),
 
     FUNCTION(1.0, { context ->
         context.forRandom(1, LIMIT_INITIAL_CALL_DATA_LOAD) {
-            context.currentBuilder().include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
-            context.currentBuilder().include { LOAD(ProgramStoreZone.CALL_DATA) }
+            context.builder.include { PUSH(context.randomBetween(0, LIMIT_SIZE_CALL_DATA).toByteArray()) }
+            context.builder.include { LOAD(ProgramStoreZone.CALL_DATA) }
         }
         context.randomFuzzFunction()(context)
     });
