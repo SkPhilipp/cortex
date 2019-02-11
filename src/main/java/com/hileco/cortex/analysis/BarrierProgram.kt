@@ -72,7 +72,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     val varY = 6789L
                     save(MEMORY, load(CALL_DATA, push(0)), push(varX))
                     save(MEMORY, push(0), push(varY))
-                    blockLoop(conditionBody = {
+                    blockWhile(conditionBody = {
                         save(MEMORY, subtract(push(1), load(MEMORY, push(varX))), push(varX))
                         load(MEMORY, push(varX))
                     }, loopBody = {
