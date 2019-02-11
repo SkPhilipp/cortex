@@ -76,35 +76,6 @@ in this view:
 
 ----
 
-vi HelloWorld.java
-javac HelloWorld.java
-native-image HelloWorld
-time java HelloWorld
-time ./helloworld
-
-----
-
-Make processors pure instead of linking them to objects on the graph
-Remove the need for EdgeUtility by applying Sequences and extension methods to sequences of GraphNode
-Remove the need for an AtomicReference wrapper around a GraphNode instruction
-Concept for instructions which modify the instruction position other than ++
-
-----
-
-cortex attack --program src/test/resources/assembly/winner-basic.cxasm
-cortex attack --program @1002
-cortex run --program src/test/resources/assembly/winner-basic.cxasm
-cortex run --program @1001
-cortex run --program src/test/resources/assembly/winner-basic.cxasm --call-data 1=24690
-
-> cortex attack --program src/test/resources/assembly/winner-basic.cxasm
-[{"possibleValues":{"CALL_DATA[1]":24690},"solvable":true}]
-> cortex run --program src/test/resources/assembly/winner-basic.cxasm --call-data 1=24690
-Exception at position 9, reason: WINNER
-> cortex optimize --program src/test/resources/assembly/optimize-basic.cxasm
-
-----
-
 EXP(0x0a, "Exponential operation"),
 ADDRESS(0x30, "Get address of currently executing account"),
 BALANCE(0x31, "Get balance of the given account"),
@@ -138,11 +109,6 @@ STATICCALL(0xfa, "Static message-call into an account."),
 REVERT(0xfd, " Halt execution reverting state changes but returning data and remaining gas."),
 INVALID(0xfe, "Designated invalid instruction."),
 SELFDESTRUCT(0xff, "Halt execution and register account for later deletion");
-
-----
-
-processor for extracting constants; replacing push instructions with their respective variable instructions
-to allow for deduplication of contracts programs which have precalculated variables embedded in their code
 
 ----
 
