@@ -17,6 +17,7 @@ enum class FuzzProgram(private val chance: Double,
         val functions = ArrayList<BigInteger>()
         context.forRandom(1, LIMIT_INITIAL_FUNCTIONS) { functions.add(context.random()) }
         functions.forEach { address ->
+            context.builder.duplicate()
             context.builder.push(context.random().toByteArray())
             context.builder.equals()
             context.builder.jumpIf(label = "$address")
