@@ -10,7 +10,7 @@ class ProgramGenerator {
         val context = ProgramGeneratorContext(seed)
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS) {
             context.builder = ProgramBuilder()
-            context.randomFuzzProgram()(context)
+            context.randomFuzzProgram()
             val address = context.random()
             val generated = Program(context.builder.build(), address)
             context.atlas()[address] = generated

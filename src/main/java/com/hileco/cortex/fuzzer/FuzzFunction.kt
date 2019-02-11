@@ -3,7 +3,7 @@ package com.hileco.cortex.fuzzer
 import com.hileco.cortex.vm.ProgramStoreZone
 
 enum class FuzzFunction(private val chance: Double,
-                        private val implementation: (ProgramGeneratorContext) -> Unit) : Chanced, (ProgramGeneratorContext) -> Unit {
+                        val implementation: (ProgramGeneratorContext) -> Unit) : Chanced {
     EXIT_ONLY(0.3, { context -> context.builder.exit() }),
 
     RETURN_ONLY(3.0, { context -> context.builder.callReturn() }),
@@ -35,10 +35,6 @@ enum class FuzzFunction(private val chance: Double,
 
     override fun chance(): Double {
         return this.chance
-    }
-
-    override fun invoke(programGeneratorContext: ProgramGeneratorContext) {
-        implementation(programGeneratorContext)
     }
 
     companion object {

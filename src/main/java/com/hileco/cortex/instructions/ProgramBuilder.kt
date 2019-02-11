@@ -273,19 +273,23 @@ class ProgramBuilder {
     }
 
     fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Pair<Long, () -> Unit>>) {
+        blockSwitch(controlBody, cases.map { it.first }, { caseNumber -> cases.first { it.first == caseNumber } })
+    }
+
+    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Long>, caseBuilder: (Long) -> Unit) {
         controlBody()
         val labels = HashMap<Long, String>()
         val endLabel = UUID.randomUUID().toString()
         for (case in cases) {
             val label = UUID.randomUUID().toString()
-            labels[case.first] = label
-            jumpIf(equals(push(case.first), duplicate()), label)
+            labels[case] = label
+            jumpIf(equals(push(case), duplicate()), label)
         }
         pop()
         jump(endLabel)
-        for (case in cases) {
-            jumpDestination(labels[case.first]!!)
-            case.second()
+        for (label in labels) {
+            jumpDestination(label.value)
+            caseBuilder(label.key)
             jump(endLabel)
         }
         jumpDestination(endLabel)

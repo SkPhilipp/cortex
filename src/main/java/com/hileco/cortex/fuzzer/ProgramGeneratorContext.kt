@@ -13,12 +13,10 @@ class ProgramGeneratorContext(seed: Long) {
     private val random: Random = Random(seed)
     private val randomFuzzProgramLayout: () -> FuzzProgram
     private val randomFuzzFunctionLayout: () -> FuzzFunction
-    private val randomFuzzExpression: () -> FuzzExpression
 
     init {
         randomFuzzProgramLayout = of(FuzzProgram.values())
         randomFuzzFunctionLayout = of(FuzzFunction.values())
-        randomFuzzExpression = of(FuzzExpression.values())
     }
 
     private fun <T : Chanced> of(types: Array<T>): () -> T {
@@ -53,15 +51,11 @@ class ProgramGeneratorContext(seed: Long) {
         return this.atlas
     }
 
-    fun randomFuzzProgram(): FuzzProgram {
-        return randomFuzzProgramLayout()
+    fun randomFuzzProgram() {
+        randomFuzzProgramLayout().implementation(this)
     }
 
-    fun randomFuzzFunction(): FuzzFunction {
-        return randomFuzzFunctionLayout()
-    }
-
-    fun randomFuzzExpression(): FuzzExpression {
-        return this.randomFuzzExpression()
+    fun randomFuzzFunction() {
+        randomFuzzFunctionLayout().implementation(this)
     }
 }
