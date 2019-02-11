@@ -82,7 +82,7 @@ class ExpressionGenerator {
                 val value = BigInteger(instruction.bytes)
                 stack.push(Value(value.toLong()))
             }
-            is DUPLICATE -> stack.duplicate(instruction.position)
+            is DUPLICATE -> stack.duplicate(instruction.topOffset)
             is SWAP -> try {
                 stack.swap(instruction.topOffsetLeft, instruction.topOffsetRight)
             } catch (e: IndexOutOfBoundsException) {

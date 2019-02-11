@@ -188,7 +188,7 @@ class ProgramBuilder {
         return handle
     }
 
-    fun duplicate(topOffset: Int = 0): ProgramBuilderHandle {
+    fun duplicate(topOffset: Int): ProgramBuilderHandle {
         instructions.add { DUPLICATE(topOffset) }
         return handle
     }
@@ -269,6 +269,25 @@ class ProgramBuilder {
         jump(endLabel)
         jumpDestination(elseLabel)
         elseBody()
+        jumpDestination(endLabel)
+    }
+
+    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Pair<Long, () -> Unit>>) {
+        controlBody()
+        val labels = HashMap<Long, String>()
+        val endLabel = UUID.randomUUID().toString()
+        for (case in cases) {
+            val label = UUID.randomUUID().toString()
+            labels[case.first] = label
+            jumpIf(equals(push(case.first), duplicate()), label)
+        }
+        pop()
+        jump(endLabel)
+        for (case in cases) {
+            jumpDestination(labels[case.first]!!)
+            case.second()
+            jump(endLabel)
+        }
         jumpDestination(endLabel)
     }
 

@@ -14,9 +14,6 @@ import com.hileco.cortex.vm.VirtualMachine
 data class DUPLICATE(val topOffset: Int) : Instruction() {
     private val input: StackParameter = StackParameter("input", topOffset)
 
-    val position: Int
-        get() = input.position
-
     override val stackAdds: List<Int>
         get() = listOf(-1)
 
@@ -28,16 +25,16 @@ data class DUPLICATE(val topOffset: Int) : Instruction() {
 
     @Throws(ProgramException::class)
     override fun execute(process: VirtualMachine, program: ProgramContext) {
-        if (program.stack.size() <= input.position) {
+        if (program.stack.size() <= topOffset) {
             throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
         }
-        program.stack.duplicate(input.position)
+        program.stack.duplicate(topOffset)
         if (program.stack.size() > process.stackLimit) {
             throw ProgramException(program, STACK_LIMIT_REACHED)
         }
     }
 
     override fun toString(): String {
-        return "DUPLICATE ${input.position}"
+        return "DUPLICATE $topOffset"
     }
 }
