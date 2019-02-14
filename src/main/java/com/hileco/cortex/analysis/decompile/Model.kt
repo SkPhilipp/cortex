@@ -1,17 +1,16 @@
 package com.hileco.cortex.analysis.decompile
 
 import java.math.BigInteger
-import java.util.function.Predicate
 
-abstract class ModelNode {
-    open fun contains(predicate: Predicate<ModelNode>): Boolean {
+sealed class ModelNode {
+    open fun contains(predicate: (ModelNode) -> Boolean): Boolean {
         return false
     }
 }
 
 class Model(val nodes: MutableList<ModelNode>) : ModelNode() {
-    override fun contains(predicate: Predicate<ModelNode>): Boolean {
-        return nodes.any { predicate.test(it) }
+    override fun contains(predicate: (ModelNode) -> Boolean): Boolean {
+        return nodes.any { predicate(it) }
     }
 }
 
@@ -19,32 +18,32 @@ class Line(val line: Int) : ModelNode()
 
 class Branches(val condition: MutableList<ModelNode>,
                val mappedNodes: Map<BigInteger?, MutableList<ModelNode>>) : ModelNode() {
-    override fun contains(predicate: Predicate<ModelNode>): Boolean {
-        return mappedNodes.values.any { branch -> branch.any { predicate.test(it) } }
-                || condition.any { predicate.test(it) }
+    override fun contains(predicate: (ModelNode) -> Boolean): Boolean {
+        return mappedNodes.values.any { branch -> branch.any { predicate(it) } }
+                || condition.any { predicate(it) }
     }
 }
 
 class Loop(val nodes: MutableList<ModelNode>) : ModelNode() {
-    override fun contains(predicate: Predicate<ModelNode>): Boolean {
-        return nodes.any { predicate.test(it) }
+    override fun contains(predicate: (ModelNode) -> Boolean): Boolean {
+        return nodes.any { predicate(it) }
     }
 }
 
-class Break : ModelNode()
+class Break(val line: Int) : ModelNode()
 
-class Continue : ModelNode()
+class Continue(val line: Int) : ModelNode()
 
 class FunctionDefinition(val nodes: MutableList<ModelNode>) : ModelNode() {
-    override fun contains(predicate: Predicate<ModelNode>): Boolean {
-        return nodes.any { predicate.test(it) }
+    override fun contains(predicate: (ModelNode) -> Boolean): Boolean {
+        return nodes.any { predicate(it) }
     }
 }
 
 class FunctionCall(val nodes: MutableList<ModelNode>,
                    val functionDefinition: FunctionDefinition) : ModelNode() {
-    override fun contains(predicate: Predicate<ModelNode>): Boolean {
-        return nodes.any { predicate.test(it) } || functionDefinition.contains(predicate)
+    override fun contains(predicate: (ModelNode) -> Boolean): Boolean {
+        return nodes.any { predicate(it) } || functionDefinition.contains(predicate)
     }
 }
 

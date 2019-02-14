@@ -1,9 +1,9 @@
 package com.hileco.cortex.instructions.conditions
 
-import java.util.*
+import java.math.BigInteger
 
 class EQUALS : ConditionInstruction() {
     override fun innerExecute(left: ByteArray, right: ByteArray): Boolean {
-        return Arrays.equals(left, right)
+        return BigInteger(left) == BigInteger(right)
     }
 }

@@ -59,7 +59,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     build()
                 })
         val BARRIER_04 = BarrierProgram("Involved memory and loops, more complex data flow analysis.",
-                """ VAR x = CALL_DATA[0]
+                """ VAR x = CALL_DATA[1]
                   | VAR y = 0
                   | WHILE(--x) {
                   |     y++
@@ -70,7 +70,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                 with(ProgramBuilder()) {
                     val varX = 2345L
                     val varY = 6789L
-                    save(MEMORY, load(CALL_DATA, push(0)), push(varX))
+                    save(MEMORY, load(CALL_DATA, push(1)), push(varX))
                     save(MEMORY, push(0), push(varY))
                     blockWhile(conditionBody = {
                         save(MEMORY, subtract(push(1), load(MEMORY, push(varX))), push(varX))
@@ -85,8 +85,38 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_05 = BarrierProgram("Contains somewhat conditional infinite loops.", "".trimIndent(), listOf())
-        val BARRIER_06 = BarrierProgram("Requires more complex memory data flow analysis.", "".trimIndent(), listOf())
+        val BARRIER_05 = BarrierProgram("Requires more complex memory data flow analysis to solve functions.",
+                """ FUNCTION square(N) {
+                  |     RETURN N * N
+                  | }
+                  | FUNCTION cube(N) {
+                  |     RETURN N * square(N)
+                  | }
+                  | IF(cube(CALL_DATA[1]) == 9) {
+                  |     HALT(WINNER)
+                  | }
+                """.trimIndent(),
+                with(ProgramBuilder()) {
+                    blockIf(conditionBody = {
+                        internalFunctionCall("cube", {
+                            load(CALL_DATA, push(1))
+                        })
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    internalFunction("cube", {
+                        internalFunctionCall("square", {
+                            duplicate(1)
+                        })
+                        multiply()
+                    })
+                    internalFunction("square", {
+                        duplicate()
+                        multiply()
+                    })
+                    build()
+                })
+        val BARRIER_06 = BarrierProgram("Contains somewhat conditional infinite loops.", "".trimIndent(), listOf())
         val BARRIER_07 = BarrierProgram("This program calls an external program.", "".trimIndent(), listOf())
         val BARRIER_08 = BarrierProgram("Contains a predictable pseudorandom number generator.", "".trimIndent(), listOf())
         val BARRIER_09 = BarrierProgram("Outcome is influenced by preconfigured disk state.", "".trimIndent(), listOf())
