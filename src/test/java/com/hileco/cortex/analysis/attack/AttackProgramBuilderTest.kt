@@ -2,8 +2,6 @@ package com.hileco.cortex.analysis.attack
 
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.analysis.processors.FlowProcessor
-import com.hileco.cortex.analysis.processors.ParameterProcessor
 import com.hileco.cortex.constraints.Solution
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException
@@ -22,11 +20,7 @@ class AttackProgramBuilderTest {
 
     @Before
     fun obtainSolution() {
-        val graphBuilder = GraphBuilder(listOf(
-                ParameterProcessor(),
-                FlowProcessor()
-        ))
-        val graph = graphBuilder.build(BARRIER_01.instructions)
+        val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(BARRIER_01.instructions)
         val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)
         val solutions = attacker.solve(graph)
         solution = solutions[0]

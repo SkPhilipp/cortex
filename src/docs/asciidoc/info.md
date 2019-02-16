@@ -32,50 +32,6 @@ These are essentially templates which can be expanded with additional definition
 
 ----
 
-make a flow processor that maps better, as defined in this document
-(for the current fuzzer this is however not yet relevant i believe)
-
-from a block perspective one could have instructions as such:
-
-BLOCK A JUMP_DESTINATION
-
-BLOCK B JUMP_DESTINATION -->|
-        LOAD CALL_DATA      |
-        PUSH 10             |
-        JUMP_IF <-- --------|
-
-BLOCK C JUMP_DESTINATION -->|
-        PUSH 20             |
-        JUMP <-- -----------|
-
-BLOCK D JUMP_DESTINATION -->|
-               ...          |
-
-currently this is mapped essentialy from either an implicit PROGRAM_START or explicit JUMP_DESTINATION
-to any instruction which changes the flow of the code ie JUMP_IF, JUMP, EXIT, HALT, CALL, CALL_RETURN
-however, blocks may "inherit" the flow of another block when they themselves do not end in an explicit
-nonconditional instruction which changes the flow of the code ie. JUMP, EXIT, HALT, CALL_RETURN, which
-would make the flow mapping look somewhat like such:
-
-JUMP_DESTINATION -->|
-JUMP_DESTINATION -->|
-LOAD CALL_DATA      |
-PUSH 10             |
-JUMP_IF <-- --------|
-JUMP_DESTINATION -->|
-PUSH 20             |
-JUMP <-- -----------|
-
-JUMP_DESTINATION -->|
-       ...          |
-
-in this view:
-- BLOCK A's start allows for flows to BLOCK B's jumping instructions (as BLOCK A contains NO unconditional flow instructions)
-- BLOCK A's start allows for flows to BLOCK C's jumping instructions (as BLOCK A AND BLOCK B contain NO unconditional flow instructions)
-- BLOCK B's start allows for flows to BLOCK C's jumping instructions (as BLOCK B contains NO unconditional flow instructions)
-
-----
-
 EXP(0x0a, "Exponential operation"),
 ADDRESS(0x30, "Get address of currently executing account"),
 BALANCE(0x31, "Get balance of the given account"),

@@ -1,9 +1,8 @@
 package com.hileco.cortex.analysis.attack
 
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_00
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.analysis.processors.FlowProcessor
-import com.hileco.cortex.analysis.processors.ParameterProcessor
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
@@ -12,12 +11,19 @@ import org.junit.Test
 
 class AttackerTest {
     @Test
-    fun  test() {
-        val graphBuilder = GraphBuilder(listOf(
-                ParameterProcessor(),
-                FlowProcessor()
-        ))
-        val graph = graphBuilder.build(BARRIER_01.instructions)
+    fun testBarrier00() {
+        val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(BARRIER_00.instructions)
+        val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)
+        val solutions = attacker.solve(graph)
+        Assert.assertEquals(1, solutions.size.toLong())
+        val solution = solutions[0]
+        Assert.assertTrue(solution.isSolvable)
+        Assert.assertEquals(0, solution.possibleValues.size)
+    }
+
+    @Test
+    fun testBarrier01() {
+        val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(BARRIER_01.instructions)
         val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)
         val solutions = attacker.solve(graph)
         Documentation.of(Attacker::class.simpleName!!)

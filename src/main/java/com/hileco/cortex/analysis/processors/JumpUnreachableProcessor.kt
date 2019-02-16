@@ -1,13 +1,13 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
-import com.hileco.cortex.analysis.edges.EdgeFlowMapping
+import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.instructions.debug.NOOP
 import java.util.*
 
 class JumpUnreachableProcessor : Processor {
     override fun process(graph: Graph) {
-        graph.edgeMapping.get(EdgeFlowMapping::class.java).first().let {
+        graph.edgeMapping.get(FlowMapping::class.java).first().let {
             val targets = HashSet<Int>()
             targets.add(PROGRAM_START)
             targets.addAll(it.flowsToTarget.keys.filterNotNull())

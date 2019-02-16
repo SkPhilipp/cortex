@@ -101,4 +101,14 @@ interface Expression {
             return inputs.joinToString(separator = " && ") { "($it)" }
         }
     }
+
+    object True : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            return context.mkTrue()
+        }
+
+        override fun toString(): String {
+            return "TRUE"
+        }
+    }
 }

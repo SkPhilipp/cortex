@@ -2,9 +2,10 @@ package com.hileco.cortex.analysis.attack
 
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphNode
-import com.hileco.cortex.analysis.edges.EdgeFlow
-import com.hileco.cortex.analysis.edges.EdgeFlowMapping
-import com.hileco.cortex.analysis.edges.EdgeFlowType.*
+import com.hileco.cortex.analysis.edges.Flow
+import com.hileco.cortex.analysis.edges.FlowMapping
+import com.hileco.cortex.analysis.edges.FlowType.PROGRAM_END
+import com.hileco.cortex.analysis.edges.FlowType.PROGRAM_FLOW
 import com.hileco.cortex.constraints.Solution
 import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.ImpossibleExpressionException
@@ -18,33 +19,37 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
     fun solve(graph: Graph): ArrayList<Solution> {
         val solutions = ArrayList<Solution>()
         val instructions = graph.toInstructions()
-        graph.edgeMapping.get(EdgeFlowMapping::class.java).first().let {
-            val flowIterator = FlowIterator(it)
-            flowIterator.forEachRemaining { edgeFlows ->
-                if (isTargeted(edgeFlows, instructions, it)) {
-                    val attackPath = AttackPath(instructions, edgeFlows)
-                    val solver = Solver()
-                    try {
-                        solutions.add(solver.solve(attackPath.toExpression()))
-                    } catch (ignored: ImpossibleExpressionException) {
-                    }
-
+        val flowMapping = graph.edgeMapping.get(FlowMapping::class.java).first()
+        val pathNavigation = PathNavigation(flowMapping)
+        while (pathNavigation.currentPath().isNotEmpty()) {
+            val flows = pathNavigation.currentPath()
+            if (containsTarget(flows, instructions, flowMapping)) {
+                val attackPath = AttackPath(instructions, flows)
+                val solver = Solver()
+                try {
+                    solutions.add(solver.solve(attackPath.buildExpression()))
+                } catch (ignored: ImpossibleExpressionException) {
                 }
             }
+            pathNavigation.next()
         }
         return solutions
     }
 
-    private fun isTargeted(edgeFlows: List<EdgeFlow>, instructions: List<Instruction>, edgeFlowMapping: EdgeFlowMapping): Boolean {
-        return edgeFlows.asSequence()
-                .filter { edgeFlow -> edgeFlow.type in arrayOf(BLOCK_PART, BLOCK_END, END) }
-                .any { edgeFlow ->
-                    val source = edgeFlow.source
-                    val target = edgeFlow.target ?: (instructions.size - 1)
-                    IntStream.range(source!!, target + 1)
-                            .mapToObj<GraphNode> { line -> edgeFlowMapping.nodeLineMapping[line] }
-                            .anyMatch(targetPredicate)
+    private fun containsTarget(flows: List<Flow>, instructions: List<Instruction>, flowMapping: FlowMapping): Boolean {
+        flows.forEachIndexed { index, flow ->
+            if (flow.type in setOf(PROGRAM_FLOW, PROGRAM_END)) {
+                val next = if (index + 1 < flows.size) flows[index + 1] else null
+                val source = flow.source
+                val target = next?.source ?: flow.target ?: (instructions.size - 1)
+                if(IntStream.range(source, target + 1)
+                        .mapToObj<GraphNode> { line -> flowMapping.nodeLineMapping[line] }
+                        .anyMatch(targetPredicate)){
+                    return true
                 }
+            }
+        }
+        return false
     }
 
     companion object {

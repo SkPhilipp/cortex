@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.analysis.edges.EdgeFlowMapping
+import com.hileco.cortex.analysis.edges.FlowMapping
 import guru.nidi.graphviz.attribute.Color
 import guru.nidi.graphviz.attribute.RankDir
 import guru.nidi.graphviz.attribute.Records
@@ -34,9 +34,9 @@ class VisualGraph {
         vizGraph = vizGraph.with(node)
     }
 
-    private fun map(edgeFlowMapping: EdgeFlowMapping) {
+    private fun map(flowMapping: FlowMapping) {
         val nodeMapping = HashMap<Node, ArrayList<Link>>()
-        edgeFlowMapping.flowsFromSource.forEach { source, flows ->
+        flowMapping.flowsFromSource.forEach { source, flows ->
             if (source != null) {
                 val sourceVizNode = vizNodeMapping[source]!!
                 flows.forEach { flow ->
@@ -55,7 +55,7 @@ class VisualGraph {
 
     fun map(graph: Graph) {
         graph.graphBlocks.forEach { this.map(it) }
-        graph.edgeMapping.get(EdgeFlowMapping::class.java).forEach {
+        graph.edgeMapping.get(FlowMapping::class.java).forEach {
             this.map(it)
         }
     }

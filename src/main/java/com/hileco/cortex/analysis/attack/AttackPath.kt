@@ -1,7 +1,7 @@
 package com.hileco.cortex.analysis.attack
 
-import com.hileco.cortex.analysis.edges.EdgeFlow
-import com.hileco.cortex.analysis.edges.EdgeFlowType.*
+import com.hileco.cortex.analysis.edges.Flow
+import com.hileco.cortex.analysis.edges.FlowType
 import com.hileco.cortex.constraints.ExpressionGenerator
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
@@ -9,37 +9,30 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import java.util.*
 
 class AttackPath(private val instructions: List<Instruction>,
-                 private val edgeFlows: List<EdgeFlow>) {
-    fun toExpression(): Expression {
+                 private val flows: List<Flow>) {
+    fun buildExpression(): Expression {
         val expressionGenerator = ExpressionGenerator()
         val conditions = ArrayList<Expression>()
-        for (i in edgeFlows.indices) {
-            val edgeFlow = edgeFlows[i]
-            if (BLOCK_TO_END_TYPES.contains(edgeFlow.type)) {
-                val edgeFlowNextAvailable = i + 1 < edgeFlows.size
-                val source = edgeFlow.source!!
-                val target = edgeFlow.target ?: (instructions.size - 1)
-                for (j in source..target) {
-                    val instruction = instructions[j]
+        flows.forEachIndexed { flowIndex, flow ->
+            if (flow.type == FlowType.PROGRAM_FLOW) {
+                val next = if (flowIndex + 1 < flows.size) flows[flowIndex + 1] else null
+                val source = flow.source
+                val target = next?.source ?: flow.target!!
+                for (instructionIndex in source..target) {
+                    val instruction = instructions[instructionIndex]
                     if (instruction is JUMP_IF) {
-                        val isLastOfBlock = target == j
-                        val isNextBlockJumpIf = edgeFlowNextAvailable && INSTRUCTION_JUMP_IF == edgeFlows[i + 1].type
-                        if (!(isLastOfBlock && isNextBlockJumpIf)) {
-                            val expression = Expression.Not(expressionGenerator.viewExpression(JUMP_IF.CONDITION.position))
-                            conditions.add(expression)
-                        } else {
-                            val expression = expressionGenerator.viewExpression(JUMP_IF.CONDITION.position)
-                            conditions.add(expression)
-                        }
+                        val takeJump = target == instructionIndex && next?.type == FlowType.INSTRUCTION_JUMP_IF
+                        val expression = if (takeJump) expressionGenerator.viewExpression(JUMP_IF.CONDITION.position) else Expression.Not(expressionGenerator.viewExpression(JUMP_IF.CONDITION.position))
+                        conditions.add(expression)
                     }
                     expressionGenerator.addInstruction(instruction)
                 }
             }
         }
-        return Expression.And(conditions)
-    }
-
-    companion object {
-        private val BLOCK_TO_END_TYPES = setOf(BLOCK_PART, BLOCK_END, END)
+        return when (conditions.size) {
+            0 -> Expression.True
+            1 -> conditions.first()
+            else -> Expression.And(conditions)
+        }
     }
 }

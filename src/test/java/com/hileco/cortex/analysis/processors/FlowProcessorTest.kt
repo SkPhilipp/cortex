@@ -1,8 +1,8 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.analysis.edges.EdgeFlowMapping
-import com.hileco.cortex.analysis.edges.EdgeFlowType.INSTRUCTION_JUMP
+import com.hileco.cortex.analysis.edges.FlowMapping
+import com.hileco.cortex.analysis.edges.FlowType.INSTRUCTION_JUMP
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
@@ -28,9 +28,9 @@ class FlowProcessorTest : ProcessorFuzzTest() {
                 .headingParagraph(FlowProcessor::class.simpleName!!)
                 .paragraph("Adds edges describing the program flow, this includes JUMP and JUMP_IFs where jump address information is known ahead of time.")
 
-        val edgeFlowMapping = graph.edgeMapping.get(EdgeFlowMapping::class.java).first()
-        val fromInstruction1 = edgeFlowMapping.flowsFromSource[1]!!.first()
-        val toInstruction3 = edgeFlowMapping.flowsToTarget[3]!!.first()
+        val flowMapping = graph.edgeMapping.get(FlowMapping::class.java).first()
+        val fromInstruction1 = flowMapping.flowsFromSource[1]!!.first()
+        val toInstruction3 = flowMapping.flowsToTarget[3]!!.first()
         Assert.assertEquals(fromInstruction1.target, 3)
         Assert.assertEquals(fromInstruction1.type, INSTRUCTION_JUMP)
         Assert.assertEquals(toInstruction3.target, 3)

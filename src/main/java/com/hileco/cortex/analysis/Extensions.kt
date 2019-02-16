@@ -2,7 +2,7 @@ package com.hileco.cortex.analysis
 
 import com.hileco.cortex.instructions.Instruction
 
-inline fun <T> Iterable<T>.forEachTwo(action: (T, T) -> Unit): Unit {
+inline fun <T> Iterable<T>.forEachTwo(action: (T, T) -> Unit) {
     val iterator = this.iterator()
     if (iterator.hasNext()) {
         var first = iterator.next()

@@ -58,7 +58,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 PUSH(2),
                 JUMP(),
                 JUMP_DESTINATION(),
-                JUMP_DESTINATION()
+                NOOP()
         ))
     }
 
