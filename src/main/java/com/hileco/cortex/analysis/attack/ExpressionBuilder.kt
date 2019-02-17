@@ -8,10 +8,6 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import java.util.*
 
 class ExpressionBuilder {
-    fun build(instructions: List<Instruction>, path: List<Flow>): Expression {
-        return build(instructions, path, listOf())
-    }
-
     fun build(instructions: List<Instruction>, path: List<Flow>, stackConstraints: List<StackConstraint>): Expression {
         val expressionGenerator = ExpressionGenerator()
         val conditions = ArrayList<Expression>()

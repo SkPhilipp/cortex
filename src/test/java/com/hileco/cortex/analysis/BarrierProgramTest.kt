@@ -6,9 +6,12 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_02
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException
+import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.ProgramRunner
+import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
@@ -104,6 +107,20 @@ class BarrierProgramTest {
         val callDataOne = BigInteger.valueOf(3).toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext)
+        val programRunner = ProgramRunner(virtualMachine)
+        programRunner.run()
+    }
+
+    @Test(expected = ProgramException::class)
+    fun testBarrier06() {
+        val program = Program(BARRIER_06.instructions)
+        val programContext = ProgramContext(program)
+        val callDataOne = BigInteger.valueOf(24690).toByteArray()
+        programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
+        val callDataTwo = BigInteger.valueOf(1234).toByteArray()
+        programContext.callData.write(2 * LOAD.SIZE + (LOAD.SIZE - callDataTwo.size), callDataTwo)
+        val virtualMachine = VirtualMachine(programContext)
+        virtualMachine.atlas[BigInteger.valueOf(1234)] = Program(listOf(HALT(WINNER)))
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
     }

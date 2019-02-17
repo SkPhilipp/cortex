@@ -22,7 +22,7 @@ class ExpressionBuilderTest {
         val expression = expressionBuilder.build(BARRIER_01.instructions, listOf(
                 Flow(FlowType.PROGRAM_FLOW, 0, 9),
                 Flow(FlowType.PROGRAM_END, 9, null)
-        ))
+        ), listOf())
         val expressionGenerator = ExpressionGenerator()
         listOf(PUSH(2),
                 PUSH(1),

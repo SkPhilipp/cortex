@@ -33,11 +33,9 @@
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Processor for discovering parameters still unknown, based on all possible flows to an instruction
-* Implementing overflow as part of Expression building (Possibly already implemented via Z3 Int typing)
 
 ==== Attacks
 
-* Attack Generator which accounts for a given target instruction's input data (ie CALL with parameter CALL.ADDRESS = given address)
 * Mapping EVM compatible smart contracts to Cortex programs
 * Programs which do not require any solving constraint are currently not solveable
 
@@ -64,3 +62,12 @@
 * Precomputing expressions
 * Processors with pathing model knowledge to allow more complex precomputing
 * Warning system when encountering programs which are especially difficult to decompile or solve
+
+==== Barrier Programs
+
+* Barrier program which contains conditional infinite loops
+* Barrier program which calls an external program
+* Barrier program which contains a predictable pseudorandom number generator
+* Barrier program whose outcome is influenced by preconfigured disk state
+* Barrier program which requires interaction with preconfigured disk state
+* Barrier program which requires multiple calls to solve
