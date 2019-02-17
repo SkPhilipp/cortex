@@ -41,10 +41,6 @@ build {
     dependsOn asciidoctor
 }
 
-test {
-    maxParallelForks(3)
-}
-
 compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'

@@ -17,13 +17,33 @@ import org.junit.Test
 import java.math.BigInteger
 
 class BarrierProgramTest {
+    private fun documentBarrier(index: Int, barrierProgram: BarrierProgram) {
+        val basicGraph = GraphBuilder.BASIC_GRAPH_BUILDER.build(barrierProgram.instructions)
+        val basicGraphVisualized = VisualGraph()
+        basicGraphVisualized.map(basicGraph)
+        val optimizedGraph = GraphBuilder.OPTIMIZED_GRAPH_BUILDER.build(barrierProgram.instructions)
+        val optimizedGraphVisualized = VisualGraph()
+        optimizedGraphVisualized.map(optimizedGraph)
+        val formattedIndex = "$index".padStart(2, '0')
+        Documentation.of(BarrierProgram::class.simpleName!!)
+                .headingParagraph("Barrier $formattedIndex")
+                .paragraph("Description: ${barrierProgram.description}")
+                .paragraph("Pseudocode").code(barrierProgram.pseudocode)
+                .paragraph("Source").source(barrierProgram.instructions)
+                .paragraph("Visualization: (As basic graph)").image(basicGraphVisualized.toBytes())
+    }
+
+    @Test
+    fun documentAll() {
+        BarrierProgram.BARRIERS.forEachIndexed { index, barrierProgram ->
+            if (barrierProgram.instructions.isNotEmpty() && barrierProgram.pseudocode.isNotBlank()) {
+                documentBarrier(index, barrierProgram)
+            }
+        }
+    }
+
     @Test(expected = ProgramException::class)
     fun testBarrier00() {
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph("Barrier 00")
-                .paragraph("Description: ${BARRIER_00.description}")
-                .paragraph("Pseudocode").code(BARRIER_00.pseudocode)
-                .paragraph("Source").source(BARRIER_00.instructions)
         val program = Program(BARRIER_00.instructions)
         val programContext = ProgramContext(program)
         val virtualMachine = VirtualMachine(programContext)
@@ -33,11 +53,6 @@ class BarrierProgramTest {
 
     @Test(expected = ProgramException::class)
     fun testBarrier01() {
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph("Barrier 01")
-                .paragraph("Description: ${BARRIER_01.description}")
-                .paragraph("Pseudocode").code(BARRIER_01.pseudocode)
-                .paragraph("Source").source(BARRIER_01.instructions)
         val program = Program(BARRIER_01.instructions)
         val programContext = ProgramContext(program)
         val callDataOne = BigInteger.valueOf(24690).toByteArray()
@@ -49,11 +64,6 @@ class BarrierProgramTest {
 
     @Test(expected = ProgramException::class)
     fun testBarrier02() {
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph("Barrier 02")
-                .paragraph("Description: ${BARRIER_02.description}")
-                .paragraph("Pseudocode").code(BARRIER_02.pseudocode)
-                .paragraph("Source").source(BARRIER_02.instructions)
         val program = Program(BARRIER_02.instructions)
         val programContext = ProgramContext(program)
         val callDataOne = BigInteger.valueOf(24690).toByteArray()
@@ -67,11 +77,6 @@ class BarrierProgramTest {
 
     @Test(expected = ProgramException::class)
     fun testBarrier03() {
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph("Barrier 03")
-                .paragraph("Description: ${BARRIER_03.description}")
-                .paragraph("Pseudocode").code(BARRIER_03.pseudocode)
-                .paragraph("Source").source(BARRIER_03.instructions)
         val program = Program(BARRIER_03.instructions)
         val programContext = ProgramContext(program)
         val callDataOne = BigInteger.valueOf(12347).toByteArray()
@@ -83,11 +88,6 @@ class BarrierProgramTest {
 
     @Test(expected = ProgramException::class)
     fun testBarrier04() {
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph("Barrier 04")
-                .paragraph("Description: ${BARRIER_04.description}")
-                .paragraph("Pseudocode").code(BARRIER_04.pseudocode)
-                .paragraph("Source").source(BARRIER_04.instructions)
         val program = Program(BARRIER_04.instructions)
         val programContext = ProgramContext(program)
         val callDataOne = BigInteger.valueOf(6).toByteArray()
@@ -99,11 +99,6 @@ class BarrierProgramTest {
 
     @Test(expected = ProgramException::class)
     fun testBarrier05() {
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph("Barrier 05")
-                .paragraph("Description: ${BARRIER_05.description}")
-                .paragraph("Pseudocode").code(BARRIER_05.pseudocode)
-                .paragraph("Source").source(BARRIER_05.instructions)
         val program = Program(BARRIER_05.instructions)
         val programContext = ProgramContext(program)
         val callDataOne = BigInteger.valueOf(3).toByteArray()

@@ -16,6 +16,7 @@
 
 ==== Graph
 
+* Account for dynamic jumps during optimization (See Barrier 05 basic graph vs optimized graph)
 * Implementation of all @Ignore'd processor tests as well as their implementation
 * Processor to connect SAVEs and LOADs' spaces to eachother in order to begin analysis on data flow through program store zones
 * Processor to replace VARIABLEs with known values
