@@ -18,7 +18,7 @@ class SUBTRACTTest : InstructionTest() {
                 .headingParagraph("SUBTRACT").paragraph("The SUBTRACT operation removes two elements from the stack, subtracts the second element from the " + "top element and puts the result on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(99))
     }
 }

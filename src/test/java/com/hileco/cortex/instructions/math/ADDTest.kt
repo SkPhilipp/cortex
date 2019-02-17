@@ -21,7 +21,7 @@ class ADDTest : InstructionTest() {
                         "result on the stack. (This result may overflow if it would have been larger than ${VirtualMachine.NUMERICAL_LIMIT})")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(101))
     }
 

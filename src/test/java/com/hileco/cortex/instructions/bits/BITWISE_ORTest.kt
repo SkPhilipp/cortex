@@ -18,7 +18,7 @@ class BITWISE_ORTest : InstructionTest() {
                 .headingParagraph("BITWISE_OR").paragraph("The BITWISE_OR operation performs a bitwise OR operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(7))
     }
 }

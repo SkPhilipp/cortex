@@ -17,7 +17,7 @@ class SWAPTest : InstructionTest() {
                 .headingParagraph("SWAP").paragraph("The SWAP operation swaps two elements on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 2)
+        Assert.assertEquals(stack.size(), 2)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
         Assert.assertArrayEquals(stack.pop(), (instructions[1] as PUSH).bytes)
     }

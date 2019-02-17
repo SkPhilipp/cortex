@@ -15,8 +15,8 @@ class AttackerTest {
         val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(BARRIER_00.instructions)
         val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)
         val solutions = attacker.solve(graph)
-        Assert.assertEquals(1, solutions.size.toLong())
-        val solution = solutions[0]
+        Assert.assertEquals(1, solutions.size)
+        val solution = solutions.first()
         Assert.assertTrue(solution.isSolvable)
         Assert.assertEquals(0, solution.possibleValues.size)
     }
@@ -31,10 +31,10 @@ class AttackerTest {
                 .paragraph("Program:").source(BARRIER_01.instructions)
                 .paragraph("Attack method:").source("TARGET_IS_HALT_WINNER")
                 .paragraph("Suggested solution by Cortex:").source(solutions)
-        Assert.assertEquals(1, solutions.size.toLong())
-        val solution = solutions[0]
+        Assert.assertEquals(1, solutions.size)
+        val solution = solutions.first()
         Assert.assertTrue(solution.isSolvable)
-        Assert.assertEquals(1, solution.possibleValues.size.toLong())
+        Assert.assertEquals(1, solution.possibleValues.size)
         val entry = solution.possibleValues.entries.first()
         Assert.assertEquals(Expression.Reference(CALL_DATA, Expression.Value(1L)), entry.key)
         Assert.assertEquals(24690L, entry.value)

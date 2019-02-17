@@ -27,7 +27,7 @@ class IoInstructionsTest : InstructionTest() {
                         " address to read from the area specified (${ProgramStoreZone.MEMORY}, ${ProgramStoreZone.DISK}, or ${ProgramStoreZone.CALL_DATA}).")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(10))
     }
 }

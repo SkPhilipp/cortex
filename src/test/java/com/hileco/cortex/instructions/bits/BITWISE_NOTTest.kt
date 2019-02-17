@@ -17,7 +17,7 @@ class BITWISE_NOTTest : InstructionTest() {
                 .headingParagraph("BITWISE_NOT").paragraph("The BITWISE_NOT operation performs logical negation on each bit of the top element on the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), byteArrayOf(-128))
     }
 }

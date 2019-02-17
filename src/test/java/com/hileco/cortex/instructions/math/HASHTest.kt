@@ -17,6 +17,6 @@ class HASHTest : InstructionTest() {
                 .headingParagraph("HASH").paragraph("The HASH operation removes one element from the stack, performs the desired hashing " + "method on it and adds the resulting hash to the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
     }
 }

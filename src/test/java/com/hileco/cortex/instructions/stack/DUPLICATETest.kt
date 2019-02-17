@@ -16,7 +16,7 @@ class DUPLICATETest : InstructionTest() {
                 .headingParagraph("DUPLICATE").paragraph("The DUPLICATE operation adds a duplicate of an element on the stack, to the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 2)
+        Assert.assertEquals(stack.size(), 2)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
     }

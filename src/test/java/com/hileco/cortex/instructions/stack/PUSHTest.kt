@@ -2,7 +2,6 @@ package com.hileco.cortex.instructions.stack
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
-import com.hileco.cortex.instructions.ProgramException
 import org.junit.Assert
 import org.junit.Test
 
@@ -18,7 +17,7 @@ class PUSHTest : InstructionTest() {
                 .headingParagraph("PUSH").paragraph("The PUSH operation adds one element to top of the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 3)
+        Assert.assertEquals(stack.size(), 3)
         Assert.assertArrayEquals(stack.pop(), instructions[2].bytes)
         Assert.assertArrayEquals(stack.pop(), instructions[1].bytes)
         Assert.assertArrayEquals(stack.pop(), instructions[0].bytes)

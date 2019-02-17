@@ -12,6 +12,6 @@ class GraphTest {
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
         ))
-        Assert.assertEquals(3, graph.graphBlocks.size.toLong())
+        Assert.assertEquals(3, graph.graphBlocks.size)
     }
 }

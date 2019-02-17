@@ -23,7 +23,7 @@ class AttackProgramBuilderTest {
         val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(BARRIER_01.instructions)
         val attacker = Attacker(Attacker.TARGET_IS_HALT_WINNER)
         val solutions = attacker.solve(graph)
-        solution = solutions[0]
+        solution = solutions.first()
     }
 
     @Test

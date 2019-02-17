@@ -35,7 +35,7 @@ class InstructionParser {
         val split = string.replace("(.*?)\\s*--.*".toRegex(), "$1")
                 .split("\\s+".toRegex())
                 .toTypedArray()
-        val type = split[0]
+        val type = split.first()
         val builder = MAP[type] ?: throw IOException("$type is not a known instruction type.")
         return builder(split)
     }

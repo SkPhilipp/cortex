@@ -23,14 +23,14 @@ class ParameterProcessorTest : ProcessorFuzzTest() {
                 JUMP_IF()
         ))
         val graphBlocks = graph.graphBlocks
-        val graphNodes = graphBlocks[0].graphNodes
+        val graphNodes = graphBlocks.first().graphNodes
         Documentation.of(ParameterProcessor::class.simpleName!!)
                 .headingParagraph(ParameterProcessor::class.simpleName!!)
                 .paragraph("Adds edges describing the instructions used as input for every other instruction.")
         Assert.assertEquals(1, graph.edgeMapping.get(graphNodes[0], EdgeParameterConsumer::class.java).count())
         Assert.assertEquals(1, graph.edgeMapping.get(graphNodes[1], EdgeParameterConsumer::class.java).count())
         val edgeParameters = graph.edgeMapping.get(graphNodes[2], EdgeParameters::class.java).first()
-        Assert.assertEquals(2, edgeParameters.graphNodes.size.toLong())
+        Assert.assertEquals(2, edgeParameters.graphNodes.size)
     }
 
     @Test
@@ -48,7 +48,7 @@ class ParameterProcessorTest : ProcessorFuzzTest() {
         val graphNodes = graphBlocks[0].graphNodes
         Assert.assertEquals(1, graph.edgeMapping.get(graphNodes[1], EdgeParameterConsumer::class.java).count())
         val edgeParameters = graph.edgeMapping.get(graphNodes[3], EdgeParameters::class.java).first()
-        Assert.assertEquals(1, edgeParameters.graphNodes.size.toLong())
+        Assert.assertEquals(1, edgeParameters.graphNodes.size)
     }
 
     override fun fuzzTestableProcessor(): Processor {

@@ -20,6 +20,6 @@ class JUMPTest : InstructionTest() {
                         "program itself. JUMPs may only result in instruction positions which point to a JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 0)
+        Assert.assertEquals(stack.size(), 0)
     }
 }

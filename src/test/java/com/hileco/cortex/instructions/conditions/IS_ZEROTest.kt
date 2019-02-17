@@ -17,7 +17,7 @@ class IS_ZEROTest : InstructionTest() {
                 .headingParagraph("IS_ZERO").paragraph("The IS_ZERO operation removes the top element of the stack then adds a 1 or 0 to the stack" + " depending on whether the element was equal to 0.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE)
     }
 }

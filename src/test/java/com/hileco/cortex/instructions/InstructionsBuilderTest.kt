@@ -34,8 +34,8 @@ class InstructionsBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionPosition.toLong())
-        Assert.assertEquals(6, programContext.instructionsExecuted.toLong())
+        Assert.assertEquals(program.instructions.size, programContext.instructionPosition)
+        Assert.assertEquals(6, programContext.instructionsExecuted)
     }
 
     @Test
@@ -57,8 +57,8 @@ class InstructionsBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionPosition.toLong())
-        Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionsExecuted.toLong())
+        Assert.assertEquals(program.instructions.size, programContext.instructionPosition)
+        Assert.assertEquals(program.instructions.size, programContext.instructionsExecuted)
     }
 
     @Test
@@ -79,8 +79,8 @@ class InstructionsBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals(program.instructions.size.toLong(), programContext.instructionPosition.toLong())
-        Assert.assertEquals(((program.instructions.size - 1) * 256 + 1).toLong(), programContext.instructionsExecuted.toLong())
+        Assert.assertEquals(program.instructions.size, programContext.instructionPosition)
+        Assert.assertEquals((program.instructions.size - 1) * 256 + 1, programContext.instructionsExecuted)
     }
 
 }

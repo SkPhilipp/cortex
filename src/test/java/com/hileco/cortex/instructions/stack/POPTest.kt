@@ -2,7 +2,6 @@ package com.hileco.cortex.instructions.stack
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
-import com.hileco.cortex.instructions.ProgramException
 import org.junit.Assert
 import org.junit.Test
 
@@ -18,7 +17,7 @@ class POPTest : InstructionTest() {
                 .headingParagraph("POP").paragraph("The POP operation removes the top element from the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
     }
 }

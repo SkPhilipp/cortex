@@ -50,7 +50,7 @@ class CALLTest : InstructionTest() {
                 .paragraph("Example calling program:").source(callerInstructions)
                 .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
+        Assert.assertEquals(stack.size(), 1)
         Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(123))
     }
 
