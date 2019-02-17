@@ -20,8 +20,12 @@ class ExpressionBuilder {
                 for (instructionIndex in source..target) {
                     val instruction = instructions[instructionIndex]
                     if (instruction is JUMP_IF) {
-                        val takeJump = target == instructionIndex && next?.type == FlowType.INSTRUCTION_JUMP_IF
-                        val expression = if (takeJump) expressionGenerator.viewExpression(JUMP_IF.CONDITION.position) else Expression.Not(expressionGenerator.viewExpression(JUMP_IF.CONDITION.position))
+                        val takeJump = target == instructionIndex && next != null && next.type.isConditional && next.type.isJumping
+                        val expression = if (takeJump) {
+                            expressionGenerator.viewExpression(JUMP_IF.CONDITION.position)
+                        } else {
+                            Expression.Not(expressionGenerator.viewExpression(JUMP_IF.CONDITION.position))
+                        }
                         conditions.add(expression)
                     }
                     expressionGenerator.addInstruction(instruction)

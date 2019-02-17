@@ -62,6 +62,26 @@ class FlowProcessor : Processor {
                     }
                 }
 
+        // map INSTRUCTION_JUMP_DYNAMIC and INSTRUCTION_JUMP_IF_DYNAMIC
+        graphBlocks.asSequence()
+                .flatMap { it.graphNodes.asSequence() }
+                .filter { it.instruction::class.java in FLOW_CLASSES_JUMPS }
+                .filter { !graph.edgeMapping.hasOneParameter(it, 0) { parameter -> parameter.instruction is PUSH } }
+                .forEach {
+                    when (it.instruction) {
+                        is JUMP -> {
+                            val flow = Flow(INSTRUCTION_JUMP_DYNAMIC, it.line, null)
+                            graph.edgeMapping.add(it, flow)
+                            graphEdge.map(flow)
+                        }
+                        is JUMP_IF -> {
+                            val flow = Flow(INSTRUCTION_JUMP_IF_DYNAMIC, it.line, null)
+                            graph.edgeMapping.add(it, flow)
+                            graphEdge.map(flow)
+                        }
+                    }
+                }
+
         // map PROGRAM_END
         graphBlocks.asSequence()
                 .flatMap { it.graphNodes.asSequence() }

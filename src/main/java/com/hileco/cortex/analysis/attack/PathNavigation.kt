@@ -32,6 +32,8 @@ class PathNavigation(private val flowMapping: FlowMapping) {
                         PROGRAM_END -> wrappingFlow.target!! == next.source
                         INSTRUCTION_JUMP_IF -> next.source in wrappingFlow.source..current.target!!
                         INSTRUCTION_JUMP -> next.source in wrappingFlow.source..current.target!!
+                        INSTRUCTION_JUMP_IF_DYNAMIC -> false
+                        INSTRUCTION_JUMP_DYNAMIC -> false
                     }
                 }
                 .toList()
