@@ -5,7 +5,8 @@ import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.*
 
-class PathGenerator(private val flowMapping: FlowMapping) {
+class PathGenerator(private val flowMapping: FlowMapping,
+                    private val repeatLimit: Int = 500) {
     private val path: MutableList<Flow> = arrayListOf()
 
     init {
@@ -35,6 +36,9 @@ class PathGenerator(private val flowMapping: FlowMapping) {
                         INSTRUCTION_JUMP_IF_DYNAMIC -> false
                         INSTRUCTION_JUMP_DYNAMIC -> false
                     }
+                }
+                .filter { next ->
+                    return@filter path.count { it == next } < repeatLimit
                 }
                 .toList()
     }

@@ -30,7 +30,7 @@ class BarrierProgramTest {
                 .paragraph("Description: ${barrierProgram.description}")
                 .paragraph("Pseudocode").code(barrierProgram.pseudocode)
                 .paragraph("Source").source(barrierProgram.instructions)
-                .paragraph("Visualization: (As basic graph)").image(basicGraphVisualized.toBytes())
+                .paragraph("Visualization:").image(basicGraphVisualized.toBytes())
     }
 
     @Test

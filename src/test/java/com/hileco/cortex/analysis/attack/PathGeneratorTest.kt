@@ -42,4 +42,12 @@ class PathGeneratorTest {
         flowMapping.map(Flow(FlowType.PROGRAM_END, 2001, null))
         Assert.assertEquals(25, PathGenerator(flowMapping).asSequence().count())
     }
+
+    @Test
+    fun testRepeatLimit() {
+        val flowMapping = FlowMapping()
+        flowMapping.map(Flow(FlowType.PROGRAM_FLOW, 0, 30))
+        flowMapping.map(Flow(FlowType.INSTRUCTION_JUMP, 30, 0))
+        Assert.assertEquals(1, PathGenerator(flowMapping).asSequence().count())
+    }
 }
