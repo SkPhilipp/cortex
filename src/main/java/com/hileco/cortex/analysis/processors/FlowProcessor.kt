@@ -7,7 +7,6 @@ import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.*
-import com.hileco.cortex.instructions.calls.CALL
 import com.hileco.cortex.instructions.calls.CALL_RETURN
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.jumps.EXIT
@@ -85,7 +84,7 @@ class FlowProcessor : Processor {
         // map PROGRAM_END
         graphBlocks.asSequence()
                 .flatMap { it.graphNodes.asSequence() }
-                .filter { it.instruction::class.java in FLOW_CLASSES_OTHERS }
+                .filter { it.instruction::class.java in PROGRAM_ENDS }
                 .forEach {
                     val flow = Flow(PROGRAM_END, it.line, null)
                     graph.edgeMapping.add(it, flow)
@@ -117,7 +116,7 @@ class FlowProcessor : Processor {
 
     companion object {
         private val GUARANTEED_ENDS = setOf(JUMP::class.java, HALT::class.java, EXIT::class.java, CALL_RETURN::class.java)
+        private val PROGRAM_ENDS = setOf(CALL_RETURN::class.java, EXIT::class.java, HALT::class.java)
         private val FLOW_CLASSES_JUMPS = setOf(JUMP::class.java, JUMP_IF::class.java)
-        private val FLOW_CLASSES_OTHERS = setOf(CALL::class.java, CALL_RETURN::class.java, EXIT::class.java, HALT::class.java)
     }
 }
