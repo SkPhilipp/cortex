@@ -92,14 +92,14 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                   | FUNCTION cube(N) {
                   |     RETURN N * square(N)
                   | }
-                  | IF(cube(CALL_DATA[1]) == 9) {
+                  | IF(cube(CALL_DATA[1]) == 27) {
                   |     HALT(WINNER)
                   | }""".trimMargin(),
                 with(ProgramBuilder()) {
                     blockIf(conditionBody = {
-                        internalFunctionCall("cube", {
+                        equals(internalFunctionCall("cube", {
                             load(CALL_DATA, push(1))
-                        })
+                        }), push(27))
                     }, thenBody = {
                         halt(WINNER)
                     })

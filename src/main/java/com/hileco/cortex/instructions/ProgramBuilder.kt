@@ -364,7 +364,7 @@ class ProgramBuilder {
         save(MEMORY, push(FUNCTION_CALL_INDEX + 1), push(FUNCTION_CALL_INDEX))
     }
 
-    fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN) {
+    fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN): ProgramBuilderHandle {
         val returnLabel = UUID.randomUUID().toString()
         when (callConvention) {
             STACK_ADDRESS_WITH_RETURN -> {
@@ -381,6 +381,7 @@ class ProgramBuilder {
         body()
         jump(push(label))
         jumpDestination(returnLabel)
+        return handle
     }
 
     fun build(): List<Instruction> {
