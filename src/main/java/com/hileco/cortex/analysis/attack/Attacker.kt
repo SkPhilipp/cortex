@@ -16,6 +16,8 @@ import java.util.*
 import java.util.stream.IntStream
 
 class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
+    private val expressionBuilder = ExpressionBuilder()
+
     fun solve(graph: Graph): ArrayList<Solution> {
         val solutions = ArrayList<Solution>()
         val instructions = graph.toInstructions()
@@ -24,10 +26,10 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
         while (pathNavigation.currentPath().isNotEmpty()) {
             val flows = pathNavigation.currentPath()
             if (containsTarget(flows, instructions, flowMapping)) {
-                val attackPath = AttackPath(instructions, flows)
                 val solver = Solver()
                 try {
-                    solutions.add(solver.solve(attackPath.buildExpression()))
+                    val expression = expressionBuilder.build(instructions, flows)
+                    solutions.add(solver.solve(expression))
                 } catch (ignored: ImpossibleExpressionException) {
                 }
             }
@@ -42,9 +44,9 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
                 val next = if (index + 1 < flows.size) flows[index + 1] else null
                 val source = flow.source
                 val target = next?.source ?: flow.target ?: (instructions.size - 1)
-                if(IntStream.range(source, target + 1)
-                        .mapToObj<GraphNode> { line -> flowMapping.nodeLineMapping[line] }
-                        .anyMatch(targetPredicate)){
+                if (IntStream.range(source, target + 1)
+                                .mapToObj<GraphNode> { line -> flowMapping.nodeLineMapping[line] }
+                                .anyMatch(targetPredicate)) {
                     return true
                 }
             }

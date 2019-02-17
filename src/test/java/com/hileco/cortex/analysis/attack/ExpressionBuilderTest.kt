@@ -14,14 +14,14 @@ import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import org.junit.Assert
 import org.junit.Test
 
-class AttackPathTest {
+class ExpressionBuilderTest {
     @Test
     fun test() {
-        val attackPath = AttackPath(BARRIER_01.instructions, listOf(
+        val expressionBuilder = ExpressionBuilder()
+        val expression = expressionBuilder.build(BARRIER_01.instructions, listOf(
                 Flow(FlowType.PROGRAM_FLOW, 0, 9),
                 Flow(FlowType.PROGRAM_END, 9, null)
         ))
-        val expression = attackPath.buildExpression()
         val expressionGenerator = ExpressionGenerator()
         listOf(PUSH(2),
                 PUSH(1),

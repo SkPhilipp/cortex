@@ -23,19 +23,11 @@ class SampleController {
     }
 
     companion object {
-        val SAMPLES = listOf(
-                UiSample("barrier-00", "Barrier 00", BarrierProgram.BARRIER_00),
-                UiSample("barrier-01", "Barrier 01", BarrierProgram.BARRIER_01),
-                UiSample("barrier-02", "Barrier 02", BarrierProgram.BARRIER_02),
-                UiSample("barrier-03", "Barrier 03", BarrierProgram.BARRIER_03),
-                UiSample("barrier-04", "Barrier 04", BarrierProgram.BARRIER_04),
-                UiSample("barrier-05", "Barrier 05", BarrierProgram.BARRIER_05),
-                UiSample("barrier-06", "Barrier 06", BarrierProgram.BARRIER_06),
-                UiSample("barrier-07", "Barrier 07", BarrierProgram.BARRIER_07),
-                UiSample("barrier-08", "Barrier 08", BarrierProgram.BARRIER_08),
-                UiSample("barrier-09", "Barrier 09", BarrierProgram.BARRIER_09),
-                UiSample("barrier-10", "Barrier 10", BarrierProgram.BARRIER_10),
-                UiSample("barrier-11", "Barrier 11", BarrierProgram.BARRIER_11)
-        ).associateBy { it.id }
+        val SAMPLES = BarrierProgram.BARRIERS
+                .mapIndexed { index, barrierProgram ->
+                    val formattedIndex = "$index".padStart(2, '0')
+                    UiSample("barrier-$formattedIndex", "Barrier $formattedIndex", barrierProgram)
+                }
+                .associateBy { it.id }
     }
 }

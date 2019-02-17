@@ -8,9 +8,8 @@ import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import java.util.*
 
-class AttackPath(private val instructions: List<Instruction>,
-                 private val flows: List<Flow>) {
-    fun buildExpression(): Expression {
+class ExpressionBuilder {
+    fun build(instructions: List<Instruction>, flows: List<Flow>): Expression {
         val expressionGenerator = ExpressionGenerator()
         val conditions = ArrayList<Expression>()
         flows.forEachIndexed { flowIndex, flow ->

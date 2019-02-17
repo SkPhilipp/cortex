@@ -58,7 +58,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_04 = BarrierProgram("Involved memory and loops, more complex data flow analysis.",
+        val BARRIER_04 = BarrierProgram("Involves memory and loops, more complex data flow analysis.",
                 """ VAR x = CALL_DATA[1]
                   | VAR y = 0
                   | WHILE(--x) {
@@ -115,11 +115,24 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_06 = BarrierProgram("Contains somewhat conditional infinite loops.", "".trimIndent(), listOf())
-        val BARRIER_07 = BarrierProgram("This program calls an external program.", "".trimIndent(), listOf())
-        val BARRIER_08 = BarrierProgram("Contains a predictable pseudorandom number generator.", "".trimIndent(), listOf())
-        val BARRIER_09 = BarrierProgram("Outcome is influenced by preconfigured disk state.", "".trimIndent(), listOf())
-        val BARRIER_10 = BarrierProgram("Requires interaction with preconfigured disk state.", "".trimIndent(), listOf())
-        val BARRIER_11 = BarrierProgram("Requires multiple calls to solve.", "".trimIndent(), listOf())
+        private val BARRIER_06 = BarrierProgram("Contains somewhat conditional infinite loops.", "".trimIndent(), listOf())
+        private val BARRIER_07 = BarrierProgram("This program calls an external program.", "".trimIndent(), listOf())
+        private val BARRIER_08 = BarrierProgram("Contains a predictable pseudorandom number generator.", "".trimIndent(), listOf())
+        private val BARRIER_09 = BarrierProgram("Outcome is influenced by preconfigured disk state.", "".trimIndent(), listOf())
+        private val BARRIER_10 = BarrierProgram("Requires interaction with preconfigured disk state.", "".trimIndent(), listOf())
+        private val BARRIER_11 = BarrierProgram("Requires multiple calls to solve.", "".trimIndent(), listOf())
+        val BARRIERS = listOf(
+                BARRIER_00,
+                BARRIER_01,
+                BARRIER_02,
+                BARRIER_03,
+                BARRIER_04,
+                BARRIER_05,
+                BARRIER_06,
+                BARRIER_07,
+                BARRIER_08,
+                BARRIER_09,
+                BARRIER_10,
+                BARRIER_11)
     }
 }
