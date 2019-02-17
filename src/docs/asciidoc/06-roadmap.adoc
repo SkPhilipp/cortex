@@ -1,21 +1,5 @@
 == Roadmap
 
-=== Milestones
-
-- [x] Virtual Machine running programs with stack manipulation
-- [x] Virtual Machine running programs with disk and memory manipulation
-- [x] Virtual Machine running programs calling programs as libraries
-- [x] Virtual Machine running programs running from assembly files
-- [x] Generated solution for manually built expression
-- [x] Generated solution for barrier program with basic math based win condition
-- [x] Generated solution for barrier program verified by virtual machine simulation
-- [x] Generated solution for barrier program generated as another program
-- [x] Document database containing all barrier programs' source
-- [ ] Automated solving and solution tracking of all barrier programs in database
-- [ ] Document database containing all barrier programs' disk and transaction state
-- [ ] Generated solution for a barrier program involving database-stored state
-- [ ] Generated solution for a barrier program involving multiple calls
-
 === Improvements
 
 ==== Core
@@ -29,12 +13,9 @@
 ==== Instructions
 
 * Instruction to push a variable by name onto the stack (ie `VARIABLE TIME`)
-* EVM-compatible signed & unsigned math configuration in ProgramBuilderFactory as well as related testcases
-* Interpret empty lines as NOOP and allow them in files
 
 ==== Graph
 
-* Implementation of fallthrough block start to ends mapping as described in FlowProcessor#116 through #118
 * Implementation of all @Ignore'd processor tests as well as their implementation
 * Processor to connect SAVEs and LOADs' spaces to eachother in order to begin analysis on data flow through program store zones
 * Processor to replace VARIABLEs with known values

@@ -64,6 +64,7 @@ class InstructionParser {
                 "LESS_THAN" to require(0) { LESS_THAN() },
                 "HALT" to require(1) { parameters -> HALT(ProgramException.Reason.valueOf(parameters[1])) },
                 "NOOP" to require(0) { NOOP() },
+                "" to require(0) { NOOP() },
                 "LOAD" to require(1) { parameters -> LOAD(ProgramStoreZone.valueOf(parameters[1])) },
                 "SAVE" to require(1) { parameters -> SAVE(ProgramStoreZone.valueOf(parameters[1])) },
                 "EXIT" to require(0) { EXIT() },
