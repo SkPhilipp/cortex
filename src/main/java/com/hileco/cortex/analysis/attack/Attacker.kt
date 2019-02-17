@@ -17,19 +17,16 @@ class Attacker(private val targetPredicate: (Instruction) -> Boolean) {
         val solutions = ArrayList<Solution>()
         val instructions = graph.toInstructions()
         val flowMapping = graph.edgeMapping.get(FlowMapping::class.java).first()
-        val pathGenerator = PathGenerator(flowMapping)
-        while (pathGenerator.currentPath().isNotEmpty()) {
-            val flows = pathGenerator.currentPath()
-            val containsTarget = PathStream(instructions, flows).asSequence().any { targetPredicate(it.instruction) }
+        PathGenerator(flowMapping).asSequence().forEach { path ->
+            val containsTarget = PathStream(instructions, path).asSequence().any { targetPredicate(it.instruction) }
             if (containsTarget) {
-                val solver = Solver()
                 try {
-                    val expression = expressionBuilder.build(instructions, flows)
+                    val expression = expressionBuilder.build(instructions, path)
+                    val solver = Solver()
                     solutions.add(solver.solve(expression))
                 } catch (ignored: ImpossibleExpressionException) {
                 }
             }
-            pathGenerator.next()
         }
         return solutions
     }

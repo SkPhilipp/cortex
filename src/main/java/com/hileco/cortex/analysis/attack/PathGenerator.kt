@@ -98,7 +98,10 @@ class PathGenerator(private val flowMapping: FlowMapping) {
         }
     }
 
-    fun next() {
+    /**
+     * Rotate to the next path, if any, and expand from there.
+     */
+    private fun next() {
         var rotateResult: RotationResult
         do {
             rotateResult = rotate()
@@ -111,7 +114,10 @@ class PathGenerator(private val flowMapping: FlowMapping) {
         }
     }
 
-    fun currentPath(): List<Flow> {
-        return path.asSequence().toList()
+    fun asSequence() = sequence {
+        while (path.isNotEmpty()) {
+            yield(path.asSequence().toList())
+            next()
+        }
     }
 }

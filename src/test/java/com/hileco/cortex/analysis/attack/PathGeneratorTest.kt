@@ -20,13 +20,7 @@ class PathGeneratorTest {
         flowMapping.map(Flow(FlowType.PROGRAM_END, 1029, null))
         flowMapping.map(Flow(FlowType.PROGRAM_FLOW, 1030, 1039))
         flowMapping.map(Flow(FlowType.PROGRAM_END, 1039, null))
-        val pathGenerator = PathGenerator(flowMapping)
-        var counter = 0
-        while (pathGenerator.currentPath().isNotEmpty()) {
-            counter++
-            pathGenerator.next()
-        }
-        Assert.assertEquals(3, counter)
+        Assert.assertEquals(3, PathGenerator(flowMapping).asSequence().count())
     }
 
     @Test
@@ -46,12 +40,6 @@ class PathGeneratorTest {
         flowMapping.map(Flow(FlowType.INSTRUCTION_JUMP, 1030, 2000))
         flowMapping.map(Flow(FlowType.PROGRAM_FLOW, 2000, 2001))
         flowMapping.map(Flow(FlowType.PROGRAM_END, 2001, null))
-        val pathGenerator = PathGenerator(flowMapping)
-        var counter = 0
-        while (pathGenerator.currentPath().isNotEmpty()) {
-            counter++
-            pathGenerator.next()
-        }
-        Assert.assertEquals(25, counter)
+        Assert.assertEquals(25, PathGenerator(flowMapping).asSequence().count())
     }
 }

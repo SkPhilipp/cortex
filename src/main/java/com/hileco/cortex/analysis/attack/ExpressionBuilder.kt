@@ -8,10 +8,10 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import java.util.*
 
 class ExpressionBuilder {
-    fun build(instructions: List<Instruction>, flows: List<Flow>): Expression {
+    fun build(instructions: List<Instruction>, path: List<Flow>): Expression {
         val expressionGenerator = ExpressionGenerator()
         val conditions = ArrayList<Expression>()
-        PathStream(instructions, flows).asSequence().forEach {
+        PathStream(instructions, path).asSequence().forEach {
             if (it.instruction is JUMP_IF) {
                 val target = it.nextFlow?.source ?: it.wrappingFlow.target!!
                 val takeJump = target == it.line && it.nextFlow != null && it.nextFlow.type.isConditional && it.nextFlow.type.isJumping
