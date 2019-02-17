@@ -1,47 +1,14 @@
 package com.hileco.cortex.constraints.expressions
 
 import com.hileco.cortex.vm.ProgramStoreZone
-import com.microsoft.z3.BoolExpr
-import com.microsoft.z3.Context
-import com.microsoft.z3.Expr
+import com.microsoft.z3.*
 import java.lang.Long.toString
 
 interface Expression {
     fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr
 
-    data class Input(val representation: String,
-                     val converter: (Context, Expr) -> Expr,
-                     val input: Expression) : Expression {
-
-        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            val inputExpr = input.asZ3Expr(context, referenceMapping)
-            return converter(context, inputExpr)
-        }
-
-        override fun toString(): String {
-            return "$representation($input)"
-        }
-    }
-
-    data class LeftRight(val representation: String,
-                         val converter: (Context, Expr, Expr) -> Expr,
-                         val left: Expression,
-                         val right: Expression) : Expression {
-
-        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            val leftExpr = left.asZ3Expr(context, referenceMapping)
-            val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return converter(context, leftExpr, rightExpr)
-        }
-
-        override fun toString(): String {
-            return "($left $representation $right)"
-        }
-    }
-
     data class Reference(val type: ProgramStoreZone,
                          val address: Expression) : Expression {
-
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val reference = referenceMapping.referencesForward.computeIfAbsent(this@Reference) { unmappedReference ->
                 val key = Integer.toString(referenceMapping.referencesForward.size)
@@ -58,7 +25,6 @@ interface Expression {
     }
 
     data class Value(val constant: Long) : Expression {
-
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkInt(constant)
         }
@@ -69,7 +35,6 @@ interface Expression {
     }
 
     data class Stack(val address: Int = 0) : Expression {
-
         override fun toString(): String {
             return "STACK[$address]"
         }
@@ -80,7 +45,6 @@ interface Expression {
     }
 
     data class Not(val input: Expression) : Expression {
-
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val inputExpr = input.asZ3Expr(context, referenceMapping)
             return context.mkNot(inputExpr as BoolExpr)
@@ -92,7 +56,6 @@ interface Expression {
     }
 
     data class And(var inputs: List<Expression>) : Expression {
-
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkAnd(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
         }
@@ -109,6 +72,151 @@ interface Expression {
 
         override fun toString(): String {
             return "TRUE"
+        }
+    }
+
+    object False : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            return context.mkFalse()
+        }
+
+        override fun toString(): String {
+            return "FALSE"
+        }
+    }
+
+    data class Add(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkAdd(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun toString(): String {
+            return "($left + $right)"
+        }
+    }
+
+    data class Subtract(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkSub(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun toString(): String {
+            return "($left - $right)"
+        }
+    }
+
+    data class Multiply(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkMul(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun toString(): String {
+            return "($left * $right)"
+        }
+    }
+
+    data class Divide(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkDiv(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun toString(): String {
+            return "($left / $right)"
+        }
+    }
+
+    data class LessThan(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkLt(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun toString(): String {
+            return "($left < $right)"
+        }
+    }
+
+    data class GreaterThan(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkGt(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun toString(): String {
+            return "($left > $right)"
+        }
+    }
+
+    data class Equals(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkEq(leftExpr, rightExpr)
+        }
+
+        override fun toString(): String {
+            return "($left == $right)"
+        }
+    }
+
+    data class BitwiseOr(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkOr(leftExpr as BoolExpr, rightExpr as BoolExpr)
+        }
+
+        override fun toString(): String {
+            return "($left || $right)"
+        }
+    }
+
+    data class BitwiseAnd(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkAnd(leftExpr as BoolExpr, rightExpr as BoolExpr)
+        }
+
+        override fun toString(): String {
+            return "($left && $right)"
+        }
+    }
+
+    data class Modulo(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkMod(leftExpr as IntExpr, rightExpr as IntExpr)
+        }
+
+        override fun toString(): String {
+            return "($left % $right)"
+        }
+    }
+
+    data class IsZero(val input: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val inputExpr = input.asZ3Expr(context, referenceMapping)
+            return if (inputExpr.isBool) {
+                context.mkEq(inputExpr, context.mkBool(false))
+            } else {
+                context.mkEq(inputExpr, context.mkInt(0))
+            }
+        }
+
+        override fun toString(): String {
+            return "0 == $input"
         }
     }
 }

@@ -66,7 +66,7 @@ class ExpressionGeneratorTest {
                 .headingParagraph(ExpressionGenerator::class.simpleName!!)
                 .paragraph("Program:").source(instructions)
                 .paragraph("Resulting expressions:").source(builder.viewAllExpressions())
-        Assert.assertEquals("(123 - 123)", builder.viewExpression(0).toString())
+        Assert.assertEquals("(123 - 123)", builder.currentExpression.toString())
         Assert.assertEquals("(456 + 456)", builder.viewExpression(1).toString())
     }
 
@@ -77,7 +77,7 @@ class ExpressionGeneratorTest {
         builder.addInstruction(PUSH(456))
         builder.addInstruction(ADD())
         builder.addInstruction(DUPLICATE(0))
-        Assert.assertEquals("(456 + 456)", builder.viewExpression(0).toString())
+        Assert.assertEquals("(456 + 456)", builder.currentExpression.toString())
         Assert.assertEquals("(456 + 456)", builder.viewExpression(1).toString())
     }
 
@@ -91,7 +91,7 @@ class ExpressionGeneratorTest {
         builder.addInstruction(PUSH(123))
         builder.addInstruction(SUBTRACT())
         builder.addInstruction(SWAP(0, 1))
+        Assert.assertEquals("(456 + 456)", builder.currentExpression.toString())
         Assert.assertEquals("(123 - 123)", builder.viewExpression(1).toString())
-        Assert.assertEquals("(456 + 456)", builder.viewExpression(0).toString())
     }
 }
