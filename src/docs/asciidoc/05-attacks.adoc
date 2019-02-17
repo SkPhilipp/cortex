@@ -1,25 +1,19 @@
 == Attacks
 
+=== Barrier Programs
+
+Barrier programs are short programs used to measure the capabilities of Cortex.
+This chapter contains the barrier programs which Cortex should be able to solve, or are on the roadmap to be solved.
+
+include::{snippets}/BarrierProgram.adoc[]
+
 === Attack Generators
 
-Below is a demonstration of Cortex analysing and finding the solution to an example program.
-The pseudocode for this program is:
+Below is a demonstration of Cortex analysing and finding the solution to barrier programs, available also is the
+time it took for Cortex to construct the solution.
 
-```
-if(args[1] / 2 == 12345) {
-    HALT WINNER
-}
-```
-
-Cortex will try to reach `HALT WINNER`.
+Cortex will try to reach `HALT WINNER`, or `CALL` with a recipient address of `1234`.
 
 include::{snippets}/Attacker.adoc[]
 
 include::{snippets}/AttackProgramBuilder.adoc[]
-
-=== Barrier Programs
-
-Barrier programs are short programs used to measure the capabilities of Cortex.
-Below are some sample programs which Cortex should be able to solve, or are on the roadmap to be solved.
-
-include::{snippets}/BarrierProgram.adoc[]

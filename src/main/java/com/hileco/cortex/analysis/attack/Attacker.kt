@@ -41,7 +41,7 @@ class Attacker(private val targetPredicate: (Instruction) -> Boolean,
         val TARGET_IS_CALL: (Instruction) -> Boolean = {
             it is HALT && it.reason == ProgramException.Reason.WINNER
         }
-        val STACK_CONSTRAINT_CALL_ADDRESS: (address: Long) -> StackConstraint = { address ->
+        val CONSTRAINT_CALL_ADDRESS: (address: Long) -> StackConstraint = { address ->
             StackConstraint(
                     { _, _, instruction -> instruction is CALL },
                     { expression -> Expression.Equals(expression, Expression.Value(address)) },
