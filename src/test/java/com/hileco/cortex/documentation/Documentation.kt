@@ -47,7 +47,7 @@ object Documentation {
                     file.parentFile.mkdirs()
                     file.createNewFile()
                 }
-                val outputStream = FileOutputStream(file, !file.exists())
+                val outputStream = FileOutputStream(file, false)
                 Document(snippetPath, outputStream, OBJECT_MAPPER)
             } catch (e: IOException) {
                 throw IllegalStateException("Erred while interacting with file: $path", e)

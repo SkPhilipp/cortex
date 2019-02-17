@@ -33,6 +33,11 @@ class Document constructor(private val snippetPath: String,
         return this.append(source)
     }
 
+    fun code(source: String): Document {
+        this.append("```\n", source, "\n```\n\n")
+        return this
+    }
+
     fun source(source: Any): Document {
         try {
             this.append("```\n", objectMapper.writeValueAsString(source), "\n```\n\n")

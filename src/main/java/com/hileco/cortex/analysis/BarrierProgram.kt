@@ -94,8 +94,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                   | }
                   | IF(cube(CALL_DATA[1]) == 9) {
                   |     HALT(WINNER)
-                  | }
-                """.trimIndent(),
+                  | }""".trimMargin(),
                 with(ProgramBuilder()) {
                     blockIf(conditionBody = {
                         internalFunctionCall("cube", {
