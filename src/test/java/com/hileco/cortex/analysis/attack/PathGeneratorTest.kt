@@ -6,7 +6,7 @@ import com.hileco.cortex.analysis.edges.FlowType
 import org.junit.Assert
 import org.junit.Test
 
-class PathNavigationTest {
+class PathGeneratorTest {
     @Test
     fun testIterating() {
         val flowMapping = FlowMapping()
@@ -20,11 +20,11 @@ class PathNavigationTest {
         flowMapping.map(Flow(FlowType.PROGRAM_END, 1029, null))
         flowMapping.map(Flow(FlowType.PROGRAM_FLOW, 1030, 1039))
         flowMapping.map(Flow(FlowType.PROGRAM_END, 1039, null))
-        val pathNavigation = PathNavigation(flowMapping)
+        val pathGenerator = PathGenerator(flowMapping)
         var counter = 0
-        while (pathNavigation.currentPath().isNotEmpty()) {
+        while (pathGenerator.currentPath().isNotEmpty()) {
             counter++
-            pathNavigation.next()
+            pathGenerator.next()
         }
         Assert.assertEquals(3, counter)
     }
@@ -46,11 +46,11 @@ class PathNavigationTest {
         flowMapping.map(Flow(FlowType.INSTRUCTION_JUMP, 1030, 2000))
         flowMapping.map(Flow(FlowType.PROGRAM_FLOW, 2000, 2001))
         flowMapping.map(Flow(FlowType.PROGRAM_END, 2001, null))
-        val pathNavigation = PathNavigation(flowMapping)
+        val pathGenerator = PathGenerator(flowMapping)
         var counter = 0
-        while (pathNavigation.currentPath().isNotEmpty()) {
+        while (pathGenerator.currentPath().isNotEmpty()) {
             counter++
-            pathNavigation.next()
+            pathGenerator.next()
         }
         Assert.assertEquals(25, counter)
     }

@@ -1,11 +1,11 @@
 package com.hileco.cortex.analysis.attack
 
-import com.hileco.cortex.analysis.attack.PathNavigation.RotationResult.*
+import com.hileco.cortex.analysis.attack.PathGenerator.RotationResult.*
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.*
 
-class PathNavigation(private val flowMapping: FlowMapping) {
+class PathGenerator(private val flowMapping: FlowMapping) {
     private val path: MutableList<Flow> = arrayListOf()
 
     init {

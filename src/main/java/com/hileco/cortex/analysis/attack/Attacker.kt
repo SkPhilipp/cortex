@@ -22,9 +22,9 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
         val solutions = ArrayList<Solution>()
         val instructions = graph.toInstructions()
         val flowMapping = graph.edgeMapping.get(FlowMapping::class.java).first()
-        val pathNavigation = PathNavigation(flowMapping)
-        while (pathNavigation.currentPath().isNotEmpty()) {
-            val flows = pathNavigation.currentPath()
+        val pathGenerator = PathGenerator(flowMapping)
+        while (pathGenerator.currentPath().isNotEmpty()) {
+            val flows = pathGenerator.currentPath()
             if (containsTarget(flows, instructions, flowMapping)) {
                 val solver = Solver()
                 try {
@@ -33,7 +33,7 @@ class Attacker(private val targetPredicate: (GraphNode) -> Boolean) {
                 } catch (ignored: ImpossibleExpressionException) {
                 }
             }
-            pathNavigation.next()
+            pathGenerator.next()
         }
         return solutions
     }
