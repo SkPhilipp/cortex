@@ -24,6 +24,8 @@
 ==== Pathing System
 
 * Path finding mechanism should account for loops
+* Implementation of `analysis.decompile` package
+* Implementation of `analysis.pathing` package
 
 ==== Constraint System
 
