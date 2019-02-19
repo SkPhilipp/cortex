@@ -11,9 +11,7 @@ class LayeredStackSerializer : StdScalarSerializer<LayeredStack<*>>(LayeredStack
     @Throws(IOException::class)
     override fun serialize(layeredStack: LayeredStack<*>, gen: JsonGenerator, provider: SerializerProvider) {
         gen.writeStartArray()
-        for (element in layeredStack) {
-            gen.writeObject(element)
-        }
+        layeredStack.asSequence().forEach { gen.writeObject(it) }
         gen.writeEndArray()
     }
 }

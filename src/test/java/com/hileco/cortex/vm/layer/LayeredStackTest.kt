@@ -67,16 +67,12 @@ class LayeredStackTest {
     }
 
     @Test
-    fun testIterator() {
+    fun testSequence() {
         val stack = LayeredStack<Int>()
         stack.push(100)
         stack.push(500)
-        val iterator = stack.iterator()
-        assertTrue(iterator.hasNext())
-        assertEquals(100, iterator.next())
-        assertTrue(iterator.hasNext())
-        assertEquals(500, iterator.next())
-        assertFalse(iterator.hasNext())
+        val list = stack.asSequence().toList()
+        assertEquals(list, listOf(100, 500))
     }
 
     @Test

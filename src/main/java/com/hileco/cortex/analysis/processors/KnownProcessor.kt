@@ -31,7 +31,7 @@ class KnownProcessor : Processor {
                         val virtualMachine = VirtualMachine(programContext)
                         val programRunner = ProgramRunner(virtualMachine)
                         programRunner.run()
-                        val stackElement = Sequence { programContext.stack.iterator() }.singleOrNull()
+                        val stackElement = programContext.stack.asSequence().singleOrNull()
                         if (stackElement != null) {
                             graphNode.instruction = PUSH(stackElement)
                             graph.edgeMapping.parameters(graphNode)

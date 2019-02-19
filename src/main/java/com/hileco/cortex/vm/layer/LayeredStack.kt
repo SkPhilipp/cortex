@@ -6,7 +6,7 @@ import kotlin.collections.HashMap
 
 class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     private var size: Int = parent?.size ?: 0
-    private val layer: MutableMap<Int, V> = HashMap()
+    private val layer: HashMap<Int, V> = HashMap()
 
     @Synchronized
     fun push(value: V) {
@@ -25,7 +25,6 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     @Synchronized
     fun peek(): V {
         return if (this.size == 0) throw IndexOutOfBoundsException("size 0 <= index 0") else this[this.size - 1]
-
     }
 
     @Synchronized
@@ -70,10 +69,6 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
         push(value)
     }
 
-    operator fun iterator(): IndexedIterator {
-        return IndexedIterator(0)
-    }
-
     @Synchronized
     fun clear() {
         layer.clear()
@@ -83,18 +78,9 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     override fun toString(): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("LayeredStack{")
-        val iterator = this.iterator()
-        while (iterator.hasNext()) {
-            val next = iterator.next()
-            if (next is ByteArray) {
-                stringBuilder.append(BigInteger(next))
-            } else {
-                stringBuilder.append(next)
-            }
-            if (iterator.hasNext()) {
-                stringBuilder.append(", ")
-            }
-        }
+        stringBuilder.append(this.asSequence().joinToString(", ") { element ->
+            if (element is ByteArray) "${BigInteger(element)}" else "$element"
+        })
         stringBuilder.append("}")
         return "$stringBuilder"
     }
@@ -102,8 +88,8 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     override fun equals(other: Any?): Boolean {
         if (other is LayeredStack<*>) {
             if (other.size == this.size) {
-                val ownIterator = iterator()
-                val otherIterator = other.iterator()
+                val ownIterator = asSequence().iterator()
+                val otherIterator = other.asSequence().iterator()
                 while (ownIterator.hasNext()) {
                     if (ownIterator.next() != otherIterator.next()) {
                         return false
@@ -118,41 +104,9 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
         return Objects.hash(layer, parent)
     }
 
-    inner class IndexedIterator constructor(private var index: Int) : ListIterator<V> {
-
-        @Synchronized
-        override fun hasNext(): Boolean {
-            return index <= this@LayeredStack.size - 1
-        }
-
-        @Synchronized
-        override fun next(): V {
-            if (!hasNext()) {
-                throw NoSuchElementException()
-            }
-            val value = this@LayeredStack[index]
-            index++
-            return value!!
-        }
-
-        override fun hasPrevious(): Boolean {
-            return index > 0
-        }
-
-        override fun previous(): V {
-            if (index == 0) {
-                throw NoSuchElementException()
-            }
-            index--
-            return this@LayeredStack[index]
-        }
-
-        override fun nextIndex(): Int {
-            return Math.min(index, this@LayeredStack.size - 1)
-        }
-
-        override fun previousIndex(): Int {
-            return index - 1
+    fun asSequence() = sequence {
+        for (i in 0 until this@LayeredStack.size) {
+            yield(this@LayeredStack[i])
         }
     }
 }
