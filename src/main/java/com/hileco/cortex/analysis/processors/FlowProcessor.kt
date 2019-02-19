@@ -90,12 +90,19 @@ class FlowProcessor : Processor {
                     graph.edgeMapping.add(it, flow)
                     graphEdge.map(flow)
                 }
+        val lastBlock = graphBlocks.lastOrNull()
+        if (lastBlock != null && lastBlock.graphNodes.asSequence().none { it.instruction::class.java in PROGRAM_ENDS }) {
+            val lastNode = lastBlock.graphNodes.last()
+            val flow = Flow(PROGRAM_END, lastNode.line, null)
+            graph.edgeMapping.add(lastNode, flow)
+            graphEdge.map(flow)
+        }
 
         // map PROGRAM_FLOW
         graphBlocks.forEachIndexed { indexA, graphBlockA ->
-            var limit = graphBlocks.size
+            var limit = graphBlocks.size - 1
             graphBlocks.forEachIndexed { indexB, graphBlockB ->
-                if (indexB in indexA..limit) {
+                if (indexB in indexA .. limit) {
                     val guaranteedEnd = graphBlockB.graphNodes.firstOrNull { it.instruction::class.java in GUARANTEED_ENDS }
                     if (guaranteedEnd != null) {
                         val flow = Flow(PROGRAM_FLOW, graphBlockA.graphNodes.first().line, guaranteedEnd.line)

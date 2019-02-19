@@ -9,6 +9,7 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.attack.Attacker.Companion.CONSTRAINT_CALL_ADDRESS
 import com.hileco.cortex.analysis.attack.Attacker.Companion.TARGET_IS_CALL
+import com.hileco.cortex.analysis.attack.Attacker.Companion.TARGET_IS_HALT_WINNER
 import com.hileco.cortex.constraints.Solution
 import com.hileco.cortex.constraints.expressions.Expression.Reference
 import com.hileco.cortex.constraints.expressions.Expression.Value
@@ -23,7 +24,7 @@ import org.junit.runners.MethodSorters
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class AttackerTest {
     private fun attackBarrier(barrierProgram: BarrierProgram,
-                              targetPredicate: (Instruction) -> Boolean = Attacker.TARGET_IS_HALT_WINNER,
+                              targetPredicate: (Instruction) -> Boolean = TARGET_IS_HALT_WINNER,
                               stackConstraints: List<StackConstraint> = listOf()): Solution {
         val graph = GraphBuilder.OPTIMIZED_GRAPH_BUILDER.build(barrierProgram.instructions)
         val attacker = Attacker(targetPredicate, stackConstraints)

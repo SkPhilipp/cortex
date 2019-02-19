@@ -124,7 +124,6 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                         equals(divide(push(2), load(CALL_DATA, push(1))), push(12345))
                     }, thenBody = {
                         call(push(0), push(0), push(0), push(0), push(1), load(CALL_DATA, push(2)))
-                        halt(WINNER)
                     })
                     build()
                 })
