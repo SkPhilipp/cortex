@@ -40,7 +40,7 @@ class VisualGraph {
             if (source != null) {
                 val sourceVizNode = vizNodeMapping[source]!!
                 flows.forEach { flow ->
-                    if (flow.target != null) {
+                    if (flow.target != null && flow.type.isJumping) {
                         val vizLinkSources = nodeMapping.computeIfAbsent(sourceVizNode) { ArrayList() }
                         val targetVizNode = vizNodeMapping[flow.target]!!
                         if (sourceVizNode != targetVizNode) {
