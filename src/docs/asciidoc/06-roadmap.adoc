@@ -14,6 +14,7 @@
 * Layered data structures should be able to be marked as deleted, removing the parent's child reference, merging when only a single child remains
 * Layered data structures on initialization with layer-empty parents should reference the first non-layer-empty parent of the given parent
 * Layered data structures should be lock-free as much as possible and marked as non-threadsafe
+* Layered data structures should not work recursively as to avoid stack overflows in worst case scenarios
 
 ==== Instructions
 
