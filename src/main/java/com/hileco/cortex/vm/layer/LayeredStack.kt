@@ -4,9 +4,28 @@ import java.math.BigInteger
 import java.util.*
 import kotlin.collections.HashMap
 
-class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
-    private var size: Int = parent?.size ?: 0
-    private val layer: HashMap<Int, V> = HashMap()
+class LayeredStack<V> {
+    private var parent: LayeredStack<V>?
+    private var size: Int
+    private var layer: HashMap<Int, V>
+
+    private constructor(parent: LayeredStack<V>?, size: Int, layer: HashMap<Int, V>) {
+        this.parent = parent
+        this.size = size
+        this.layer = layer
+    }
+
+    private constructor(parent: LayeredStack<V>?) {
+        this.parent = parent
+        size = parent?.size ?: 0
+        layer = HashMap()
+    }
+
+    constructor() {
+        parent = null
+        size = parent?.size ?: 0
+        layer = HashMap()
+    }
 
     @Synchronized
     fun push(value: V) {
@@ -28,11 +47,20 @@ class LayeredStack<V>(private val parent: LayeredStack<V>? = null) {
     }
 
     @Synchronized
+    fun branch(): LayeredStack<V> {
+        val newParent = LayeredStack(parent, size, layer)
+        parent = newParent
+        layer = HashMap()
+        return LayeredStack(newParent)
+    }
+
+    @Synchronized
     operator fun get(index: Int): V {
-        return layer[index] ?: if (parent == null) {
+        val currentParent = parent
+        return layer[index] ?: if (currentParent == null) {
             throw IndexOutOfBoundsException("size ${this.size} <= index $index")
         } else {
-            parent[index]
+            currentParent[index]
         }
     }
 

@@ -8,9 +8,9 @@ class LayeredStackTest {
     fun testInheritance() {
         val rootStack = LayeredStack<Int>()
         rootStack.push(1)
-        val stackA = LayeredStack(rootStack)
+        val stackA = rootStack.branch()
         stackA.push(2)
-        val stackB = LayeredStack(rootStack)
+        val stackB = rootStack.branch()
         assertEquals(2, stackA.pop())
         assertEquals(1, stackA.pop())
         assertTrue(stackA.isEmpty())
@@ -91,7 +91,7 @@ class LayeredStackTest {
         stackA.push(500)
         val rootStack = LayeredStack<Int>()
         rootStack.push(100)
-        val stackB = LayeredStack(rootStack)
+        val stackB = rootStack.branch()
         stackB.push(500)
         assertEquals(stackA, stackB)
     }
