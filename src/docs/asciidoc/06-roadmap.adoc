@@ -15,6 +15,9 @@
 * Layered data structures on initialization with layer-empty parents should reference the first non-layer-empty parent of the given parent
 * Layered data structures should be lock-free as much as possible and marked as non-threadsafe
 * Layered data structures should not work recursively as to avoid stack overflows in worst case scenarios
+* Layered data structures should have a shared configuration which specifies minimums required to be allowed to branch
+  - For example, a layer should likely not be introduced when the layer only contains one element, when this occurs it would be more beneficial to
+    copy such an existing layer and reference the same parent as the existing layer.
 
 ==== Instructions
 
