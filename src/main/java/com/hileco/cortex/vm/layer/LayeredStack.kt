@@ -1,5 +1,6 @@
 package com.hileco.cortex.vm.layer
 
+import java.lang.ref.WeakReference
 import java.math.BigInteger
 import java.util.*
 import kotlin.collections.HashMap
@@ -8,23 +9,27 @@ class LayeredStack<V> {
     private var parent: LayeredStack<V>?
     private var size: Int
     private var layer: HashMap<Int, V>
+    private val children: MutableList<WeakReference<LayeredStack<V>>>
 
-    private constructor(parent: LayeredStack<V>?, size: Int, layer: HashMap<Int, V>) {
-        this.parent = parent
+    private constructor(parent: LayeredStack<V>?,
+                        size: Int = parent?.size ?: 0,
+                        layer: HashMap<Int, V> = HashMap()) {
+        var chosenParent = parent
+        while (chosenParent != null && chosenParent.layer.size == 0) {
+            chosenParent = chosenParent.parent
+        }
+        this.parent = chosenParent
+        chosenParent?.children?.add(WeakReference(this))
         this.size = size
         this.layer = layer
-    }
-
-    private constructor(parent: LayeredStack<V>?) {
-        this.parent = parent
-        size = parent?.size ?: 0
-        layer = HashMap()
+        children = arrayListOf()
     }
 
     constructor() {
         parent = null
         size = parent?.size ?: 0
         layer = HashMap()
+        children = arrayListOf()
     }
 
     @Synchronized
@@ -48,20 +53,47 @@ class LayeredStack<V> {
 
     @Synchronized
     fun branch(): LayeredStack<V> {
-        val newParent = LayeredStack(parent, size, layer)
+        val currentParent = parent
+        currentParent?.children?.removeIf { it.get() === this }
+        val newParent = LayeredStack(currentParent, size, layer)
+        newParent.children.add(WeakReference(this))
         parent = newParent
         layer = HashMap()
         return LayeredStack(newParent)
     }
 
     @Synchronized
-    operator fun get(index: Int): V {
+    fun close() {
         val currentParent = parent
-        return layer[index] ?: if (currentParent == null) {
-            throw IndexOutOfBoundsException("size ${this.size} <= index $index")
-        } else {
-            currentParent[index]
+        if (currentParent != null) {
+            currentParent.children.removeIf { it.get() === this }
+            currentParent.children.singleOrNull()?.get()?.mergeWithParent()
         }
+    }
+
+    @Synchronized
+    private fun mergeWithParent() {
+        val currentParent = parent
+        if (currentParent != null) {
+            layer.forEach { (key, value) ->
+                currentParent.layer[key] = value
+            }
+            layer = currentParent.layer
+            parent = currentParent.parent
+        }
+    }
+
+    @Synchronized
+    operator fun get(index: Int): V {
+        var chosen: LayeredStack<V>? = this
+        while (chosen != null && chosen.size > index) {
+            val value = chosen.layer[index]
+            if (value != null) {
+                return value
+            }
+            chosen = chosen.parent
+        }
+        throw IndexOutOfBoundsException("size ${this.size} <= index $index")
     }
 
     @Synchronized
