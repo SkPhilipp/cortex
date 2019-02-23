@@ -57,7 +57,7 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                             throw ProgramException(INSTRUCTION_LIMIT_REACHED_ON_VIRTUAL_MACHINE)
                         }
                     }
-                    if (programContext.instructionPosition < programContext.program.instructions.size) {
+                    if (programContext.instructionPosition == programContext.program.instructions.size) {
                         virtualMachine.exited = true
                         completedVirtualMachines.offer(virtualMachine)
                     }
