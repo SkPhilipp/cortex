@@ -51,6 +51,9 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
 
     @Synchronized
     override fun branch(): LayeredStack<V> {
+        if (layer.isEmpty()) {
+            return LayeredStack(parent, size, HashMap())
+        }
         val currentParent = parent
         currentParent?.children?.removeIf { it.get() === this }
         val newParent = LayeredStack(currentParent, size, layer)

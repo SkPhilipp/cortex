@@ -4,26 +4,29 @@ import org.junit.Assert
 import org.junit.Test
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.pow
 
 class LayeredStackFuzzTest {
 
     private val random = Random()
 
     /**
-     * Constructs a list of 2^[size] distinct stacks, with an inheritance depth of size [size] - 1.
+     * Constructs a list of stacks containing distinct elements, with an inheritance depth of size [size].
      */
     private fun construct(size: Int,
+                          branches: Int = 2,
                           stack: LayeredStack<Int> = LayeredStack(),
                           idReference: AtomicInteger = AtomicInteger(0),
                           appender: (part: LayeredStack<Int>, id: Int) -> Unit = { part, id -> part.push(id) }): Set<LayeredStack<Int>> {
+        appender(stack, idReference.incrementAndGet())
         return if (size > 0) {
-            val branch = stack.branch()
-            appender(stack, idReference.incrementAndGet())
-            appender(branch, idReference.incrementAndGet())
-            val setA = construct(size - 1, stack, idReference, appender)
-            val setB = construct(size - 1, branch, idReference, appender)
-            setA.union(setB)
+            val setA = construct(size - 1, branches, stack, idReference, appender)
+            var resultSet = setA
+            for (i in 0 until branches) {
+                val branch = stack.branch()
+                val setB = construct(size - 1, branches, branch, idReference, appender)
+                resultSet = resultSet.union(setB)
+            }
+            resultSet
         } else {
             setOf(stack)
         }
@@ -33,10 +36,9 @@ class LayeredStackFuzzTest {
     fun testConstruct() {
         val stacks = construct(5)
         stacks.forEach { stack ->
-            Assert.assertEquals("Constructed stacks should be of the given size.", 5, stack.size())
-            Assert.assertEquals("Constructed stacks should consist only of distinct elements", 5, stack.asSequence().distinct().count())
+            Assert.assertTrue("Constructed stacks should be of at least the given size.", 5 <= stack.size())
+            Assert.assertEquals("Constructed stacks should consist only of distinct elements", stack.asSequence().count(), stack.asSequence().distinct().count())
         }
-        Assert.assertEquals(2.0.pow(5).toInt(), stacks.size)
     }
 
     @Test
