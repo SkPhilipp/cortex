@@ -1,6 +1,6 @@
 package com.hileco.cortex.vm.layer
 
-class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
+class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) : Layered<LayeredMap<K, V>> {
     private var layer: MutableMap<K, V> = HashMap()
     private var deletions: MutableSet<K> = HashSet()
 
@@ -83,5 +83,16 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) {
 
     override fun hashCode(): Int {
         return keySet().hashCode()
+    }
+
+    override fun branch(): LayeredMap<K, V> {
+        val clone = LayeredMap<K, V>(parent)
+        clone.layer = layer.toMutableMap()
+        clone.deletions = deletions.toMutableSet()
+        return clone
+    }
+
+    override fun close() {
+
     }
 }

@@ -2,7 +2,7 @@ package com.hileco.cortex.vm.layer
 
 import java.util.*
 
-class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) {
+class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : Layered<LayeredBytes> {
     val bytes: ByteArray by lazy { ByteArray(size) }
 
     fun read(offset: Int, length: Int): ByteArray {
@@ -27,6 +27,15 @@ class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) {
 
     override fun hashCode(): Int {
         return Arrays.hashCode(bytes)
+    }
+
+    override fun branch(): LayeredBytes {
+        val clone = LayeredBytes(size)
+        clone.write(0, bytes)
+        return clone
+    }
+
+    override fun close() {
     }
 
     companion object {

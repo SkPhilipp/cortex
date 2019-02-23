@@ -36,7 +36,7 @@ class LayeredStackFuzzTest {
             Assert.assertEquals("Constructed stacks should be of the given size.", 5, stack.size())
             Assert.assertEquals("Constructed stacks should consist only of distinct elements", 5, stack.asSequence().distinct().count())
         }
-        Assert.assertEquals(2.0.pow(5), stacks.size)
+        Assert.assertEquals(2.0.pow(5).toInt(), stacks.size)
     }
 
     @Test

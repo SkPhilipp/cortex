@@ -2,10 +2,8 @@ package com.hileco.cortex.vm.layer
 
 import java.lang.ref.WeakReference
 import java.math.BigInteger
-import java.util.*
-import kotlin.collections.HashMap
 
-class LayeredStack<V> {
+class LayeredStack<V> : Layered<LayeredStack<V>> {
     private var parent: LayeredStack<V>?
     private var size: Int
     private var layer: HashMap<Int, V>
@@ -52,7 +50,7 @@ class LayeredStack<V> {
     }
 
     @Synchronized
-    fun branch(): LayeredStack<V> {
+    override fun branch(): LayeredStack<V> {
         val currentParent = parent
         currentParent?.children?.removeIf { it.get() === this }
         val newParent = LayeredStack(currentParent, size, layer)
@@ -63,7 +61,7 @@ class LayeredStack<V> {
     }
 
     @Synchronized
-    fun close() {
+    override fun close() {
         val currentParent = parent
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this }
@@ -161,7 +159,7 @@ class LayeredStack<V> {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(layer, parent)
+        return size.hashCode()
     }
 
     fun asSequence() = sequence {
