@@ -1,14 +1,17 @@
 package com.hileco.cortex.instructions.math
 
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
 import com.hileco.cortex.instructions.StackParameter
-import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
+import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.math.BigInteger
 
 abstract class MathInstruction : Instruction() {
@@ -21,17 +24,28 @@ abstract class MathInstruction : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(LEFT, RIGHT)
 
-    abstract fun innerExecute(process: VirtualMachine, program: ProgramContext, left: BigInteger, right: BigInteger): BigInteger
+    abstract fun innerExecute(left: BigInteger, right: BigInteger): BigInteger
 
-    @Throws(ProgramException::class)
-    override fun execute(process: VirtualMachine, program: ProgramContext) {
-        if (program.stack.size() < 2) {
-            throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
+    abstract fun innerExecute(left: Expression, right: Expression): Expression
+
+    override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
+        if (programContext.stack.size() < 2) {
+            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
         }
-        val left = BigInteger(program.stack.pop())
-        val right = BigInteger(program.stack.pop())
-        val result = innerExecute(process, program, left, right)
-        program.stack.push(result.toByteArray())
+        val left = BigInteger(programContext.stack.pop())
+        val right = BigInteger(programContext.stack.pop())
+        val result = innerExecute(left, right)
+        programContext.stack.push(result.toByteArray())
+    }
+
+    override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        if (programContext.stack.size() < 2) {
+            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+        }
+        val left = programContext.stack.pop()
+        val right = programContext.stack.pop()
+        val result = innerExecute(left, right)
+        programContext.stack.push(result)
     }
 
     companion object {

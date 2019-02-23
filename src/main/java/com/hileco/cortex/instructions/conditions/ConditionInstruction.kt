@@ -1,14 +1,17 @@
 package com.hileco.cortex.instructions.conditions
 
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
 import com.hileco.cortex.instructions.StackParameter
-import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
+import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 
 abstract class ConditionInstruction : Instruction() {
     override val stackAdds: List<Int>
@@ -22,15 +25,26 @@ abstract class ConditionInstruction : Instruction() {
 
     abstract fun innerExecute(left: ByteArray, right: ByteArray): Boolean
 
-    @Throws(ProgramException::class)
-    override fun execute(process: VirtualMachine, program: ProgramContext) {
-        if (program.stack.size() < 2) {
-            throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
+    abstract fun innerExecute(left: Expression, right: Expression): Expression
+
+    override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
+        if (programContext.stack.size() < 2) {
+            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
         }
-        val left = program.stack.pop()
-        val right = program.stack.pop()
-        val equals = innerExecute(left, right)
-        program.stack.push(if (equals) TRUE.clone() else FALSE.clone())
+        val left = programContext.stack.pop()
+        val right = programContext.stack.pop()
+        val result = innerExecute(left, right)
+        programContext.stack.push(if (result) TRUE.clone() else FALSE.clone())
+    }
+
+    override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        if (programContext.stack.size() < 2) {
+            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+        }
+        val left = programContext.stack.pop()
+        val right = programContext.stack.pop()
+        val result = innerExecute(left, right)
+        programContext.stack.push(result)
     }
 
     companion object {

@@ -1,11 +1,14 @@
 package com.hileco.cortex.instructions.math
 
-import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.constraints.expressions.Expression
 import java.math.BigInteger
 
 class DIVIDE : MathInstruction() {
-    override fun innerExecute(process: VirtualMachine, program: ProgramContext, left: BigInteger, right: BigInteger): BigInteger {
+    override fun innerExecute(left: BigInteger, right: BigInteger): BigInteger {
         return left.divide(right)
+    }
+
+    override fun innerExecute(left: Expression, right: Expression): Expression {
+        return Expression.Divide(left, right)
     }
 }

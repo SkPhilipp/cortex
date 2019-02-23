@@ -1,12 +1,15 @@
 package com.hileco.cortex.instructions.conditions
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.StackParameter
-import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
+import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 
 class IS_ZERO : Instruction() {
     override val stackAdds: List<Int>
@@ -18,14 +21,23 @@ class IS_ZERO : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(INPUT)
 
-    override fun execute(process: VirtualMachine, program: ProgramContext) {
-        if (program.stack.size() < 1) {
-            throw ProgramException(program, ProgramException.Reason.STACK_TOO_FEW_ELEMENTS)
+    override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
+        if (programContext.stack.size() < 1) {
+            throw ProgramException(ProgramException.Reason.STACK_TOO_FEW_ELEMENTS)
         }
-        val top = program.stack.pop()
+        val top = programContext.stack.pop()
         val isZero = !top.any { byte -> byte > 0 }
         val resultReference = if (isZero) ConditionInstruction.TRUE else ConditionInstruction.FALSE
-        program.stack.push(resultReference.clone())
+        programContext.stack.push(resultReference.clone())
+    }
+
+    override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        if (programContext.stack.size() < 1) {
+            throw ProgramException(ProgramException.Reason.STACK_TOO_FEW_ELEMENTS)
+        }
+        val element = programContext.stack.pop()
+        val result = Expression.IsZero(element)
+        programContext.stack.push(result)
     }
 
     companion object {

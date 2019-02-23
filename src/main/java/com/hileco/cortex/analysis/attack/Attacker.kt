@@ -7,7 +7,7 @@ import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.ImpossibleExpressionException
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.instructions.ProgramException
+import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.calls.CALL
 import com.hileco.cortex.instructions.debug.HALT
 import java.util.*
@@ -36,7 +36,7 @@ class Attacker(private val targetPredicate: (Instruction) -> Boolean,
 
     companion object {
         val TARGET_IS_HALT_WINNER: (Instruction) -> Boolean = {
-            it is HALT && it.reason == ProgramException.Reason.WINNER
+            it is HALT && it.reason == WINNER
         }
         val TARGET_IS_CALL: (Instruction) -> Boolean = {
             it is CALL

@@ -12,7 +12,6 @@ class InstructionDeserializer : StdScalarDeserializer<Instruction>(Instruction::
     private val stringDeserializer: StringDeserializer = StringDeserializer()
     private val instructionParser: InstructionParser = InstructionParser()
 
-    @Throws(IOException::class)
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Instruction? {
         val string = stringDeserializer.deserialize(p, ctxt) ?: return null
         try {

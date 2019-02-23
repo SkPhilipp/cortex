@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer
 import com.hileco.cortex.vm.layer.LayeredStack
 
-import java.io.IOException
-
 class LayeredStackSerializer : StdScalarSerializer<LayeredStack<*>>(LayeredStack::class.java) {
-    @Throws(IOException::class)
     override fun serialize(layeredStack: LayeredStack<*>, gen: JsonGenerator, provider: SerializerProvider) {
         gen.writeStartArray()
         layeredStack.asSequence().forEach { gen.writeObject(it) }

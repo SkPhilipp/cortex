@@ -1,6 +1,7 @@
 package com.hileco.cortex.instructions.stack
 
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED
@@ -9,6 +10,8 @@ import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.math.BigInteger
 
 data class PUSH(val bytes: ByteArray) : Instruction() {
@@ -24,11 +27,17 @@ data class PUSH(val bytes: ByteArray) : Instruction() {
     val value: Long
         get() = BigInteger(bytes).toLong()
 
-    @Throws(ProgramException::class)
-    override fun execute(process: VirtualMachine, program: ProgramContext) {
-        program.stack.push(bytes)
-        if (program.stack.size() > STACK_LIMIT) {
-            throw ProgramException(program, STACK_LIMIT_REACHED)
+    override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
+        programContext.stack.push(bytes)
+        if (programContext.stack.size() > STACK_LIMIT) {
+            throw ProgramException(STACK_LIMIT_REACHED)
+        }
+    }
+
+    override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        programContext.stack.push(Expression.Value(BigInteger(bytes).toLong()))
+        if (programContext.stack.size() > STACK_LIMIT) {
+            throw ProgramException(STACK_LIMIT_REACHED)
         }
     }
 

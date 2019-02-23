@@ -30,7 +30,6 @@ import java.io.IOException
 import java.math.BigInteger
 
 class InstructionParser {
-    @Throws(IOException::class)
     fun parse(string: String): Instruction {
         val split = string.replace("(.*?)\\s*--.*".toRegex(), "$1")
                 .split("\\s+".toRegex())

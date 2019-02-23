@@ -94,7 +94,7 @@ class ProgramController {
                     "stack" to programContext.stack,
                     "milliseconds" to System.currentTimeMillis() - start)
         } catch (e: ProgramException) {
-            mapOf("result" to "Halted at instruction position ${e.programContext.instructionPosition}: ${e.reason}",
+            mapOf("result" to "Halted at instruction position ${programContext.instructionPosition}: ${e.reason}",
                     "stack" to programContext.stack,
                     "milliseconds" to System.currentTimeMillis() - start)
         }

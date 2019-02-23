@@ -11,6 +11,8 @@ import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 
 data class DUPLICATE(val topOffset: Int) : Instruction() {
     private val input: StackParameter = StackParameter("input", topOffset)
@@ -24,14 +26,23 @@ data class DUPLICATE(val topOffset: Int) : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(input)
 
-    @Throws(ProgramException::class)
-    override fun execute(process: VirtualMachine, program: ProgramContext) {
-        if (program.stack.size() <= topOffset) {
-            throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
+    override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
+        if (programContext.stack.size() <= topOffset) {
+            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
         }
-        program.stack.duplicate(topOffset)
-        if (program.stack.size() > STACK_LIMIT) {
-            throw ProgramException(program, STACK_LIMIT_REACHED)
+        programContext.stack.duplicate(topOffset)
+        if (programContext.stack.size() > STACK_LIMIT) {
+            throw ProgramException(STACK_LIMIT_REACHED)
+        }
+    }
+
+    override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        if (programContext.stack.size() <= topOffset) {
+            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+        }
+        programContext.stack.duplicate(topOffset)
+        if (programContext.stack.size() > STACK_LIMIT) {
+            throw ProgramException(STACK_LIMIT_REACHED)
         }
     }
 

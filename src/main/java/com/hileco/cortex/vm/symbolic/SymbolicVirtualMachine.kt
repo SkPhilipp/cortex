@@ -1,17 +1,16 @@
 package com.hileco.cortex.vm.symbolic
 
-import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.layer.Layered
 import com.hileco.cortex.vm.layer.LayeredMap
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
 class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
-    val programs: LayeredStack<ProgramContext>
+    val programs: LayeredStack<SymbolicProgramContext>
     val atlas: LayeredMap<BigInteger, SymbolicProgram>
     var instructionsExecuted: Int
 
-    constructor(vararg programContexts: ProgramContext) {
+    constructor(vararg programContexts: SymbolicProgramContext) {
         programs = LayeredStack()
         atlas = LayeredMap()
         instructionsExecuted = 0
@@ -20,7 +19,7 @@ class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
         }
     }
 
-    private constructor(programs: LayeredStack<ProgramContext>,
+    private constructor(programs: LayeredStack<SymbolicProgramContext>,
                         atlas: LayeredMap<BigInteger, SymbolicProgram>,
                         instructionsExecuted: Int) {
         this.programs = programs
@@ -29,7 +28,7 @@ class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
     }
 
     override fun branch(): SymbolicVirtualMachine {
-        val branchPrograms = LayeredStack<ProgramContext>()
+        val branchPrograms = LayeredStack<SymbolicProgramContext>()
         programs.asSequence()
                 .map { programContext -> programContext.branch() }
                 .forEach { branchedProgramContext -> branchPrograms.push(branchedProgramContext) }

@@ -4,10 +4,12 @@ import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
 import com.hileco.cortex.instructions.StackParameter
-import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
+import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -21,19 +23,21 @@ data class HASH(private val hashMethod: String) : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(INPUT)
 
-    @Throws(ProgramException::class)
-    override fun execute(process: VirtualMachine, program: ProgramContext) {
+    override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         try {
             val messageDigest = MessageDigest.getInstance(hashMethod)
-            if (program.stack.size() < 1) {
-                throw ProgramException(program, STACK_TOO_FEW_ELEMENTS)
+            if (programContext.stack.size() < 1) {
+                throw ProgramException(STACK_TOO_FEW_ELEMENTS)
             }
-            messageDigest.update(program.stack.pop())
-            program.stack.push(messageDigest.digest())
+            messageDigest.update(programContext.stack.pop())
+            programContext.stack.push(messageDigest.digest())
         } catch (e: NoSuchAlgorithmException) {
             throw IllegalArgumentException("Unknown hash method: $hashMethod", e)
         }
+    }
 
+    override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        throw UnsupportedOperationException()
     }
 
     override fun toString(): String {

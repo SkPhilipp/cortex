@@ -13,7 +13,6 @@ import guru.nidi.graphviz.model.Link
 import guru.nidi.graphviz.model.Link.between
 import guru.nidi.graphviz.model.Node
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.util.*
 
 class VisualGraph {
@@ -60,7 +59,6 @@ class VisualGraph {
         }
     }
 
-    @Throws(IOException::class)
     fun toBytes(): ByteArray {
         val graphViz = Graphviz.fromGraph(vizGraph)
         val outputStream = ByteArrayOutputStream()

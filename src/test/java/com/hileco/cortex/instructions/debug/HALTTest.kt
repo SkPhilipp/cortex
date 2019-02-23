@@ -11,9 +11,10 @@ class HALTTest : InstructionTest() {
         val instructions = listOf(
                 HALT(ProgramException.Reason.STACK_LIMIT_REACHED))
         Documentation.of("instructions/halt")
-                .headingParagraph("HALT").paragraph("The HALT operation cancels execution of the entire process, and provides a reason for doing so. It is " +
+                .headingParagraph("HALT").paragraph("The HALT operation cancels execution of all programs on the virtual machine, and provides a reason for doing so. It is " +
                         "generally only used within optimization processed to replace instructions which would otherwise " +
                         "cause the same errors during runtime.")
+
                 .paragraph("Example program:").source(instructions)
         this.run(instructions)
     }
