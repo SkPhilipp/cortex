@@ -63,7 +63,7 @@ class CALL : Instruction() {
         if (recipientAddress !is Expression.Value) {
             throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
         }
-        val recipient = virtualMachine.atlas[BigInteger.valueOf(recipientAddress.constant)] ?: throw ProgramException(CALL_RECIPIENT_MISSING)
+        val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()] ?: throw ProgramException(CALL_RECIPIENT_MISSING)
         val sourceAddress = programContext.program.address
         recipient.transfers.push(Expression.Value(sourceAddress.toLong()) to valueTransferred)
         val newContext = SymbolicProgramContext(recipient)

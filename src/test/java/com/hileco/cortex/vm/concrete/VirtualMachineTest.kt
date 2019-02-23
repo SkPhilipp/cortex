@@ -23,12 +23,12 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3000))
-        Assert.assertEquals(BigInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3000))
+        Assert.assertEquals(BigInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
+        Assert.assertEquals(BigInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
         Assert.assertEquals(programContext.stack.size(), 5)
-        Assert.assertEquals(BigInteger(programContext.stack.peek()), BigInteger.valueOf(1))
+        Assert.assertEquals(BigInteger(programContext.stack.peek()), 1.toBigInteger())
     }
 
     @Test
@@ -47,14 +47,14 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3999))
-        Assert.assertEquals(BigInteger(programContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(999))
-        Assert.assertEquals(BigInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3999))
-        Assert.assertEquals(BigInteger(program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(999))
+        Assert.assertEquals(BigInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
+        Assert.assertEquals(BigInteger(programContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
+        Assert.assertEquals(BigInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
+        Assert.assertEquals(BigInteger(program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
         Assert.assertEquals(programContext.stack.size(), 4)
-        Assert.assertEquals(BigInteger(programContext.stack.peek()), BigInteger.valueOf(4))
+        Assert.assertEquals(BigInteger(programContext.stack.peek()), 4.toBigInteger())
     }
 
     @Test
@@ -78,12 +78,12 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3000))
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3000))
+        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
         Assert.assertEquals(branchProgramContext.stack.size(), 5)
-        Assert.assertEquals(BigInteger(branchProgramContext.stack.peek()), BigInteger.valueOf(1))
+        Assert.assertEquals(BigInteger(branchProgramContext.stack.peek()), 1.toBigInteger())
 
         try {
             branchProgramContext.instructionPosition++
@@ -91,14 +91,14 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3999))
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(999))
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(2000))
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(3999))
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), BigInteger.valueOf(999))
+        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
+        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
         Assert.assertEquals(branchProgramContext.stack.size(), 4)
-        Assert.assertEquals(BigInteger(branchProgramContext.stack.peek()), BigInteger.valueOf(4))
+        Assert.assertEquals(BigInteger(branchProgramContext.stack.peek()), 4.toBigInteger())
     }
 
     companion object {

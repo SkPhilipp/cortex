@@ -28,6 +28,6 @@ class IoInstructionsTest : InstructionTest() {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(10))
+        Assert.assertEquals(BigInteger(stack.pop()), 10.toBigInteger())
     }
 }

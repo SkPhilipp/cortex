@@ -6,9 +6,9 @@ import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Assert
 import org.junit.Test
@@ -54,8 +54,8 @@ class ProgramBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals(BigInteger.valueOf(123 * 123), BigInteger(programContext.stack.pop()))
-        Assert.assertEquals(BigInteger.valueOf(123 * 123), BigInteger(programContext.stack.pop()))
+        Assert.assertEquals((123 * 123).toBigInteger(), BigInteger(programContext.stack.pop()))
+        Assert.assertEquals((123 * 123).toBigInteger(), BigInteger(programContext.stack.pop()))
         Assert.assertTrue(programContext.stack.isEmpty())
     }
 
@@ -82,7 +82,7 @@ class ProgramBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals(BigInteger.valueOf(123 * 123 * 123), BigInteger(programContext.stack.pop()))
+        Assert.assertEquals((123 * 123 * 123).toBigInteger(), BigInteger(programContext.stack.pop()))
         Assert.assertTrue(programContext.stack.isEmpty())
     }
 
@@ -110,7 +110,7 @@ class ProgramBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals(BigInteger.valueOf(123 * 123 * 123), BigInteger(programContext.stack.pop()))
+        Assert.assertEquals((123 * 123 * 123).toBigInteger(), BigInteger(programContext.stack.pop()))
         Assert.assertTrue(programContext.stack.isEmpty())
     }
 }

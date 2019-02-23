@@ -220,7 +220,7 @@ class ProgramBuilder {
             if (address == null) {
                 throw IllegalStateException("No label for name $label")
             } else {
-                PUSH(BigInteger.valueOf(address.toLong()).toByteArray())
+                PUSH(address.toBigInteger().toByteArray())
             }
         }
         return handle

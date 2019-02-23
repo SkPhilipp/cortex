@@ -17,7 +17,6 @@ import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Test
-import java.math.BigInteger
 
 class BarrierProgramTest {
     private fun documentBarrier(index: Int, barrierProgram: BarrierProgram) {
@@ -58,7 +57,7 @@ class BarrierProgramTest {
     fun testBarrier01() {
         val program = Program(BARRIER_01.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = BigInteger.valueOf(24690).toByteArray()
+        val callDataOne = 24690.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -69,9 +68,9 @@ class BarrierProgramTest {
     fun testBarrier02() {
         val program = Program(BARRIER_02.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = BigInteger.valueOf(24690).toByteArray()
+        val callDataOne = 24690.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
-        val callDataTwo = BigInteger.valueOf(512).toByteArray()
+        val callDataTwo = 512.toBigInteger().toByteArray()
         programContext.callData.write(2 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataTwo)
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -82,7 +81,7 @@ class BarrierProgramTest {
     fun testBarrier03() {
         val program = Program(BARRIER_03.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = BigInteger.valueOf(12347).toByteArray()
+        val callDataOne = 12347.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -93,7 +92,7 @@ class BarrierProgramTest {
     fun testBarrier04() {
         val program = Program(BARRIER_04.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = BigInteger.valueOf(6).toByteArray()
+        val callDataOne = 6.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -104,7 +103,7 @@ class BarrierProgramTest {
     fun testBarrier05() {
         val program = Program(BARRIER_05.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = BigInteger.valueOf(3).toByteArray()
+        val callDataOne = 3.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -115,12 +114,12 @@ class BarrierProgramTest {
     fun testBarrier06() {
         val program = Program(BARRIER_06.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = BigInteger.valueOf(24690).toByteArray()
+        val callDataOne = 24690.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
-        val callDataTwo = BigInteger.valueOf(1234).toByteArray()
+        val callDataTwo = 1234.toBigInteger().toByteArray()
         programContext.callData.write(2 * LOAD.SIZE + (LOAD.SIZE - callDataTwo.size), callDataTwo)
         val virtualMachine = VirtualMachine(programContext)
-        virtualMachine.atlas[BigInteger.valueOf(1234)] = Program(listOf(HALT(WINNER)))
+        virtualMachine.atlas[1234.toBigInteger()] = Program(listOf(HALT(WINNER)))
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
     }

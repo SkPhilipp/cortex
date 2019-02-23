@@ -44,7 +44,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
         }
         val addressExpression = programContext.stack.pop() as? Expression.Value
                 ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
-        val address = BigInteger.valueOf(addressExpression.constant)
+        val address = addressExpression.constant.toBigInteger()
         val storage: LayeredMap<BigInteger, Expression> = when (programStoreZone) {
             ProgramStoreZone.MEMORY -> programContext.memory
             ProgramStoreZone.DISK -> programContext.program.storage

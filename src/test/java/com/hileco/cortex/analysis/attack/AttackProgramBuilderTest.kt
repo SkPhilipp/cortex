@@ -13,7 +13,6 @@ import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import java.math.BigInteger
 
 class AttackProgramBuilderTest {
     private lateinit var solution: Solution
@@ -34,7 +33,7 @@ class AttackProgramBuilderTest {
         val attackingProgramContext = ProgramContext(attackingProgram)
         val virtualMachine = VirtualMachine(attackingProgramContext)
         val solveableProgram = Program(BARRIER_01.instructions)
-        virtualMachine.atlas[BigInteger.valueOf(SOLVEABLE_ADDRESS)] = solveableProgram
+        virtualMachine.atlas[SOLVEABLE_ADDRESS.toBigInteger()] = solveableProgram
         val programRunner = ProgramRunner(virtualMachine)
         try {
             programRunner.run()

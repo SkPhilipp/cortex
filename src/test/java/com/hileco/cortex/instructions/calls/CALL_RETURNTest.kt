@@ -40,7 +40,7 @@ class CALL_RETURNTest : InstructionTest() {
         val callerProgramContext = ProgramContext(callerProgram)
         val virtualMachine = VirtualMachine(callerProgramContext)
         val libraryProgram = Program(libraryInstructions)
-        virtualMachine.atlas[BigInteger.valueOf(LIBRARY_ADDRESS)] = libraryProgram
+        virtualMachine.atlas[LIBRARY_ADDRESS.toBigInteger()] = libraryProgram
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         Documentation.of("instructions/call-return")
@@ -51,7 +51,7 @@ class CALL_RETURNTest : InstructionTest() {
                 .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(callerProgramContext.stack)
         Assert.assertEquals(callerProgramContext.stack.size(), 1)
-        Assert.assertEquals(BigInteger(callerProgramContext.stack.pop()), BigInteger.valueOf(12345))
+        Assert.assertEquals(BigInteger(callerProgramContext.stack.pop()), 12345.toBigInteger())
     }
 
     companion object {

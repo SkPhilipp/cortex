@@ -31,11 +31,11 @@ class ProgramGeneratorContext(seed: Long) {
     }
 
     fun randomBetween(minimum: Int, maximum: Int): BigInteger {
-        return BigInteger.valueOf(randomIntBetween(minimum, maximum).toLong())
+        return randomIntBetween(minimum, maximum).toBigInteger()
     }
 
     fun random(): BigInteger {
-        return BigInteger.valueOf(this.random.nextLong())
+        return this.random.nextLong().toBigInteger()
     }
 
     fun randomIntBetween(minimum: Int, maximum: Int): Int {

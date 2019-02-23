@@ -32,6 +32,6 @@ class ADDTest : InstructionTest() {
                 PUSH(10),
                 ADD())
         val stack = this.run(instructions).stack
-        Assert.assertArrayEquals(BigInteger.valueOf(9).toByteArray(), stack.pop())
+        Assert.assertArrayEquals(9.toBigInteger().toByteArray(), stack.pop())
     }
 }

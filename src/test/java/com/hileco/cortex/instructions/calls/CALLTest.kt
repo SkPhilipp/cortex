@@ -38,7 +38,7 @@ class CALLTest : InstructionTest() {
         val callerProgramContext = ProgramContext(callerProgram)
         val virtualMachine = VirtualMachine(callerProgramContext)
         val libraryProgram = Program(libraryInstructions)
-        virtualMachine.atlas[BigInteger.valueOf(LIBRARY_ADDRESS)] = libraryProgram
+        virtualMachine.atlas[LIBRARY_ADDRESS.toBigInteger()] = libraryProgram
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         val stack = virtualMachine.programs.peek().stack
@@ -51,7 +51,7 @@ class CALLTest : InstructionTest() {
                 .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), BigInteger.valueOf(123))
+        Assert.assertEquals(BigInteger(stack.pop()), 123.toBigInteger())
     }
 
     companion object {

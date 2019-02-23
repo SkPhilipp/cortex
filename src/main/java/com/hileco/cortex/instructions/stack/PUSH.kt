@@ -16,7 +16,7 @@ import java.math.BigInteger
 
 data class PUSH(val bytes: ByteArray) : Instruction() {
 
-    constructor(value: Long) : this(BigInteger.valueOf(value).toByteArray())
+    constructor(value: Long) : this(value.toBigInteger().toByteArray())
 
     override val stackAdds: List<Int>
         get() = listOf(-1)
