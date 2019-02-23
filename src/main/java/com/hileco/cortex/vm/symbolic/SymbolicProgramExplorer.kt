@@ -1,15 +1,18 @@
 package com.hileco.cortex.vm.symbolic
 
+import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.*
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
+import com.hileco.cortex.vm.ProgramConstants.Companion.DEFAULT_BRANCH_LIMIT
 import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
 import java.util.concurrent.BlockingDeque
 import java.util.concurrent.LinkedBlockingDeque
 
-class SymbolicProgramRunner(virtualMachine: SymbolicVirtualMachine) {
+class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
+                              val branchLimit: Int = DEFAULT_BRANCH_LIMIT) {
 
     private val completedVirtualMachines: BlockingDeque<SymbolicVirtualMachine>
     private val queuedVirtualMachines: BlockingDeque<SymbolicVirtualMachine>
@@ -77,8 +80,8 @@ class SymbolicProgramRunner(virtualMachine: SymbolicVirtualMachine) {
         if (programContext.stack.size() < 2) {
             throw ProgramException(STACK_TOO_FEW_ELEMENTS)
         }
-        val condition = programContext.stack[programContext.stack.size() - 1 - JUMP_IF.CONDITION.position]
-        val address = programContext.stack[programContext.stack.size() - 1 - JUMP_IF.ADDRESS.position]
+        val address = programContext.stack.pop()
+        val condition = programContext.stack.pop()
         virtualMachine.path.push(SymbolicPathEntry(currentInstructionPosition, address, take, condition))
         if (take) {
             if (address !is Expression.Value) {
@@ -96,7 +99,13 @@ class SymbolicProgramRunner(virtualMachine: SymbolicVirtualMachine) {
         } else {
             programContext.instructionPosition++
         }
-        // TODO: check all SymbolicPathEntry condition x take
-        queuedVirtualMachines.offer(virtualMachine)
+        if(virtualMachine.path.asSequence().count() > branchLimit) {
+            throw ProgramException(BRANCH_LIMIT_REACHED_ON_SYMBOLIC_VIRTUAL_MACHINE)
+        }
+        val solver = Solver()
+        val solution = solver.solve(virtualMachine.condition())
+        if (solution.isSolvable) {
+            queuedVirtualMachines.offer(virtualMachine)
+        }
     }
 }

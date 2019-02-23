@@ -1,5 +1,6 @@
 package com.hileco.cortex.vm.symbolic
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.vm.layer.Layered
 import com.hileco.cortex.vm.layer.LayeredMap
@@ -32,6 +33,14 @@ class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
         this.atlas = atlas
         this.path = path
         this.instructionsExecuted = instructionsExecuted
+    }
+
+    fun condition(): Expression {
+        val expressions: MutableList<Expression> = arrayListOf()
+        path.asSequence()
+                .map { if (it.taken) it.condition else Expression.Not(it.condition) }
+                .forEach { expression -> expressions.add(expression) }
+        return Expression.And(expressions)
     }
 
     override fun branch(): SymbolicVirtualMachine {

@@ -17,3 +17,11 @@ Cortex will try to reach `HALT WINNER`, or `CALL` with a recipient address of `1
 include::{snippets}/Attacker.adoc[]
 
 include::{snippets}/AttackProgramBuilder.adoc[]
+
+=== Exploration
+
+Below is a demonstration of Cortex navigating through every possible path of the barrier programs using purely symbolic execution.
+
+Documented are also the solution to the first path encountered which ended in `HALT WINNER`.
+
+include::{snippets}/SymbolicProgramExplorer.adoc[]

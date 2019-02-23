@@ -8,15 +8,17 @@ import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import java.math.BigInteger
 
-data class BarrierProgram(val description: String, val pseudocode: String, val instructions: List<Instruction>) {
+data class BarrierProgram(val name: String, val description: String, val pseudocode: String, val instructions: List<Instruction>) {
     companion object {
-        val BARRIER_00 = BarrierProgram("An unconditional win.",
+        val BARRIER_00 = BarrierProgram("Barrier 00",
+                "An unconditional win.",
                 """HALT(WINNER)""",
                 with(ProgramBuilder()) {
                     halt(WINNER)
                     build()
                 })
-        val BARRIER_01 = BarrierProgram("Basic math on a single input.",
+        val BARRIER_01 = BarrierProgram("Barrier 01",
+                "Basic math on a single input.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
                   |     HALT(WINNER)
                   | }""".trimMargin(),
@@ -28,7 +30,8 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_02 = BarrierProgram("Basic math on multiple inputs.",
+        val BARRIER_02 = BarrierProgram("Barrier 02",
+                "Basic math on multiple inputs.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
                   |     IF(CALL_DATA[2] % 500 == 12) {
                   |         HALT(WINNER)
@@ -46,7 +49,8 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_03 = BarrierProgram("Vulnerable to integer overflow.",
+        val BARRIER_03 = BarrierProgram("Barrier 03",
+                "Vulnerable to integer overflow.",
                 """ IF(CALL_DATA[1] + ONE_BELOW_OVERFLOW_LIMIT == 12345) {
                   |     HALT(WINNER)
                   | }""".trimMargin(),
@@ -58,7 +62,8 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_04 = BarrierProgram("Involves memory and loops, more complex data flow analysis.",
+        val BARRIER_04 = BarrierProgram("Barrier 04",
+                "Involves memory and loops, more complex data flow analysis.",
                 """ VAR x = CALL_DATA[1]
                   | VAR y = 0
                   | WHILE(--x) {
@@ -85,7 +90,8 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_05 = BarrierProgram("Requires more complex memory data flow analysis to solve functions.",
+        val BARRIER_05 = BarrierProgram("Barrier 05",
+                "Requires more complex memory data flow analysis to solve functions.",
                 """ FUNCTION square(N) {
                   |     RETURN N * N
                   | }
@@ -115,7 +121,8 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                     })
                     build()
                 })
-        val BARRIER_06 = BarrierProgram("Requires constraints on the stack to solve, as to `CALL` the proper address.",
+        val BARRIER_06 = BarrierProgram("Barrier 06",
+                "Requires constraints on the stack to solve, as to `CALL` the proper address.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
                   |     CALL(RECIPIENT_ADDRESS=CALL_DATA[2], VALUE_TRANSFERRED=1, 0, 0, 0, 0)
                   | }""".trimMargin(),
