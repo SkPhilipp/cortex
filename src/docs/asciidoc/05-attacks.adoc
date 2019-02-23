@@ -20,8 +20,8 @@ include::{snippets}/AttackProgramBuilder.adoc[]
 
 === Exploration
 
-Below is a demonstration of Cortex navigating through every possible path of the barrier programs using purely symbolic execution.
+Below is a demonstration of Cortex navigating through possible paths of barrier programs, using purely symbolic execution.
 
-Documented are also the solution to the first path encountered which ended in `HALT WINNER`.
+Per barrier program a solution for the first path ending in `HALT WINNER` has also been documented.
 
 include::{snippets}/SymbolicProgramExplorer.adoc[]
