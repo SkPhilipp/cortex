@@ -10,7 +10,7 @@ import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test

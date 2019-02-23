@@ -6,7 +6,7 @@ import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.math.ADD
 import com.hileco.cortex.instructions.math.MODULO
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
 import org.junit.Assert
 import org.junit.Test
 

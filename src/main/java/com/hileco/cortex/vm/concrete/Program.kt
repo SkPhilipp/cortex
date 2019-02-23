@@ -1,4 +1,4 @@
-package com.hileco.cortex.vm
+package com.hileco.cortex.vm.concrete
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.vm.layer.Layered

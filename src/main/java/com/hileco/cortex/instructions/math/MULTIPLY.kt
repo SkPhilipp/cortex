@@ -1,7 +1,7 @@
 package com.hileco.cortex.instructions.math
 
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import java.math.BigInteger
 
 class MULTIPLY : MathInstruction() {

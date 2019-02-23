@@ -6,10 +6,10 @@ import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger

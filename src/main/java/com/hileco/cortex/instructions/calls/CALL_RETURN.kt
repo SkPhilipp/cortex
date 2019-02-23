@@ -5,10 +5,10 @@ import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.RETURN_DATA_TOO_LARGE
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
 import com.hileco.cortex.instructions.StackParameter
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.ProgramZone
-import com.hileco.cortex.vm.ProgramZone.*
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramZone
+import com.hileco.cortex.vm.concrete.ProgramZone.*
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import java.math.BigInteger
 import java.util.*
 

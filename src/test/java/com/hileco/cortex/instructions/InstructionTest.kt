@@ -1,8 +1,8 @@
 package com.hileco.cortex.instructions
 
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 
 open class InstructionTest {
     fun run(instruction: List<Instruction>): ProgramContext {

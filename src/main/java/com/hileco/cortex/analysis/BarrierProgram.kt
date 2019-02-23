@@ -3,9 +3,9 @@ package com.hileco.cortex.analysis
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramBuilder
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
-import com.hileco.cortex.vm.VirtualMachine.Companion.NUMERICAL_LIMIT
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.concrete.VirtualMachine.Companion.NUMERICAL_LIMIT
 import java.math.BigInteger
 
 data class BarrierProgram(val description: String, val pseudocode: String, val instructions: List<Instruction>) {

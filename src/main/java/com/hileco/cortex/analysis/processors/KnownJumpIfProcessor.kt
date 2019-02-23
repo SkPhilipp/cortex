@@ -6,9 +6,9 @@ import com.hileco.cortex.instructions.ProgramRunner
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_IF
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import java.math.BigInteger
 
 class KnownJumpIfProcessor : Processor {

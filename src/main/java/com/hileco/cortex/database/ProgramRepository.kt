@@ -1,7 +1,7 @@
 package com.hileco.cortex.database
 
 import com.hileco.cortex.server.serialization.InstructionParser
-import com.hileco.cortex.vm.Program
+import com.hileco.cortex.vm.concrete.Program
 import com.mongodb.client.MongoCollection
 import org.bson.Document
 import java.math.BigInteger

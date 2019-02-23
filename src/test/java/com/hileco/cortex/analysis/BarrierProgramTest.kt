@@ -13,9 +13,9 @@ import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.ProgramRunner
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.io.LOAD
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Test
 import java.math.BigInteger
 

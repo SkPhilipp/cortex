@@ -1,8 +1,8 @@
 package com.hileco.cortex.instructions
 
 import com.hileco.cortex.instructions.ProgramException.Reason
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 
 class ProgramRunner(private val virtualMachine: VirtualMachine) {
     @Throws(ProgramException::class)

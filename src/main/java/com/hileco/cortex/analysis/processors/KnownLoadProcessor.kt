@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.concrete.ProgramStoreZone
 import java.math.BigInteger
 
 class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInteger, BigInteger>>) : Processor {

@@ -7,9 +7,9 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.ProgramRunner
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

@@ -7,9 +7,9 @@ import com.hileco.cortex.analysis.edges.EdgeParameters
 import com.hileco.cortex.instructions.ProgramRunner
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.Program
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.VirtualMachine
 
 class KnownProcessor : Processor {
     private fun noopDownwards(edgeMapping: EdgeMapping, graphNode: GraphNode) {

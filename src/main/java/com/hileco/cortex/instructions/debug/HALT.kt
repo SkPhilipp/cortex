@@ -2,9 +2,9 @@ package com.hileco.cortex.instructions.debug
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.vm.ProgramContext
-import com.hileco.cortex.vm.ProgramZone
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramZone
+import com.hileco.cortex.vm.concrete.VirtualMachine
 
 class HALT(val reason: ProgramException.Reason) : Instruction() {
     override val instructionModifiers: List<ProgramZone>

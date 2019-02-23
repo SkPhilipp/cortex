@@ -4,7 +4,7 @@ import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_OUT_OF_BOUNDS
 import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
-import com.hileco.cortex.vm.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramContext
 
 abstract class JumpingInstruction : Instruction() {
     @Throws(ProgramException::class)

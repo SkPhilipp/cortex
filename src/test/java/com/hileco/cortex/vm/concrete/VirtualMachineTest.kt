@@ -1,4 +1,4 @@
-package com.hileco.cortex.vm
+package com.hileco.cortex.vm.concrete
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramBuilder
@@ -6,8 +6,8 @@ import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.ProgramRunner
 import com.hileco.cortex.instructions.io.LOAD
-import com.hileco.cortex.vm.ProgramStoreZone.DISK
-import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.DISK
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.MEMORY
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger

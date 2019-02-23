@@ -3,7 +3,7 @@ package com.hileco.cortex.instructions.math
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger

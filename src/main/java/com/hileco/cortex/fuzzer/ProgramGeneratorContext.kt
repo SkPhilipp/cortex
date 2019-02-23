@@ -1,7 +1,7 @@
 package com.hileco.cortex.fuzzer
 
 import com.hileco.cortex.instructions.ProgramBuilder
-import com.hileco.cortex.vm.Program
+import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.layer.LayeredMap
 import java.math.BigInteger
 import java.util.*

@@ -1,6 +1,6 @@
 package com.hileco.cortex.instructions
 
-import com.hileco.cortex.vm.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramContext
 
 class ProgramException(val programContext: ProgramContext,
                        val reason: Reason) : Exception() {

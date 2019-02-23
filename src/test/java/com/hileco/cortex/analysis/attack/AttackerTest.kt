@@ -15,7 +15,7 @@ import com.hileco.cortex.constraints.expressions.Expression.Reference
 import com.hileco.cortex.constraints.expressions.Expression.Value
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test

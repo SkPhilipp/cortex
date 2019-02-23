@@ -1,6 +1,6 @@
 package com.hileco.cortex.constraints.expressions
 
-import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.concrete.ProgramStoreZone
 import com.microsoft.z3.*
 import java.lang.Long.toString
 

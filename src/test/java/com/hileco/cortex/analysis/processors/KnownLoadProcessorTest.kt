@@ -5,7 +5,7 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.ProgramStoreZone.DISK
+import com.hileco.cortex.vm.concrete.ProgramStoreZone.DISK
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger
