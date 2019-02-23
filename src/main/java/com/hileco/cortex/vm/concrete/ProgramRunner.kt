@@ -9,23 +9,23 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
         if (virtualMachine.programs.isEmpty()) {
             return
         }
-        var context: ProgramContext = virtualMachine.programs.peek()
-        while (context.instructionPosition < context.program.instructions.size) {
-            val currentInstructionPosition = context.instructionPosition
-            val current = context.program.instructions[currentInstructionPosition]
-            current.execute(virtualMachine, context)
+        var programContext: ProgramContext = virtualMachine.programs.peek()
+        while (programContext.instructionPosition < programContext.program.instructions.size) {
+            val currentInstructionPosition = programContext.instructionPosition
+            val instruction = programContext.program.instructions[currentInstructionPosition]
+            instruction.execute(virtualMachine, programContext)
             if (virtualMachine.programs.isEmpty()) {
                 break
             }
-            context = virtualMachine.programs.peek()
-            if (context.instructionPosition == currentInstructionPosition) {
-                context.instructionPosition = currentInstructionPosition + 1
+            programContext = virtualMachine.programs.peek()
+            if (programContext.instructionPosition == currentInstructionPosition) {
+                programContext.instructionPosition = currentInstructionPosition + 1
             }
-            context.instructionsExecuted++
-            if (context.instructionsExecuted >= INSTRUCTION_LIMIT) {
+            programContext.instructionsExecuted++
+            virtualMachine.instructionsExecuted++
+            if (programContext.instructionsExecuted >= INSTRUCTION_LIMIT) {
                 throw ProgramException(Reason.INSTRUCTION_LIMIT_REACHED_ON_PROGRAM)
             }
-            virtualMachine.instructionsExecuted++
             if (virtualMachine.instructionsExecuted >= INSTRUCTION_LIMIT) {
                 throw ProgramException(Reason.INSTRUCTION_LIMIT_REACHED_ON_VIRTUAL_MACHINE)
             }
