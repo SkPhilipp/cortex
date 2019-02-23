@@ -3,7 +3,7 @@ package com.hileco.cortex.instructions.math
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.concrete.VirtualMachine
+import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigInteger
@@ -18,7 +18,7 @@ class ADDTest : InstructionTest() {
         val stack = this.run(instructions).stack
         Documentation.of("instructions/add")
                 .headingParagraph("ADD").paragraph("The ADD operation removes two elements from the stack, adds them together and puts the " +
-                        "result on the stack. (This result may overflow if it would have been larger than ${VirtualMachine.NUMERICAL_LIMIT})")
+                        "result on the stack. (This result may overflow if it would have been larger than $OVERFLOW_LIMIT)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 1)
@@ -28,7 +28,7 @@ class ADDTest : InstructionTest() {
     @Test
     fun runOverflow() {
         val instructions = listOf(
-                PUSH(VirtualMachine.NUMERICAL_LIMIT.toByteArray()),
+                PUSH(OVERFLOW_LIMIT.toByteArray()),
                 PUSH(10),
                 ADD())
         val stack = this.run(instructions).stack

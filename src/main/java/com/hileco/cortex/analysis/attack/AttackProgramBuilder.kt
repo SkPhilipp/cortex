@@ -7,8 +7,8 @@ import com.hileco.cortex.instructions.calls.CALL
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.io.SAVE
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 
 class AttackProgramBuilder {
     fun build(targetAddress: Long, solution: Solution): List<Instruction> {

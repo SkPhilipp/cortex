@@ -4,7 +4,7 @@ import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import com.hileco.cortex.vm.layer.LayeredBytes
 import java.math.BigInteger

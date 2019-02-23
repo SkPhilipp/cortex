@@ -1,6 +1,6 @@
 package com.hileco.cortex.fuzzer
 
-import com.hileco.cortex.vm.concrete.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone
 
 enum class FuzzFunction(private val chance: Double,
                         val implementation: (ProgramGeneratorContext) -> Unit) : Chanced {

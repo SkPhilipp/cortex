@@ -8,7 +8,7 @@ import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.POP
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.instructions.stack.SWAP
-import com.hileco.cortex.vm.concrete.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone
 import org.junit.Assert
 import org.junit.Test
 

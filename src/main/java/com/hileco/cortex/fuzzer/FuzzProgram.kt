@@ -1,6 +1,6 @@
 package com.hileco.cortex.fuzzer
 
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import java.util.*
 
 enum class FuzzProgram(private val chance: Double,

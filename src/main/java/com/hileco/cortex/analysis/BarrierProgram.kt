@@ -3,9 +3,9 @@ package com.hileco.cortex.analysis
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramBuilder
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.MEMORY
-import com.hileco.cortex.vm.concrete.VirtualMachine.Companion.NUMERICAL_LIMIT
+import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import java.math.BigInteger
 
 data class BarrierProgram(val description: String, val pseudocode: String, val instructions: List<Instruction>) {
@@ -52,7 +52,7 @@ data class BarrierProgram(val description: String, val pseudocode: String, val i
                   | }""".trimMargin(),
                 with(ProgramBuilder()) {
                     blockIf(conditionBody = {
-                        equals(add(push(NUMERICAL_LIMIT.minus(BigInteger.ONE).toByteArray()), load(CALL_DATA, push(1))), push(12345))
+                        equals(add(push(OVERFLOW_LIMIT.minus(BigInteger.ONE).toByteArray()), load(CALL_DATA, push(1))), push(12345))
                     }, thenBody = {
                         halt(WINNER)
                     })

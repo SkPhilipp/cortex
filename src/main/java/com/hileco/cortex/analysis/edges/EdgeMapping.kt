@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.stack.SWAP
-import com.hileco.cortex.vm.concrete.ProgramZone
+import com.hileco.cortex.vm.ProgramZone
 
 class EdgeMapping {
     private val mapping: MutableMap<Class<*>, MutableMap<Any, MutableList<Edge>>> = HashMap()

@@ -4,9 +4,10 @@ package com.hileco.cortex.instructions.stack
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED
+import com.hileco.cortex.vm.ProgramConstants.Companion.STACK_LIMIT
+import com.hileco.cortex.vm.ProgramZone
+import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.ProgramZone
-import com.hileco.cortex.vm.concrete.ProgramZone.STACK
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import java.math.BigInteger
 
@@ -26,7 +27,7 @@ data class PUSH(val bytes: ByteArray) : Instruction() {
     @Throws(ProgramException::class)
     override fun execute(process: VirtualMachine, program: ProgramContext) {
         program.stack.push(bytes)
-        if (program.stack.size() > process.stackLimit) {
+        if (program.stack.size() > STACK_LIMIT) {
             throw ProgramException(program, STACK_LIMIT_REACHED)
         }
     }

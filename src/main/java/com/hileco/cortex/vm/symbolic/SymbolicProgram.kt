@@ -1,37 +1,38 @@
-package com.hileco.cortex.vm.concrete
+package com.hileco.cortex.vm.symbolic
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.vm.layer.Layered
-import com.hileco.cortex.vm.layer.LayeredBytes
+import com.hileco.cortex.vm.layer.LayeredMap
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class Program : Layered<Program> {
+class SymbolicProgram : Layered<SymbolicProgram> {
     val instructions: List<Instruction>
     val address: BigInteger
-    val storage: LayeredBytes
-    val transfers: LayeredStack<Pair<BigInteger, BigInteger>>
+    val storage: LayeredMap<BigInteger, Expression>
+    val transfers: LayeredStack<Pair<Expression, Expression>>
 
     constructor(instructions: List<Instruction>,
                 address: BigInteger = BigInteger.ZERO) {
         this.instructions = instructions
         this.address = address
-        storage = LayeredBytes()
+        storage = LayeredMap()
         transfers = LayeredStack()
     }
 
     private constructor(instructions: List<Instruction>,
                         address: BigInteger,
-                        storage: LayeredBytes,
-                        transfers: LayeredStack<Pair<BigInteger, BigInteger>>) {
+                        storage: LayeredMap<BigInteger, Expression>,
+                        transfers: LayeredStack<Pair<Expression, Expression>>) {
         this.instructions = instructions
         this.address = address
         this.storage = storage
         this.transfers = transfers
     }
 
-    override fun branch(): Program {
-        return Program(instructions, address, storage.branch(), transfers.branch())
+    override fun branch(): SymbolicProgram {
+        return SymbolicProgram(instructions, address, storage.branch(), transfers.branch())
     }
 
     override fun close() {

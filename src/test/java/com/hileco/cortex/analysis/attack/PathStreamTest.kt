@@ -11,7 +11,7 @@ import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.math.DIVIDE
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.concrete.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone
 import org.junit.Assert
 import org.junit.Test
 

@@ -2,9 +2,9 @@ package com.hileco.cortex.instructions.io
 
 
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.vm.concrete.ProgramStoreZone
-import com.hileco.cortex.vm.concrete.ProgramZone
-import com.hileco.cortex.vm.concrete.ProgramZone.*
+import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramZone
+import com.hileco.cortex.vm.ProgramZone.*
 
 abstract class IoInstruction(val programStoreZone: ProgramStoreZone) : Instruction() {
     override val instructionModifiers: List<ProgramZone>

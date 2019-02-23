@@ -1,39 +1,40 @@
-package com.hileco.cortex.vm.concrete
+package com.hileco.cortex.vm.symbolic
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.vm.layer.Layered
-import com.hileco.cortex.vm.layer.LayeredBytes
+import com.hileco.cortex.vm.layer.LayeredMap
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class ProgramContext : Layered<ProgramContext> {
-    val program: Program
+class SymbolicProgramContext : Layered<SymbolicProgramContext> {
+    val program: SymbolicProgram
     var instructionsExecuted: Int
     var instructionPosition: Int
-    val stack: LayeredStack<ByteArray>
-    val memory: LayeredBytes
+    val stack: LayeredStack<Expression>
+    val memory: LayeredMap<BigInteger, Expression>
     var returnDataOffset: BigInteger
     var returnDataSize: BigInteger
-    val callData: LayeredBytes
+    val callData: LayeredMap<BigInteger, Expression>
 
-    constructor(program: Program) {
+    constructor(program: SymbolicProgram) {
         this.program = program
         instructionsExecuted = 0
         instructionPosition = 0
         stack = LayeredStack()
-        memory = LayeredBytes()
+        memory = LayeredMap()
         returnDataOffset = BigInteger.ZERO
         returnDataSize = BigInteger.ZERO
-        callData = LayeredBytes()
+        callData = LayeredMap()
     }
 
-    private constructor(program: Program,
+    private constructor(program: SymbolicProgram,
                         instructionsExecuted: Int,
                         instructionPosition: Int,
-                        stack: LayeredStack<ByteArray>,
-                        memory: LayeredBytes,
+                        stack: LayeredStack<Expression>,
+                        memory: LayeredMap<BigInteger, Expression>,
                         returnDataOffset: BigInteger,
                         returnDataSize: BigInteger,
-                        callData: LayeredBytes) {
+                        callData: LayeredMap<BigInteger, Expression>) {
         this.program = program
         this.instructionsExecuted = instructionsExecuted
         this.instructionPosition = instructionPosition
@@ -44,8 +45,8 @@ class ProgramContext : Layered<ProgramContext> {
         this.callData = callData
     }
 
-    override fun branch(): ProgramContext {
-        return ProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.branch(), memory.branch(), returnDataOffset, returnDataSize, callData.branch())
+    override fun branch(): SymbolicProgramContext {
+        return SymbolicProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.branch(), memory.branch(), returnDataOffset, returnDataSize, callData.branch())
     }
 
     override fun close() {

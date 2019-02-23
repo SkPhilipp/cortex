@@ -10,8 +10,8 @@ import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.math.DIVIDE
 import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.concrete.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import org.junit.Assert
 import org.junit.Test
 

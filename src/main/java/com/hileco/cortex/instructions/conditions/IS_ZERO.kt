@@ -4,8 +4,8 @@ import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.ProgramZone
-import com.hileco.cortex.vm.concrete.ProgramZone.STACK
+import com.hileco.cortex.vm.ProgramZone
+import com.hileco.cortex.vm.ProgramZone.STACK
 import com.hileco.cortex.vm.concrete.VirtualMachine
 
 class IS_ZERO : Instruction() {

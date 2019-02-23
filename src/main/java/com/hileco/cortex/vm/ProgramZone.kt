@@ -1,4 +1,4 @@
-package com.hileco.cortex.vm.concrete
+package com.hileco.cortex.vm
 
 enum class ProgramZone {
     STACK,

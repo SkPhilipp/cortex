@@ -7,8 +7,8 @@ import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.jumps.EXIT
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.vm.concrete.ProgramZone.MEMORY
-import com.hileco.cortex.vm.concrete.ProgramZone.STACK
+import com.hileco.cortex.vm.ProgramZone.MEMORY
+import com.hileco.cortex.vm.ProgramZone.STACK
 
 class DeadStartProcessor : Processor {
     private fun noopUpwards(startIndex: Int, graphBlock: GraphBlock) {

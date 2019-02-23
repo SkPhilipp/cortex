@@ -1,6 +1,7 @@
 package com.hileco.cortex.instructions
 
 import com.hileco.cortex.instructions.ProgramException.Reason
+import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
 
@@ -23,11 +24,11 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                 context.instructionPosition = currentInstructionPosition + 1
             }
             context.instructionsExecuted++
-            if (context.instructionsExecuted >= context.instructionLimit) {
+            if (context.instructionsExecuted >= INSTRUCTION_LIMIT) {
                 throw ProgramException(context, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROGRAM_LEVEL)
             }
             virtualMachine.instructionsExecuted++
-            if (virtualMachine.instructionsExecuted >= virtualMachine.instructionLimit) {
+            if (virtualMachine.instructionsExecuted >= INSTRUCTION_LIMIT) {
                 throw ProgramException(context, Reason.INSTRUCTION_LIMIT_REACHED_ON_PROCESS_LEVEL)
             }
         }

@@ -7,8 +7,8 @@ import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEM
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.ProgramZone
-import com.hileco.cortex.vm.concrete.ProgramZone.*
+import com.hileco.cortex.vm.ProgramZone
+import com.hileco.cortex.vm.ProgramZone.*
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import java.math.BigInteger
 
