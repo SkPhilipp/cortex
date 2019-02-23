@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.analysis.edges.EdgeParameters
-import com.hileco.cortex.instructions.ProgramRunner
+import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.concrete.Program

@@ -2,7 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramRunner
+import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_IF

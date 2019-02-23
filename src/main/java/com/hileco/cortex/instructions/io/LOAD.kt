@@ -50,7 +50,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
             ProgramStoreZone.DISK -> programContext.program.storage
             ProgramStoreZone.CALL_DATA -> programContext.callData
         }
-        val expression = storage[address] ?: Expression.Value(0)
+        val expression = storage[address] ?: Expression.Reference(programStoreZone, addressExpression)
         programContext.stack.push(expression)
     }
 

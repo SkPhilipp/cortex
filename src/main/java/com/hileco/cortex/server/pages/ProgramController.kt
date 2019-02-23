@@ -5,7 +5,7 @@ import com.hileco.cortex.analysis.VisualGraph
 import com.hileco.cortex.analysis.attack.Attacker
 import com.hileco.cortex.database.Database
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramRunner
+import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.server.serialization.InstructionParser
 import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext

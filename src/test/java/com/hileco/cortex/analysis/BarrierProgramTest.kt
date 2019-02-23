@@ -10,7 +10,7 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
-import com.hileco.cortex.instructions.ProgramRunner
+import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.vm.concrete.Program

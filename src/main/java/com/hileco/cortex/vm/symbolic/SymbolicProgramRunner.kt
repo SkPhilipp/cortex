@@ -1,16 +1,15 @@
-package com.hileco.cortex.instructions
+package com.hileco.cortex.vm.symbolic
 
+import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason
 import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
-import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.VirtualMachine
 
-class ProgramRunner(private val virtualMachine: VirtualMachine) {
+class SymbolicProgramRunner(private val virtualMachine: SymbolicVirtualMachine) {
     fun run() {
         if (virtualMachine.programs.isEmpty()) {
             return
         }
-        var context: ProgramContext = virtualMachine.programs.peek()
+        var context: SymbolicProgramContext = virtualMachine.programs.peek()
         while (context.instructionPosition < context.program.instructions.size) {
             val currentInstructionPosition = context.instructionPosition
             val current = context.program.instructions[currentInstructionPosition]

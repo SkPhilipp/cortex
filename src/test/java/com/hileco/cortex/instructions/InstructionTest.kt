@@ -2,6 +2,7 @@ package com.hileco.cortex.instructions
 
 import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.vm.concrete.VirtualMachine
 
 open class InstructionTest {
