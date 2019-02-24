@@ -16,6 +16,7 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
 
     val completed: MutableList<SymbolicVirtualMachine>
     val impossible: MutableList<SymbolicVirtualMachine>
+    val paused: MutableList<SymbolicVirtualMachine>
     private val queued: BlockingDeque<SymbolicVirtualMachine>
 
     init {
@@ -23,6 +24,7 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
         queued.offer(virtualMachine)
         impossible = arrayListOf()
         completed = arrayListOf()
+        paused = arrayListOf()
     }
 
     fun run(): List<SymbolicVirtualMachine> {
@@ -105,15 +107,16 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
             programContext.instructionPosition++
         }
         if (virtualMachine.path.asSequence().count() > branchLimit) {
-            throw ProgramException(BRANCH_LIMIT_REACHED_ON_SYMBOLIC_VIRTUAL_MACHINE)
-        }
-        val solver = Solver()
-        val solution = solver.solve(virtualMachine.condition())
-        if (solution.isSolvable) {
-            queued.offer(virtualMachine)
+            paused.add(virtualMachine)
         } else {
-            virtualMachine.close()
-            impossible.add(virtualMachine)
+            val solver = Solver()
+            val solution = solver.solve(virtualMachine.condition())
+            if (solution.isSolvable) {
+                queued.offer(virtualMachine)
+            } else {
+                virtualMachine.close()
+                impossible.add(virtualMachine)
+            }
         }
     }
 }
