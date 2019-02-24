@@ -2,8 +2,8 @@ package com.hileco.cortex.instructions.calls
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.RETURN_DATA_TOO_LARGE
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.CALL_RETURN_DATA_TOO_LARGE
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.*
@@ -23,7 +23,7 @@ class CALL_RETURN : Instruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 2) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val offset = BigInteger(programContext.stack.pop())
         val size = BigInteger(programContext.stack.pop())
@@ -33,7 +33,7 @@ class CALL_RETURN : Instruction() {
             val data = programContext.memory.read(offset.toInt(), size.toInt())
             val wSize = nextContext.returnDataSize
             if (data.size > wSize.toInt()) {
-                throw ProgramException(RETURN_DATA_TOO_LARGE)
+                throw ProgramException(CALL_RETURN_DATA_TOO_LARGE)
             }
             val dataExpanded = Arrays.copyOf(data, wSize.toInt())
             val wOffset = nextContext.returnDataOffset

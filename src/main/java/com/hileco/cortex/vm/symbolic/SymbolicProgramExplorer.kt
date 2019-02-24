@@ -56,10 +56,10 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                         programContext.instructionsExecuted++
                         virtualMachine.instructionsExecuted++
                         if (programContext.instructionsExecuted >= INSTRUCTION_LIMIT) {
-                            throw ProgramException(INSTRUCTION_LIMIT_REACHED_ON_PROGRAM)
+                            throw ProgramException(REACHED_LIMIT_INSTRUCTIONS_ON_PROGRAM)
                         }
                         if (virtualMachine.instructionsExecuted >= INSTRUCTION_LIMIT) {
-                            throw ProgramException(INSTRUCTION_LIMIT_REACHED_ON_VIRTUAL_MACHINE)
+                            throw ProgramException(REACHED_LIMIT_INSTRUCTIONS_ON_VIRTUAL_MACHINE)
                         }
                     }
                     if (programContext.instructionPosition == programContext.program.instructions.size) {
@@ -85,7 +85,7 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
     private fun chooseJumpIf(virtualMachine: SymbolicVirtualMachine, currentInstructionPosition: Int, take: Boolean) {
         val programContext = virtualMachine.programs.peek()
         if (programContext.stack.size() < 2) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val address = programContext.stack.pop()
         val condition = programContext.stack.pop()
@@ -95,11 +95,11 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                 throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
             }
             if (address.constant < 0) {
-                throw ProgramException(JUMP_OUT_OF_BOUNDS)
+                throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
             }
             val instructions = programContext.program.instructions
             if (address.constant >= instructions.size) {
-                throw ProgramException(JUMP_OUT_OF_BOUNDS)
+                throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
             }
             instructions[address.constant.toInt()] as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
             programContext.instructionPosition = address.constant.toInt()

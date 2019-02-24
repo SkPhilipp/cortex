@@ -2,7 +2,7 @@ package com.hileco.cortex.instructions.jumps
 
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.INSTRUCTION_POSITION
@@ -21,7 +21,7 @@ class JUMP : JumpingInstruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 1) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val nextInstructionPosition = BigInteger(programContext.stack.pop()).toInt()
         performJump(programContext, nextInstructionPosition)
@@ -29,7 +29,7 @@ class JUMP : JumpingInstruction() {
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         if (programContext.stack.size() < 1) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val targetExpression = programContext.stack.pop() as? Expression.Value
                 ?: throw UnsupportedOperationException("Jumps to non-concrete targets are not supported for symbolic execution")

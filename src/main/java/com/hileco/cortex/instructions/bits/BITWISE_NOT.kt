@@ -2,6 +2,7 @@ package com.hileco.cortex.instructions.bits
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
@@ -23,7 +24,7 @@ class BITWISE_NOT : Instruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 1) {
-            throw ProgramException(ProgramException.Reason.STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val element = programContext.stack.pop()
         val result = ByteArray(element.size)

@@ -4,7 +4,7 @@ import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.CALL_RECIPIENT_MISSING
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.vm.ProgramZone
@@ -24,7 +24,7 @@ class CALL : Instruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 6) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val recipientAddress = BigInteger(programContext.stack.pop())
         val valueTransferred = BigInteger(programContext.stack.pop())
@@ -46,7 +46,7 @@ class CALL : Instruction() {
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         if (programContext.stack.size() < 6) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val recipientAddress = programContext.stack.pop()
         val valueTransferred = programContext.stack.pop()

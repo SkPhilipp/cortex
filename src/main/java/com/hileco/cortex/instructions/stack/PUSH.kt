@@ -4,7 +4,7 @@ package com.hileco.cortex.instructions.stack
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_LIMIT_REACHED
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_OVERFLOW
 import com.hileco.cortex.vm.ProgramConstants.Companion.STACK_LIMIT
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
@@ -30,14 +30,14 @@ data class PUSH(val bytes: ByteArray) : Instruction() {
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         programContext.stack.push(bytes)
         if (programContext.stack.size() > STACK_LIMIT) {
-            throw ProgramException(STACK_LIMIT_REACHED)
+            throw ProgramException(STACK_OVERFLOW)
         }
     }
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         programContext.stack.push(Expression.Value(BigInteger(bytes).toLong()))
         if (programContext.stack.size() > STACK_LIMIT) {
-            throw ProgramException(STACK_LIMIT_REACHED)
+            throw ProgramException(STACK_OVERFLOW)
         }
     }
 

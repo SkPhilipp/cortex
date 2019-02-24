@@ -1,7 +1,7 @@
 package com.hileco.cortex.instructions.jumps
 
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.INSTRUCTION_POSITION
@@ -21,7 +21,7 @@ class JUMP_IF : JumpingInstruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 2) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val nextInstructionPosition = BigInteger(programContext.stack.pop()).toInt()
         val top = programContext.stack.pop()

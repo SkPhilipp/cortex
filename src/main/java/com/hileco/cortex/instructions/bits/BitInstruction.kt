@@ -3,7 +3,7 @@ package com.hileco.cortex.instructions.bits
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
@@ -28,7 +28,7 @@ abstract class BitInstruction : Instruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 2) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val left = programContext.stack.pop()
         val right = programContext.stack.pop()
@@ -44,7 +44,7 @@ abstract class BitInstruction : Instruction() {
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         if (programContext.stack.size() < 2) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val left = programContext.stack.pop()
         val right = programContext.stack.pop()

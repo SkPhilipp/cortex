@@ -2,7 +2,7 @@ package com.hileco.cortex.instructions.math
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramZone
 import com.hileco.cortex.vm.ProgramZone.STACK
@@ -27,7 +27,7 @@ data class HASH(private val hashMethod: String) : Instruction() {
         try {
             val messageDigest = MessageDigest.getInstance(hashMethod)
             if (programContext.stack.size() < 1) {
-                throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+                throw ProgramException(STACK_UNDERFLOW)
             }
             messageDigest.update(programContext.stack.pop())
             programContext.stack.push(messageDigest.digest())

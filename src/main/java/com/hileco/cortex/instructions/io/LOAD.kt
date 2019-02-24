@@ -2,7 +2,8 @@ package com.hileco.cortex.instructions.io
 
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.STACK_TOO_FEW_ELEMENTS
+import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
+import com.hileco.cortex.instructions.ProgramException.Reason.STORAGE_ACCESS_OUT_OF_BOUNDS
 import com.hileco.cortex.instructions.StackParameter
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.concrete.ProgramContext
@@ -22,7 +23,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 1) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val addressBytes = programContext.stack.pop()
         val address = BigInteger(addressBytes)
@@ -32,7 +33,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
             ProgramStoreZone.CALL_DATA -> programContext.callData
         }
         if (address.toInt() * SIZE + SIZE > storage.size) {
-            throw ProgramException(ProgramException.Reason.STORAGE_ACCESS_OUT_OF_BOUNDS)
+            throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
         }
         val bytes = storage.read(address.toInt() * SIZE, SIZE)
         programContext.stack.push(bytes)
@@ -40,7 +41,7 @@ class LOAD(programStoreZone: ProgramStoreZone) : IoInstruction(programStoreZone)
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         if (programContext.stack.size() < 1) {
-            throw ProgramException(STACK_TOO_FEW_ELEMENTS)
+            throw ProgramException(STACK_UNDERFLOW)
         }
         val addressExpression = programContext.stack.pop() as? Expression.Value
                 ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
