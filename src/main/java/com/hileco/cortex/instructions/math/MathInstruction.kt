@@ -24,9 +24,9 @@ abstract class MathInstruction : Instruction() {
     override val stackParameters: List<StackParameter>
         get() = listOf(LEFT, RIGHT)
 
-    abstract fun innerExecute(left: BigInteger, right: BigInteger): BigInteger
+    abstract fun calculate(left: BigInteger, right: BigInteger): BigInteger
 
-    abstract fun innerExecute(left: Expression, right: Expression): Expression
+    abstract fun calculate(left: Expression, right: Expression): Expression
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         if (programContext.stack.size() < 2) {
@@ -34,7 +34,7 @@ abstract class MathInstruction : Instruction() {
         }
         val left = BigInteger(programContext.stack.pop())
         val right = BigInteger(programContext.stack.pop())
-        val result = innerExecute(left, right)
+        val result = calculate(left, right)
         programContext.stack.push(result.toByteArray())
     }
 
@@ -44,7 +44,7 @@ abstract class MathInstruction : Instruction() {
         }
         val left = programContext.stack.pop()
         val right = programContext.stack.pop()
-        val result = innerExecute(left, right)
+        val result = calculate(left, right)
         programContext.stack.push(result)
     }
 

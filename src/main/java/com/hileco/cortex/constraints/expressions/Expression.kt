@@ -55,7 +55,7 @@ interface Expression {
         }
     }
 
-    data class And(var inputs: List<Expression>) : Expression {
+    data class And(val inputs: List<Expression>) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkAnd(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
         }

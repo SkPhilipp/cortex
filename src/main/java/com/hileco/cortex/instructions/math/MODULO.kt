@@ -8,11 +8,11 @@ import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.math.BigInteger
 
 class MODULO : MathInstruction() {
-    override fun innerExecute(left: BigInteger, right: BigInteger): BigInteger {
+    override fun calculate(left: BigInteger, right: BigInteger): BigInteger {
         return left.mod(right)
     }
 
-    override fun innerExecute(left: Expression, right: Expression): Expression {
+    override fun calculate(left: Expression, right: Expression): Expression {
         return Expression.Modulo(left, right)
     }
 }

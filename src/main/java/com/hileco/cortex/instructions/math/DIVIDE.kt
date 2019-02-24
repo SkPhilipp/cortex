@@ -4,11 +4,11 @@ import com.hileco.cortex.constraints.expressions.Expression
 import java.math.BigInteger
 
 class DIVIDE : MathInstruction() {
-    override fun innerExecute(left: BigInteger, right: BigInteger): BigInteger {
+    override fun calculate(left: BigInteger, right: BigInteger): BigInteger {
         return left.divide(right)
     }
 
-    override fun innerExecute(left: Expression, right: Expression): Expression {
+    override fun calculate(left: Expression, right: Expression): Expression {
         return Expression.Divide(left, right)
     }
 }
