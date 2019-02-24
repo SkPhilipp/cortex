@@ -8,6 +8,6 @@ class ProgramConstants {
         const val INSTRUCTION_LIMIT = 100_000
         const val DEFAULT_BRANCH_LIMIT = 50
         val OVERFLOW_LIMIT: BigInteger = BigInteger(byteArrayOf(2)).pow(256)
-        val UNDERFLOW_LIMIT: BigInteger = BigInteger(byteArrayOf(2)).pow(256)
+        val UNDERFLOW_LIMIT: BigInteger = BigInteger(byteArrayOf(2)).pow(256).negate()
     }
 }

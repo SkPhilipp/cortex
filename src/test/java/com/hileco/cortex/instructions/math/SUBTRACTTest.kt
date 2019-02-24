@@ -24,20 +24,53 @@ class SUBTRACTTest : InstructionTest() {
     }
 
     @Test
-    fun symbolicSubtractValueToValue() {
+    fun symbolicValueToValue() {
         val result = runSymbolic(SUBTRACT(), Value(1), Value(1))
         Assert.assertEquals(Value(0), result)
     }
 
+    /**
+     * Tests for "x - 0 == x"
+     */
     @Test
-    fun symbolicSubtractValueToSubtractVariableToValue() {
-        val result = runSymbolic(SUBTRACT(), Value(1), Subtract(Stack(0), Value(1)))
-        Assert.assertEquals(Subtract(Stack(0), Value(0)), result)
+    fun symbolicZero() {
+        val result = runSymbolic(SUBTRACT(), Stack(0), Value(0))
+        Assert.assertEquals(Stack(0), result)
     }
 
+    /**
+     * Tests for "2 - ( x - 1 ) == 3 - x"
+     */
     @Test
-    fun symbolicSubtractValueToSubtractValuetoVariable() {
-        val result = runSymbolic(SUBTRACT(), Value(1), Subtract(Value(1), Stack(0)))
-        Assert.assertEquals(Subtract(Stack(0), Value(0)), result)
+    fun symbolicValueToSubtractVariableToValue() {
+        val result = runSymbolic(SUBTRACT(), Value(2), Subtract(Stack(0), Value(1)))
+        Assert.assertEquals(Subtract(Value(3), Stack(0)), result)
+    }
+
+    /**
+     * Tests for "2 - ( 1 - x ) == x + 1" (or rather "x - -1")
+     */
+    @Test
+    fun symbolicValueToSubtractValuetoVariable() {
+        val result = runSymbolic(SUBTRACT(), Value(2), Subtract(Value(1), Stack(0)))
+        Assert.assertEquals(Subtract(Stack(0), Value(-1)), result)
+    }
+
+    /**
+     * Tests for "( x - 2 ) - 1 == x - 3"
+     */
+    @Test
+    fun symbolicSubtractVariableToValueToValue() {
+        val result = runSymbolic(SUBTRACT(), Subtract(Stack(0), Value(2)), Value(1))
+        Assert.assertEquals(Subtract(Stack(0), Value(3)), result)
+    }
+
+    /**
+     * Tests for "( 2 - x ) - 1 == 1 - x"
+     */
+    @Test
+    fun symbolicSubtractValuetoVariableToValue() {
+        val result = runSymbolic(SUBTRACT(), Subtract(Value(2), Stack(0)), Value(1))
+        Assert.assertEquals(Subtract(Value(1), Stack(0)), result)
     }
 }

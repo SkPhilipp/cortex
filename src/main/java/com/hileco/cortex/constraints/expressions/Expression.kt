@@ -65,6 +65,16 @@ interface Expression {
         }
     }
 
+    data class Or(val inputs: List<Expression>) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            return context.mkOr(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
+        }
+
+        override fun toString(): String {
+            return inputs.joinToString(separator = " || ") { "($it)" }
+        }
+    }
+
     object True : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkTrue()

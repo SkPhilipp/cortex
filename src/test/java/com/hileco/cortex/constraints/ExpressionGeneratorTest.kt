@@ -32,7 +32,7 @@ class ExpressionGeneratorTest {
         builder.addInstruction(PUSH(1))
         builder.addInstruction(POP())
         builder.addInstruction(SUBTRACT())
-        Assert.assertEquals("-199", builder.currentExpression.toString())
+        Assert.assertEquals("-198", builder.currentExpression.toString())
     }
 
     @Test

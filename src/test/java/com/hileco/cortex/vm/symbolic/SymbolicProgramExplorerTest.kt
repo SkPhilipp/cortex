@@ -8,6 +8,8 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
 import com.hileco.cortex.constraints.Solver
+import com.hileco.cortex.constraints.expressions.Expression
+import com.hileco.cortex.constraints.expressions.Expression.Or
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import org.junit.Assert
@@ -22,15 +24,17 @@ class SymbolicProgramExplorerTest {
         val symbolicProgramExplorer = SymbolicProgramExplorer(virtualMachine)
         symbolicProgramExplorer.run()
         val time = System.currentTimeMillis() - start
-        val winningVirtualMachine = symbolicProgramExplorer.completed.first { it.exitedReason == WINNER }
+        val conditions = mutableListOf<Expression>()
+        symbolicProgramExplorer.completed.asSequence()
+                .filter { it.exitedReason == WINNER }
+                .forEach { conditions.add(it.condition()) }
         val solver = Solver()
-        val solution = solver.solve(winningVirtualMachine.condition())
+        val solution = solver.solve(Or(conditions))
         Assert.assertTrue(solution.isSolvable)
         Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")
                 .paragraph("Program:").source(barrierProgram.instructions)
-                .paragraph("Completed paths:").source(symbolicProgramExplorer.completed.size)
-                .paragraph("Impossible paths:").source(symbolicProgramExplorer.impossible.size)
+                .paragraph("Paths:").source(symbolicProgramExplorer.completed.size)
                 .paragraph("Total time in milliseconds:").source("$time")
                 .paragraph("Suggested solution by Cortex:").source(solution)
     }

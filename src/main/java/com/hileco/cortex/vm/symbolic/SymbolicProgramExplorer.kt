@@ -1,6 +1,5 @@
 package com.hileco.cortex.vm.symbolic
 
-import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.*
@@ -15,14 +14,12 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                               private val branchLimit: Int = DEFAULT_BRANCH_LIMIT) {
 
     val completed: MutableList<SymbolicVirtualMachine>
-    val impossible: MutableList<SymbolicVirtualMachine>
     val paused: MutableList<SymbolicVirtualMachine>
     private val queued: BlockingDeque<SymbolicVirtualMachine>
 
     init {
         queued = LinkedBlockingDeque()
         queued.offer(virtualMachine)
-        impossible = arrayListOf()
         completed = arrayListOf()
         paused = arrayListOf()
     }
@@ -109,14 +106,7 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
         if (virtualMachine.path.asSequence().count() > branchLimit) {
             paused.add(virtualMachine)
         } else {
-            val solver = Solver()
-            val solution = solver.solve(virtualMachine.condition())
-            if (solution.isSolvable) {
-                queued.offer(virtualMachine)
-            } else {
-                virtualMachine.close()
-                impossible.add(virtualMachine)
-            }
+            queued.offer(virtualMachine)
         }
     }
 }
