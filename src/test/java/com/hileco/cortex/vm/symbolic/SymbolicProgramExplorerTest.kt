@@ -19,17 +19,18 @@ class SymbolicProgramExplorerTest {
         val program = SymbolicProgram(barrierProgram.instructions)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
-        val programRunner = SymbolicProgramExplorer(virtualMachine)
-        val exploredVirtualMachines = programRunner.run()
+        val symbolicProgramExplorer = SymbolicProgramExplorer(virtualMachine)
+        symbolicProgramExplorer.run()
         val time = System.currentTimeMillis() - start
-        val winningVirtualMachine = exploredVirtualMachines.first { it.exitedReason == WINNER }
+        val winningVirtualMachine = symbolicProgramExplorer.completed.first { it.exitedReason == WINNER }
         val solver = Solver()
         val solution = solver.solve(winningVirtualMachine.condition())
         Assert.assertTrue(solution.isSolvable)
         Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")
                 .paragraph("Program:").source(barrierProgram.instructions)
-                .paragraph("Total attempted paths:").source(exploredVirtualMachines.size)
+                .paragraph("Completed paths:").source(symbolicProgramExplorer.completed.size)
+                .paragraph("Impossible paths:").source(symbolicProgramExplorer.impossible.size)
                 .paragraph("Total time in milliseconds:").source("$time")
                 .paragraph("Suggested solution by Cortex:").source(solution)
     }

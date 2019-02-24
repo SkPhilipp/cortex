@@ -12,20 +12,22 @@ import java.util.concurrent.BlockingDeque
 import java.util.concurrent.LinkedBlockingDeque
 
 class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
-                              val branchLimit: Int = DEFAULT_BRANCH_LIMIT) {
+                              private val branchLimit: Int = DEFAULT_BRANCH_LIMIT) {
 
-    private val completedVirtualMachines: BlockingDeque<SymbolicVirtualMachine>
-    private val queuedVirtualMachines: BlockingDeque<SymbolicVirtualMachine>
+    val completed: MutableList<SymbolicVirtualMachine>
+    val impossible: MutableList<SymbolicVirtualMachine>
+    private val queued: BlockingDeque<SymbolicVirtualMachine>
 
     init {
-        queuedVirtualMachines = LinkedBlockingDeque()
-        queuedVirtualMachines.offer(virtualMachine)
-        completedVirtualMachines = LinkedBlockingDeque()
+        queued = LinkedBlockingDeque()
+        queued.offer(virtualMachine)
+        impossible = arrayListOf()
+        completed = arrayListOf()
     }
 
     fun run(): List<SymbolicVirtualMachine> {
-        while (queuedVirtualMachines.isNotEmpty()) {
-            val virtualMachine = queuedVirtualMachines.pollFirst()
+        while (queued.isNotEmpty()) {
+            val virtualMachine = queued.pollFirst()
             try {
                 if (!virtualMachine.programs.isEmpty()) {
                     var programContext: SymbolicProgramContext = virtualMachine.programs.peek()
@@ -41,7 +43,8 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                         instruction.execute(virtualMachine, programContext)
                         if (virtualMachine.programs.isEmpty()) {
                             virtualMachine.exited = true
-                            completedVirtualMachines.offer(virtualMachine)
+                            virtualMachine.close()
+                            completed.add(virtualMachine)
                             break
                         }
                         programContext = virtualMachine.programs.peek()
@@ -59,20 +62,22 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                     }
                     if (programContext.instructionPosition == programContext.program.instructions.size) {
                         virtualMachine.exited = true
-                        completedVirtualMachines.offer(virtualMachine)
+                        virtualMachine.close()
+                        completed.add(virtualMachine)
                     }
                 } else {
                     virtualMachine.exited = true
-                    completedVirtualMachines.offer(virtualMachine)
+                    virtualMachine.close()
+                    completed.add(virtualMachine)
                 }
             } catch (e: ProgramException) {
                 virtualMachine.exited = true
                 virtualMachine.exitedReason = e.reason
                 virtualMachine.close()
-                completedVirtualMachines.offer(virtualMachine)
+                completed.add(virtualMachine)
             }
         }
-        return completedVirtualMachines.asSequence().toList()
+        return completed.asSequence().toList()
     }
 
     private fun chooseJumpIf(virtualMachine: SymbolicVirtualMachine, currentInstructionPosition: Int, take: Boolean) {
@@ -99,13 +104,16 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
         } else {
             programContext.instructionPosition++
         }
-        if(virtualMachine.path.asSequence().count() > branchLimit) {
+        if (virtualMachine.path.asSequence().count() > branchLimit) {
             throw ProgramException(BRANCH_LIMIT_REACHED_ON_SYMBOLIC_VIRTUAL_MACHINE)
         }
         val solver = Solver()
         val solution = solver.solve(virtualMachine.condition())
         if (solution.isSolvable) {
-            queuedVirtualMachines.offer(virtualMachine)
+            queued.offer(virtualMachine)
+        } else {
+            virtualMachine.close()
+            impossible.add(virtualMachine)
         }
     }
 }
