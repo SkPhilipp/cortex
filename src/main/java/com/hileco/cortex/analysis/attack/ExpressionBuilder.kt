@@ -38,7 +38,7 @@ class ExpressionBuilder {
         return when (conditions.size) {
             0 -> Expression.True
             1 -> conditions.first()
-            else -> Expression.And(conditions)
+            else -> Expression.constructAnd(conditions)
         }
     }
 }

@@ -2,7 +2,6 @@ package com.hileco.cortex.vm.symbolic
 
 import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.Expression
-import com.hileco.cortex.constraints.expressions.ExpressionOptimizer
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.*
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
@@ -35,15 +34,6 @@ class SymbolicProgramExplorer(virtualMachine: SymbolicVirtualMachine,
                 if (!virtualMachine.programs.isEmpty()) {
                     var programContext: SymbolicProgramContext = virtualMachine.programs.peek()
                     while (programContext.instructionPosition < programContext.program.instructions.size) {
-                        if (!programContext.stack.isEmpty()) {
-                            val originalExpression = programContext.stack.peek()
-                            val expressionOptimizer = ExpressionOptimizer()
-                            val optimizedExpression = expressionOptimizer.optimize(originalExpression)
-                            if (optimizedExpression != originalExpression) {
-                                programContext.stack.pop()
-                                programContext.stack.push(optimizedExpression)
-                            }
-                        }
                         val currentInstructionPosition = programContext.instructionPosition
                         val instruction = programContext.program.instructions[currentInstructionPosition]
                         if (instruction is JUMP_IF) {

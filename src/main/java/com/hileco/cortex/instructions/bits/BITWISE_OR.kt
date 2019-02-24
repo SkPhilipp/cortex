@@ -9,6 +9,6 @@ class BITWISE_OR : BitInstruction() {
     }
 
     override fun innerExecute(left: Expression, right: Expression): Expression {
-        throw UnsupportedOperationException()
+        return Expression.BitwiseOr(left, right)
     }
 }

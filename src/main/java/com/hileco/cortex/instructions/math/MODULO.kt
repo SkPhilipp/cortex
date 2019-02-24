@@ -1,10 +1,8 @@
 package com.hileco.cortex.instructions.math
 
 import com.hileco.cortex.constraints.expressions.Expression
-import com.hileco.cortex.vm.concrete.ProgramContext
-import com.hileco.cortex.vm.concrete.VirtualMachine
-import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
-import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
+import com.hileco.cortex.constraints.expressions.Expression.Modulo
+import com.hileco.cortex.constraints.expressions.Expression.Value
 import java.math.BigInteger
 
 class MODULO : MathInstruction() {
@@ -13,6 +11,10 @@ class MODULO : MathInstruction() {
     }
 
     override fun calculate(left: Expression, right: Expression): Expression {
-        return Expression.Modulo(left, right)
+        if (left is Value && right is Value) {
+            val result = calculate(left.constant.toBigInteger(), right.constant.toBigInteger())
+            return Value(result.toLong())
+        }
+        return Modulo(left, right)
     }
 }

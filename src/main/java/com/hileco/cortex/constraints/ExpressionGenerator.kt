@@ -4,17 +4,15 @@ import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.Expression.*
 import com.hileco.cortex.constraints.expressions.ImpossibleExpressionException
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.instructions.bits.BITWISE_AND
 import com.hileco.cortex.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.instructions.bits.BITWISE_OR
 import com.hileco.cortex.instructions.bits.BITWISE_XOR
-import com.hileco.cortex.instructions.conditions.EQUALS
-import com.hileco.cortex.instructions.conditions.GREATER_THAN
+import com.hileco.cortex.instructions.bits.BitInstruction
+import com.hileco.cortex.instructions.conditions.ConditionInstruction
 import com.hileco.cortex.instructions.conditions.IS_ZERO
-import com.hileco.cortex.instructions.conditions.LESS_THAN
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.io.SAVE
-import com.hileco.cortex.instructions.math.*
+import com.hileco.cortex.instructions.math.HASH
+import com.hileco.cortex.instructions.math.MathInstruction
 import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.instructions.stack.SWAP
@@ -44,59 +42,24 @@ class ExpressionGenerator {
 
     fun addInstruction(instruction: Instruction) {
         when (instruction) {
-            is ADD -> {
+            is MathInstruction -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Expression.Add(left, right))
+                stack.push(instruction.calculate(left, right))
             }
-            is SUBTRACT -> {
+            is ConditionInstruction -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Expression.Subtract(left, right))
+                stack.push(instruction.innerExecute(left, right))
             }
-            is MULTIPLY -> {
+            is BitInstruction -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Expression.Multiply(left, right))
-            }
-            is DIVIDE -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.Divide(left, right))
-            }
-            is LESS_THAN -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.LessThan(left, right))
-            }
-            is GREATER_THAN -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.GreaterThan(left, right))
-            }
-            is EQUALS -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.Equals(left, right))
-            }
-            is BITWISE_OR -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.BitwiseOr(left, right))
-            }
-            is BITWISE_AND -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.BitwiseAnd(left, right))
-            }
-            is MODULO -> {
-                val left = pop()
-                val right = pop()
-                stack.push(Expression.Modulo(left, right))
+                stack.push(instruction.innerExecute(left, right))
             }
             is IS_ZERO -> {
                 val input = pop()
-                stack.push(Expression.IsZero(input))
+                stack.push(instruction.innerExecute(input))
             }
             is HASH -> throw UnsupportedOperationException()
             is BITWISE_XOR -> throw UnsupportedOperationException()

@@ -1,5 +1,7 @@
 package com.hileco.cortex.instructions.conditions
 
+import com.hileco.cortex.constraints.expressions.Expression.True
+import com.hileco.cortex.constraints.expressions.Expression.Value
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
 import com.hileco.cortex.instructions.stack.PUSH
@@ -20,5 +22,11 @@ class LESS_THANTest : InstructionTest() {
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 1)
         Assert.assertArrayEquals(stack.pop(), ConditionInstruction.TRUE)
+    }
+
+    @Test
+    fun symbolicLessThanValueToValue() {
+        val result = runSymbolic(LESS_THAN(), Value(1), Value(2))
+        Assert.assertEquals(True, result)
     }
 }

@@ -1,6 +1,7 @@
 package com.hileco.cortex.instructions.conditions
 
 import com.hileco.cortex.constraints.expressions.Expression
+import com.hileco.cortex.constraints.expressions.Expression.*
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
@@ -36,9 +37,17 @@ class IS_ZERO : Instruction() {
         if (programContext.stack.size() < 1) {
             throw ProgramException(STACK_UNDERFLOW)
         }
-        val element = programContext.stack.pop()
-        val result = Expression.IsZero(element)
+        val expression = programContext.stack.pop()
+        val result = innerExecute(expression)
         programContext.stack.push(result)
+    }
+
+    fun innerExecute(expression: Expression): Expression {
+        return if (expression is Value) {
+            if (expression.constant == 0L) True else False
+        } else {
+            IsZero(expression)
+        }
     }
 
     companion object {

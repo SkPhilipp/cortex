@@ -1,12 +1,12 @@
 package com.hileco.cortex.instructions.math
 
+import com.hileco.cortex.constraints.expressions.Expression.*
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class ADDTest : InstructionTest() {
     @Test
@@ -34,4 +34,23 @@ class ADDTest : InstructionTest() {
         val stack = this.run(instructions).stack
         Assert.assertArrayEquals(9.toBigInteger().toByteArray(), stack.pop())
     }
+
+    @Test
+    fun symbolicValueToValue() {
+        val result = runSymbolic(ADD(), Value(1), Value(1))
+        Assert.assertEquals(Value(2), result)
+    }
+
+    @Test
+    fun symbolicValueToAddVariableToValue() {
+        val result = runSymbolic(ADD(), Value(1), Add(Stack(0), Value(1)))
+        Assert.assertEquals(Add(Stack(0), Value(2)), result)
+    }
+
+    @Test
+    fun symbolicValueToAddValuetoVariable() {
+        val result = runSymbolic(ADD(), Value(1), Add(Value(1), Stack(0)))
+        Assert.assertEquals(Add(Stack(0), Value(2)), result)
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.hileco.cortex.instructions.math
 
 import com.hileco.cortex.constraints.expressions.Expression
+import com.hileco.cortex.constraints.expressions.Expression.Divide
+import com.hileco.cortex.constraints.expressions.Expression.Value
 import java.math.BigInteger
 
 class DIVIDE : MathInstruction() {
@@ -9,6 +11,10 @@ class DIVIDE : MathInstruction() {
     }
 
     override fun calculate(left: Expression, right: Expression): Expression {
-        return Expression.Divide(left, right)
+        if (left is Value && right is Value) {
+            val result = calculate(left.constant.toBigInteger(), right.constant.toBigInteger())
+            return Value(result.toLong())
+        }
+        return Divide(left, right)
     }
 }

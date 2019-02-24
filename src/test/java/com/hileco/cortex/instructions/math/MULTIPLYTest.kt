@@ -1,5 +1,6 @@
 package com.hileco.cortex.instructions.math
 
+import com.hileco.cortex.constraints.expressions.Expression.Value
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
 import com.hileco.cortex.instructions.stack.PUSH
@@ -34,5 +35,11 @@ class MULTIPLYTest : InstructionTest() {
         val stack = this.run(instructions).stack
         val expected = OVERFLOW_LIMIT.multiply(BigInteger.TEN).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
         Assert.assertArrayEquals(expected.toByteArray(), stack.pop())
+    }
+
+    @Test
+    fun symbolicMultiplyValueToValue() {
+        val result = runSymbolic(MULTIPLY(), Value(10), Value(10))
+        Assert.assertEquals(Value(100), result)
     }
 }

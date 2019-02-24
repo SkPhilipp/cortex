@@ -219,4 +219,20 @@ interface Expression {
             return "0 == $input"
         }
     }
+
+    companion object {
+        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Expression.Value && it.constant >= 0) }
+        private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(0) }
+        fun constructAnd(inputs: List<Expression>): Expression {
+            val distinctInputs = inputs.distinct()
+            val falseInputs = distinctInputs.count(IS_EQUIVALENT_FALSE)
+            val trueInputs = distinctInputs.count(IS_EQUIVALENT_TRUE)
+            when {
+                falseInputs > 0 -> return False
+                trueInputs == distinctInputs.size -> return True
+                trueInputs > 0 -> return And(distinctInputs.filterNot(IS_EQUIVALENT_TRUE))
+            }
+            return And(distinctInputs)
+        }
+    }
 }

@@ -40,7 +40,7 @@ class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
         path.asSequence()
                 .map { if (it.taken) it.condition else Expression.Not(it.condition) }
                 .forEach { expression -> expressions.add(expression) }
-        return Expression.And(expressions)
+        return Expression.constructAnd(expressions)
     }
 
     override fun branch(): SymbolicVirtualMachine {

@@ -1,6 +1,7 @@
 package com.hileco.cortex.instructions.conditions
 
 import com.hileco.cortex.constraints.expressions.Expression
+import com.hileco.cortex.constraints.expressions.Expression.*
 import java.math.BigInteger
 
 class GREATER_THAN : ConditionInstruction() {
@@ -9,6 +10,9 @@ class GREATER_THAN : ConditionInstruction() {
     }
 
     override fun innerExecute(left: Expression, right: Expression): Expression {
-        return Expression.GreaterThan(left, right)
+        if (left is Value && right is Value) {
+            return if (left.constant > right.constant) True else False
+        }
+        return GreaterThan(left, right)
     }
 }
