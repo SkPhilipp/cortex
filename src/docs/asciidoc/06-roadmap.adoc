@@ -4,67 +4,53 @@
 
 ==== Core
 
-* Functionality to save and load Virtual Machine state
+* Tag archival-demo-ui, remove feature/* branches in favour or archival tags
+* Remove all demonstration funcionalities
 * Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could
   then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
   Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
   would have to be revisited. For example; KnownProcessor only replaces self-contained nodes if the result is a single stack element.
-* Implement continue and break support in all loops for ProgramBuilder
-* Layered data structures should have a shared configuration which specifies minimums required to be allowed to branch
-  - For example, a layer should likely not be introduced when the layer only contains one element, when this occurs it would be more beneficial to
-    copy such an existing layer and reference the same parent as the existing layer.
-
-==== Instructions
-
-* Instruction to push a variable by name onto the stack (ie `VARIABLE TIME`)
+* Layered data structures should have a shared optimization configuration:
+  - Example optimization rule; Skip parent not only when empty but merge when only containing one element.
+  - Example optimization rule; Parents which have many (transitive) children and many parent layers may want to merge with their parent layers.
+* Instruction to push a context-related variable by name onto the stack (`VARIABLE TIME`, `VARIABLE ADDRESS`)
 
 ==== Graph
 
+* Visualization of JUMPs to the same block
+* Visualization of JUMPs to unknown addresses
 * Account for dynamic jumps during optimization (See Barrier 05 basic graph vs optimized graph)
 * Implementation of all @Ignore'd processor tests as well as their implementation
-* Processor to connect SAVEs and LOADs' spaces to eachother in order to begin analysis on data flow through program store zones
 * Processor to replace VARIABLEs with known values
 * Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
 * KnownProcessor implementation for multi-value execution results
-
-==== Pathing System
-
-* Implementation of `decompiler-design.md` and `decompiler` as well as `pathing` features
 
 ==== Constraint System
 
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
-* Processor for discovering parameters still unknown, based on all possible flows to an instruction
+* Implementation of HASH as uninterpreted functions
 
 ==== Attacks
 
 * Mapping EVM compatible smart contracts to Cortex programs
-* Programs which do not require any solving constraint are currently not solveable
+* A path-predicate system for SymbolicVirtualMachine (To for example blacklist taking Barrier 04's last JUMP_IF)
+* A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
+  - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
 
 ==== Fuzzer
 
 * Modular fuzzer on which features can be enabled, to construct programs of certain difficulties.
 * Fuzzer should output a higher level tree of instruction types to be generated. This would allow it to generate more realistic programs in which
   instructions can be written which reliably reference variables, mapped data, and functions which have not been defined
-* Additional dynamic constructs for:
-  - Loops, using `ProgramBuilder.LOOP(...)`
-  - Switches, using `ProgramBuilder.IF(...)`
-  - Direct mapping; using `SAVE` & `LOAD` & `SWAP` to move rotate stack elements using memory
-  - Conditions; basic `JUMP_IF` wrapping
-  - Conditions bypassable via overflow; use Conditions logic, with `ADD`, `MUL`, and others which allow over or underflow.
-  - Invalid instructions; ex: `JUMP` out of bounds
 
 ==== Concepts
 
 * Deduplication of programs with matching assembly
 * Clustered solving with shared remote database
-* Skipping over unrelated code in pathing and solving
-* Applying Z3's push and pop, as well as reusing previously built contexts in solving
-* Precomputing & unrolling choiceless paths
-* Precomputing expressions
-* Processors with pathing model knowledge to allow more complex precomputing
 * Warning system when encountering programs which are especially difficult to decompile or solve
+* `decompiler-design.md` document
+* `fuzzer-design.md` document
 
 ==== Barrier Programs
 
