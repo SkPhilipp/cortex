@@ -1,4 +1,4 @@
-package com.hileco.cortex.server.serialization
+package com.hileco.cortex.database
 
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.debug.HALT

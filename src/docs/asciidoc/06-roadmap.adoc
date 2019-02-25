@@ -4,8 +4,6 @@
 
 ==== Core
 
-* Tag archival-demo-ui, remove feature/* branches in favour or archival tags
-* Remove all demonstration funcionalities
 * Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could
   then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
   Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors

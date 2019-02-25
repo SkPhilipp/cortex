@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.hileco.cortex.constraints.expressions.Expression
+import com.hileco.cortex.documentation.serialization.ByteArraySerializer
+import com.hileco.cortex.documentation.serialization.ExpressionSerializer
+import com.hileco.cortex.documentation.serialization.InstructionSerializer
+import com.hileco.cortex.documentation.serialization.LayeredStackSerializer
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.server.serialization.ByteArraySerializer
-import com.hileco.cortex.server.serialization.ExpressionSerializer
-import com.hileco.cortex.server.serialization.InstructionSerializer
-import com.hileco.cortex.server.serialization.LayeredStackSerializer
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.io.FileOutputStream
 import java.io.IOException
