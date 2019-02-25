@@ -12,8 +12,6 @@
 
 ==== Graph
 
-* Visualization of JUMPs to the same block
-* Visualization of JUMPs to unknown addresses
 * Account for dynamic jumps during optimization (See Barrier 05 basic graph vs optimized graph)
 * Implementation of all @Ignore'd processor tests as well as their implementation
 * Processor to replace VARIABLEs with known values

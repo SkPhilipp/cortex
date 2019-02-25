@@ -19,7 +19,7 @@ import com.hileco.cortex.vm.concrete.VirtualMachine
 import org.junit.Test
 
 class BarrierProgramTest {
-    private fun documentBarrier(index: Int, barrierProgram: BarrierProgram) {
+    private fun documentBarrier(barrierProgram: BarrierProgram) {
         val basicGraph = GraphBuilder.BASIC_GRAPH_BUILDER.build(barrierProgram.instructions)
         val basicGraphVisualized = VisualGraph()
         basicGraphVisualized.map(basicGraph)
@@ -36,9 +36,9 @@ class BarrierProgramTest {
 
     @Test
     fun documentAll() {
-        BarrierProgram.BARRIERS.forEachIndexed { index, barrierProgram ->
+        BarrierProgram.BARRIERS.forEach { barrierProgram ->
             if (barrierProgram.instructions.isNotEmpty() && barrierProgram.pseudocode.isNotBlank()) {
-                documentBarrier(index, barrierProgram)
+                documentBarrier(barrierProgram)
             }
         }
     }

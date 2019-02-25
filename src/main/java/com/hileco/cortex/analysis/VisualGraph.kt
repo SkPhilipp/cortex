@@ -42,9 +42,7 @@ class VisualGraph {
                     if (flow.target != null && flow.type.isJumping) {
                         val vizLinkSources = nodeMapping.computeIfAbsent(sourceVizNode) { ArrayList() }
                         val targetVizNode = vizNodeMapping[flow.target]!!
-                        if (sourceVizNode != targetVizNode) {
-                            vizLinkSources.add(between(port("$source"), targetVizNode.port(flow.target.toString(), Compass.WEST)))
-                        }
+                        vizLinkSources.add(between(port("$source"), targetVizNode.port(flow.target.toString(), Compass.WEST)))
                     }
                 }
             }
