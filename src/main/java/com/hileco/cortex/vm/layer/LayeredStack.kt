@@ -1,5 +1,6 @@
 package com.hileco.cortex.vm.layer
 
+import com.hileco.cortex.vm.layer.Layered.Companion.MINIMUM_LAYER_SIZE
 import java.lang.ref.WeakReference
 import java.math.BigInteger
 
@@ -14,6 +15,12 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
                         layer: HashMap<Int, V> = HashMap()) {
         var chosenParent = parent
         while (chosenParent != null && chosenParent.layer.size == 0) {
+            chosenParent = chosenParent.parent
+        }
+        if (chosenParent != null && chosenParent.layer.size < MINIMUM_LAYER_SIZE) {
+            chosenParent.layer.forEach { key, value ->
+                layer.putIfAbsent(key, value)
+            }
             chosenParent = chosenParent.parent
         }
         this.parent = chosenParent

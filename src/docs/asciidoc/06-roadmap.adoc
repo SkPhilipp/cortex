@@ -8,9 +8,6 @@
   then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
   Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
   would have to be revisited. For example; KnownProcessor only replaces self-contained nodes if the result is a single stack element.
-* Layered data structures should have a shared optimization configuration:
-  - Example optimization rule; Skip parent not only when empty but merge when only containing one element.
-  - Example optimization rule; Parents which have many (transitive) children and many parent layers may want to merge with their parent layers.
 * Instruction to push a context-related variable by name onto the stack (`VARIABLE TIME`, `VARIABLE ADDRESS`)
 
 ==== Graph
@@ -58,3 +55,7 @@
 * Barrier program whose outcome is influenced by preconfigured disk state
 * Barrier program which requires interaction with preconfigured disk state
 * Barrier program which requires multiple calls to solve
+
+==== Optimizations
+
+* Layered* constructs which have many children (including transitive) may want to merge with their parent layers.
