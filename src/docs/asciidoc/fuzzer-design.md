@@ -29,3 +29,5 @@ Defining these allows for constraints to be added, where a certain Definition mu
 - Require that at least one "Publicly Accessible" Function must exist, containing a Statement of type "LOOP\_XL" followed by a Statement of type "VULNERABLE\_CALL"
 
 These are essentially templates which can be expanded with additional definitions.
+
+Ideally the fuzzer would support enabling of certain features, to construct programs of specific difficulties.

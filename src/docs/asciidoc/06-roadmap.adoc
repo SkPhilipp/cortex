@@ -29,12 +29,6 @@
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
   - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
 
-==== Fuzzer
-
-* Modular fuzzer on which features can be enabled, to construct programs of certain difficulties.
-* Fuzzer should output a higher level tree of instruction types to be generated. This would allow it to generate more realistic programs in which
-  instructions can be written which reliably reference variables, mapped data, and functions which have not been defined
-
 ==== Concepts
 
 * Deduplication of programs with matching assembly
