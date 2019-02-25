@@ -8,7 +8,6 @@
   then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
   Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
   would have to be revisited. For example; KnownProcessor only replaces self-contained nodes if the result is a single stack element.
-* Instruction to push a context-related variable by name onto the stack (`VARIABLE TIME`, `VARIABLE ADDRESS`)
 
 ==== Graph
 

@@ -4,7 +4,9 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.math.ADD
+import com.hileco.cortex.instructions.stack.ExecutionVariable.INSTRUCTION_POSITION
 import com.hileco.cortex.instructions.stack.PUSH
+import com.hileco.cortex.instructions.stack.VARIABLE
 import org.junit.Assert
 import org.junit.Test
 
@@ -32,6 +34,24 @@ class KnownProcessorTest : ProcessorFuzzTest() {
                 NOOP(),
                 PUSH(11)
         ))
+    }
+
+    @Test
+    fun processVariables() {
+        val graphBuilder = GraphBuilder(listOf(
+                ParameterProcessor(),
+                KnownProcessor()
+        ))
+        val original = listOf(
+                NOOP(),
+                NOOP(),
+                VARIABLE(INSTRUCTION_POSITION),
+                PUSH(10),
+                ADD()
+        )
+        val graph = graphBuilder.build(original)
+        val instructions = graph.toInstructions()
+        Assert.assertEquals(instructions, original)
     }
 
     override fun fuzzTestableProcessor(): Processor {
