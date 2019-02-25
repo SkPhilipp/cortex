@@ -12,7 +12,6 @@
 
 ==== Graph
 
-* Account for dynamic jumps during optimization (See Barrier 05 basic graph vs optimized graph)
 * Implementation of all @Ignore'd processor tests as well as their implementation
 * Processor to replace VARIABLEs with known values
 * Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
