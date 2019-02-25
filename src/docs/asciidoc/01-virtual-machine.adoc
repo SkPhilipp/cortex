@@ -16,6 +16,8 @@ include::{snippets}/instructions/swap.adoc[]
 
 include::{snippets}/instructions/duplicate.adoc[]
 
+include::{snippets}/instructions/variable.adoc[]
+
 include::{snippets}/instructions/add.adoc[]
 
 include::{snippets}/instructions/subtract.adoc[]
