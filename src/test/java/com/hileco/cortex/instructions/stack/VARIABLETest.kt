@@ -20,7 +20,7 @@ class VARIABLETest : InstructionTest() {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 2)
-        Assert.assertEquals(BigInteger(stack.pop()), 0.toBigInteger())
         Assert.assertEquals(BigInteger(stack.pop()), 1.toBigInteger())
+        Assert.assertEquals(BigInteger(stack.pop()), 0.toBigInteger())
     }
 }

@@ -230,6 +230,21 @@ interface Expression {
         }
     }
 
+    data class Hash(val input: Expression, val method: String) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val inputExpr = input.asZ3Expr(context, referenceMapping)
+            val hashFunction = referenceMapping.hashFunctions.getOrPut("HASH_$method") {
+                // TODO encode that x != y implies HASH(x) != HASH(y)
+                context.mkFuncDecl("HASH_$method", context.intSort, context.intSort)
+            }
+            return context.mkApp(hashFunction, inputExpr)
+        }
+
+        override fun toString(): String {
+            return "HASH_$method($input)"
+        }
+    }
+
     companion object {
         private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Expression.Value && it.constant >= 0) }
         private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(0) }

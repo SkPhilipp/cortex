@@ -8,6 +8,7 @@ import java.util.*
 class Solver : ReferenceMapping {
     override val referencesForward: MutableMap<Expression.Reference, String> = HashMap()
     override val referencesBackward: MutableMap<String, Expression.Reference> = HashMap()
+    override val hashFunctions: MutableMap<String, FuncDecl> = HashMap()
 
     fun solve(expression: Expression): Solution {
         return try {

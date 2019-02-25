@@ -1,5 +1,6 @@
 package com.hileco.cortex.instructions.math
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.STACK_UNDERFLOW
@@ -13,7 +14,7 @@ import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-data class HASH(private val hashMethod: String) : Instruction() {
+data class HASH(private val method: String) : Instruction() {
     override val stackAdds: List<Int>
         get() = listOf(-1)
 
@@ -25,23 +26,35 @@ data class HASH(private val hashMethod: String) : Instruction() {
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
         try {
-            val messageDigest = MessageDigest.getInstance(hashMethod)
+            val messageDigest = MessageDigest.getInstance(method)
             if (programContext.stack.size() < 1) {
                 throw ProgramException(STACK_UNDERFLOW)
             }
             messageDigest.update(programContext.stack.pop())
             programContext.stack.push(messageDigest.digest())
         } catch (e: NoSuchAlgorithmException) {
-            throw IllegalArgumentException("Unknown hash method: $hashMethod", e)
+            throw IllegalArgumentException("Unknown hash method: $method", e)
         }
     }
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
-        throw UnsupportedOperationException()
+        try {
+            if (programContext.stack.size() < 1) {
+                throw ProgramException(STACK_UNDERFLOW)
+            }
+            val result = innerExecute(programContext.stack.pop())
+            programContext.stack.push(result)
+        } catch (e: NoSuchAlgorithmException) {
+            throw IllegalArgumentException("Unknown hash method: $method", e)
+        }
+    }
+
+    fun innerExecute(expression: Expression): Expression.Hash {
+        return Expression.Hash(expression, method)
     }
 
     override fun toString(): String {
-        return "HASH $hashMethod"
+        return "HASH $method"
     }
 
     companion object {

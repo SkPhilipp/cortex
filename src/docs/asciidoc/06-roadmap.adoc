@@ -2,16 +2,9 @@
 
 === Improvements
 
-==== Core
-
-* Implementation of an "internal" program counter, which is updated in sync with the main program counter. This internal program counter could
-  then be used to create instructions which do not update the main program counter, allowing for instructions to be inserted which only update the internal counter.
-  Allowing for such instructions would simplify many processors and allow for new ways of processing previously not possible, existing processors
-  would have to be revisited. For example; KnownProcessor only replaces self-contained nodes if the result is a single stack element.
-
 ==== Graph
 
-* Implementation of all @Ignore'd processor tests as well as their implementation
+* Implementation of remaining processors
 * Processor to replace VARIABLEs with known values
 * Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
 * KnownProcessor implementation for multi-value execution results
@@ -21,21 +14,13 @@
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Processor for simplifying constraints where an unknown input must match a HASH-provided value
 * Implementation of HASH as uninterpreted functions
+* Proper representation of Hash functions in solving layer
 
 ==== Attacks
 
-* Mapping EVM compatible smart contracts to Cortex programs
 * A path-predicate system for SymbolicVirtualMachine (To for example blacklist taking Barrier 04's last JUMP_IF)
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
   - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
-
-==== Concepts
-
-* Deduplication of programs with matching assembly
-* Clustered solving with shared remote database
-* Warning system when encountering programs which are especially difficult to decompile or solve
-* `decompiler-design.md` document
-* `fuzzer-design.md` document
 
 ==== Barrier Programs
 
@@ -49,3 +34,9 @@
 ==== Optimizations
 
 * Layered* constructs which have many children (including transitive) may want to merge with their parent layers.
+
+==== Concept Documents
+
+* `design-connected.md`
+* `design-decompiler.md`
+* `design-fuzzer.md`

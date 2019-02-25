@@ -1,9 +1,11 @@
 package com.hileco.cortex.constraints
 
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.instructions.conditions.EQUALS
 import com.hileco.cortex.instructions.conditions.LESS_THAN
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.math.ADD
+import com.hileco.cortex.instructions.math.HASH
 import com.hileco.cortex.instructions.math.MODULO
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
@@ -35,5 +37,22 @@ class SolverTest {
                 .paragraph("Suggested solution for expression to be true:").source(solution)
         Assert.assertTrue(solution.isSolvable)
         Assert.assertTrue((10L + onlyValue) % 0xffffffL < 10)
+    }
+
+    @Test
+    fun testSolveUninterpretedFunction() {
+        val instructions = listOf(
+                PUSH(0),
+                LOAD(CALL_DATA),
+                HASH("SHA3"),
+                PUSH(10),
+                HASH("SHA3"),
+                EQUALS()
+        )
+        val expressionGenerator = ExpressionGenerator()
+        instructions.forEach { expressionGenerator.addInstruction(it) }
+        val solver = Solver()
+        val solution = solver.solve(expressionGenerator.currentExpression)
+        Assert.assertTrue(solution.isSolvable)
     }
 }

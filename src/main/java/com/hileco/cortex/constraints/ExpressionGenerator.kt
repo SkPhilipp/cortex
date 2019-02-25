@@ -61,7 +61,10 @@ class ExpressionGenerator {
                 val input = pop()
                 stack.push(instruction.innerExecute(input))
             }
-            is HASH -> throw UnsupportedOperationException()
+            is HASH -> {
+                val input = pop()
+                stack.push(instruction.innerExecute(input))
+            }
             is BITWISE_XOR -> throw UnsupportedOperationException()
             is BITWISE_NOT -> throw UnsupportedOperationException()
             is SAVE -> throw UnsupportedOperationException()
