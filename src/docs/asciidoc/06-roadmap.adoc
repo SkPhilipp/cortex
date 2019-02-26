@@ -2,40 +2,23 @@
 
 === Improvements
 
-==== Graph
-
 * Implementation of remaining processors
 * Processor to replace VARIABLEs with known values
-* Processor to eliminate instructions which are known to never be on a winning path (ex; a program with a jump table containing read-only functions)
 * KnownProcessor implementation for multi-value execution results
-
-==== Constraint System
-
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
-* Processor for simplifying constraints where an unknown input must match a HASH-provided value
-* Implementation of HASH as uninterpreted functions
 * Proper representation of Hash functions in solving layer
-
-==== Attacks
-
 * A path-predicate system for SymbolicVirtualMachine (To for example blacklist taking Barrier 04's last JUMP_IF)
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
   - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
-
-==== Barrier Programs
-
 * Barrier program which contains conditional infinite loops
 * Barrier program which calls an external program
 * Barrier program which contains a predictable pseudorandom number generator
 * Barrier program whose outcome is influenced by preconfigured disk state
 * Barrier program which requires interaction with preconfigured disk state
 * Barrier program which requires multiple calls to solve
-
-==== Optimizations
-
 * Layered* constructs which have many children (including transitive) may want to merge with their parent layers.
 
-==== Concept Documents
+=== Concept Documents
 
 * `design-connected.md`
 * `design-decompiler.md`
