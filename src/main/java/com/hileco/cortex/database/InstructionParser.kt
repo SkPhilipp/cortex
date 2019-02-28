@@ -21,10 +21,7 @@ import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.math.*
-import com.hileco.cortex.instructions.stack.DUPLICATE
-import com.hileco.cortex.instructions.stack.POP
-import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.instructions.stack.SWAP
+import com.hileco.cortex.instructions.stack.*
 import com.hileco.cortex.vm.ProgramStoreZone
 import java.io.IOException
 import java.math.BigInteger
@@ -79,7 +76,8 @@ class InstructionParser {
                 "DUPLICATE" to require(1) { parameters -> DUPLICATE(Integer.valueOf(parameters[1])) },
                 "POP" to require(0) { POP() },
                 "PUSH" to require(1) { parameters -> PUSH(BigInteger(parameters[1]).toByteArray()) },
-                "SWAP" to require(2) { parameters -> SWAP(Integer.valueOf(parameters[1]), Integer.valueOf(parameters[2])) }
+                "SWAP" to require(2) { parameters -> SWAP(Integer.valueOf(parameters[1]), Integer.valueOf(parameters[2])) },
+                "VARIABLE" to require(1) { parameters -> VARIABLE(ExecutionVariable.valueOf(parameters[1])) }
         )
     }
 }

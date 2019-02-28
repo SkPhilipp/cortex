@@ -13,7 +13,6 @@ import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
-import org.apache.batik.svggen.font.table.Table.name
 
 data class VARIABLE(val executionVariable: ExecutionVariable) : Instruction() {
 
@@ -55,7 +54,7 @@ data class VARIABLE(val executionVariable: ExecutionVariable) : Instruction() {
     }
 
     override fun toString(): String {
-        return "VARIABLE $name"
+        return "VARIABLE $executionVariable"
     }
 
     override fun equals(other: Any?): Boolean {
