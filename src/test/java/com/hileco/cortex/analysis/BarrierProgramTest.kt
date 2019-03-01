@@ -29,7 +29,7 @@ class BarrierProgramTest {
         Documentation.of(BarrierProgram::class.simpleName!!)
                 .headingParagraph(barrierProgram.name)
                 .paragraph("Description: ${barrierProgram.description}")
-                .paragraph("Pseudocode").code(barrierProgram.pseudocode)
+                .paragraph("Pseudocode").source(barrierProgram.pseudocode)
                 .paragraph("Source").source(barrierProgram.instructions)
                 .paragraph("Visualization:").image(basicGraphVisualized.toBytes())
     }

@@ -1,15 +1,12 @@
 package com.hileco.cortex.documentation
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.hileco.cortex.instructions.Instruction
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
 
 class Document constructor(private val snippetPath: String,
-                           private val outputStream: OutputStream,
-                           private val objectMapper: ObjectMapper) {
+                           private val outputStream: OutputStream) {
     private val exceptionHandler: (IOException) -> Nothing
 
     init {
@@ -24,7 +21,6 @@ class Document constructor(private val snippetPath: String,
         } catch (e: IOException) {
             exceptionHandler(e)
         }
-
         return this
     }
 
@@ -33,18 +29,8 @@ class Document constructor(private val snippetPath: String,
         return this.append(source)
     }
 
-    fun code(source: String): Document {
-        this.append("```\n", source, "\n```\n\n")
-        return this
-    }
-
     fun source(source: Any): Document {
-        try {
-            this.append("```\n", objectMapper.writeValueAsString(source), "\n```\n\n")
-        } catch (e: JsonProcessingException) {
-            exceptionHandler(e)
-        }
-
+        this.append("```\n", "$source", "\n```\n\n")
         return this
     }
 

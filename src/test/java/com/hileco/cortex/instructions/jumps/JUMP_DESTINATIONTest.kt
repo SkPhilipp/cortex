@@ -16,7 +16,7 @@ class JUMP_DESTINATIONTest : InstructionTest() {
                 JUMP_DESTINATION())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/jump-destination")
-                .headingParagraph("JUMP_DESTINATION").paragraph("Marks a part of a program as being able to be jumped to. Often used in analysis to split code up into basic blocks.")
+                .headingParagraph("JUMP_DESTINATION").paragraph("Marks a part of a program as being able to be jumped to.")
         Assert.assertEquals(stack.size(), 0)
     }
 }

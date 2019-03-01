@@ -144,13 +144,9 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
     }
 
     override fun toString(): String {
-        val stringBuilder = StringBuilder()
-        stringBuilder.append("LayeredStack{")
-        stringBuilder.append(this.asSequence().joinToString(", ") { element ->
+        return this.asSequence().joinToString(prefix = "[", separator = ", ", postfix = "]") { element ->
             if (element is ByteArray) "${BigInteger(element)}" else "$element"
-        })
-        stringBuilder.append("}")
-        return "$stringBuilder"
+        }
     }
 
     override fun equals(other: Any?): Boolean {

@@ -14,6 +14,7 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import org.junit.Assert
 import org.junit.Test
+import kotlin.text.Typography.paragraph
 
 class SymbolicProgramExplorerTest {
     private fun testBarrier(barrierProgram: BarrierProgram) {
@@ -35,7 +36,7 @@ class SymbolicProgramExplorerTest {
                 .headingParagraph("Exploring ${barrierProgram.name}")
                 .paragraph("Program:").source(barrierProgram.instructions)
                 .paragraph("Total paths:").source(symbolicProgramExplorer.completed.size + symbolicProgramExplorer.paused.size)
-                .paragraph("Total time in milliseconds:").source("$time")
+                .paragraph("Total time in milliseconds:").source(time)
                 .paragraph("Suggested solution by Cortex:").source(solution)
     }
 
