@@ -52,8 +52,8 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
     }
 
     @Synchronized
-    fun peek(): V {
-        return if (this.size == 0) throw IndexOutOfBoundsException("size 0 <= index 0") else this[this.size - 1]
+    fun peek(offset: Int = 0): V {
+        return if (this.size <= offset) throw IndexOutOfBoundsException("size 0 <= index 0") else this[this.size - offset - 1]
     }
 
     @Synchronized
@@ -133,7 +133,7 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
 
     @Synchronized
     fun duplicate(topOffset: Int) {
-        val value = this[(this.size - 1) - topOffset]
+        val value = peek(topOffset)
         push(value)
     }
 

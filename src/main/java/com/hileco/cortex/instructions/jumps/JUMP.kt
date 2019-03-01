@@ -23,17 +23,17 @@ class JUMP : JumpingInstruction() {
         if (programContext.stack.size() < 1) {
             throw ProgramException(STACK_UNDERFLOW)
         }
-        val nextInstructionPosition = BigInteger(programContext.stack.pop()).toInt()
-        performJump(programContext, nextInstructionPosition)
+        val address = BigInteger(programContext.stack.pop()).toInt()
+        performJump(programContext, address)
     }
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         if (programContext.stack.size() < 1) {
             throw ProgramException(STACK_UNDERFLOW)
         }
-        val targetExpression = programContext.stack.pop() as? Expression.Value
-                ?: throw UnsupportedOperationException("Jumps to non-concrete targets are not supported for symbolic execution")
-        performJump(programContext, targetExpression.constant.toInt())
+        val addressExpression = programContext.stack.pop() as? Expression.Value
+                ?: throw UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
+        performJump(programContext, addressExpression.constant.toInt())
     }
 
     companion object {

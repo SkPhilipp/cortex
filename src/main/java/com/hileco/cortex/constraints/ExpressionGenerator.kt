@@ -29,7 +29,7 @@ class ExpressionGenerator {
         }
 
     fun viewExpression(offset: Int): Expression {
-        return stack[stack.size() - 1 - offset]
+        return stack.peek(offset)
     }
 
     fun viewAllExpressions(): LayeredStack<Expression> {

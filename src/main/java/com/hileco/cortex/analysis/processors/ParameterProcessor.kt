@@ -27,7 +27,7 @@ class ParameterProcessor : Processor {
                         stack.clear()
                         stack.push(graphNode)
                     } else {
-                        val parameter = stack[(stack.size() - 1) - instruction.topOffset]
+                        val parameter = stack.peek(instruction.topOffset)
                         graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
                         graph.edgeMapping.add(graphNode, EdgeParameters(listOf(parameter)))
                         stack.push(graphNode)
@@ -43,7 +43,7 @@ class ParameterProcessor : Processor {
                         }
                         val totalAvailable = Math.min(stackParametersSize, stackParametersSize - totalMissing)
                         for (i in 0 until totalAvailable) {
-                            val parameter = stack[stackSize - 1 - i]
+                            val parameter = stack.peek(i)
                             graph.edgeMapping.add(parameter, EdgeParameterConsumer(graphNode))
                             parameters.add(parameter)
                         }

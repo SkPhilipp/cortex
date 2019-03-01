@@ -73,7 +73,7 @@ class LayeredStackFuzzTest {
 
     private fun testDuplicate(stack: LayeredStack<Int>) {
         val offset = random.nextInt(5)
-        val element = stack[stack.size() - 1 - offset]
+        val element = stack.peek(offset)
         stack.duplicate(offset)
         Assert.assertEquals("peek should return the duplicated element", element, stack.peek())
     }
@@ -81,11 +81,11 @@ class LayeredStackFuzzTest {
     private fun testSwap(stack: LayeredStack<Int>) {
         val offsetA = random.nextInt(5)
         val offsetB = random.nextInt(5)
-        val elementA = stack[stack.size() - 1 - offsetA]
-        val elementB = stack[stack.size() - 1 - offsetB]
+        val elementA = stack.peek(offsetA)
+        val elementB = stack.peek(offsetB)
         stack.swap(offsetA, offsetB)
-        Assert.assertEquals("elementA should take the position of offsetB", elementA, stack[stack.size() - 1 - offsetB])
-        Assert.assertEquals("elementB should take the position of offsetA", elementB, stack[stack.size() - 1 - offsetA])
+        Assert.assertEquals("elementA should take the position of offsetB", elementA, stack.peek(offsetB))
+        Assert.assertEquals("elementB should take the position of offsetA", elementB, stack.peek(offsetA))
     }
 
     private fun testGetSet(stack: LayeredStack<Int>) {
