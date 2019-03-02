@@ -15,7 +15,6 @@ import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.io.LOAD
-import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.ProgramRunner
@@ -36,8 +35,8 @@ class BarrierProgramTest {
                 .paragraph("Pseudocode").source(barrierProgram.pseudocode)
                 .paragraph("Source").source(barrierProgram.instructions)
                 .paragraph("Visualization:").image(basicGraphVisualized.toBytes())
-        if (barrierProgram.setup.isNotEmpty()) {
-            document.paragraph("Setup").source(barrierProgram.setup)
+        if (barrierProgram.diskSetup.isNotEmpty()) {
+            document.paragraph("Disk setup").source(barrierProgram.diskSetup)
         }
     }
 
@@ -160,14 +159,7 @@ class BarrierProgramTest {
         val startTime = System.currentTimeMillis()
         val program = Program(BARRIER_09.instructions)
         val programContext = ProgramContext(program)
-        BARRIER_09.setup.forEach { zone, mapping ->
-            if (zone == ProgramStoreZone.DISK) {
-                mapping.forEach { key, value ->
-                    val valueBytes = value.toByteArray()
-                    program.storage.write(key.toInt() * LOAD.SIZE + (LOAD.SIZE - valueBytes.size), valueBytes)
-                }
-            }
-        }
+        BARRIER_09.setup(program)
         val callDataOne = 12345.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext, startTime = startTime)

@@ -8,6 +8,7 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_09
 import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.Expression.Or
@@ -20,6 +21,7 @@ class SymbolicProgramExplorerTest {
     private fun testBarrier(barrierProgram: BarrierProgram) {
         val start = System.currentTimeMillis()
         val program = SymbolicProgram(barrierProgram.instructions)
+        barrierProgram.setup(program)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
         val symbolicProgramExplorer = SymbolicProgramExplorer(virtualMachine)
@@ -72,5 +74,10 @@ class SymbolicProgramExplorerTest {
     @Test
     fun testBarrier07() {
         testBarrier(BARRIER_07)
+    }
+
+    @Test
+    fun testBarrier09() {
+        testBarrier(BARRIER_09)
     }
 }

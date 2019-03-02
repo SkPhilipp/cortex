@@ -1,19 +1,36 @@
 package com.hileco.cortex.analysis
 
+import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramBuilder
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
+import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.stack.ExecutionVariable.*
 import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
-import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.*
+import com.hileco.cortex.vm.concrete.Program
+import com.hileco.cortex.vm.symbolic.SymbolicProgram
 import java.math.BigInteger
 
 data class BarrierProgram(val name: String,
                           val description: String,
                           val pseudocode: String,
                           val instructions: List<Instruction>,
-                          val setup: Map<ProgramStoreZone, Map<BigInteger, BigInteger>> = mapOf()) {
+                          val diskSetup: Map<BigInteger, BigInteger> = mapOf()) {
+
+    fun setup(program: Program) {
+        diskSetup.forEach { key, value ->
+            val valueBytes = value.toByteArray()
+            program.storage.write(key.toInt() * LOAD.SIZE + (LOAD.SIZE - valueBytes.size), valueBytes)
+        }
+    }
+
+    fun setup(program: SymbolicProgram) {
+        diskSetup.forEach { key, value ->
+            program.storage[key] = Expression.Value(value.toLong())
+        }
+    }
+
     companion object {
         val BARRIER_00 = BarrierProgram("Barrier 00",
                 "An unconditional win.",
@@ -187,7 +204,7 @@ data class BarrierProgram(val name: String,
                     })
                     build()
                 },
-                mapOf(DISK to mapOf(1.toBigInteger() to 12345.toBigInteger())))
+                mapOf(1.toBigInteger() to 12345.toBigInteger()))
 
         val BARRIERS = listOf(
                 BARRIER_00,
