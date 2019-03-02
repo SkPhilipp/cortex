@@ -9,11 +9,13 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_08
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_09
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.io.LOAD
+import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.ProgramRunner
@@ -28,12 +30,15 @@ class BarrierProgramTest {
         val optimizedGraph = GraphBuilder.OPTIMIZED_GRAPH_BUILDER.build(barrierProgram.instructions)
         val optimizedGraphVisualized = VisualGraph()
         optimizedGraphVisualized.map(optimizedGraph)
-        Documentation.of(BarrierProgram::class.simpleName!!)
-                .headingParagraph(barrierProgram.name)
+        val document = Documentation.of(BarrierProgram::class.simpleName!!)
+        document.headingParagraph(barrierProgram.name)
                 .paragraph("Description: ${barrierProgram.description}")
                 .paragraph("Pseudocode").source(barrierProgram.pseudocode)
                 .paragraph("Source").source(barrierProgram.instructions)
                 .paragraph("Visualization:").image(basicGraphVisualized.toBytes())
+        if (barrierProgram.setup.isNotEmpty()) {
+            document.paragraph("Setup").source(barrierProgram.setup)
+        }
     }
 
     @Test
@@ -144,6 +149,26 @@ class BarrierProgramTest {
         val program = Program(BARRIER_08.instructions, 12345.toBigInteger())
         val programContext = ProgramContext(program)
         val callDataOne = program.address.add(startTime.toBigInteger()).toByteArray()
+        programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
+        val virtualMachine = VirtualMachine(programContext, startTime = startTime)
+        val programRunner = ProgramRunner(virtualMachine)
+        programRunner.run()
+    }
+
+    @Test(expected = ProgramException::class)
+    fun testBarrier09() {
+        val startTime = System.currentTimeMillis()
+        val program = Program(BARRIER_09.instructions)
+        val programContext = ProgramContext(program)
+        BARRIER_09.setup.forEach { zone, mapping ->
+            if (zone == ProgramStoreZone.DISK) {
+                mapping.forEach { key, value ->
+                    val valueBytes = value.toByteArray()
+                    program.storage.write(key.toInt() * LOAD.SIZE + (LOAD.SIZE - valueBytes.size), valueBytes)
+                }
+            }
+        }
+        val callDataOne = 12345.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext, startTime = startTime)
         val programRunner = ProgramRunner(virtualMachine)

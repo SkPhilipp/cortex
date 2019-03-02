@@ -5,11 +5,15 @@ import com.hileco.cortex.instructions.ProgramBuilder
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.instructions.stack.ExecutionVariable.*
 import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.ProgramStoreZone.*
 import java.math.BigInteger
 
-data class BarrierProgram(val name: String, val description: String, val pseudocode: String, val instructions: List<Instruction>) {
+data class BarrierProgram(val name: String,
+                          val description: String,
+                          val pseudocode: String,
+                          val instructions: List<Instruction>,
+                          val setup: Map<ProgramStoreZone, Map<BigInteger, BigInteger>> = mapOf()) {
     companion object {
         val BARRIER_00 = BarrierProgram("Barrier 00",
                 "An unconditional win.",
@@ -170,6 +174,20 @@ data class BarrierProgram(val name: String, val description: String, val pseudoc
                     })
                     build()
                 })
+        val BARRIER_09 = BarrierProgram("Barrier 09",
+                "Requires understanding of preconfigured `DISK` state.",
+                """ if (CALL_DATA[1] == DISK[1]) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(ProgramBuilder()) {
+                    blockIf(conditionBody = {
+                        equals(load(CALL_DATA, push(1)), load(DISK, push(1)))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                },
+                mapOf(DISK to mapOf(1.toBigInteger() to 12345.toBigInteger())))
 
         val BARRIERS = listOf(
                 BARRIER_00,
@@ -180,6 +198,7 @@ data class BarrierProgram(val name: String, val description: String, val pseudoc
                 BARRIER_05,
                 BARRIER_06,
                 BARRIER_07,
-                BARRIER_08)
+                BARRIER_08,
+                BARRIER_09)
     }
 }

@@ -31,7 +31,7 @@ data class HASH(private val method: String) : Instruction() {
             if (programContext.stack.size() < 1) {
                 throw ProgramException(STACK_UNDERFLOW)
             }
-            // TODO: This conversion is currently needed due to conversions to and from BigInteger, see also BARRIER_08
+            // TODO: This conversion is currently needed due to BigInteger-sourced values not yet being padded with 0
             val byteArray = BigInteger(programContext.stack.pop()).toByteArray()
             messageDigest.update(byteArray)
             programContext.stack.push(messageDigest.digest())
