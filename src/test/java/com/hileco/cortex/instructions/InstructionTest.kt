@@ -10,11 +10,7 @@ import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 
 open class InstructionTest {
-    fun run(instruction: List<Instruction>): ProgramContext {
-        return this.run(instruction) { _, _ -> }
-    }
-
-    fun run(instructions: List<Instruction>, customSetup: (VirtualMachine, ProgramContext) -> Unit): ProgramContext {
+    fun run(instructions: List<Instruction>, customSetup: (VirtualMachine, ProgramContext) -> Unit = { _, _ -> }): ProgramContext {
         val program = Program(instructions)
         val programContext = ProgramContext(program)
         val virtualMachine = VirtualMachine(programContext)

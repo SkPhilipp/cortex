@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.stack.SWAP
+import com.hileco.cortex.instructions.stack.VARIABLE
 import com.hileco.cortex.vm.ProgramZone
 
 class EdgeMapping {
@@ -62,7 +63,7 @@ class EdgeMapping {
     fun isSelfContained(graphNode: GraphNode): Boolean {
         return fully(graphNode) {
             val instruction = it.instruction
-            setOf(ProgramZone.STACK).containsAll(instruction.instructionModifiers) && instruction !is SWAP
+            setOf(ProgramZone.STACK).containsAll(instruction.instructionModifiers) && instruction !is SWAP && instruction !is VARIABLE
         }
     }
 

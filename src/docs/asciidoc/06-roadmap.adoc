@@ -3,7 +3,6 @@
 === Improvements
 
 * Implementation of remaining processors
-* Processor to replace VARIABLEs with known values
 * KnownProcessor implementation for multi-value execution results
 * Verify and implement handling of SAVE instructions. (This could be done, however the current solution would require ordered solving of multiple expressions.)
 * Proper representation of Hash functions in solving layer
@@ -19,6 +18,7 @@
 * Barrier program which requires interaction with preconfigured disk state
 * Barrier program which requires multiple calls to solve
 * Layered* constructs which have many children (including transitive) may want to merge with their parent layers. (Note that this must lock on the parent)
+* Refactor symbolic references to allow named variables (such as start time), as well as program-context bound named variables (such as caller address)
 
 === Concept Documents
 

@@ -144,7 +144,7 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
     }
 
     override fun toString(): String {
-        return this.asSequence().joinToString(prefix = "[", separator = ", ", postfix = "]") { element ->
+        return this.asSequence().joinToString(prefix = "[", postfix = "]") { element ->
             if (element is ByteArray) "${BigInteger(element)}" else "$element"
         }
     }

@@ -1,6 +1,8 @@
 package com.hileco.cortex.instructions.stack
 
 enum class ExecutionVariable {
-    ADDRESS,
+    ADDRESS_SELF,
+    ADDRESS_CALLER,
+    START_TIME,
     INSTRUCTION_POSITION
 }
