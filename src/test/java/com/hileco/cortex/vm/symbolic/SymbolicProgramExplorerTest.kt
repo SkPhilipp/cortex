@@ -35,7 +35,6 @@ class SymbolicProgramExplorerTest {
         Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")
                 .paragraph("Program:").source(barrierProgram.instructions)
-                .paragraph("Total paths:").source(symbolicProgramExplorer.completed.size + symbolicProgramExplorer.paused.size)
                 .paragraph("Total time in milliseconds:").source(time)
                 .paragraph("Suggested solution by Cortex:").source(solution)
     }
