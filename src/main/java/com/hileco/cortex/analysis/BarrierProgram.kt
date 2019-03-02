@@ -206,6 +206,34 @@ data class BarrierProgram(val name: String,
                 },
                 mapOf(1.toBigInteger() to 12345.toBigInteger()))
 
+        val BARRIER_10 = BarrierProgram("Barrier 10",
+                "Requires multiple calls and understanding of `DISK` state throughout the multiple calls.",
+                """ if (CALL_DATA[1] == 1) {
+                  |     if (DISK[1] == 12345) {
+                  |         HALT(WINNER)
+                  |     }
+                  | }
+                  | if (CALL_DATA[1] == 2) {
+                  |     DISK[1] = CALL_DATA[2]
+                  | }""".trimMargin(),
+                with(ProgramBuilder()) {
+                    blockIf(conditionBody = {
+                        equals(load(CALL_DATA, push(1)), push(1))
+                    }, thenBody = {
+                        blockIf(conditionBody = {
+                            equals(load(DISK, push(1)), push(12345))
+                        }, thenBody = {
+                            halt(WINNER)
+                        })
+                    })
+                    blockIf(conditionBody = {
+                        equals(load(CALL_DATA, push(1)), push(2))
+                    }, thenBody = {
+                        save(DISK, load(CALL_DATA, push(2)), push(1))
+                    })
+                    build()
+                })
+
         val BARRIERS = listOf(
                 BARRIER_00,
                 BARRIER_01,
@@ -216,6 +244,7 @@ data class BarrierProgram(val name: String,
                 BARRIER_06,
                 BARRIER_07,
                 BARRIER_08,
-                BARRIER_09)
+                BARRIER_09,
+                BARRIER_10)
     }
 }
