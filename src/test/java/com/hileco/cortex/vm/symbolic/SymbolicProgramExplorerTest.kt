@@ -36,7 +36,7 @@ class SymbolicProgramExplorerTest {
         Assert.assertTrue(solution.solvable)
         Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")
-                .paragraph("Program:").source(barrierProgram.instructions)
+                .paragraph("Program:").source(barrierProgram.pseudocode)
                 .paragraph("Total time in milliseconds:").source(time)
                 .paragraph("Suggested solution by Cortex:").source(solution)
     }

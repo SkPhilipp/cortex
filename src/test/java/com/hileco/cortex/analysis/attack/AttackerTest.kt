@@ -35,7 +35,7 @@ class AttackerTest {
         val solution = solutions.first()
         Documentation.of(Attacker::class.simpleName!!)
                 .headingParagraph("Solving ${barrierProgram.name}")
-                .paragraph("Program:").source(barrierProgram.instructions)
+                .paragraph("Program:").source(barrierProgram.pseudocode)
                 .paragraph("Attack method:").source(attackName)
                 .paragraph("Suggested solution by Cortex:").source(solution)
         return solution
