@@ -11,6 +11,7 @@ import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
+import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -30,7 +31,9 @@ data class HASH(private val method: String) : Instruction() {
             if (programContext.stack.size() < 1) {
                 throw ProgramException(STACK_UNDERFLOW)
             }
-            messageDigest.update(programContext.stack.pop())
+            // TODO: This conversion is currently needed due to conversions to and from BigInteger, see also BARRIER_08
+            val byteArray = BigInteger(programContext.stack.pop()).toByteArray()
+            messageDigest.update(byteArray)
             programContext.stack.push(messageDigest.digest())
         } catch (e: NoSuchAlgorithmException) {
             throw IllegalArgumentException("Unknown hash method: $method", e)

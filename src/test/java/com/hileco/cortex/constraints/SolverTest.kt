@@ -44,9 +44,9 @@ class SolverTest {
         val instructions = listOf(
                 PUSH(0),
                 LOAD(CALL_DATA),
-                HASH("SHA3"),
+                HASH("SHA-256"),
                 PUSH(10),
-                HASH("SHA3"),
+                HASH("SHA-256"),
                 EQUALS()
         )
         val expressionGenerator = ExpressionGenerator()

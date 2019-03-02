@@ -3,6 +3,7 @@ package com.hileco.cortex.analysis
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramBuilder
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
+import com.hileco.cortex.instructions.stack.ExecutionVariable.*
 import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
@@ -153,6 +154,22 @@ data class BarrierProgram(val name: String, val description: String, val pseudoc
                     })
                     build()
                 })
+        val BARRIER_08 = BarrierProgram("Barrier 08",
+                "Represent the mechanics of very primitive PRNGs.",
+                """ VAR seed = HASH(ADDRESS_SELF + START_TIME)
+                  | if (seed == HASH(CALL_DATA[1])) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(ProgramBuilder()) {
+                    val varSeed = 1000L
+                    save(MEMORY, hash("SHA-256", add(variable(ADDRESS_SELF), add(variable(ADDRESS_CALLER), variable(START_TIME)))), push(varSeed))
+                    blockIf(conditionBody = {
+                        equals(hash("SHA-256", load(CALL_DATA, push(1))), load(MEMORY, push(varSeed)))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
 
         val BARRIERS = listOf(
                 BARRIER_00,
@@ -162,6 +179,7 @@ data class BarrierProgram(val name: String, val description: String, val pseudoc
                 BARRIER_04,
                 BARRIER_05,
                 BARRIER_06,
-                BARRIER_07)
+                BARRIER_07,
+                BARRIER_08)
     }
 }

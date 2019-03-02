@@ -7,6 +7,8 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_08
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
@@ -119,6 +121,31 @@ class BarrierProgramTest {
         programContext.callData.write(2 * LOAD.SIZE + (LOAD.SIZE - callDataTwo.size), callDataTwo)
         val virtualMachine = VirtualMachine(programContext)
         virtualMachine.atlas[1234.toBigInteger()] = Program(listOf(HALT(WINNER)))
+        val programRunner = ProgramRunner(virtualMachine)
+        programRunner.run()
+    }
+
+    @Test(expected = ProgramException::class)
+    fun testBarrier07() {
+        val program = Program(BARRIER_07.instructions)
+        val programContext = ProgramContext(program)
+        val callDataOne = 24690.toBigInteger().toByteArray()
+        programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
+        val callDataTwo = 513.toBigInteger().toByteArray()
+        programContext.callData.write(2 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataTwo)
+        val virtualMachine = VirtualMachine(programContext)
+        val programRunner = ProgramRunner(virtualMachine)
+        programRunner.run()
+    }
+
+    @Test(expected = ProgramException::class)
+    fun testBarrier08() {
+        val startTime = System.currentTimeMillis()
+        val program = Program(BARRIER_08.instructions, 12345.toBigInteger())
+        val programContext = ProgramContext(program)
+        val callDataOne = program.address.add(startTime.toBigInteger()).toByteArray()
+        programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
+        val virtualMachine = VirtualMachine(programContext, startTime = startTime)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
     }

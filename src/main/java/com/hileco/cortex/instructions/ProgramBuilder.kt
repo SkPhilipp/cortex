@@ -20,13 +20,9 @@ import com.hileco.cortex.instructions.jumps.JUMP
 import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.math.*
-import com.hileco.cortex.instructions.stack.DUPLICATE
-import com.hileco.cortex.instructions.stack.POP
-import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.instructions.stack.SWAP
+import com.hileco.cortex.instructions.stack.*
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
-import java.math.BigInteger
 import java.util.*
 
 class ProgramBuilderHandle
@@ -166,8 +162,7 @@ class ProgramBuilder {
     }
 
     fun hash(hashMethod: String,
-             right: ProgramBuilderHandle = handle,
-             left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+             input: ProgramBuilderHandle = handle): ProgramBuilderHandle {
         instructions.add { HASH(hashMethod) }
         return handle
     }
@@ -211,6 +206,11 @@ class ProgramBuilder {
 
     fun push(value: Long): ProgramBuilderHandle {
         instructions.add { PUSH(value) }
+        return handle
+    }
+
+    fun variable(executionVariable: ExecutionVariable): ProgramBuilderHandle {
+        instructions.add { VARIABLE(executionVariable) }
         return handle
     }
 
