@@ -29,13 +29,13 @@ class SolverTest {
         instructions.forEach { expressionGenerator.addInstruction(it) }
         val solver = Solver()
         val solution = solver.solve(expressionGenerator.currentExpression)
-        val onlyValue = solution.possibleValues.values.first()
+        val onlyValue = solution.values.values.first()
         Documentation.of(Solver::class.simpleName!!)
                 .headingParagraph(Solver::class.simpleName!!)
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting expression:").source(expressionGenerator.currentExpression)
                 .paragraph("Suggested solution for expression to be true:").source(solution)
-        Assert.assertTrue(solution.isSolvable)
+        Assert.assertTrue(solution.solvable)
         Assert.assertTrue((10L + onlyValue) % 0xffffffL < 10)
     }
 
@@ -53,6 +53,6 @@ class SolverTest {
         instructions.forEach { expressionGenerator.addInstruction(it) }
         val solver = Solver()
         val solution = solver.solve(expressionGenerator.currentExpression)
-        Assert.assertTrue(solution.isSolvable)
+        Assert.assertTrue(solution.solvable)
     }
 }

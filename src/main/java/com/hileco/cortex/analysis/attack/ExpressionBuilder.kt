@@ -25,7 +25,7 @@ class ExpressionBuilder {
             }
             if (element.instruction is JUMP_IF) {
                 val target = element.nextFlow?.source ?: element.wrappingFlow.target!!
-                val takeJump = target == element.line && element.nextFlow != null && element.nextFlow.type.isConditional && element.nextFlow.type.isJumping
+                val takeJump = target == element.line && element.nextFlow != null && element.nextFlow.type.conditional && element.nextFlow.type.jumps
                 val expression = if (takeJump) {
                     expressionGenerator.viewExpression(JUMP_IF.CONDITION.position)
                 } else {

@@ -12,12 +12,12 @@ import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 
 class AttackProgramBuilder {
     fun build(targetAddress: Long, solution: Solution): List<Instruction> {
-        if (!solution.isSolvable) {
+        if (!solution.solvable) {
             throw IllegalArgumentException("Only solveable solutions are supported.")
         }
         val instructions = ArrayList<Instruction>()
         var callDataEnd = 0L
-        solution.possibleValues.forEach { reference, suggestedValue ->
+        solution.values.forEach { reference, suggestedValue ->
             if (reference.type == CALL_DATA && reference.address is Expression.Value) {
                 instructions.add(PUSH(suggestedValue))
                 instructions.add(PUSH(reference.address.constant))

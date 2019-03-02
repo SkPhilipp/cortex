@@ -1,8 +1,8 @@
 package com.hileco.cortex.analysis.edges
 
-enum class FlowType(val isJumping: Boolean,
-                    val isConditional: Boolean,
-                    val isDynamic: Boolean) {
+enum class FlowType(val jumps: Boolean,
+                    val conditional: Boolean,
+                    val dynamic: Boolean) {
     PROGRAM_FLOW(false, false, false),
     PROGRAM_END(false, false, false),
     INSTRUCTION_JUMP_IF(true, false, false),

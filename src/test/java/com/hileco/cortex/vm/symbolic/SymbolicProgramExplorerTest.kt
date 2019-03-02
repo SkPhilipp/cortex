@@ -33,7 +33,7 @@ class SymbolicProgramExplorerTest {
                 .forEach { conditions.add(it.condition()) }
         val solver = Solver()
         val solution = solver.solve(Or(conditions))
-        Assert.assertTrue(solution.isSolvable)
+        Assert.assertTrue(solution.solvable)
         Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")
                 .paragraph("Program:").source(barrierProgram.instructions)

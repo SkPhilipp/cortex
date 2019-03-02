@@ -31,7 +31,7 @@ class AttackerTest {
         val attacker = Attacker(targetPredicate, stackConstraints)
         val solutions = attacker.solve(graph)
         Assert.assertNotEquals(0, solutions.size)
-        Assert.assertTrue(solutions.first().isSolvable)
+        Assert.assertTrue(solutions.first().solvable)
         val solution = solutions.first()
         Documentation.of(Attacker::class.simpleName!!)
                 .headingParagraph("Solving ${barrierProgram.name}")
@@ -49,8 +49,8 @@ class AttackerTest {
     @Test
     fun testBarrier01() {
         val solution = attackBarrier(BARRIER_01)
-        Assert.assertEquals(1, solution.possibleValues.size)
-        val entry = solution.possibleValues.entries.first()
+        Assert.assertEquals(1, solution.values.size)
+        val entry = solution.values.entries.first()
         Assert.assertEquals(Reference(CALL_DATA, Value(1L)), entry.key)
         Assert.assertEquals(24690L, entry.value)
     }
@@ -68,7 +68,7 @@ class AttackerTest {
     @Test
     fun testBarrier06() {
         val solution = attackBarrier(BARRIER_06, TARGET_IS_CALL, listOf(CONSTRAINT_CALL_ADDRESS(1234)), "TARGET_IS_CALL WITH CONSTRAINT_CALL_ADDRESS(1234)")
-        Assert.assertEquals(24690L, solution.possibleValues[Reference(CALL_DATA, Value(1L))])
-        Assert.assertEquals(1234L, solution.possibleValues[Reference(CALL_DATA, Value(2L))])
+        Assert.assertEquals(24690L, solution.values[Reference(CALL_DATA, Value(1L))])
+        Assert.assertEquals(1234L, solution.values[Reference(CALL_DATA, Value(2L))])
     }
 }

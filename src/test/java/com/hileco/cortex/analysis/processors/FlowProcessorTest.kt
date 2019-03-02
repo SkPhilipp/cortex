@@ -54,7 +54,7 @@ class FlowProcessorTest : ProcessorFuzzTest() {
         }
         val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(instructions)
         val flowMapping = graph.edgeMapping.get(FlowMapping::class.java).first()
-        Assert.assertEquals(flowMapping.flows.count { it.type.isDynamic }, 2)
+        Assert.assertEquals(flowMapping.flows.count { it.type.dynamic }, 2)
     }
 
     override fun fuzzTestableProcessor(): Processor {
