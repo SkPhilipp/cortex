@@ -7,6 +7,7 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_02
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
+import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
 import com.hileco.cortex.constraints.Solver
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.Expression.Or
@@ -14,7 +15,6 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import org.junit.Assert
 import org.junit.Test
-import kotlin.text.Typography.paragraph
 
 class SymbolicProgramExplorerTest {
     private fun testBarrier(barrierProgram: BarrierProgram) {
@@ -68,5 +68,10 @@ class SymbolicProgramExplorerTest {
     @Test
     fun testBarrier05() {
         testBarrier(BARRIER_05)
+    }
+
+    @Test
+    fun testBarrier07() {
+        testBarrier(BARRIER_07)
     }
 }

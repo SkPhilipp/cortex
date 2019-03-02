@@ -13,7 +13,6 @@
 * Allow for SymbolicVirtualMachine to use multiple threads
 * A customizable strategy for applying limits to SymbolicVirtualMachines, such as path size limits & time-based cancelling
 * Publish Barrier programs as separate documents, displaying only pseudocode in main documentation
-* Barrier program which contains conditional infinite loops
 * Barrier program which calls itself
 * Barrier program which contains a predictable pseudorandom number generator
 * Barrier program whose outcome is influenced by preconfigured disk state

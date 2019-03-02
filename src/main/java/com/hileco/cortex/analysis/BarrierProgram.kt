@@ -134,6 +134,25 @@ data class BarrierProgram(val name: String, val description: String, val pseudoc
                     })
                     build()
                 })
+        val BARRIER_07 = BarrierProgram("Barrier 07",
+                "Contains an infinite loop.",
+                """ WHILE(CALL_DATA[1] / 2 == 12345) {
+                  |     WHILE(CALL_DATA[2] % 500 == 12) {
+                  |     }
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(ProgramBuilder()) {
+                    blockWhile(conditionBody = {
+                        equals(divide(push(2), load(CALL_DATA, push(1))), push(12345))
+                    }, loopBody = { _, _ ->
+                        blockWhile(conditionBody = {
+                            equals(modulo(push(500), load(CALL_DATA, push(2))), push(12))
+                        }, loopBody = { _, _ ->
+                        })
+                        halt(WINNER)
+                    })
+                    build()
+                })
 
         val BARRIERS = listOf(
                 BARRIER_00,
@@ -142,6 +161,7 @@ data class BarrierProgram(val name: String, val description: String, val pseudoc
                 BARRIER_03,
                 BARRIER_04,
                 BARRIER_05,
-                BARRIER_06)
+                BARRIER_06,
+                BARRIER_07)
     }
 }
