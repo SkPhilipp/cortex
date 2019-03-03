@@ -1,4 +1,4 @@
-package com.hileco.cortex.vm.symbolic
+package com.hileco.cortex.analysis.explore
 
 import com.hileco.cortex.analysis.BarrierProgram
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_00
@@ -14,6 +14,9 @@ import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.Expression.Or
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
+import com.hileco.cortex.vm.symbolic.SymbolicProgram
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import org.junit.Assert
 import org.junit.Test
 

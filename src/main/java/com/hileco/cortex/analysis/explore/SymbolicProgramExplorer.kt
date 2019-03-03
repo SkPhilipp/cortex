@@ -1,4 +1,4 @@
-package com.hileco.cortex.vm.symbolic
+package com.hileco.cortex.analysis.explore
 
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
@@ -7,6 +7,9 @@ import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.vm.ProgramConstants.Companion.DEFAULT_BRANCH_LIMIT
 import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
+import com.hileco.cortex.vm.symbolic.SymbolicPathEntry
+import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
+import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.util.concurrent.BlockingDeque
 import java.util.concurrent.LinkedBlockingDeque
 
