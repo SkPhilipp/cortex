@@ -5,7 +5,6 @@
 * Implementation of remaining processors
 * KnownProcessor implementation for multi-value execution results
 * Proper representation of Hash functions in solving layer
-* A path-predicate system for SymbolicVirtualMachine (To for example blacklist taking Barrier 04's last JUMP_IF)
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
    - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
 * Barrier program which calls itself
