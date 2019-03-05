@@ -1,8 +1,8 @@
 package com.hileco.cortex.vm.concrete
 
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason
-import com.hileco.cortex.instructions.ProgramException.Reason.*
+import com.hileco.cortex.instructions.ProgramException.Reason.REACHED_LIMIT_INSTRUCTIONS_ON_PROGRAM
+import com.hileco.cortex.instructions.ProgramException.Reason.REACHED_LIMIT_INSTRUCTIONS_ON_VIRTUAL_MACHINE
 import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
 
 class ProgramRunner(private val virtualMachine: VirtualMachine) {

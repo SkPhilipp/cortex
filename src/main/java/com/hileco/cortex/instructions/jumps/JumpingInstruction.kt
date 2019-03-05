@@ -2,8 +2,8 @@ package com.hileco.cortex.instructions.jumps
 
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS
 import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
+import com.hileco.cortex.instructions.ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS
 import com.hileco.cortex.vm.concrete.ProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 

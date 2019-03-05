@@ -86,7 +86,7 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) : Layered<L
     }
 
     override fun branch(): LayeredMap<K, V> {
-        val clone = LayeredMap<K, V>(parent)
+        val clone = LayeredMap(parent)
         clone.layer = layer.toMutableMap()
         clone.deletions = deletions.toMutableSet()
         return clone

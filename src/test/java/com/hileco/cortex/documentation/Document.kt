@@ -5,8 +5,7 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.*
 
-class Document constructor(private val snippetPath: String,
-                           private val outputStream: OutputStream) {
+class Document (private val outputStream: OutputStream) {
     private val exceptionHandler: (IOException) -> Nothing
 
     init {
@@ -32,22 +31,6 @@ class Document constructor(private val snippetPath: String,
     fun source(source: Any): Document {
         this.append("```\n", "$source", "\n```\n\n")
         return this
-    }
-
-    fun include(otherSnippetPath: String): Document {
-        return this.append("include::{snippets}/", otherSnippetPath, "[]\n\n")
-    }
-
-    fun include(document: Document): Document {
-        return this.append("include::{snippets}/", document.snippetPath, "[]\n\n")
-    }
-
-    fun headingDocument(body: String): Document {
-        return this.append("== ", body, "\n\n")
-    }
-
-    fun headingSection(body: String): Document {
-        return this.append("=== ", body, "\n\n")
     }
 
     fun headingParagraph(body: String): Document {

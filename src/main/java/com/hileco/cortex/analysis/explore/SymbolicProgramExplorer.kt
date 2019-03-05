@@ -131,8 +131,8 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
     companion object {
         val DEFAULT_STOP_PREDICATE = { time: Long -> time > DEFAULT_STOP_PREDICATE_TIME_LIMIT }
         val DEFAULT_DROP_PREDICATE = { virtualMachine: SymbolicVirtualMachine -> virtualMachine.path.size() >= DEFAULT_DROP_PREDICATE_PATH_LIMIT }
-        const val DEFAULT_STOP_PREDICATE_TIME_LIMIT = 2000
-        const val DEFAULT_DROP_PREDICATE_PATH_LIMIT = 50
+        private const val DEFAULT_STOP_PREDICATE_TIME_LIMIT = 2000
+        private const val DEFAULT_DROP_PREDICATE_PATH_LIMIT = 50
         const val PARALLELISM = 4
     }
 }

@@ -27,7 +27,7 @@ object Documentation {
                     file.createNewFile()
                 }
                 val outputStream = FileOutputStream(file, false)
-                Document(snippetPath, outputStream)
+                Document(outputStream)
             } catch (e: IOException) {
                 throw IllegalStateException("Erred while interacting with file: $path", e)
             }

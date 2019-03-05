@@ -102,7 +102,7 @@ class FlowProcessor : Processor {
         graphBlocks.forEachIndexed { indexA, graphBlockA ->
             var limit = graphBlocks.size - 1
             graphBlocks.forEachIndexed { indexB, graphBlockB ->
-                if (indexB in indexA .. limit) {
+                if (indexB in indexA..limit) {
                     val guaranteedEnd = graphBlockB.graphNodes.firstOrNull { it.instruction::class.java in GUARANTEED_ENDS }
                     if (guaranteedEnd != null) {
                         val flow = Flow(PROGRAM_FLOW, graphBlockA.graphNodes.first().line, guaranteedEnd.line)

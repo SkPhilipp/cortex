@@ -5,6 +5,6 @@ interface Layered<T : Layered<T>> {
     fun close()
 
     companion object {
-        val MINIMUM_LAYER_SIZE: Int = 2
+        const val MINIMUM_LAYER_SIZE: Int = 2
     }
 }

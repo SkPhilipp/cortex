@@ -3,9 +3,9 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.fuzzer.ProgramGenerator
 import com.hileco.cortex.instructions.ProgramException
-import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.vm.concrete.Program
 import com.hileco.cortex.vm.concrete.ProgramContext
+import com.hileco.cortex.vm.concrete.ProgramRunner
 import com.hileco.cortex.vm.concrete.VirtualMachine
 import com.hileco.cortex.vm.layer.LayeredMap
 import org.junit.Assert

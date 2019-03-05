@@ -12,7 +12,6 @@ import com.hileco.cortex.vm.concrete.VirtualMachine
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.math.BigInteger
-import java.util.*
 
 class CALL_RETURN : Instruction() {
     override val instructionModifiers: List<ProgramZone>
@@ -35,7 +34,7 @@ class CALL_RETURN : Instruction() {
             if (data.size > wSize.toInt()) {
                 throw ProgramException(CALL_RETURN_DATA_TOO_LARGE)
             }
-            val dataExpanded = Arrays.copyOf(data, wSize.toInt())
+            val dataExpanded = data.copyOf(wSize.toInt())
             val wOffset = nextContext.returnDataOffset
             nextContext.memory.write(wOffset.toInt(), dataExpanded, wSize.toInt())
             nextContext.instructionPosition++
