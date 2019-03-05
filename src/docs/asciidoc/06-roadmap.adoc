@@ -7,9 +7,7 @@
 * Proper representation of Hash functions in solving layer
 * A path-predicate system for SymbolicVirtualMachine (To for example blacklist taking Barrier 04's last JUMP_IF)
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
-  - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
-* Allow for SymbolicVirtualMachine to use multiple threads
-* A customizable strategy for applying limits to SymbolicVirtualMachines, such as path size limits & time-based cancelling
+   - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
 * Barrier program which calls itself
 * Layered* constructs which have many children (including transitive) may want to merge with their parent layers. (Note that this must lock on the parent)
 * Refactor symbolic references to allow named variables (such as start time), as well as program-context bound named variables (such as caller address)

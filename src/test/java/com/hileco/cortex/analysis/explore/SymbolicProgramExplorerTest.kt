@@ -27,8 +27,8 @@ class SymbolicProgramExplorerTest {
         barrierProgram.setup(program)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
-        val symbolicProgramExplorer = SymbolicProgramExplorer(virtualMachine)
-        symbolicProgramExplorer.run()
+        val symbolicProgramExplorer = SymbolicProgramExplorer()
+        symbolicProgramExplorer.explore(virtualMachine)
         val time = System.currentTimeMillis() - start
         val conditions = mutableListOf<Expression>()
         symbolicProgramExplorer.completed.asSequence()
