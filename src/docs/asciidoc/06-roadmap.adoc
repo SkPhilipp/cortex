@@ -2,14 +2,19 @@
 
 === Improvements
 
-* Implementation of remaining processors
-* KnownProcessor implementation for multi-value execution results
+* Implementation of remaining processors, allowing for some to move into `design-processors.md`
+* KnownProcessor implementation for multi-value executions to be described in `design-processors.md`
 * Proper representation of Hash functions in solving layer
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
    - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
 * Barrier program which calls itself
 * Layered* constructs which have many children (including transitive) may want to merge with their parent layers. (Note that this must lock on the parent)
 * Refactor symbolic references to allow named variables (such as start time), as well as program-context bound named variables (such as caller address)
+* Implementation of `design-layered.md`
+
+=== Product
+
+* Given a self-made minimal contract's handle, extract and solve, then perform the call to extract on the test network.
 
 === Concept Documents
 
