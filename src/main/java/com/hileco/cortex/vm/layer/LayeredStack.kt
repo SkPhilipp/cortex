@@ -1,9 +1,8 @@
 package com.hileco.cortex.vm.layer
 
-import com.hileco.cortex.vm.layer.Layered.Companion.MINIMUM_LAYER_SIZE
 import java.math.BigInteger
 
-class LayeredStack<V> : BasicLayered<LayeredStack<V>> {
+class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
     private var size: Int
     private var layer: HashMap<Int, V>
 
@@ -94,7 +93,7 @@ class LayeredStack<V> : BasicLayered<LayeredStack<V>> {
         this.size = 0
     }
 
-    override fun extractLayer(parent: LayeredStack<V>?): LayeredStack<V> {
+    override fun extractParentLayer(parent: LayeredStack<V>?): LayeredStack<V> {
         val extracted = LayeredStack(parent, size, layer)
         layer = HashMap()
         return extracted
@@ -104,7 +103,7 @@ class LayeredStack<V> : BasicLayered<LayeredStack<V>> {
         return layer.isEmpty()
     }
 
-    override fun createEmptyLayer(parent: LayeredStack<V>?): LayeredStack<V> {
+    override fun createSibling(): LayeredStack<V> {
         return LayeredStack(parent)
     }
 
@@ -148,5 +147,9 @@ class LayeredStack<V> : BasicLayered<LayeredStack<V>> {
         for (i in 0 until this@LayeredStack.size) {
             yield(this@LayeredStack[i])
         }
+    }
+
+    companion object {
+        const val MINIMUM_LAYER_SIZE: Int = 2
     }
 }

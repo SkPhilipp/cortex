@@ -3,27 +3,27 @@ package com.hileco.cortex.vm.layer
 import org.junit.Assert
 import org.junit.Test
 
-class TestLayered(private val empty: Boolean, parent: TestLayered? = null) : BasicLayered<TestLayered>(parent) {
-    override fun extractLayer(parent: TestLayered?): TestLayered {
-        return TestLayered(empty, parent)
+class TestTreeLayered(private val empty: Boolean, parent: TestTreeLayered? = null) : TreeLayered<TestTreeLayered>(parent) {
+    override fun extractParentLayer(parent: TestTreeLayered?): TestTreeLayered {
+        return TestTreeLayered(empty, parent)
     }
 
     override fun isLayerEmpty(): Boolean {
         return empty
     }
 
-    override fun createEmptyLayer(parent: TestLayered?): TestLayered {
-        return TestLayered(empty, parent)
+    override fun createSibling(): TestTreeLayered {
+        return TestTreeLayered(empty, parent)
     }
 
     override fun mergeParent() {
     }
 }
 
-class BasicLayeredTest {
+class TreeLayeredTest {
     @Test
     fun testBranch() {
-        val testLayered = TestLayered(false)
+        val testLayered = TestTreeLayered(false)
         val branchLayered = testLayered.branch()
         val parent = testLayered.parent
         Assert.assertNotNull(parent)
@@ -33,7 +33,7 @@ class BasicLayeredTest {
 
     @Test
     fun testBranchEmptyLayer() {
-        val testLayered = TestLayered(true)
+        val testLayered = TestTreeLayered(true)
         val branchLayered = testLayered.branch()
         Assert.assertNull(testLayered.parent)
         Assert.assertNull(branchLayered.parent)
@@ -41,7 +41,7 @@ class BasicLayeredTest {
 
     @Test
     fun testClose() {
-        val testLayered = TestLayered(false)
+        val testLayered = TestTreeLayered(false)
         val branchLayered = testLayered.branch()
         branchLayered.close()
         val parent = testLayered.parent

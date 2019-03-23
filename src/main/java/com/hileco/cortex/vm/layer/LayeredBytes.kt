@@ -3,7 +3,8 @@ package com.hileco.cortex.vm.layer
 import java.util.*
 
 class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : Layered<LayeredBytes> {
-    val bytes: ByteArray by lazy { ByteArray(size) }
+    private val lazyBytes = lazy { ByteArray(size) }
+    val bytes: ByteArray by lazyBytes
 
     fun read(offset: Int, length: Int): ByteArray {
         return Arrays.copyOfRange(bytes, offset, offset + length)
@@ -17,18 +18,6 @@ class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : Layered<LayeredBytes> {
         System.arraycopy(bytesToWrite, 0, bytes, offset, writeLength)
     }
 
-    override fun toString(): String {
-        return "LayeredBytes{size ${bytes.size}}"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other != null && other is LayeredBytes && Arrays.equals(bytes, other.bytes)
-    }
-
-    override fun hashCode(): Int {
-        return Arrays.hashCode(bytes)
-    }
-
     override fun branch(): LayeredBytes {
         val clone = LayeredBytes(size)
         clone.write(0, bytes)
@@ -36,6 +25,18 @@ class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : Layered<LayeredBytes> {
     }
 
     override fun close() {
+    }
+
+    override fun toString(): String {
+        return "LayeredBytes(size=$size)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other != null && other is LayeredBytes && Arrays.equals(bytes, other.bytes)
+    }
+
+    override fun hashCode(): Int {
+        return size.hashCode()
     }
 
     companion object {

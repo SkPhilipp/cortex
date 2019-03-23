@@ -1,8 +1,39 @@
 package com.hileco.cortex.vm.layer
 
-class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) : Layered<LayeredMap<K, V>> {
+class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMap<K, V>>(parent) {
     private var layer: MutableMap<K, V> = HashMap()
     private var deletions: MutableSet<K> = HashSet()
+
+    override fun extractParentLayer(parent: LayeredMap<K, V>?): LayeredMap<K, V> {
+        val clone = LayeredMap(parent)
+        clone.layer = layer.toMutableMap()
+        clone.deletions = deletions.toMutableSet()
+        return clone
+    }
+
+    override fun isLayerEmpty(): Boolean {
+        return layer.isEmpty() && deletions.isEmpty()
+    }
+
+    override fun createSibling(): LayeredMap<K, V> {
+        return LayeredMap(parent)
+    }
+
+    override fun mergeParent() {
+        val currentParent = parent
+        if (currentParent != null) {
+            currentParent.layer.forEach { key, value ->
+                if (!deletions.contains(key)) {
+                    layer.putIfAbsent(key, value)
+                }
+            }
+            currentParent.deletions.forEach { deletion ->
+                if (!layer.containsKey(deletion)) {
+                    deletions.add(deletion)
+                }
+            }
+        }
+    }
 
     fun size(): Int {
         return keySet().size
@@ -83,16 +114,5 @@ class LayeredMap<K, V>(private var parent: LayeredMap<K, V>? = null) : Layered<L
 
     override fun hashCode(): Int {
         return keySet().hashCode()
-    }
-
-    override fun branch(): LayeredMap<K, V> {
-        val clone = LayeredMap(parent)
-        clone.layer = layer.toMutableMap()
-        clone.deletions = deletions.toMutableSet()
-        return clone
-    }
-
-    override fun close() {
-
     }
 }

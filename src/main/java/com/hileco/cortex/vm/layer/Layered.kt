@@ -1,10 +1,5 @@
 package com.hileco.cortex.vm.layer
 
-interface Layered<T : Layered<T>> {
+interface Layered<T : Layered<T>> : AutoCloseable {
     fun branch(): T
-    fun close()
-
-    companion object {
-        const val MINIMUM_LAYER_SIZE: Int = 2
-    }
 }
