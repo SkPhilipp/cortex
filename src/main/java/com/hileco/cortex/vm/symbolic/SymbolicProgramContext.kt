@@ -1,12 +1,12 @@
 package com.hileco.cortex.vm.symbolic
 
 import com.hileco.cortex.constraints.expressions.Expression
-import com.hileco.cortex.vm.layer.Layered
+import com.hileco.cortex.vm.layer.DelegateLayered
 import com.hileco.cortex.vm.layer.LayeredMap
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class SymbolicProgramContext : Layered<SymbolicProgramContext> {
+class SymbolicProgramContext : DelegateLayered<SymbolicProgramContext> {
     val program: SymbolicProgram
     var instructionsExecuted: Int
     var instructionPosition: Int
@@ -45,11 +45,15 @@ class SymbolicProgramContext : Layered<SymbolicProgramContext> {
         this.callData = callData
     }
 
-    override fun branch(): SymbolicProgramContext {
+    override fun recreateParent(): SymbolicProgramContext {
+        return SymbolicProgramContext(program.parent(), instructionsExecuted, instructionPosition, stack.parent(), memory.parent(), returnDataOffset, returnDataSize, callData.parent())
+    }
+
+    override fun branchDelegates(): SymbolicProgramContext {
         return SymbolicProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.branch(), memory.branch(), returnDataOffset, returnDataSize, callData.branch())
     }
 
-    override fun close() {
+    override fun closeDelegates() {
         program.close()
         stack.close()
         memory.close()

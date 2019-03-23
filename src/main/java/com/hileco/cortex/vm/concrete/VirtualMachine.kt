@@ -2,30 +2,29 @@ package com.hileco.cortex.vm.concrete
 
 import com.hileco.cortex.instructions.stack.ExecutionVariable
 import com.hileco.cortex.instructions.stack.ExecutionVariable.START_TIME
-import com.hileco.cortex.vm.layer.Layered
+import com.hileco.cortex.vm.layer.DelegateLayered
 import com.hileco.cortex.vm.layer.LayeredMap
-import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class VirtualMachine : Layered<VirtualMachine> {
-    val programs: LayeredStack<ProgramContext>
-    val atlas: LayeredMap<BigInteger, Program>
+class VirtualMachine : DelegateLayered<VirtualMachine> {
+    val programs: MutableList<ProgramContext>
+    val atlas: MutableMap<BigInteger, Program>
     val variables: LayeredMap<ExecutionVariable, BigInteger>
     var instructionsExecuted: Int
 
     constructor(vararg programContexts: ProgramContext, startTime: Long = System.currentTimeMillis()) {
-        programs = LayeredStack()
-        atlas = LayeredMap()
+        programs = ArrayList()
+        atlas = HashMap()
         variables = LayeredMap()
         variables[START_TIME] = startTime.toBigInteger()
         instructionsExecuted = 0
         for (programContext in programContexts) {
-            programs.push(programContext)
+            programs.add(programContext)
         }
     }
 
-    private constructor(programs: LayeredStack<ProgramContext>,
-                        atlas: LayeredMap<BigInteger, Program>,
+    private constructor(programs: MutableList<ProgramContext>,
+                        atlas: MutableMap<BigInteger, Program>,
                         variables: LayeredMap<ExecutionVariable, BigInteger>,
                         instructionsExecuted: Int) {
         this.programs = programs
@@ -34,21 +33,21 @@ class VirtualMachine : Layered<VirtualMachine> {
         this.instructionsExecuted = instructionsExecuted
     }
 
-    override fun branch(): VirtualMachine {
-        val branchPrograms = LayeredStack<ProgramContext>()
-        programs.asSequence()
-                .map { programContext -> programContext.branch() }
-                .forEach { branchedProgramContext -> branchPrograms.push(branchedProgramContext) }
-        val branchAtlas = LayeredMap<BigInteger, Program>()
-        atlas.keySet().asSequence()
-                .map { key -> key to atlas[key]!!.branch() }
-                .forEach { (key, program) -> branchAtlas[key] = program }
+    override fun recreateParent(): VirtualMachine {
+        val branchPrograms = programs.map { program -> program.parent() }.toMutableList()
+        val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.parent()}.toMutableMap()
+        return VirtualMachine(branchPrograms, branchAtlas, variables.parent(), instructionsExecuted)
+    }
+
+    override fun branchDelegates(): VirtualMachine {
+        val branchPrograms = programs.map { program -> program.branch() }.toMutableList()
+        val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.branch() }.toMutableMap()
         return VirtualMachine(branchPrograms, branchAtlas, variables.branch(), instructionsExecuted)
     }
 
-    override fun close() {
-        programs.close()
-        atlas.close()
+    override fun closeDelegates() {
+        programs.forEach { program -> program.close() }
+        atlas.values.forEach { symbolicProgram -> symbolicProgram.close() }
         variables.close()
     }
 }

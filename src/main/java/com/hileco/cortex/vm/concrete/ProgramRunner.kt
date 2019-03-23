@@ -10,7 +10,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
         if (virtualMachine.programs.isEmpty()) {
             return
         }
-        var programContext: ProgramContext = virtualMachine.programs.peek()
+        var programContext: ProgramContext = virtualMachine.programs.last()
         while (programContext.instructionPosition < programContext.program.instructions.size) {
             val currentInstructionPosition = programContext.instructionPosition
             val instruction = programContext.program.instructions[currentInstructionPosition]
@@ -18,7 +18,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
             if (virtualMachine.programs.isEmpty()) {
                 break
             }
-            programContext = virtualMachine.programs.peek()
+            programContext = virtualMachine.programs.last()
             if (programContext.instructionPosition == currentInstructionPosition) {
                 programContext.instructionPosition = currentInstructionPosition + 1
             }

@@ -2,7 +2,7 @@ package com.hileco.cortex.vm.layer
 
 import java.lang.ref.WeakReference
 
-abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layered<T>, Navigable<T> {
+abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layered<T> {
     /**
      * Creates a new [T] instance representing a copy of this layer, to be the new parent.
      * Clears this layer as such that [isLayerEmpty] is true.
@@ -26,8 +26,8 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
      */
     protected abstract fun mergeParent()
 
-    var parent: T?
-    val children: MutableList<WeakReference<T>>
+    protected var parent: T?
+    protected val children: MutableList<WeakReference<T>>
 
     init {
         var chosenParent = initialParent
@@ -39,7 +39,7 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     }
 
     @Synchronized
-    override fun branch(): T {
+    final override fun branch(): T {
         if (isLayerEmpty()) {
             val sibling = createSibling()
             parent?.children?.add(WeakReference(sibling))
@@ -56,14 +56,14 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     }
 
     @Synchronized
-    override fun close() {
+    final override fun close() {
         val currentParent = parent
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this }
             currentParent.children.singleOrNull()?.get()?.let { lastSibling ->
                 lastSibling.mergeParent()
-                currentParent.children.clear()
                 lastSibling.parent?.children?.add(WeakReference(lastSibling))
+                currentParent.children.removeIf { it.get() === lastSibling }
             }
             if (currentParent.children.size == 0) {
                 currentParent.close()
@@ -72,20 +72,20 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     }
 
     @Synchronized
-    override fun parent(): T? {
-        return parent
+    final override fun parent(): T {
+        return parent ?: this as T
     }
 
     @Synchronized
-    override fun children(): List<T> {
+    final override fun children(): List<T> {
         return children.mapNotNull { it.get() }.toList()
     }
 
     @Synchronized
-    override fun root(): T? {
-        var currentParent: T? = parent
-        while (currentParent?.parent != null) {
-            currentParent = currentParent.parent
+    final override fun root(): T {
+        var currentParent: T = parent()
+        while (currentParent.parent() != currentParent) {
+            currentParent = currentParent.parent()
         }
         return currentParent
     }

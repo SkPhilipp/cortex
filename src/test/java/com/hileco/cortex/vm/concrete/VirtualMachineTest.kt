@@ -41,7 +41,7 @@ class VirtualMachineTest {
         } catch (e: ProgramException) {
         }
         try {
-            originalVM.programs.peek().instructionPosition++
+            originalVM.programs.last().instructionPosition++
             val programRunner = ProgramRunner(originalVM)
             programRunner.run()
         } catch (e: ProgramException) {
@@ -67,12 +67,12 @@ class VirtualMachineTest {
         } catch (e: ProgramException) {
         }
         val branchVM = originalVM.branch()
-        val branchProgramContext = branchVM.programs.peek()
+        val branchProgramContext = branchVM.programs.last()
         Assert.assertTrue(branchVM !== originalVM)
         Assert.assertTrue(branchProgramContext !== programContext)
         Assert.assertTrue(branchProgramContext.program !== programContext.program)
         try {
-            originalVM.programs.peek().instructionPosition++
+            originalVM.programs.last().instructionPosition++
             val programRunner = ProgramRunner(originalVM)
             programRunner.run()
         } catch (e: ProgramException) {

@@ -45,7 +45,7 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
     fun process(virtualMachine: SymbolicVirtualMachine) {
         try {
             if (!virtualMachine.programs.isEmpty()) {
-                var programContext: SymbolicProgramContext = virtualMachine.programs.peek()
+                var programContext: SymbolicProgramContext = virtualMachine.programs.last()
                 while (programContext.instructionPosition < programContext.program.instructions.size) {
                     val currentInstructionPosition = programContext.instructionPosition
                     val instruction = programContext.program.instructions[currentInstructionPosition]
@@ -64,7 +64,7 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
                         completed.add(virtualMachine)
                         break
                     }
-                    programContext = virtualMachine.programs.peek()
+                    programContext = virtualMachine.programs.last()
                     if (programContext.instructionPosition == currentInstructionPosition) {
                         programContext.instructionPosition = currentInstructionPosition + 1
                     }
@@ -96,7 +96,7 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
     }
 
     private fun chooseJumpIf(virtualMachine: SymbolicVirtualMachine, currentInstructionPosition: Int, take: Boolean) {
-        val programContext = virtualMachine.programs.peek()
+        val programContext = virtualMachine.programs.last()
         if (programContext.stack.size() < 2) {
             throw ProgramException(STACK_UNDERFLOW)
         }

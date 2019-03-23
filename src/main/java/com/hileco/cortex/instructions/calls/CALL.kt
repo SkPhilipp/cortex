@@ -41,7 +41,7 @@ class CALL : Instruction() {
         val inputData = programContext.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
         newContext.callData.clear()
         newContext.callData.write(0, inputData)
-        virtualMachine.programs.push(newContext)
+        virtualMachine.programs.add(newContext)
     }
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
@@ -67,7 +67,7 @@ class CALL : Instruction() {
         val sourceAddress = programContext.program.address
         recipient.transfers.push(Expression.Value(sourceAddress.toLong()) to valueTransferred)
         val newContext = SymbolicProgramContext(recipient)
-        virtualMachine.programs.push(newContext)
+        virtualMachine.programs.add(newContext)
     }
 
     companion object {

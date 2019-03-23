@@ -1,11 +1,11 @@
 package com.hileco.cortex.vm.concrete
 
-import com.hileco.cortex.vm.layer.Layered
+import com.hileco.cortex.vm.layer.DelegateLayered
 import com.hileco.cortex.vm.layer.LayeredBytes
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class ProgramContext : Layered<ProgramContext> {
+class ProgramContext : DelegateLayered<ProgramContext> {
     val program: Program
     var instructionsExecuted: Int
     var instructionPosition: Int
@@ -44,11 +44,15 @@ class ProgramContext : Layered<ProgramContext> {
         this.callData = callData
     }
 
-    override fun branch(): ProgramContext {
+    override fun recreateParent(): ProgramContext {
+        return ProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.parent(), memory.parent(), returnDataOffset, returnDataSize, callData.parent())
+    }
+
+    override fun branchDelegates(): ProgramContext {
         return ProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.branch(), memory.branch(), returnDataOffset, returnDataSize, callData.branch())
     }
 
-    override fun close() {
+    override fun closeDelegates() {
         program.close()
         stack.close()
         memory.close()

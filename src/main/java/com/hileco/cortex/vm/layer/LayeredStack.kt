@@ -7,8 +7,8 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
     private var layer: HashMap<Int, V>
 
     private constructor(parent: LayeredStack<V>?,
-                        size: Int = parent?.size ?: 0,
-                        layer: HashMap<Int, V> = HashMap()) : super(parent) {
+                        size: Int,
+                        layer: HashMap<Int, V>) : super(parent) {
         this.size = size
         this.layer = layer
         val chosenParent = this.parent
@@ -104,16 +104,15 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
     }
 
     override fun createSibling(): LayeredStack<V> {
-        return LayeredStack(parent)
+        return LayeredStack(parent, parent?.size ?: 0, HashMap())
     }
 
     override fun mergeParent() {
         val currentParent = parent
         if (currentParent != null) {
-            layer.forEach { (key, value) ->
-                currentParent.layer[key] = value
+            currentParent.layer.forEach { (key, value) ->
+                layer.putIfAbsent(key, value)
             }
-            layer = currentParent.layer
             parent = currentParent.parent
         }
     }

@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference
  *
  * Provides standard [Layered] and [Navigable] operation, does not support [TreeLayered]-style optimizations.
  */
-abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T>, Navigable<T> {
+abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
     /**
      * Reconstructs a parent [T] based on all delegate branched structures' parents.
      */
@@ -18,8 +18,13 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T>, Navigable<T
      */
     protected abstract fun branchDelegates(): T
 
-    var parent: T?
-    val children: MutableList<WeakReference<T>>
+    /**
+     * Closes all delegate [Layered] structures
+     */
+    protected abstract fun closeDelegates()
+
+    protected var parent: T?
+    protected val children: MutableList<WeakReference<T>>
 
     init {
         parent = null
@@ -27,7 +32,7 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T>, Navigable<T
     }
 
     @Synchronized
-    override fun branch(): T {
+    final override fun branch(): T {
         val currentParent = parent
         val sibling = branchDelegates()
         val newParent = recreateParent()
@@ -40,7 +45,7 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T>, Navigable<T
     }
 
     @Synchronized
-    override fun close() {
+    final override fun close() {
         val currentParent = parent
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this }
@@ -51,20 +56,20 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T>, Navigable<T
     }
 
     @Synchronized
-    override fun parent(): T? {
-        return parent
+    final override fun parent(): T {
+        return parent ?: this as T
     }
 
     @Synchronized
-    override fun children(): List<T> {
+    final override fun children(): List<T> {
         return children.mapNotNull { it.get() }.toList()
     }
 
     @Synchronized
-    override fun root(): T? {
-        var currentParent: T? = parent
-        while (currentParent?.parent != null) {
-            currentParent = currentParent.parent
+    final override fun root(): T {
+        var currentParent: T = parent()
+        while (currentParent.parent() != currentParent) {
+            currentParent = currentParent.parent()
         }
         return currentParent
     }

@@ -1,12 +1,12 @@
 package com.hileco.cortex.vm.concrete
 
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.vm.layer.Layered
+import com.hileco.cortex.vm.layer.DelegateLayered
 import com.hileco.cortex.vm.layer.LayeredBytes
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class Program : Layered<Program> {
+class Program : DelegateLayered<Program> {
     val instructions: List<Instruction>
     val address: BigInteger
     val storage: LayeredBytes
@@ -30,11 +30,15 @@ class Program : Layered<Program> {
         this.transfers = transfers
     }
 
-    override fun branch(): Program {
+    override fun recreateParent(): Program {
+        return Program(instructions, address, storage.parent(), transfers.parent())
+    }
+
+    override fun branchDelegates(): Program {
         return Program(instructions, address, storage.branch(), transfers.branch())
     }
 
-    override fun close() {
+    override fun closeDelegates() {
         storage.close()
         transfers.close()
     }

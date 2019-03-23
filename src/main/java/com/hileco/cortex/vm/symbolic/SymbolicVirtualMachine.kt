@@ -3,14 +3,15 @@ package com.hileco.cortex.vm.symbolic
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.stack.ExecutionVariable
-import com.hileco.cortex.vm.layer.Layered
+import com.hileco.cortex.vm.layer.DelegateLayered
 import com.hileco.cortex.vm.layer.LayeredMap
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
+import java.util.*
 
-class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
-    val programs: LayeredStack<SymbolicProgramContext>
-    val atlas: LayeredMap<BigInteger, SymbolicProgram>
+class SymbolicVirtualMachine : DelegateLayered<SymbolicVirtualMachine> {
+    val programs: MutableList<SymbolicProgramContext>
+    val atlas: MutableMap<BigInteger, SymbolicProgram>
     val variables: LayeredMap<ExecutionVariable, Expression>
     var path: LayeredStack<SymbolicPathEntry>
     var instructionsExecuted: Int
@@ -18,19 +19,19 @@ class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
     var exitedReason: ProgramException.Reason? = null
 
     constructor(vararg programContexts: SymbolicProgramContext, startTime: Long = System.currentTimeMillis()) {
-        programs = LayeredStack()
-        atlas = LayeredMap()
+        programs = Stack()
+        atlas = HashMap()
         path = LayeredStack()
         variables = LayeredMap()
         variables[ExecutionVariable.START_TIME] = Expression.Value(startTime)
         instructionsExecuted = 0
         for (programContext in programContexts) {
-            programs.push(programContext)
+            programs.add(programContext)
         }
     }
 
-    private constructor(programs: LayeredStack<SymbolicProgramContext>,
-                        atlas: LayeredMap<BigInteger, SymbolicProgram>,
+    private constructor(programs: MutableList<SymbolicProgramContext>,
+                        atlas: MutableMap<BigInteger, SymbolicProgram>,
                         path: LayeredStack<SymbolicPathEntry>,
                         variables: LayeredMap<ExecutionVariable, Expression>,
                         instructionsExecuted: Int) {
@@ -49,21 +50,21 @@ class SymbolicVirtualMachine : Layered<SymbolicVirtualMachine> {
         return Expression.constructAnd(expressions)
     }
 
-    override fun branch(): SymbolicVirtualMachine {
-        val branchPrograms = LayeredStack<SymbolicProgramContext>()
-        programs.asSequence()
-                .map { programContext -> programContext.branch() }
-                .forEach { branchedProgramContext -> branchPrograms.push(branchedProgramContext) }
-        val branchAtlas = LayeredMap<BigInteger, SymbolicProgram>()
-        atlas.keySet().asSequence()
-                .map { key -> key to atlas[key]!!.branch() }
-                .forEach { (key, program) -> branchAtlas[key] = program }
+    override fun recreateParent(): SymbolicVirtualMachine {
+        val branchPrograms = programs.map { program -> program.parent() }.toMutableList()
+        val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.parent() }.toMutableMap()
+        return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.parent(), variables.parent(), instructionsExecuted)
+    }
+
+    override fun branchDelegates(): SymbolicVirtualMachine {
+        val branchPrograms = programs.map { program -> program.branch() }.toMutableList()
+        val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.branch() }.toMutableMap()
         return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.branch(), variables.branch(), instructionsExecuted)
     }
 
-    override fun close() {
-        programs.close()
-        atlas.close()
+    override fun closeDelegates() {
+        programs.forEach { program -> program.close() }
+        atlas.values.forEach { symbolicProgram -> symbolicProgram.close() }
         variables.close()
     }
 }

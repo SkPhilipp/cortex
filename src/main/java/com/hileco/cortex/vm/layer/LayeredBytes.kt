@@ -2,7 +2,7 @@ package com.hileco.cortex.vm.layer
 
 import java.util.*
 
-class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : Layered<LayeredBytes> {
+class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : DelegateLayered<LayeredBytes>() {
     private val lazyBytes = lazy { ByteArray(size) }
     val bytes: ByteArray by lazyBytes
 
@@ -18,13 +18,17 @@ class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : Layered<LayeredBytes> {
         System.arraycopy(bytesToWrite, 0, bytes, offset, writeLength)
     }
 
-    override fun branch(): LayeredBytes {
+    override fun recreateParent(): LayeredBytes {
+        return LayeredBytes(size)
+    }
+
+    override fun branchDelegates(): LayeredBytes {
         val clone = LayeredBytes(size)
         clone.write(0, bytes)
         return clone
     }
 
-    override fun close() {
+    override fun closeDelegates() {
     }
 
     override fun toString(): String {

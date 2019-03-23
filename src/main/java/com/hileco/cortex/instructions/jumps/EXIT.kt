@@ -12,10 +12,10 @@ class EXIT : Instruction() {
         get() = listOf(ProgramZone.PROGRAM_CONTEXT)
 
     override fun execute(virtualMachine: VirtualMachine, programContext: ProgramContext) {
-        virtualMachine.programs.pop()
+        virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
     }
 
     override fun execute(virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
-        virtualMachine.programs.pop()
+        virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
     }
 }

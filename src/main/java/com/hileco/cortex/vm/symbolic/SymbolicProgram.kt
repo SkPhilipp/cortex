@@ -2,12 +2,12 @@ package com.hileco.cortex.vm.symbolic
 
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.vm.layer.Layered
+import com.hileco.cortex.vm.layer.DelegateLayered
 import com.hileco.cortex.vm.layer.LayeredMap
 import com.hileco.cortex.vm.layer.LayeredStack
 import java.math.BigInteger
 
-class SymbolicProgram : Layered<SymbolicProgram> {
+class SymbolicProgram : DelegateLayered<SymbolicProgram> {
     val instructions: List<Instruction>
     val address: BigInteger
     val storage: LayeredMap<BigInteger, Expression>
@@ -31,11 +31,15 @@ class SymbolicProgram : Layered<SymbolicProgram> {
         this.transfers = transfers
     }
 
-    override fun branch(): SymbolicProgram {
+    override fun recreateParent(): SymbolicProgram {
+        return SymbolicProgram(instructions, address, storage.parent(), transfers.parent())
+    }
+
+    override fun branchDelegates(): SymbolicProgram {
         return SymbolicProgram(instructions, address, storage.branch(), transfers.branch())
     }
 
-    override fun close() {
+    override fun closeDelegates() {
         storage.close()
         transfers.close()
     }

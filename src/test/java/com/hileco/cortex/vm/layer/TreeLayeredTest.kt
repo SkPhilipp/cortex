@@ -13,7 +13,7 @@ class TestTreeLayered(private val empty: Boolean, parent: TestTreeLayered? = nul
     }
 
     override fun createSibling(): TestTreeLayered {
-        return TestTreeLayered(empty, parent)
+        return TestTreeLayered(empty, parent())
     }
 
     override fun mergeParent() {
@@ -25,18 +25,18 @@ class TreeLayeredTest {
     fun testBranch() {
         val testLayered = TestTreeLayered(false)
         val branchLayered = testLayered.branch()
-        val parent = testLayered.parent
+        val parent = testLayered.parent()
         Assert.assertNotNull(parent)
-        Assert.assertEquals(parent, branchLayered.parent)
-        Assert.assertTrue(parent!!.children().containsAll(listOf(testLayered, branchLayered)))
+        Assert.assertEquals(parent, branchLayered.parent())
+        Assert.assertTrue(parent.children().containsAll(listOf(testLayered, branchLayered)))
     }
 
     @Test
     fun testBranchEmptyLayer() {
         val testLayered = TestTreeLayered(true)
         val branchLayered = testLayered.branch()
-        Assert.assertNull(testLayered.parent)
-        Assert.assertNull(branchLayered.parent)
+        Assert.assertEquals(testLayered.parent(), testLayered)
+        Assert.assertEquals(branchLayered.parent(), branchLayered)
     }
 
     @Test
@@ -44,8 +44,7 @@ class TreeLayeredTest {
         val testLayered = TestTreeLayered(false)
         val branchLayered = testLayered.branch()
         branchLayered.close()
-        val parent = testLayered.parent
-        Assert.assertEquals(parent!!.children().size, 1)
-        Assert.assertTrue(parent.children().contains(testLayered))
+        val parent = testLayered.parent()
+        Assert.assertEquals(testLayered.parent(), parent)
     }
 }

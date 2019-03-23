@@ -32,7 +32,7 @@ data class VARIABLE(val executionVariable: ExecutionVariable) : Instruction() {
                 programContext.stack.push(programContext.instructionPosition.toBigInteger().toByteArray())
             }
             ADDRESS_CALLER -> {
-                val address = if (virtualMachine.programs.size() > 1) virtualMachine.programs.peek(0).program.address else 0.toBigInteger()
+                val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else 0.toBigInteger()
                 programContext.stack.push(address.toByteArray())
             }
             else -> {
@@ -54,7 +54,7 @@ data class VARIABLE(val executionVariable: ExecutionVariable) : Instruction() {
                 programContext.stack.push(Value(programContext.instructionPosition.toLong()))
             }
             ADDRESS_CALLER -> {
-                val address = if (virtualMachine.programs.size() > 1) virtualMachine.programs.peek(0).program.address.toLong() else 0
+                val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address.toLong() else 0
                 programContext.stack.push(Expression.Value(address))
             }
             else -> {
