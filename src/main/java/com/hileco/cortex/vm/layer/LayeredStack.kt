@@ -1,40 +1,26 @@
 package com.hileco.cortex.vm.layer
 
 import com.hileco.cortex.vm.layer.Layered.Companion.MINIMUM_LAYER_SIZE
-import java.lang.ref.WeakReference
 import java.math.BigInteger
 
-class LayeredStack<V> : Layered<LayeredStack<V>> {
-    private var parent: LayeredStack<V>?
+class LayeredStack<V> : BasicLayered<LayeredStack<V>> {
     private var size: Int
     private var layer: HashMap<Int, V>
-    private val children: MutableList<WeakReference<LayeredStack<V>>>
 
     private constructor(parent: LayeredStack<V>?,
                         size: Int = parent?.size ?: 0,
-                        layer: HashMap<Int, V> = HashMap()) {
-        var chosenParent = parent
-        while (chosenParent != null && chosenParent.layer.size == 0) {
-            chosenParent = chosenParent.parent
-        }
-        if (chosenParent != null && chosenParent.layer.size < MINIMUM_LAYER_SIZE) {
-            chosenParent.layer.forEach { key, value ->
-                layer.putIfAbsent(key, value)
-            }
-            chosenParent = chosenParent.parent
-        }
-        this.parent = chosenParent
-        chosenParent?.children?.add(WeakReference(this))
+                        layer: HashMap<Int, V> = HashMap()) : super(parent) {
         this.size = size
         this.layer = layer
-        children = arrayListOf()
+        val chosenParent = this.parent
+        if (chosenParent != null && chosenParent.layer.size < MINIMUM_LAYER_SIZE) {
+            mergeParent()
+        }
     }
 
     constructor() {
-        parent = null
-        size = parent?.size ?: 0
+        size = 0
         layer = HashMap()
-        children = arrayListOf()
     }
 
     @Synchronized
@@ -54,41 +40,6 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
     @Synchronized
     fun peek(offset: Int = 0): V {
         return if (this.size <= offset) throw IndexOutOfBoundsException("size 0 <= index 0") else this[this.size - offset - 1]
-    }
-
-    @Synchronized
-    override fun branch(): LayeredStack<V> {
-        if (layer.isEmpty()) {
-            return LayeredStack(parent, size, HashMap())
-        }
-        val currentParent = parent
-        currentParent?.children?.removeIf { it.get() === this }
-        val newParent = LayeredStack(currentParent, size, layer)
-        newParent.children.add(WeakReference(this))
-        parent = newParent
-        layer = HashMap()
-        return LayeredStack(newParent)
-    }
-
-    @Synchronized
-    override fun close() {
-        val currentParent = parent
-        if (currentParent != null) {
-            currentParent.children.removeIf { it.get() === this }
-            currentParent.children.singleOrNull()?.get()?.mergeWithParent()
-        }
-    }
-
-    @Synchronized
-    private fun mergeWithParent() {
-        val currentParent = parent
-        if (currentParent != null) {
-            layer.forEach { (key, value) ->
-                currentParent.layer[key] = value
-            }
-            layer = currentParent.layer
-            parent = currentParent.parent
-        }
     }
 
     @Synchronized
@@ -141,6 +92,31 @@ class LayeredStack<V> : Layered<LayeredStack<V>> {
     fun clear() {
         layer.clear()
         this.size = 0
+    }
+
+    override fun extractLayer(parent: LayeredStack<V>?): LayeredStack<V> {
+        val extracted = LayeredStack(parent, size, layer)
+        layer = HashMap()
+        return extracted
+    }
+
+    override fun isLayerEmpty(): Boolean {
+        return layer.isEmpty()
+    }
+
+    override fun createEmptyLayer(parent: LayeredStack<V>?): LayeredStack<V> {
+        return LayeredStack(parent)
+    }
+
+    override fun mergeParent() {
+        val currentParent = parent
+        if (currentParent != null) {
+            layer.forEach { (key, value) ->
+                currentParent.layer[key] = value
+            }
+            layer = currentParent.layer
+            parent = currentParent.parent
+        }
     }
 
     override fun toString(): String {
