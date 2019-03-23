@@ -4,8 +4,8 @@ import java.lang.ref.WeakReference
 
 abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layered<T>, Navigable<T> {
     /**
-     * Creates a new [T] instance representing a copy of this layer,
-     * and clears this layer as such that [isLayerEmpty] is true.
+     * Creates a new [T] instance representing a copy of this layer, to be the new parent.
+     * Clears this layer as such that [isLayerEmpty] is true.
      *
      * @return the new instance
      */
@@ -36,20 +36,23 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
         }
         parent = chosenParent
         children = arrayListOf()
-        parent?.children?.add(WeakReference(this as T))
     }
 
     @Synchronized
     override fun branch(): T {
         if (isLayerEmpty()) {
-            return createSibling()
+            val sibling = createSibling()
+            parent?.children?.add(WeakReference(sibling))
+            return sibling
         }
         val currentParent = parent
         currentParent?.children?.removeIf { it.get() === this }
         val newParent = extractParentLayer(parent)
         newParent.children.add(WeakReference(this as T))
         parent = newParent
-        return createSibling()
+        val sibling = createSibling()
+        newParent.children.add(WeakReference(sibling))
+        return sibling
     }
 
     @Synchronized
