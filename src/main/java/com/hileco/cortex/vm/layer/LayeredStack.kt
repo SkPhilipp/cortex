@@ -72,6 +72,7 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
         layer[rightIndex] = left
     }
 
+    @Synchronized
     fun size(): Int {
         return this.size
     }
@@ -93,26 +94,28 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
         this.size = 0
     }
 
+    @Synchronized
     override fun extractParentLayer(parent: LayeredStack<V>?): LayeredStack<V> {
         val extracted = LayeredStack(parent, size, layer)
         layer = HashMap()
         return extracted
     }
 
+    @Synchronized
     override fun isLayerEmpty(): Boolean {
         return layer.isEmpty()
     }
 
+    @Synchronized
     override fun createSibling(): LayeredStack<V> {
         return LayeredStack(parent, parent?.size ?: 0, HashMap())
     }
 
+    @Synchronized
     override fun mergeParent() {
         val currentParent = parent
-        if (currentParent != null) {
-            currentParent.layer.forEach { (key, value) ->
-                layer.putIfAbsent(key, value)
-            }
+        currentParent?.layer?.forEach { (key, value) ->
+            layer.putIfAbsent(key, value)
         }
     }
 
