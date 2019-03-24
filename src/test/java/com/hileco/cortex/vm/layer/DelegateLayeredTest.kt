@@ -1,27 +1,13 @@
 package com.hileco.cortex.vm.layer
 
+import com.hileco.cortex.vm.layer.test.DelegateLayeredStack
 import org.junit.Assert
 import org.junit.Test
-
-class DelegateLayeredStack(val delegate: LayeredStack<Int> = LayeredStack()) : DelegateLayered<DelegateLayeredStack>() {
-    override fun recreateParent(): DelegateLayeredStack {
-        return DelegateLayeredStack(delegate.parent())
-    }
-
-    override fun branchDelegates(): DelegateLayeredStack {
-        val branchedDelegate = delegate.branch()
-        return DelegateLayeredStack(branchedDelegate)
-    }
-
-    override fun disposeDelegates() {
-        delegate.dispose()
-    }
-}
 
 class DelegateLayeredTest {
     @Test
     fun testParentLinkage() {
-        val delegateLayeredStack = DelegateLayeredStack()
+        val delegateLayeredStack = DelegateLayeredStack<Int>()
         delegateLayeredStack.delegate.push(1)
         val branchedDelegateLayeredStack = delegateLayeredStack.branch()
         branchedDelegateLayeredStack.delegate.push(2)
@@ -35,7 +21,7 @@ class DelegateLayeredTest {
 
     @Test
     fun testChildLinkage() {
-        val delegateLayeredStack = DelegateLayeredStack()
+        val delegateLayeredStack = DelegateLayeredStack<Int>()
         val branchedDelegateLayeredStack = delegateLayeredStack.branch()
         Assert.assertNotNull(delegateLayeredStack.parent().children().single { it === delegateLayeredStack })
         Assert.assertNotNull(delegateLayeredStack.parent().children().single { it === branchedDelegateLayeredStack })
@@ -43,7 +29,7 @@ class DelegateLayeredTest {
 
     @Test
     fun testChildClosing() {
-        val delegateLayeredStack = DelegateLayeredStack()
+        val delegateLayeredStack = DelegateLayeredStack<Int>()
         val branchedDelegateLayeredStack = delegateLayeredStack.branch()
         delegateLayeredStack.dispose()
         Assert.assertNull(delegateLayeredStack.parent().children().singleOrNull { it === delegateLayeredStack })

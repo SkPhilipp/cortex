@@ -113,7 +113,6 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
             currentParent.layer.forEach { (key, value) ->
                 layer.putIfAbsent(key, value)
             }
-            parent = currentParent.parent
         }
     }
 

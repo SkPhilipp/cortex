@@ -5,7 +5,7 @@ import java.lang.ref.WeakReference
 /**
  * Base class for structures containing other [Layered] structures.
  *
- * Provides standard [Layered] and [Navigable] operation, does not support [TreeLayered]-style optimizations.
+ * Provides standard [Layered] operation, does not support [TreeLayered]-style optimizations.
  */
 abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
     /**
@@ -33,12 +33,13 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
 
     @Synchronized
     final override fun branch(): T {
-        val currentParent = parent
         val sibling = branchDelegates()
         val newParent = recreateParent()
+        newParent.parent = parent
         newParent.children.add(WeakReference(this as T))
         newParent.children.add(WeakReference(sibling))
-        currentParent?.children?.removeIf { it.get() === this }
+        parent?.children?.add(WeakReference(newParent))
+        parent?.children?.removeIf { it.get() === this }
         sibling.parent = newParent
         parent = newParent
         return sibling

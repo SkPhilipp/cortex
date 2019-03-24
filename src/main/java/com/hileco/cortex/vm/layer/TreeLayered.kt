@@ -46,11 +46,12 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
             return sibling
         }
         val currentParent = parent
-        currentParent?.children?.removeIf { it.get() === this }
         val newParent = extractParentLayer(parent)
-        newParent.children.add(WeakReference(this as T))
         parent = newParent
         val sibling = createSibling()
+        currentParent?.children?.removeIf { it.get() === this }
+        currentParent?.children?.add(WeakReference(newParent))
+        newParent.children.add(WeakReference(this as T))
         newParent.children.add(WeakReference(sibling))
         return sibling
     }
@@ -62,8 +63,9 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
             currentParent.children.removeIf { it.get() === this || it.get() === null }
             currentParent.children.singleOrNull()?.get()?.let { lastSibling ->
                 lastSibling.mergeParent()
+                lastSibling.parent?.children?.removeIf { it.get() === lastSibling }
+                lastSibling.parent = lastSibling.parent?.parent
                 lastSibling.parent?.children?.add(WeakReference(lastSibling))
-                currentParent.children.removeIf { it.get() === lastSibling }
             }
             if (currentParent.children.size == 0) {
                 currentParent.dispose()
