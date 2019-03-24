@@ -13,7 +13,7 @@ class SymbolicVirtualMachine : DelegateLayered<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
     val atlas: MutableMap<BigInteger, SymbolicProgram>
     val variables: LayeredMap<ExecutionVariable, Expression>
-    var path: LayeredStack<SymbolicPathEntry>
+    val path: LayeredStack<SymbolicPathEntry>
     var instructionsExecuted: Int
     var exited: Boolean = false
     var exitedReason: ProgramException.Reason? = null
@@ -66,5 +66,6 @@ class SymbolicVirtualMachine : DelegateLayered<SymbolicVirtualMachine> {
         programs.forEach { program -> program.close() }
         atlas.values.forEach { symbolicProgram -> symbolicProgram.close() }
         variables.close()
+        path.close()
     }
 }
