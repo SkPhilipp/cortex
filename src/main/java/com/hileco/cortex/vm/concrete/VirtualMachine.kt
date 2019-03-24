@@ -45,9 +45,9 @@ class VirtualMachine : DelegateLayered<VirtualMachine> {
         return VirtualMachine(branchPrograms, branchAtlas, variables.branch(), instructionsExecuted)
     }
 
-    override fun closeDelegates() {
-        programs.forEach { program -> program.close() }
-        atlas.values.forEach { symbolicProgram -> symbolicProgram.close() }
-        variables.close()
+    override fun disposeDelegates() {
+        programs.forEach { program -> program.dispose() }
+        atlas.values.forEach { symbolicProgram -> symbolicProgram.dispose() }
+        variables.dispose()
     }
 }

@@ -21,7 +21,7 @@ abstract class SymbolicProgramExplorerHandler {
      * To be invoked when a [SymbolicVirtualMachine] is dropped, halting further exploration.
      */
     open fun handleDrop(symbolicVirtualMachine: SymbolicVirtualMachine) {
-        symbolicVirtualMachine.close()
+        symbolicVirtualMachine.dispose()
     }
 
     /**

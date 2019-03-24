@@ -1,6 +1,6 @@
 package com.hileco.cortex.vm.layer
 
-interface Layered<T : Layered<T>> : AutoCloseable {
+interface Layered<T : Layered<T>> {
     fun parent(): T
 
     fun children(): List<T>
@@ -8,4 +8,6 @@ interface Layered<T : Layered<T>> : AutoCloseable {
     fun root(): T
 
     fun branch(): T
+
+    fun dispose()
 }

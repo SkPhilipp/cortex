@@ -39,8 +39,8 @@ class SymbolicProgram : DelegateLayered<SymbolicProgram> {
         return SymbolicProgram(instructions, address, storage.branch(), transfers.branch())
     }
 
-    override fun closeDelegates() {
-        storage.close()
-        transfers.close()
+    override fun disposeDelegates() {
+        storage.dispose()
+        transfers.dispose()
     }
 }

@@ -21,7 +21,7 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
     /**
      * Closes all delegate [Layered] structures
      */
-    protected abstract fun closeDelegates()
+    protected abstract fun disposeDelegates()
 
     protected var parent: T?
     protected val children: MutableList<WeakReference<T>>
@@ -45,12 +45,12 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
     }
 
     @Synchronized
-    final override fun close() {
+    final override fun dispose() {
         val currentParent = parent
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this }
             if (currentParent.children.size == 0) {
-                currentParent.close()
+                currentParent.dispose()
             }
         }
     }

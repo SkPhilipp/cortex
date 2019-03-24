@@ -52,10 +52,10 @@ class ProgramContext : DelegateLayered<ProgramContext> {
         return ProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.branch(), memory.branch(), returnDataOffset, returnDataSize, callData.branch())
     }
 
-    override fun closeDelegates() {
-        program.close()
-        stack.close()
-        memory.close()
+    override fun disposeDelegates() {
+        program.dispose()
+        stack.dispose()
+        memory.dispose()
         callData.clear()
     }
 }

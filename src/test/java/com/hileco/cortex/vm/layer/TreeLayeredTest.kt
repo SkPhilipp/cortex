@@ -43,7 +43,7 @@ class TreeLayeredTest {
     fun testClose() {
         val testLayered = TestTreeLayered(false)
         val branchLayered = testLayered.branch()
-        branchLayered.close()
+        branchLayered.dispose()
         val parent = testLayered.parent()
         Assert.assertEquals(testLayered.parent(), parent)
     }

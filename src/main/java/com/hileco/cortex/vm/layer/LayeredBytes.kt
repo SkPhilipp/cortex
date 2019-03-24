@@ -28,7 +28,7 @@ class LayeredBytes(val size: Int = DEFAULT_TOTAL_SIZE) : DelegateLayered<Layered
         return clone
     }
 
-    override fun closeDelegates() {
+    override fun disposeDelegates() {
     }
 
     override fun toString(): String {

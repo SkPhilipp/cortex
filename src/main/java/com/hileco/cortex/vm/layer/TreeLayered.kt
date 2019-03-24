@@ -56,7 +56,7 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     }
 
     @Synchronized
-    final override fun close() {
+    final override fun dispose() {
         val currentParent = parent
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this }
@@ -66,7 +66,7 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
                 currentParent.children.removeIf { it.get() === lastSibling }
             }
             if (currentParent.children.size == 0) {
-                currentParent.close()
+                currentParent.dispose()
             }
         }
     }

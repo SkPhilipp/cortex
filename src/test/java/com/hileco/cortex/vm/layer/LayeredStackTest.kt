@@ -57,7 +57,7 @@ class LayeredStackTest {
                     testClear(stack)
                 }
                 if (random.nextBoolean()) {
-                    stack.close()
+                    stack.dispose()
                 }
             }
         }

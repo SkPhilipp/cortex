@@ -34,7 +34,7 @@ class SymbolicProgramExplorerTest {
                 if (symbolicVirtualMachine.exitedReason == WINNER) {
                     conditions.add(symbolicVirtualMachine.condition())
                 }
-                symbolicVirtualMachine.close()
+                symbolicVirtualMachine.dispose()
             }
         })
         symbolicProgramExplorer.explore(virtualMachine)

@@ -62,10 +62,10 @@ class SymbolicVirtualMachine : DelegateLayered<SymbolicVirtualMachine> {
         return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.branch(), variables.branch(), instructionsExecuted)
     }
 
-    override fun closeDelegates() {
-        programs.forEach { program -> program.close() }
-        atlas.values.forEach { symbolicProgram -> symbolicProgram.close() }
-        variables.close()
-        path.close()
+    override fun disposeDelegates() {
+        programs.forEach { program -> program.dispose() }
+        atlas.values.forEach { symbolicProgram -> symbolicProgram.dispose() }
+        variables.dispose()
+        path.dispose()
     }
 }

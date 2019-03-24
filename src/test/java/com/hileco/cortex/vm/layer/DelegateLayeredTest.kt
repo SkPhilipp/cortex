@@ -13,8 +13,8 @@ class DelegateLayeredStack(val delegate: LayeredStack<Int> = LayeredStack()) : D
         return DelegateLayeredStack(branchedDelegate)
     }
 
-    override fun closeDelegates() {
-        delegate.close()
+    override fun disposeDelegates() {
+        delegate.dispose()
     }
 }
 
@@ -45,7 +45,7 @@ class DelegateLayeredTest {
     fun testChildClosing() {
         val delegateLayeredStack = DelegateLayeredStack()
         val branchedDelegateLayeredStack = delegateLayeredStack.branch()
-        delegateLayeredStack.close()
+        delegateLayeredStack.dispose()
         Assert.assertNull(delegateLayeredStack.parent().children().singleOrNull { it === delegateLayeredStack })
         Assert.assertNotNull(delegateLayeredStack.parent().children().single { it === branchedDelegateLayeredStack })
     }

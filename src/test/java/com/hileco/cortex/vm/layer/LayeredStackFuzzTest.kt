@@ -58,7 +58,7 @@ class LayeredStackFuzzTest {
                     testClear(stack)
                 }
                 if (random.nextBoolean()) {
-                    stack.close()
+                    stack.dispose()
                 }
             }
         }
