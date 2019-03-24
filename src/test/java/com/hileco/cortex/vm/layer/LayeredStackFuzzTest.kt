@@ -45,7 +45,7 @@ class LayeredStackFuzzTest {
     fun fuzz() {
         for (fuzzIteration in 1..100) {
             construct(5).shuffled().forEach { stack ->
-                for (caseIteration in 1..100) {
+                for (caseIteration in 1..1000) {
                     when (random.nextInt(5)) {
                         0 -> testPushPeekPop(stack)
                         1 -> testDuplicate(stack)

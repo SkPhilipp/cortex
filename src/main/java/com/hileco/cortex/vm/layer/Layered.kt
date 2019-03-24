@@ -8,8 +8,4 @@ interface Layered<T : Layered<T>> : AutoCloseable {
     fun root(): T
 
     fun branch(): T
-
-    fun finalize() {
-        close()
-    }
 }
