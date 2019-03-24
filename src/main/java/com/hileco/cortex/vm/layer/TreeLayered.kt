@@ -59,7 +59,7 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     final override fun dispose() {
         val currentParent = parent
         if (currentParent != null) {
-            currentParent.children.removeIf { it.get() === this }
+            currentParent.children.removeIf { it.get() === this || it.get() === null }
             currentParent.children.singleOrNull()?.get()?.let { lastSibling ->
                 lastSibling.mergeParent()
                 lastSibling.parent?.children?.add(WeakReference(lastSibling))

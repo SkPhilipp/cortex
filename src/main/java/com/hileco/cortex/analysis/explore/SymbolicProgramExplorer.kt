@@ -10,8 +10,10 @@ import com.hileco.cortex.vm.symbolic.SymbolicPathEntry
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.atomic.AtomicInteger
 
 class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandler) {
+    private val tasks = AtomicInteger(0)
     private val forkJoinPool: ForkJoinPool = ForkJoinPool(PARALLELISM)
 
     /**
@@ -22,14 +24,13 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
      */
     @Synchronized
     fun explore(virtualMachine: SymbolicVirtualMachine) {
-        val start = System.currentTimeMillis()
+        tasks.incrementAndGet()
         forkJoinPool.submit {
             process(virtualMachine)
         }
         do {
             Thread.sleep(1)
-            val runtime = System.currentTimeMillis() - start
-        } while (!forkJoinPool.isQuiescent && !handler.checkStop(runtime))
+        } while (tasks.get() > 0)
     }
 
     fun process(virtualMachine: SymbolicVirtualMachine) {
@@ -78,6 +79,8 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
             virtualMachine.exited = true
             virtualMachine.exitedReason = e.reason
             handler.handleComplete(virtualMachine)
+        } finally {
+            tasks.decrementAndGet()
         }
     }
 
@@ -108,6 +111,7 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
         if (handler.checkDrop(virtualMachine)) {
             handler.handleDrop(virtualMachine)
         } else {
+            tasks.incrementAndGet()
             forkJoinPool.submit {
                 process(virtualMachine)
             }
