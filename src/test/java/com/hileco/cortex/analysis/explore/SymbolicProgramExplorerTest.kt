@@ -19,6 +19,7 @@ import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import org.junit.Assert
 import org.junit.Test
+import java.util.*
 
 class SymbolicProgramExplorerTest {
     private fun testBarrier(barrierProgram: BarrierProgram) {
@@ -27,13 +28,17 @@ class SymbolicProgramExplorerTest {
         barrierProgram.setup(program)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
-        val symbolicProgramExplorer = SymbolicProgramExplorer()
+        val conditions = Collections.synchronizedList(arrayListOf<Expression>())
+        val symbolicProgramExplorer = SymbolicProgramExplorer(object : SymbolicProgramExplorerHandler() {
+            override fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine) {
+                if (symbolicVirtualMachine.exitedReason == WINNER) {
+                    conditions.add(symbolicVirtualMachine.condition())
+                }
+                symbolicVirtualMachine.close()
+            }
+        })
         symbolicProgramExplorer.explore(virtualMachine)
         val time = System.currentTimeMillis() - start
-        val conditions = mutableListOf<Expression>()
-        symbolicProgramExplorer.completed.asSequence()
-                .filter { it.exitedReason == WINNER }
-                .forEach { conditions.add(it.condition()) }
         val solver = Solver()
         val solution = solver.solve(Or(conditions))
         Assert.assertTrue(solution.solvable)

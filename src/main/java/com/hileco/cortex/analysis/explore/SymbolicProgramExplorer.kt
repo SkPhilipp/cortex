@@ -9,21 +9,16 @@ import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
 import com.hileco.cortex.vm.symbolic.SymbolicPathEntry
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
-import java.util.*
 import java.util.concurrent.ForkJoinPool
 
-class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boolean = DEFAULT_DROP_PREDICATE,
-                              val stopPredicate: (Long) -> Boolean = DEFAULT_STOP_PREDICATE) {
-
-    val completed: MutableList<SymbolicVirtualMachine> = Collections.synchronizedList(arrayListOf())
-    val dropped: MutableList<SymbolicVirtualMachine> = Collections.synchronizedList(arrayListOf())
+class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandler) {
     private val forkJoinPool: ForkJoinPool = ForkJoinPool(PARALLELISM)
 
     /**
      * Submits the [virtualMachine] for exploration. During exploration, [SymbolicVirtualMachine]s may branch, every branched [SymbolicVirtualMachine] is also
-     * explored until it reaches an end state or it does not pass the [dropPredicate] upon branching.
+     * explored until it reaches an end state or it does not pass the [SymbolicProgramExplorerHandler.checkDrop] upon branching.
      *
-     * Exploration of all branches is awaited, unless the [stopPredicate] indicates to stop early.
+     * Exploration of all branches is awaited, unless the [SymbolicProgramExplorerHandler.checkStop] indicates to stop early.
      */
     @Synchronized
     fun explore(virtualMachine: SymbolicVirtualMachine) {
@@ -33,8 +28,8 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
         }
         do {
             Thread.sleep(1)
-            val time = System.currentTimeMillis() - start
-        } while (!forkJoinPool.isQuiescent && !stopPredicate(time))
+            val runtime = System.currentTimeMillis() - start
+        } while (!forkJoinPool.isQuiescent && !handler.checkStop(runtime))
     }
 
     fun process(virtualMachine: SymbolicVirtualMachine) {
@@ -55,8 +50,7 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
                     instruction.execute(virtualMachine, programContext)
                     if (virtualMachine.programs.isEmpty()) {
                         virtualMachine.exited = true
-                        virtualMachine.close()
-                        completed.add(virtualMachine)
+                        handler.handleComplete(virtualMachine)
                         break
                     }
                     programContext = virtualMachine.programs.last()
@@ -74,19 +68,16 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
                 }
                 if (programContext.instructionPosition == programContext.program.instructions.size) {
                     virtualMachine.exited = true
-                    virtualMachine.close()
-                    completed.add(virtualMachine)
+                    handler.handleComplete(virtualMachine)
                 }
             } else {
                 virtualMachine.exited = true
-                virtualMachine.close()
-                completed.add(virtualMachine)
+                handler.handleComplete(virtualMachine)
             }
         } catch (e: ProgramException) {
             virtualMachine.exited = true
             virtualMachine.exitedReason = e.reason
-            virtualMachine.close()
-            completed.add(virtualMachine)
+            handler.handleComplete(virtualMachine)
         }
     }
 
@@ -114,8 +105,8 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
         } else {
             programContext.instructionPosition++
         }
-        if (dropPredicate(virtualMachine)) {
-            dropped.add(virtualMachine)
+        if (handler.checkDrop(virtualMachine)) {
+            handler.handleDrop(virtualMachine)
         } else {
             forkJoinPool.submit {
                 process(virtualMachine)
@@ -124,10 +115,6 @@ class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boo
     }
 
     companion object {
-        val DEFAULT_STOP_PREDICATE = { time: Long -> time > DEFAULT_STOP_PREDICATE_TIME_LIMIT }
-        val DEFAULT_DROP_PREDICATE = { virtualMachine: SymbolicVirtualMachine -> virtualMachine.path.size() >= DEFAULT_DROP_PREDICATE_PATH_LIMIT }
-        private const val DEFAULT_STOP_PREDICATE_TIME_LIMIT = 2000
-        private const val DEFAULT_DROP_PREDICATE_PATH_LIMIT = 50
         const val PARALLELISM = 4
     }
 }
