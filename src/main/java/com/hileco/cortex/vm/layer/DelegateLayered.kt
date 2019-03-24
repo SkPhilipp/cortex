@@ -47,6 +47,7 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
 
     @Synchronized
     final override fun dispose() {
+        disposeDelegates()
         val currentParent = parent
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this || it.get() === null }
