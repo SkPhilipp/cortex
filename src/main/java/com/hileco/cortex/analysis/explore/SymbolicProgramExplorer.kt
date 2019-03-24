@@ -9,20 +9,15 @@ import com.hileco.cortex.vm.ProgramConstants.Companion.INSTRUCTION_LIMIT
 import com.hileco.cortex.vm.symbolic.SymbolicPathEntry
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
+import java.util.*
 import java.util.concurrent.ForkJoinPool
 
 class SymbolicProgramExplorer(val dropPredicate: (SymbolicVirtualMachine) -> Boolean = DEFAULT_DROP_PREDICATE,
                               val stopPredicate: (Long) -> Boolean = DEFAULT_STOP_PREDICATE) {
 
-    val completed: MutableList<SymbolicVirtualMachine>
-    val dropped: MutableList<SymbolicVirtualMachine>
-    private val forkJoinPool: ForkJoinPool
-
-    init {
-        completed = arrayListOf()
-        dropped = arrayListOf()
-        forkJoinPool = ForkJoinPool(PARALLELISM)
-    }
+    val completed: MutableList<SymbolicVirtualMachine> = Collections.synchronizedList(arrayListOf())
+    val dropped: MutableList<SymbolicVirtualMachine> = Collections.synchronizedList(arrayListOf())
+    private val forkJoinPool: ForkJoinPool = ForkJoinPool(PARALLELISM)
 
     /**
      * Submits the [virtualMachine] for exploration. During exploration, [SymbolicVirtualMachine]s may branch, every branched [SymbolicVirtualMachine] is also
