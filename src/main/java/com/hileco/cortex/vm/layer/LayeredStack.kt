@@ -113,9 +113,9 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
 
     @Synchronized
     override fun mergeParent(parent: LayeredStack<V>) {
-        parent.layer.forEach { (key, value) ->
-            layer.putIfAbsent(key, value)
-        }
+//        parent.layer.forEach { (key, value) ->
+//            layer.putIfAbsent(key, value)
+//        }
     }
 
     override fun toString(): String {

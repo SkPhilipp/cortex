@@ -39,18 +39,28 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     }
 
     @Synchronized
+    private fun addChild(child: T) {
+        this.children.add(WeakReference(child))
+    }
+
+    @Synchronized
+    private fun removeChild(child: T?) {
+        this.children.removeIf { it.get() === child }
+    }
+
+    @Synchronized
     final override fun branch(): T {
         if (isLayerEmpty()) {
             val sibling = createSibling(parent)
-            sibling.parent?.children?.add(WeakReference(sibling))
+            sibling.parent?.addChild(sibling)
             return sibling
         }
         val newParent = extractParentLayer(parent)
         val sibling = createSibling(newParent)
-        newParent.children.add(WeakReference(this as T))
-        sibling.parent?.children?.add(WeakReference(sibling))
-        parent?.children?.add(WeakReference(newParent))
-        parent?.children?.removeIf { it.get() === this }
+        newParent.addChild(this as T)
+        sibling.parent?.addChild(sibling)
+        parent?.addChild(newParent)
+        parent?.removeChild(this)
         parent = newParent
         return sibling
     }
@@ -59,14 +69,15 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     final override fun dispose() {
         val currentParent = parent
         if (currentParent != null) {
-            currentParent.children.removeIf { it.get() === this || it.get() === null }
-            currentParent.children.singleOrNull()?.get()?.let { lastSibling ->
+            currentParent.removeChild(this as T)
+            currentParent.removeChild(null)
+            currentParent.children().singleOrNull()?.let { lastSibling ->
                 lastSibling.mergeParent(currentParent)
-                lastSibling.parent?.parent?.children?.add(WeakReference(lastSibling))
-                lastSibling.parent?.children?.removeIf { it.get() === lastSibling }
+                lastSibling.parent?.parent?.addChild(lastSibling)
+                lastSibling.parent?.removeChild(lastSibling)
                 lastSibling.parent = lastSibling.parent?.parent
             }
-            if (currentParent.children.size == 0) {
+            if (currentParent.children().isEmpty()) {
                 currentParent.dispose()
             }
         }

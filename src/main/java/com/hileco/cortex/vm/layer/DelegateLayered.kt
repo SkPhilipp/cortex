@@ -32,14 +32,24 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
     }
 
     @Synchronized
+    private fun addChild(child: T) {
+        this.children.add(WeakReference(child))
+    }
+
+    @Synchronized
+    private fun removeChild(child: T?) {
+        this.children.removeIf { it.get() === child }
+    }
+
+    @Synchronized
     final override fun branch(): T {
         val sibling = branchDelegates()
         val newParent = recreateParent()
         newParent.parent = parent
-        newParent.children.add(WeakReference(this as T))
-        newParent.children.add(WeakReference(sibling))
-        parent?.children?.add(WeakReference(newParent))
-        parent?.children?.removeIf { it.get() === this }
+        newParent.addChild(this as T)
+        newParent.addChild(sibling)
+        parent?.addChild(newParent)
+        parent?.removeChild(this)
         sibling.parent = newParent
         parent = newParent
         return sibling
@@ -50,8 +60,9 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
         disposeDelegates()
         val currentParent = parent
         if (currentParent != null) {
-            currentParent.children.removeIf { it.get() === this || it.get() === null }
-            if (currentParent.children.size == 0) {
+            currentParent.removeChild(this as T)
+            currentParent.removeChild(null)
+            if (currentParent.children().isEmpty()) {
                 currentParent.dispose()
             }
         }

@@ -119,6 +119,6 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
     }
 
     companion object {
-        const val PARALLELISM = 4
+        const val PARALLELISM = 16
     }
 }
