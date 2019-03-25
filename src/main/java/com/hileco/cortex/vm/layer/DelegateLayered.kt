@@ -23,8 +23,8 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
      */
     protected abstract fun disposeDelegates()
 
-    protected var parent: T?
-    protected val children: MutableList<WeakReference<T>>
+    private var parent: T?
+    private val children: MutableList<WeakReference<T>>
 
     init {
         parent = null
@@ -58,21 +58,12 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
     }
 
     @Synchronized
-    final override fun parent(): T {
-        return parent ?: this as T
+    final override fun parent(): T? {
+        return parent
     }
 
     @Synchronized
     final override fun children(): List<T> {
         return children.mapNotNull { it.get() }.toList()
-    }
-
-    @Synchronized
-    final override fun root(): T {
-        var currentParent: T = parent()
-        while (currentParent.parent() != currentParent) {
-            currentParent = currentParent.parent()
-        }
-        return currentParent
     }
 }

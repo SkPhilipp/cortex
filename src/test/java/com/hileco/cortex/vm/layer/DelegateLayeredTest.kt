@@ -16,15 +16,15 @@ class DelegateLayeredTest {
         Assert.assertEquals(branchedDelegateLayeredStack.delegate.asSequence().toList(), listOf(1, 2))
         Assert.assertNotNull(delegateLayeredStack.parent())
         Assert.assertEquals(delegateLayeredStack.parent(), branchedDelegateLayeredStack.parent())
-        Assert.assertEquals(delegateLayeredStack.parent().delegate.asSequence().toList(), listOf(1))
+        Assert.assertEquals(delegateLayeredStack.parent()!!.delegate.asSequence().toList(), listOf(1))
     }
 
     @Test
     fun testChildLinkage() {
         val delegateLayeredStack = DelegateLayeredStack<Int>()
         val branchedDelegateLayeredStack = delegateLayeredStack.branch()
-        Assert.assertNotNull(delegateLayeredStack.parent().children().single { it === delegateLayeredStack })
-        Assert.assertNotNull(delegateLayeredStack.parent().children().single { it === branchedDelegateLayeredStack })
+        Assert.assertNotNull(delegateLayeredStack.parent()!!.children().single { it === delegateLayeredStack })
+        Assert.assertNotNull(delegateLayeredStack.parent()!!.children().single { it === branchedDelegateLayeredStack })
     }
 
     @Test
@@ -32,7 +32,7 @@ class DelegateLayeredTest {
         val delegateLayeredStack = DelegateLayeredStack<Int>()
         val branchedDelegateLayeredStack = delegateLayeredStack.branch()
         delegateLayeredStack.dispose()
-        Assert.assertNull(delegateLayeredStack.parent().children().singleOrNull { it === delegateLayeredStack })
-        Assert.assertNotNull(delegateLayeredStack.parent().children().single { it === branchedDelegateLayeredStack })
+        Assert.assertNull(delegateLayeredStack.parent()!!.children().singleOrNull { it === delegateLayeredStack })
+        Assert.assertNotNull(delegateLayeredStack.parent()!!.children().single { it === branchedDelegateLayeredStack })
     }
 }

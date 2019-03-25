@@ -34,9 +34,9 @@ class VirtualMachine : DelegateLayered<VirtualMachine> {
     }
 
     override fun recreateParent(): VirtualMachine {
-        val branchPrograms = programs.map { program -> program.parent() }.toMutableList()
-        val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.parent()}.toMutableMap()
-        return VirtualMachine(branchPrograms, branchAtlas, variables.parent(), instructionsExecuted)
+        val branchPrograms = programs.map { program -> program.parent()!! }.toMutableList()
+        val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.parent()!! }.toMutableMap()
+        return VirtualMachine(branchPrograms, branchAtlas, variables.parent() ?: LayeredMap(), instructionsExecuted)
     }
 
     override fun branchDelegates(): VirtualMachine {

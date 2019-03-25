@@ -32,7 +32,10 @@ class SymbolicProgram : DelegateLayered<SymbolicProgram> {
     }
 
     override fun recreateParent(): SymbolicProgram {
-        return SymbolicProgram(instructions, address, storage.parent(), transfers.parent())
+        return SymbolicProgram(instructions,
+                address,
+                storage.parent() ?: LayeredMap(),
+                transfers.parent() ?: LayeredStack())
     }
 
     override fun branchDelegates(): SymbolicProgram {

@@ -3,13 +3,27 @@ package com.hileco.cortex.vm.layer.test
 import com.hileco.cortex.vm.layer.Layered
 
 class LayeredNavigator {
+    fun root(start: Layered<*>): Layered<*> {
+        var currentParent = start
+        do {
+            val parent = currentParent.parent()
+            if (parent != null) {
+                currentParent = parent
+            }
+        } while (parent != null)
+        return currentParent
+    }
+
     fun depth(start: Layered<*>): Int {
         var depth = 0
         var current = start
-        while (current.parent() !== current) {
-            current = current.parent()
-            depth++
-        }
+        do {
+            val parent = current.parent()
+            if (parent != null) {
+                current = parent
+                depth++
+            }
+        } while (parent != null)
         return depth
     }
 

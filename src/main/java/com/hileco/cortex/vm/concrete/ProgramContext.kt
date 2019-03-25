@@ -45,7 +45,14 @@ class ProgramContext : DelegateLayered<ProgramContext> {
     }
 
     override fun recreateParent(): ProgramContext {
-        return ProgramContext(program.branch(), instructionsExecuted, instructionPosition, stack.parent(), memory.parent(), returnDataOffset, returnDataSize, callData.parent())
+        return ProgramContext(program.parent()!!,
+                instructionsExecuted,
+                instructionPosition,
+                stack.parent() ?: LayeredStack(),
+                memory.parent() ?: LayeredBytes(),
+                returnDataOffset,
+                returnDataSize,
+                callData.parent() ?: LayeredBytes())
     }
 
     override fun branchDelegates(): ProgramContext {

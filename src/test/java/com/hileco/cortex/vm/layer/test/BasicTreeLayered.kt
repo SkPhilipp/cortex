@@ -11,10 +11,10 @@ class BasicTreeLayered(private val empty: Boolean, parent: BasicTreeLayered? = n
         return empty
     }
 
-    override fun createSibling(): BasicTreeLayered {
-        return BasicTreeLayered(empty, parent())
+    override fun createSibling(parent: BasicTreeLayered?): BasicTreeLayered {
+        return BasicTreeLayered(empty, parent)
     }
 
-    override fun mergeParent() {
+    override fun mergeParent(parent: BasicTreeLayered) {
     }
 }

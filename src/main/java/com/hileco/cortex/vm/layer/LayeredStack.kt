@@ -11,9 +11,9 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
                         layer: HashMap<Int, V>) : super(parent) {
         this.size = size
         this.layer = layer
-        val chosenParent = this.parent
-        if (chosenParent != null && chosenParent.layer.size < MINIMUM_LAYER_SIZE) {
-            mergeParent()
+        val mergeableParent = this.parent()
+        if (mergeableParent != null && mergeableParent.layer.size < MINIMUM_LAYER_SIZE) {
+            mergeParent(mergeableParent)
         }
     }
 
@@ -49,7 +49,7 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
             if (value != null) {
                 return value
             }
-            chosen = chosen.parent
+            chosen = chosen.parent()
         }
         throw IndexOutOfBoundsException("size ${this.size} <= index $index")
     }
@@ -107,14 +107,13 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
     }
 
     @Synchronized
-    override fun createSibling(): LayeredStack<V> {
+    override fun createSibling(parent: LayeredStack<V>?): LayeredStack<V> {
         return LayeredStack(parent, parent?.size ?: 0, HashMap())
     }
 
     @Synchronized
-    override fun mergeParent() {
-        val currentParent = parent
-        currentParent?.layer?.forEach { (key, value) ->
+    override fun mergeParent(parent: LayeredStack<V>) {
+        parent.layer.forEach { (key, value) ->
             layer.putIfAbsent(key, value)
         }
     }

@@ -12,7 +12,7 @@ class LayeredImplementationTest {
     private fun <T : Layered<T>> test(source: T,
                                       postProcessor: (T) -> Unit = { _ -> },
                                       mergesOnSingleChild: Boolean = false) {
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), 0)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 0)
 
         /**
          * x -> source
@@ -25,11 +25,11 @@ class LayeredImplementationTest {
 
         Assert.assertEquals(layeredNavigator.depth(source), 1)
         Assert.assertEquals(layeredNavigator.depth(branch), 1)
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), 1)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 1)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
         Assert.assertEquals(source.parent(), branch.parent())
-        Assert.assertEquals(source.parent().children().size, 2)
+        Assert.assertEquals(source.parent()!!.children().size, 2)
         /**
          * x -> source
          * x -> y -> branch
@@ -42,15 +42,15 @@ class LayeredImplementationTest {
         Assert.assertEquals(layeredNavigator.depth(source), 1)
         Assert.assertEquals(layeredNavigator.depth(branch), 2)
         Assert.assertEquals(layeredNavigator.depth(branch2), 2)
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), 2)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 2)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch2), 0)
-        Assert.assertEquals(source.root(), branch.root())
-        Assert.assertEquals(branch.root(), branch2.root())
+        Assert.assertEquals(layeredNavigator.root(source), layeredNavigator.root(branch))
+        Assert.assertEquals(layeredNavigator.root(branch), layeredNavigator.root(branch2))
         Assert.assertEquals(branch.parent(), branch2.parent())
-        Assert.assertEquals(source.parent().children().size, 2)
-        Assert.assertEquals(branch.parent().children().size, 2)
+        Assert.assertEquals(source.parent()!!.children().size, 2)
+        Assert.assertEquals(branch.parent()!!.children().size, 2)
 
         /**
          * x -> source
@@ -66,18 +66,18 @@ class LayeredImplementationTest {
         Assert.assertEquals(layeredNavigator.depth(branch), 2)
         Assert.assertEquals(layeredNavigator.depth(branch2), 3)
         Assert.assertEquals(layeredNavigator.depth(branch3), 3)
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), 3)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 3)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch2), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch3), 0)
-        Assert.assertEquals(source.root(), branch.root())
-        Assert.assertEquals(branch.root(), branch2.root())
-        Assert.assertEquals(branch2.root(), branch3.root())
+        Assert.assertEquals(layeredNavigator.root(source), layeredNavigator.root(branch))
+        Assert.assertEquals(layeredNavigator.root(branch), layeredNavigator.root(branch2))
+        Assert.assertEquals(layeredNavigator.root(branch2), layeredNavigator.root(branch3))
         Assert.assertEquals(branch2.parent(), branch3.parent())
-        Assert.assertEquals(source.parent().children().size, 2)
-        Assert.assertEquals(branch.parent().children().size, 2)
-        Assert.assertEquals(branch2.parent().children().size, 2)
+        Assert.assertEquals(source.parent()!!.children().size, 2)
+        Assert.assertEquals(branch.parent()!!.children().size, 2)
+        Assert.assertEquals(branch2.parent()!!.children().size, 2)
 
         /**
          * x -> source
@@ -89,13 +89,12 @@ class LayeredImplementationTest {
         Assert.assertEquals(layeredNavigator.depth(source), 1)
         Assert.assertEquals(layeredNavigator.depth(branch), 2)
         Assert.assertEquals(layeredNavigator.depth(branch2), if (mergesOnSingleChild) 2 else 3)
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), if (mergesOnSingleChild) 2 else 3)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), if (mergesOnSingleChild) 2 else 3)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch2), 0)
-        Assert.assertEquals(source.root(), branch.root())
-        Assert.assertEquals(branch.root(), branch2.root())
-
+        Assert.assertEquals(layeredNavigator.root(source), layeredNavigator.root(branch))
+        Assert.assertEquals(layeredNavigator.root(branch), layeredNavigator.root(branch2))
         /**
          * x -> source
          * x -> y -> branch (or x -> y+branch when mergesOnSingleChild)
@@ -104,10 +103,10 @@ class LayeredImplementationTest {
 
         Assert.assertEquals(layeredNavigator.depth(source), 1)
         Assert.assertEquals(layeredNavigator.depth(branch), if (mergesOnSingleChild) 1 else 2)
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), if (mergesOnSingleChild) 1 else 2)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), if (mergesOnSingleChild) 1 else 2)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
-        Assert.assertEquals(source.root(), branch.root())
+        Assert.assertEquals(layeredNavigator.root(source), layeredNavigator.root(branch))
 
         /**
          * x -> source (or x+source when mergesOnSingleChild)
@@ -115,7 +114,7 @@ class LayeredImplementationTest {
         branch.dispose()
 
         Assert.assertEquals(layeredNavigator.depth(source), if (mergesOnSingleChild) 0 else 1)
-        Assert.assertEquals(layeredNavigator.remainingDepth(source.root()), if (mergesOnSingleChild) 0 else 1)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), if (mergesOnSingleChild) 0 else 1)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
     }
 

@@ -46,7 +46,14 @@ class SymbolicProgramContext : DelegateLayered<SymbolicProgramContext> {
     }
 
     override fun recreateParent(): SymbolicProgramContext {
-        return SymbolicProgramContext(program.parent(), instructionsExecuted, instructionPosition, stack.parent(), memory.parent(), returnDataOffset, returnDataSize, callData.parent())
+        return SymbolicProgramContext(program.parent()!!,
+                instructionsExecuted,
+                instructionPosition,
+                stack.parent() ?: LayeredStack(),
+                memory.parent() ?: LayeredMap(),
+                returnDataOffset,
+                returnDataSize,
+                callData.parent() ?: LayeredMap())
     }
 
     override fun branchDelegates(): SymbolicProgramContext {
@@ -57,6 +64,6 @@ class SymbolicProgramContext : DelegateLayered<SymbolicProgramContext> {
         program.dispose()
         stack.dispose()
         memory.dispose()
-        callData.clear()
+        callData.dispose()
     }
 }

@@ -30,15 +30,6 @@ class LayeredMapTest {
     }
 
     @Test
-    fun testClear() {
-        val map = LayeredMap<Int, Int>()
-        map[10] = 100
-        map[20] = 200
-        map.clear()
-        assertEquals(0, map.size())
-    }
-
-    @Test
     fun testKeySet() {
         val map = LayeredMap<Int, Int>()
         map[10] = 100

@@ -19,15 +19,15 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     /**
      * @return a sibling, whose layer is empty
      */
-    protected abstract fun createSibling(): T
+    protected abstract fun createSibling(parent: T?): T
 
     /**
      * merges the parent layer into this layer
      */
-    protected abstract fun mergeParent()
+    protected abstract fun mergeParent(parent: T)
 
-    protected var parent: T?
-    protected val children: MutableList<WeakReference<T>>
+    private var parent: T?
+    private val children: MutableList<WeakReference<T>>
 
     init {
         var chosenParent = initialParent
@@ -41,18 +41,17 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     @Synchronized
     final override fun branch(): T {
         if (isLayerEmpty()) {
-            val sibling = createSibling()
-            parent?.children?.add(WeakReference(sibling))
+            val sibling = createSibling(parent)
+            sibling.parent?.children?.add(WeakReference(sibling))
             return sibling
         }
-        val currentParent = parent
         val newParent = extractParentLayer(parent)
-        parent = newParent
-        val sibling = createSibling()
-        currentParent?.children?.removeIf { it.get() === this }
-        currentParent?.children?.add(WeakReference(newParent))
+        val sibling = createSibling(newParent)
         newParent.children.add(WeakReference(this as T))
-        newParent.children.add(WeakReference(sibling))
+        sibling.parent?.children?.add(WeakReference(sibling))
+        parent?.children?.add(WeakReference(newParent))
+        parent?.children?.removeIf { it.get() === this }
+        parent = newParent
         return sibling
     }
 
@@ -62,10 +61,10 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
         if (currentParent != null) {
             currentParent.children.removeIf { it.get() === this || it.get() === null }
             currentParent.children.singleOrNull()?.get()?.let { lastSibling ->
-                lastSibling.mergeParent()
+                lastSibling.mergeParent(currentParent)
+                lastSibling.parent?.parent?.children?.add(WeakReference(lastSibling))
                 lastSibling.parent?.children?.removeIf { it.get() === lastSibling }
                 lastSibling.parent = lastSibling.parent?.parent
-                lastSibling.parent?.children?.add(WeakReference(lastSibling))
             }
             if (currentParent.children.size == 0) {
                 currentParent.dispose()
@@ -74,21 +73,12 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
     }
 
     @Synchronized
-    final override fun parent(): T {
-        return parent ?: this as T
+    final override fun parent(): T? {
+        return parent
     }
 
     @Synchronized
     final override fun children(): List<T> {
         return children.mapNotNull { it.get() }.toList()
-    }
-
-    @Synchronized
-    final override fun root(): T {
-        var currentParent: T = parent()
-        while (currentParent.parent() != currentParent) {
-            currentParent = currentParent.parent()
-        }
-        return currentParent
     }
 }

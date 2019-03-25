@@ -31,7 +31,10 @@ class Program : DelegateLayered<Program> {
     }
 
     override fun recreateParent(): Program {
-        return Program(instructions, address, storage.parent(), transfers.parent())
+        return Program(instructions,
+                address,
+                storage.parent() ?: LayeredBytes(),
+                transfers.parent() ?: LayeredStack())
     }
 
     override fun branchDelegates(): Program {

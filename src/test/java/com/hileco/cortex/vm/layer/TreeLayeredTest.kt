@@ -10,8 +10,7 @@ class TreeLayeredTest {
     fun testBranch() {
         val testLayered = BasicTreeLayered(false)
         val branchLayered = testLayered.branch()
-        val parent = testLayered.parent()
-        Assert.assertNotNull(parent)
+        val parent = testLayered.parent()!!
         Assert.assertEquals(parent, branchLayered.parent())
         Assert.assertTrue(parent.children().containsAll(listOf(testLayered, branchLayered)))
     }
@@ -20,8 +19,8 @@ class TreeLayeredTest {
     fun testBranchEmptyLayer() {
         val testLayered = BasicTreeLayered(true)
         val branchLayered = testLayered.branch()
-        Assert.assertEquals(testLayered.parent(), testLayered)
-        Assert.assertEquals(branchLayered.parent(), branchLayered)
+        Assert.assertNull(testLayered.parent())
+        Assert.assertNull(branchLayered.parent())
     }
 
     @Test

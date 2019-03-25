@@ -5,7 +5,7 @@ import com.hileco.cortex.vm.layer.LayeredStack
 
 class DelegateLayeredStack<T>(val delegate: LayeredStack<T> = LayeredStack()) : DelegateLayered<DelegateLayeredStack<T>>() {
     override fun recreateParent(): DelegateLayeredStack<T> {
-        return DelegateLayeredStack(delegate.parent())
+        return DelegateLayeredStack(delegate.parent() ?: LayeredStack())
     }
 
     override fun branchDelegates(): DelegateLayeredStack<T> {

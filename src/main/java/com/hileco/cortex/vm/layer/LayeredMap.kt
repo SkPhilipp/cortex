@@ -15,22 +15,19 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         return layer.isEmpty() && deletions.isEmpty()
     }
 
-    override fun createSibling(): LayeredMap<K, V> {
+    override fun createSibling(parent: LayeredMap<K, V>?): LayeredMap<K, V> {
         return LayeredMap(parent)
     }
 
-    override fun mergeParent() {
-        val currentParent = parent
-        if (currentParent != null) {
-            currentParent.layer.forEach { key, value ->
-                if (!deletions.contains(key)) {
-                    layer.putIfAbsent(key, value)
-                }
+    override fun mergeParent(parent: LayeredMap<K, V>) {
+        parent.layer.forEach { key, value ->
+            if (!deletions.contains(key)) {
+                layer.putIfAbsent(key, value)
             }
-            currentParent.deletions.forEach { deletion ->
-                if (!layer.containsKey(deletion)) {
-                    deletions.add(deletion)
-                }
+        }
+        parent.deletions.forEach { deletion ->
+            if (!layer.containsKey(deletion)) {
+                deletions.add(deletion)
             }
         }
     }
@@ -45,7 +42,7 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
             return layer[key]
         }
         return if (!deletions.contains(key)) {
-            return parent?.get(key)
+            return parent()?.get(key)
         } else null
     }
 
@@ -58,23 +55,16 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
     @Synchronized
     fun remove(key: K) {
         layer.remove(key)
-        val currentParent = parent
+        val currentParent = parent()
         if (currentParent?.get(key) != null) {
             deletions.add(key)
         }
     }
 
     @Synchronized
-    fun clear() {
-        parent = null
-        layer.clear()
-        deletions.clear()
-    }
-
-    @Synchronized
     fun keySet(): Set<K> {
         val keys = HashSet<K>()
-        val currentParent = parent
+        val currentParent = parent()
         if (currentParent != null) {
             keys.addAll(currentParent.keySet())
         }
