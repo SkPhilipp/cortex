@@ -26,7 +26,7 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
      */
     protected abstract fun mergeParent(parent: T)
 
-    private var parent: T?
+    protected var parent: T?
     private val children: MutableList<WeakReference<T>>
 
     init {
@@ -65,20 +65,15 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
         return sibling
     }
 
-    @Synchronized
     final override fun dispose() {
         val currentParent = parent
         if (currentParent != null) {
-            currentParent.removeChild(this as T)
-            currentParent.removeChild(null)
-            currentParent.children().singleOrNull()?.let { lastSibling ->
-                lastSibling.mergeParent(currentParent)
-                lastSibling.parent?.parent?.addChild(lastSibling)
-                lastSibling.parent?.removeChild(lastSibling)
-                lastSibling.parent = lastSibling.parent?.parent
-            }
-            if (currentParent.children().isEmpty()) {
-                currentParent.dispose()
+            synchronized(currentParent) {
+                currentParent.removeChild(this as T)
+                currentParent.removeChild(null)
+                if (currentParent.children.size == 0) {
+                    currentParent.dispose()
+                }
             }
         }
     }

@@ -4,6 +4,17 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
     private var layer: MutableMap<K, V> = HashMap()
     private var deletions: MutableSet<K> = HashSet()
 
+    init {
+        val mergeableParent = this.parent
+        if (mergeableParent != null
+                && mergeableParent.layer.size < LayeredMap.MINIMUM_LAYER_SIZE
+                && mergeableParent.deletions.size < LayeredMap.MINIMUM_DELETIONS_SIZE) {
+            mergeParent(mergeableParent)
+            this.parent = mergeableParent.parent()
+        }
+    }
+
+    @Synchronized
     override fun extractParentLayer(parent: LayeredMap<K, V>?): LayeredMap<K, V> {
         val clone = LayeredMap(parent)
         clone.layer = layer.toMutableMap()
@@ -11,23 +22,28 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         return clone
     }
 
+    @Synchronized
     override fun isLayerEmpty(): Boolean {
         return layer.isEmpty() && deletions.isEmpty()
     }
 
+    @Synchronized
     override fun createSibling(parent: LayeredMap<K, V>?): LayeredMap<K, V> {
         return LayeredMap(parent)
     }
 
+    @Synchronized
     override fun mergeParent(parent: LayeredMap<K, V>) {
-        parent.layer.forEach { key, value ->
-            if (!deletions.contains(key)) {
-                layer.putIfAbsent(key, value)
+        synchronized(parent) {
+            parent.layer.forEach { key, value ->
+                if (!deletions.contains(key)) {
+                    layer.putIfAbsent(key, value)
+                }
             }
-        }
-        parent.deletions.forEach { deletion ->
-            if (!layer.containsKey(deletion)) {
-                deletions.add(deletion)
+            parent.deletions.forEach { deletion ->
+                if (!layer.containsKey(deletion)) {
+                    deletions.add(deletion)
+                }
             }
         }
     }
@@ -42,7 +58,7 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
             return layer[key]
         }
         return if (!deletions.contains(key)) {
-            return parent()?.get(key)
+            return parent?.get(key)
         } else null
     }
 
@@ -55,7 +71,7 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
     @Synchronized
     fun remove(key: K) {
         layer.remove(key)
-        val currentParent = parent()
+        val currentParent = parent
         if (currentParent?.get(key) != null) {
             deletions.add(key)
         }
@@ -64,7 +80,7 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
     @Synchronized
     fun keySet(): Set<K> {
         val keys = HashSet<K>()
-        val currentParent = parent()
+        val currentParent = parent
         if (currentParent != null) {
             keys.addAll(currentParent.keySet())
         }
@@ -104,5 +120,10 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
 
     override fun hashCode(): Int {
         return keySet().hashCode()
+    }
+
+    companion object {
+        const val MINIMUM_LAYER_SIZE: Int = 4
+        const val MINIMUM_DELETIONS_SIZE: Int = 4
     }
 }

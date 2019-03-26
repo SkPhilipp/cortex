@@ -10,8 +10,7 @@ class LayeredImplementationTest {
     private val layeredNavigator = LayeredNavigator()
 
     private fun <T : Layered<T>> test(source: T,
-                                      postProcessor: (T) -> Unit = { _ -> },
-                                      mergesOnSingleChild: Boolean = false) {
+                                      postProcessor: (T) -> Unit = { _ -> }) {
         Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 0)
 
         /**
@@ -88,8 +87,8 @@ class LayeredImplementationTest {
 
         Assert.assertEquals(layeredNavigator.depth(source), 1)
         Assert.assertEquals(layeredNavigator.depth(branch), 2)
-        Assert.assertEquals(layeredNavigator.depth(branch2), if (mergesOnSingleChild) 2 else 3)
-        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), if (mergesOnSingleChild) 2 else 3)
+        Assert.assertEquals(layeredNavigator.depth(branch2), 3)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 3)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch2), 0)
@@ -102,8 +101,8 @@ class LayeredImplementationTest {
         branch2.dispose()
 
         Assert.assertEquals(layeredNavigator.depth(source), 1)
-        Assert.assertEquals(layeredNavigator.depth(branch), if (mergesOnSingleChild) 1 else 2)
-        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), if (mergesOnSingleChild) 1 else 2)
+        Assert.assertEquals(layeredNavigator.depth(branch), 2)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 2)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
         Assert.assertEquals(layeredNavigator.remainingDepth(branch), 0)
         Assert.assertEquals(layeredNavigator.root(source), layeredNavigator.root(branch))
@@ -113,8 +112,8 @@ class LayeredImplementationTest {
          */
         branch.dispose()
 
-        Assert.assertEquals(layeredNavigator.depth(source), if (mergesOnSingleChild) 0 else 1)
-        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), if (mergesOnSingleChild) 0 else 1)
+        Assert.assertEquals(layeredNavigator.depth(source), 1)
+        Assert.assertEquals(layeredNavigator.remainingDepth(layeredNavigator.root(source)), 1)
         Assert.assertEquals(layeredNavigator.remainingDepth(source), 0)
     }
 
@@ -124,7 +123,11 @@ class LayeredImplementationTest {
             stack.push(1)
             stack.push(2)
             stack.push(3)
-        }, mergesOnSingleChild = true)
+            stack.push(4)
+            stack.push(5)
+            stack.push(6)
+            stack.push(7)
+        })
     }
 
     @Test
@@ -142,6 +145,10 @@ class LayeredImplementationTest {
         val counter = AtomicInteger()
         test(LayeredMap<Int, Int>(), postProcessor = { stack ->
             stack[counter.incrementAndGet()] = counter.get()
-        }, mergesOnSingleChild = true)
+            stack[counter.incrementAndGet()] = counter.get()
+            stack[counter.incrementAndGet()] = counter.get()
+            stack[counter.incrementAndGet()] = counter.get()
+            stack[counter.incrementAndGet()] = counter.get()
+        })
     }
 }
