@@ -12,15 +12,15 @@ import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.atomic.AtomicInteger
 
-class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandler) {
+class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
     private val tasks = AtomicInteger(0)
     private val forkJoinPool: ForkJoinPool = ForkJoinPool(PARALLELISM)
 
     /**
      * Submits the [virtualMachine] for exploration. During exploration, [SymbolicVirtualMachine]s may branch, every branched [SymbolicVirtualMachine] is also
-     * explored until it reaches an end state or it does not pass the [SymbolicProgramExplorerHandler.checkDrop] upon branching.
+     * explored until it reaches an end state or it does not pass the [ExploreStrategy.checkDrop] upon branching.
      *
-     * Exploration of all branches is awaited, unless the [SymbolicProgramExplorerHandler.checkStop] indicates to stop early.
+     * Exploration of all branches is awaited, unless the [ExploreStrategy.checkStop] indicates to stop early.
      */
     @Synchronized
     fun explore(virtualMachine: SymbolicVirtualMachine) {
@@ -51,7 +51,7 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
                     instruction.execute(virtualMachine, programContext)
                     if (virtualMachine.programs.isEmpty()) {
                         virtualMachine.exited = true
-                        handler.handleComplete(virtualMachine)
+                        strategy.handleComplete(virtualMachine)
                         break
                     }
                     programContext = virtualMachine.programs.last()
@@ -69,16 +69,16 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
                 }
                 if (programContext.instructionPosition == programContext.program.instructions.size) {
                     virtualMachine.exited = true
-                    handler.handleComplete(virtualMachine)
+                    strategy.handleComplete(virtualMachine)
                 }
             } else {
                 virtualMachine.exited = true
-                handler.handleComplete(virtualMachine)
+                strategy.handleComplete(virtualMachine)
             }
         } catch (e: ProgramException) {
             virtualMachine.exited = true
             virtualMachine.exitedReason = e.reason
-            handler.handleComplete(virtualMachine)
+            strategy.handleComplete(virtualMachine)
         } finally {
             tasks.decrementAndGet()
         }
@@ -108,12 +108,14 @@ class SymbolicProgramExplorer(private val handler: SymbolicProgramExplorerHandle
         } else {
             programContext.instructionPosition++
         }
-        if (handler.checkDrop(virtualMachine)) {
-            handler.handleDrop(virtualMachine)
+        if (strategy.checkDrop(virtualMachine)) {
+            strategy.handleDrop(virtualMachine)
         } else {
-            tasks.incrementAndGet()
-            forkJoinPool.submit {
-                process(virtualMachine)
+            if (!strategy.checkStop()) {
+                tasks.incrementAndGet()
+                forkJoinPool.submit {
+                    process(virtualMachine)
+                }
             }
         }
     }

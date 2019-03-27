@@ -9,17 +9,12 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_09
-import com.hileco.cortex.constraints.Solver
-import com.hileco.cortex.constraints.expressions.Expression
-import com.hileco.cortex.constraints.expressions.Expression.Or
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
 import com.hileco.cortex.vm.symbolic.SymbolicProgram
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 import org.junit.Assert
 import org.junit.Test
-import java.util.*
 
 class SymbolicProgramExplorerTest {
     private fun testBarrier(barrierProgram: BarrierProgram) {
@@ -28,19 +23,11 @@ class SymbolicProgramExplorerTest {
         barrierProgram.setup(program)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
-        val conditions = Collections.synchronizedList(arrayListOf<Expression>())
-        val symbolicProgramExplorer = SymbolicProgramExplorer(object : SymbolicProgramExplorerHandler() {
-            override fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine) {
-                if (symbolicVirtualMachine.exitedReason == WINNER) {
-                    conditions.add(symbolicVirtualMachine.condition())
-                }
-                symbolicVirtualMachine.dispose()
-            }
-        })
+        val strategy = AccumulatingExploreStrategy()
+        val symbolicProgramExplorer = SymbolicProgramExplorer(strategy)
         symbolicProgramExplorer.explore(virtualMachine)
+        val solution = strategy.solve()
         val time = System.currentTimeMillis() - start
-        val solver = Solver()
-        val solution = solver.solve(Or(conditions))
         Assert.assertTrue(solution.solvable)
         Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")

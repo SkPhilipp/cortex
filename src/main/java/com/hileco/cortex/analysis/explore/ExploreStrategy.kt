@@ -2,12 +2,19 @@ package com.hileco.cortex.analysis.explore
 
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 
-abstract class SymbolicProgramExplorerHandler {
+abstract class ExploreStrategy {
     /**
      * Whether to drop the given [symbolicVirtualMachine], halting further exploration.
      */
     open fun checkDrop(symbolicVirtualMachine: SymbolicVirtualMachine): Boolean {
         return symbolicVirtualMachine.path.size() >= DEFAULT_DROP_PREDICATE_PATH_LIMIT
+    }
+
+    /**
+     * Whether to halt further exploration.
+     */
+    open fun checkStop(): Boolean {
+        return false
     }
 
     /**

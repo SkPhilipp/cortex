@@ -52,7 +52,6 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         return keySet().size
     }
 
-    @Synchronized
     operator fun get(key: K): V? {
         if (layer.containsKey(key)) {
             return layer[key]
@@ -62,13 +61,11 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         } else null
     }
 
-    @Synchronized
     operator fun set(key: K, value: V) {
         deletions.remove(key)
         layer[key] = value
     }
 
-    @Synchronized
     fun remove(key: K) {
         layer.remove(key)
         val currentParent = parent
@@ -77,7 +74,6 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         }
     }
 
-    @Synchronized
     fun keySet(): Set<K> {
         val keys = HashSet<K>()
         val currentParent = parent

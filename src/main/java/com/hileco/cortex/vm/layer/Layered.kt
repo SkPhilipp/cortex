@@ -1,10 +1,12 @@
 package com.hileco.cortex.vm.layer
 
 /**
- * [Layered] structures must be thread-safe.
+ * [Layered] structures' internal layering must be thread-safe.
  *
- * To ensure thread-safety when implementing [Layered], follow these rules:
- * - Method should likely be [Synchronized]
+ * Objects implementing [Layered] do not have to be thread safe
+ *
+ * To ensure proper thread-safety when implementing [Layered], follow these rules:
+ * - Methods modifying internal layering structure must be [Synchronized]
  * - When changing internal parent or children references; add first, then remove
  * - When merging with parent; do not modify the parent & attach first, then detatch
  */

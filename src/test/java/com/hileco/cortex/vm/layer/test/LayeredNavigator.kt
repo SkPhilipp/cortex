@@ -3,7 +3,7 @@ package com.hileco.cortex.vm.layer.test
 import com.hileco.cortex.vm.layer.Layered
 
 class LayeredNavigator {
-    fun root(start: Layered<*>): Layered<*> {
+    fun <T : Layered<T>> root(start: T): T {
         var currentParent = start
         do {
             val parent = currentParent.parent()
