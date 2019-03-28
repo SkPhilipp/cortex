@@ -1,4 +1,4 @@
-package com.hileco.cortex.analysis.explore
+package com.hileco.cortex.analysis.explore.strategies
 
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 

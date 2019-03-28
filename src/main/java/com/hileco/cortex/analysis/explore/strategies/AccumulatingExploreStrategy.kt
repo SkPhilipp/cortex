@@ -1,4 +1,4 @@
-package com.hileco.cortex.analysis.explore
+package com.hileco.cortex.analysis.explore.strategies
 
 import com.hileco.cortex.constraints.Solution
 import com.hileco.cortex.constraints.Solver
@@ -18,7 +18,8 @@ class AccumulatingExploreStrategy : ExploreStrategy() {
     }
 
     fun solve(): Solution {
+        val condition = Expression.constructOr(conditions)
         val solver = Solver()
-        return solver.solve(Expression.Or(conditions))
+        return solver.solve(condition)
     }
 }

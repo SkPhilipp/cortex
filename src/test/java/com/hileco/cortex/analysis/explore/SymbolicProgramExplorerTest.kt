@@ -9,6 +9,7 @@ import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
 import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_09
+import com.hileco.cortex.analysis.explore.strategies.PathTreeExploreStrategy
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.symbolic.SymbolicProgram
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
@@ -23,7 +24,7 @@ class SymbolicProgramExplorerTest {
         barrierProgram.setup(program)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
-        val strategy = AccumulatingExploreStrategy()
+        val strategy = PathTreeExploreStrategy()
         val symbolicProgramExplorer = SymbolicProgramExplorer(strategy)
         symbolicProgramExplorer.explore(virtualMachine)
         val solution = strategy.solve()

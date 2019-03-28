@@ -61,7 +61,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return inputs.joinToString(separator = " && ") { "($it)" }
+            return inputs.joinToString(separator = " && ", prefix = "(", postfix = ")") { "$it" }
         }
     }
 
@@ -71,7 +71,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return inputs.joinToString(separator = " || ") { "($it)" }
+            return inputs.joinToString(separator = " || ", prefix = "(", postfix = ")") { "$it" }
         }
     }
 
@@ -249,15 +249,25 @@ interface Expression {
         private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Expression.Value && it.constant >= 0) }
         private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(0) }
         fun constructAnd(inputs: List<Expression>): Expression {
-            val distinctInputs = inputs.distinct()
+            val distinctInputs = inputs.distinct().filterNot(IS_EQUIVALENT_TRUE)
             val falseInputs = distinctInputs.count(IS_EQUIVALENT_FALSE)
-            val trueInputs = distinctInputs.count(IS_EQUIVALENT_TRUE)
             when {
                 falseInputs > 0 -> return False
-                trueInputs == distinctInputs.size -> return True
-                trueInputs > 0 -> return And(distinctInputs.filterNot(IS_EQUIVALENT_TRUE))
+                distinctInputs.isEmpty() -> return True
+                distinctInputs.size == 1 -> return distinctInputs.single()
             }
             return And(distinctInputs)
+        }
+
+        fun constructOr(inputs: List<Expression>): Expression {
+            val distinctInputs = inputs.distinct().filterNot(IS_EQUIVALENT_FALSE)
+            val trueInputs = distinctInputs.count(IS_EQUIVALENT_TRUE)
+            when {
+                trueInputs > 0 -> return True
+                distinctInputs.isEmpty() -> return True
+                distinctInputs.size == 1 -> return distinctInputs.single()
+            }
+            return Or(distinctInputs)
         }
     }
 }

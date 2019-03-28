@@ -1,5 +1,6 @@
 package com.hileco.cortex.analysis.explore
 
+import com.hileco.cortex.analysis.explore.strategies.ExploreStrategy
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.instructions.ProgramException
 import com.hileco.cortex.instructions.ProgramException.Reason.*

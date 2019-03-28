@@ -19,7 +19,7 @@ class ExpressionTest {
     @Test
     fun testAndContainingSame() {
         val result = Expression.constructAnd(listOf(Expression.Stack(0), Expression.Stack(0)))
-        Assert.assertEquals(Expression.And(listOf(Expression.Stack(0))), result)
+        Assert.assertEquals(Expression.Stack(0), result)
     }
 
     @Test

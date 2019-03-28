@@ -1,30 +1,27 @@
-package com.hileco.cortex.analysis.explore
+package com.hileco.cortex.analysis.explore.strategies
 
+import com.hileco.cortex.analysis.explore.StrongReference
 import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.vm.layer.LayeredStack
 import com.hileco.cortex.vm.symbolic.SymbolicPathEntry
 
 typealias Path = LayeredStack<SymbolicPathEntry>
 
-class ExploreConditionBuilder {
-
+class PathTreeConditionBuilder {
     /**
      * Maps out given paths by mapping each [paths]' relation to its parent, to its respective parent, and so on.
      */
-    private fun map(paths: List<Path>): MutableMap<StrongReference<Path>, List<Path>> {
-        val mapping: MutableMap<StrongReference<Path>, List<Path>> = hashMapOf()
+    private fun map(paths: List<Path>): MutableMap<StrongReference<Path>, MutableSet<StrongReference<Path>>> {
+        val mapping: MutableMap<StrongReference<Path>, MutableSet<StrongReference<Path>>> = hashMapOf()
 
         /**
          * Merges new parent-child path relations into the mapping.
          */
         fun merge(parent: StrongReference<Path>, children: List<Path>) {
             mapping.compute(parent) { _, existingPaths ->
-                val combinedpaths = arrayListOf<Path>()
-                combinedpaths.addAll(children)
-                if (existingPaths != null) {
-                    combinedpaths.addAll(existingPaths)
-                }
-                combinedpaths
+                val set = existingPaths ?: HashSet()
+                set.addAll(children.map { StrongReference(it) })
+                set
             }
         }
 
@@ -53,21 +50,12 @@ class ExploreConditionBuilder {
         return Expression.constructAnd(subconditions)
     }
 
-    // TODO:
-    // what if there is no difference between the child and the parent node...?
-    //       o
-    //     /    \
-    // WIN        x == 1
-    //              WIN
-    // make sure to test this scenario...
-    // for now, assume it doesnt matter
-
-    private fun buildCondition(mappedPaths: MutableMap<StrongReference<Path>, List<Path>>, path: Path?): Expression {
+    private fun buildCondition(mappedPaths: MutableMap<StrongReference<Path>, MutableSet<StrongReference<Path>>>, path: Path?): Expression {
         val pathChildren = mappedPaths[StrongReference(path)] ?: return Expression.True
         val pathConditions = pathChildren.map { childPath ->
-            Expression.And(listOf(buildSubcondition(path, childPath), buildCondition(mappedPaths, childPath)))
+            Expression.constructAnd(listOf(buildSubcondition(path, childPath.referent!!), buildCondition(mappedPaths, childPath.referent)))
         }.toList()
-        return Expression.Or(pathConditions)
+        return Expression.constructOr(pathConditions)
     }
 
     fun build(paths: List<Path>): Expression {

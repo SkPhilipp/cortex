@@ -4,7 +4,7 @@ import java.math.BigInteger
 
 class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
     private var size: Int
-    private val layer: HashMap<Int, V>
+    val layer: HashMap<Int, V>
 
     private constructor(parent: LayeredStack<V>?,
                         size: Int,
@@ -143,6 +143,6 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
     }
 
     companion object {
-        const val MINIMUM_LAYER_SIZE: Int = 6
+        var MINIMUM_LAYER_SIZE: Int = 6
     }
 }

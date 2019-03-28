@@ -54,6 +54,6 @@ class ExpressionBuilderTest {
                 Flow(FlowType.PROGRAM_FLOW, 0, 3),
                 Flow(FlowType.PROGRAM_END, 3, null)
         ), listOf(constraintUsedCallDataGreaterThan5))
-        Assert.assertEquals("((CALL_DATA[1] > 5)) && ((CALL_DATA[2] > 5))", "$expression")
+        Assert.assertEquals("((CALL_DATA[1] > 5) && (CALL_DATA[2] > 5))", "$expression")
     }
 }

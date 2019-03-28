@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis.explore
 
-import java.util.*
+import com.hileco.cortex.vm.layer.LayeredStack
 
 class StrongReference<T>(val referent: T?) {
     override fun equals(other: Any?): Boolean {
@@ -8,6 +8,14 @@ class StrongReference<T>(val referent: T?) {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(referent)
+        return System.identityHashCode(referent)
     }
+
+    override fun toString(): String {
+        if (referent is LayeredStack<*>) {
+            return referent.size().toString()
+        }
+        return "StrongReference(referent=$referent)"
+    }
+
 }
