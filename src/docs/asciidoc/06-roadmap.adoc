@@ -19,3 +19,4 @@
 * `design-connected.md`
 * `design-decompiler.md`
 * `design-fuzzer.md`
+* `design-strategies.md`
