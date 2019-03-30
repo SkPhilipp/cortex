@@ -17,7 +17,7 @@ class PathTreeExploreStrategy : ExploreStrategy() {
         }
     }
 
-    fun solve(): Solution {
+    override fun solve(): Solution {
         val pathTreeConditionBuilder = PathTreeConditionBuilder()
         val condition = pathTreeConditionBuilder.build(paths)
         val solver = Solver()

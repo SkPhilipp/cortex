@@ -17,7 +17,7 @@ class AccumulatingExploreStrategy : ExploreStrategy() {
         symbolicVirtualMachine.dispose()
     }
 
-    fun solve(): Solution {
+    override fun solve(): Solution {
         val condition = Expression.constructOr(conditions)
         val solver = Solver()
         return solver.solve(condition)

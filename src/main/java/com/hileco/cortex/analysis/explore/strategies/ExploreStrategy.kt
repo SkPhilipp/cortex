@@ -1,5 +1,6 @@
 package com.hileco.cortex.analysis.explore.strategies
 
+import com.hileco.cortex.constraints.Solution
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
 
 abstract class ExploreStrategy {
@@ -28,6 +29,8 @@ abstract class ExploreStrategy {
      * To be invoked when a [SymbolicVirtualMachine] completes execution, halting further exploration.
      */
     abstract fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine)
+
+    abstract fun solve(): Solution
 
     companion object {
         private const val DEFAULT_DROP_PREDICATE_PATH_LIMIT = 50
