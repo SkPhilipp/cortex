@@ -2,8 +2,6 @@
 
 === Improvements
 
-* Implementation of remaining processors, allowing for some to move into `design-processors.md`
-* KnownProcessor implementation for multi-value executions to be described in `design-processors.md`
 * Proper representation of Hash functions in solving layer
 * A customizable strategy for finding successful SymbolicVirtualMachines, to mark them as such during execution
    - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
@@ -20,3 +18,4 @@
 * `design-decompiler.md`
 * `design-fuzzer.md`
 * `design-strategies.md`
+* `design-processors.md`

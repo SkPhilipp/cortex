@@ -20,7 +20,6 @@ class DeadPathConstraintProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
         val graphBuilder = GraphBuilder(listOf(
-                CompositeConstraintProcessor(),
                 DeadPathConstraintProcessor()
         ))
         val original = listOf(
