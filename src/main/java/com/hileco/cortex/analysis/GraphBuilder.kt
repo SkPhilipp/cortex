@@ -35,7 +35,6 @@ class GraphBuilder(val processors: List<Processor>) {
                 JumpUnreachableProcessor(),
                 InstructionHoistProcessor(),
                 InliningProcessor(),
-                CompositeConstraintProcessor(),
                 DeadPathConstraintProcessor(),
 
                 ParameterProcessor(),

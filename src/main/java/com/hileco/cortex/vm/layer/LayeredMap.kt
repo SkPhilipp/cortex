@@ -14,7 +14,6 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         }
     }
 
-    @Synchronized
     override fun extractParentLayer(parent: LayeredMap<K, V>?): LayeredMap<K, V> {
         val clone = LayeredMap(parent)
         clone.layer = layer.toMutableMap()
@@ -22,17 +21,14 @@ class LayeredMap<K, V>(parent: LayeredMap<K, V>? = null) : TreeLayered<LayeredMa
         return clone
     }
 
-    @Synchronized
     override fun isLayerEmpty(): Boolean {
         return layer.isEmpty() && deletions.isEmpty()
     }
 
-    @Synchronized
     override fun createSibling(parent: LayeredMap<K, V>?): LayeredMap<K, V> {
         return LayeredMap(parent)
     }
 
-    @Synchronized
     override fun mergeParent(parent: LayeredMap<K, V>) {
         synchronized(parent) {
             parent.layer.forEach { key, value ->

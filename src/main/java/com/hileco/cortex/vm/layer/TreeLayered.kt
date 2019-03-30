@@ -38,17 +38,14 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
         children = arrayListOf()
     }
 
-    @Synchronized
     private fun addChild(child: T) {
         this.children.add(WeakReference(child))
     }
 
-    @Synchronized
     private fun removeChild(child: T?) {
         this.children.removeIf { it.get() === child }
     }
 
-    @Synchronized
     final override fun branch(): T {
         if (isLayerEmpty()) {
             val sibling = createSibling(parent)
@@ -78,7 +75,6 @@ abstract class TreeLayered<T : TreeLayered<T>>(initialParent: T? = null) : Layer
         }
     }
 
-    @Synchronized
     final override fun parent(): T? {
         return parent
     }

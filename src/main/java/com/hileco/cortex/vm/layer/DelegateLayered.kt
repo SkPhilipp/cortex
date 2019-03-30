@@ -41,7 +41,6 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
         this.children.removeIf { it.get() === child }
     }
 
-    @Synchronized
     final override fun branch(): T {
         val sibling = branchDelegates()
         val newParent = recreateParent()
@@ -68,7 +67,6 @@ abstract class DelegateLayered<T : DelegateLayered<T>> : Layered<T> {
         }
     }
 
-    @Synchronized
     final override fun parent(): T? {
         return parent
     }

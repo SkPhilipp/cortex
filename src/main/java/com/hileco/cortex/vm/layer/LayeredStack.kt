@@ -85,24 +85,20 @@ class LayeredStack<V> : TreeLayered<LayeredStack<V>> {
         this.size = 0
     }
 
-    @Synchronized
     override fun extractParentLayer(parent: LayeredStack<V>?): LayeredStack<V> {
         val extracted = LayeredStack(parent, size, HashMap(layer))
         layer.clear()
         return extracted
     }
 
-    @Synchronized
     override fun isLayerEmpty(): Boolean {
         return layer.isEmpty()
     }
 
-    @Synchronized
     override fun createSibling(parent: LayeredStack<V>?): LayeredStack<V> {
         return LayeredStack(parent, parent?.size ?: 0, HashMap())
     }
 
-    @Synchronized
     override fun mergeParent(parent: LayeredStack<V>) {
         synchronized(parent) {
             parent.layer.forEach { (key, value) ->
