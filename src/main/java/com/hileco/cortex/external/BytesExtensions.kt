@@ -14,6 +14,13 @@ fun String.deserializeBytes(): ByteArray {
 }
 
 /**
+ * Converts a [String] to [Byte].
+ */
+fun String.deserializeByte(): Byte {
+    return deserializeBytes().single()
+}
+
+/**
  * Converts a [ByteArray] to [String], inverse of [ByteArray.serialize].
  */
 fun ByteArray.serialize(): String {
