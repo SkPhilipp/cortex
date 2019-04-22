@@ -48,6 +48,6 @@ class SolidityCompiler(private val volume: String,
     }
 
     companion object {
-        private const val DEFAULT_VERSION: String = "0.5.7"
+        const val DEFAULT_VERSION: String = "0.5.7"
     }
 }

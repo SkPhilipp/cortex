@@ -1,6 +1,6 @@
 package com.hileco.cortex.external
 
-enum class EthereumOperation(val code: Byte, val inputBytes: Int = 0) {
+enum class EthereumOperation(val code: Byte?, val inputBytes: Int = 0) {
     STOP("00".deserializeByte()),
     ADD("01".deserializeByte()),
     MUL("02".deserializeByte()),
@@ -145,12 +145,13 @@ enum class EthereumOperation(val code: Byte, val inputBytes: Int = 0) {
     SWAP14("9d".deserializeByte()),
     SWAP15("9e".deserializeByte()),
     SWAP16("9f".deserializeByte()),
-    UNKNOWN(0);
+    UNKNOWN(null);
 
     companion object {
         private val mapping: Map<Byte, EthereumOperation> = values().asSequence()
                 .filter { it != UNKNOWN }
-                .map { it.code to it }
+                .map { if (it.code == null) null else it.code to it }
+                .filterNotNull()
                 .toMap()
 
         fun ofCode(code: Byte): EthereumOperation? {

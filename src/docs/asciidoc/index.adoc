@@ -40,4 +40,6 @@ include::04-constraints.adoc[]
 
 include::05-attacks.adoc[]
 
-include::06-roadmap.adoc[]
+include::06-integration.adoc[]
+
+include::07-roadmap.adoc[]
