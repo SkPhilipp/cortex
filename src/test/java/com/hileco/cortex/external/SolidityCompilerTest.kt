@@ -5,30 +5,29 @@ import org.junit.Test
 
 class SolidityCompilerTest {
     @Test
-    fun compile() {
-        val solidityCompiler = SolidityCompiler(TEST_VOLUME)
-        val bytecode = solidityCompiler.compile("05_greeter.sol")
-        bytecode.forEach {
-            val operation = EthereumOperation.ofCode(it)
-            if (operation == null) {
-                println("UNKNOWN (${it.serialize()})")
-            } else {
-                println(operation)
-            }
-        }
+    fun testCompile() {
+        val bytecode = TEST_COMPILER.compile("05_greeter.sol")
         Assert.assertTrue(bytecode.isNotEmpty())
     }
 
-    private val TEST_VOLUME: String
+    @Test
+    fun testAssembly() {
+        val output = TEST_COMPILER.execute("--bin", "--asm", "05_greeter.sol")
+        Assert.assertTrue(output.any { it.contains("EVM assembly") })
+    }
 
-    init {
-        val volumeBasePath = if (System.getProperty("os.name") == "Windows 10") {
-            System.getProperty("user.dir")
-                    .replace("\\", "/")
-                    .replace("C:", "/c")
-        } else {
-            System.getProperty("user.dir")
+    companion object {
+        val TEST_COMPILER: SolidityCompiler
+
+        init {
+            val volumeBasePath = if (System.getProperty("os.name") == "Windows 10") {
+                System.getProperty("user.dir")
+                        .replace("\\", "/")
+                        .replace("C:", "/c")
+            } else {
+                System.getProperty("user.dir")
+            }
+            TEST_COMPILER = SolidityCompiler("$volumeBasePath/src/test/resources/contracts")
         }
-        TEST_VOLUME = "$volumeBasePath/src/test/resources/contracts"
     }
 }
