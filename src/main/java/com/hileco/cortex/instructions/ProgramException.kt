@@ -14,6 +14,7 @@ class ProgramException(val reason: Reason) : Exception() {
         STACK_UNDERFLOW,
         CALL_RETURN_DATA_TOO_LARGE,
         CALL_RECIPIENT_MISSING,
-        WINNER
+        WINNER,
+        UNKNOWN_INSTRUCTION
     }
 }

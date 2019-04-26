@@ -8,13 +8,13 @@ import org.junit.Test
 class EthereumParserTest {
     @Test
     fun parse() {
-        val ethereumParser = EthereumParser()
         val bytecode = TEST_COMPILER.compile("05_greeter.sol")
+        val ethereumParser = EthereumParser()
         val instructions = ethereumParser.parse(bytecode)
 
         Documentation.of(EthereumParser::class.java.simpleName)
                 .headingParagraph(EthereumParser::class.java.simpleName)
-                .paragraph("Converts Ethereum bytecode into Ethereum instructions, which allows for further conversion into Cortex instructions.")
+                .paragraph("Converts Ethereum bytecode into Ethereum instructions.")
                 .paragraph("Using this on 05_greeter.sol's bytecode yields instructions:")
                 .source(instructions)
 
