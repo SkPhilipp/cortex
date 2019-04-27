@@ -1,6 +1,7 @@
 package com.hileco.cortex.constraints
 
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.instructions.debug.DROP
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.math.ADD
 import com.hileco.cortex.instructions.math.SUBTRACT
@@ -33,6 +34,16 @@ class ExpressionGeneratorTest {
         builder.addInstruction(POP())
         builder.addInstruction(SUBTRACT())
         Assert.assertEquals("-198", builder.currentExpression.toString())
+    }
+
+    @Test
+    fun testDrop() {
+        val builder = ExpressionGenerator()
+        builder.addInstruction(PUSH(3))
+        builder.addInstruction(PUSH(2))
+        builder.addInstruction(PUSH(1))
+        builder.addInstruction(DROP(2))
+        Assert.assertEquals("3", builder.currentExpression.toString())
     }
 
     @Test

@@ -12,6 +12,7 @@ import com.hileco.cortex.instructions.conditions.EQUALS
 import com.hileco.cortex.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.conditions.LESS_THAN
+import com.hileco.cortex.instructions.debug.DROP
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.io.LOAD
@@ -76,6 +77,7 @@ class InstructionParser {
                 "DUPLICATE" to require(1) { parameters -> DUPLICATE(Integer.valueOf(parameters[1])) },
                 "POP" to require(0) { POP() },
                 "PUSH" to require(1) { parameters -> PUSH(BigInteger(parameters[1]).toByteArray()) },
+                "DROP" to require(1) { parameters -> DROP(BigInteger(parameters[1]).toInt()) },
                 "SWAP" to require(2) { parameters -> SWAP(Integer.valueOf(parameters[1]), Integer.valueOf(parameters[2])) },
                 "VARIABLE" to require(1) { parameters -> VARIABLE(ExecutionVariable.valueOf(parameters[1])) }
         )

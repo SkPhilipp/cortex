@@ -6,10 +6,12 @@ import com.hileco.cortex.instructions.bits.BITWISE_AND
 import com.hileco.cortex.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.instructions.bits.BITWISE_OR
 import com.hileco.cortex.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.instructions.calls.CALL_RETURN
 import com.hileco.cortex.instructions.conditions.EQUALS
 import com.hileco.cortex.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.conditions.LESS_THAN
+import com.hileco.cortex.instructions.debug.DROP
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.io.LOAD
 import com.hileco.cortex.instructions.io.SAVE
@@ -88,18 +90,18 @@ class EthereumTranspiler {
             EthereumOperation.MSIZE -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.GAS -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.JUMPDEST -> JUMP_DESTINATION()
-            EthereumOperation.LOG0 -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.LOG1 -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.LOG2 -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.LOG3 -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.LOG4 -> HALT(UNKNOWN_INSTRUCTION)
+            EthereumOperation.LOG0 -> DROP(2)
+            EthereumOperation.LOG1 -> DROP(3)
+            EthereumOperation.LOG2 -> DROP(4)
+            EthereumOperation.LOG3 -> DROP(5)
+            EthereumOperation.LOG4 -> DROP(6)
             EthereumOperation.SLOADBYTES -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.SSTOREBYTES -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.SSIZE -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.CREATE -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.CALL -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.CALLCODE -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.RETURN -> HALT(UNKNOWN_INSTRUCTION)
+            EthereumOperation.RETURN -> CALL_RETURN()
             EthereumOperation.DELEGATECALL -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.CALLBLACKBOX -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.STATICCALL -> HALT(UNKNOWN_INSTRUCTION)

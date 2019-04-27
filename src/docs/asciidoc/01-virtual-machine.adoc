@@ -63,3 +63,5 @@ include::{snippets}/instructions/call.adoc[]
 include::{snippets}/instructions/call-return.adoc[]
 
 include::{snippets}/instructions/noop.adoc[]
+
+include::{snippets}/instructions/drop.adoc[]

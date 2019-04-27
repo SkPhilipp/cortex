@@ -11,6 +11,7 @@ import com.hileco.cortex.instructions.conditions.EQUALS
 import com.hileco.cortex.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.conditions.LESS_THAN
+import com.hileco.cortex.instructions.debug.DROP
 import com.hileco.cortex.instructions.debug.HALT
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.io.LOAD
@@ -197,6 +198,10 @@ class ProgramBuilder {
 
     fun pop(value: ProgramBuilderHandle = handle) {
         instructions.add { POP() }
+    }
+
+    fun drop(vararg values: ProgramBuilderHandle) {
+        instructions.add { DROP(values.size) }
     }
 
     fun push(value: ByteArray): ProgramBuilderHandle {
