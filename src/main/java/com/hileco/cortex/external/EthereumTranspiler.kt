@@ -22,8 +22,7 @@ import com.hileco.cortex.instructions.jumps.JUMP_IF
 import com.hileco.cortex.instructions.math.*
 import com.hileco.cortex.instructions.stack.*
 import com.hileco.cortex.instructions.stack.ExecutionVariable.*
-import com.hileco.cortex.vm.ProgramStoreZone.DISK
-import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.ProgramStoreZone.*
 
 class EthereumTranspiler {
     private fun map(ethereumInstruction: EthereumInstruction): Instruction {
@@ -60,7 +59,7 @@ class EthereumTranspiler {
             EthereumOperation.ORIGIN -> VARIABLE(ADDRESS_ORIGIN)
             EthereumOperation.CALLER -> VARIABLE(ADDRESS_CALLER)
             EthereumOperation.CALLVALUE -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.CALLDATALOAD -> HALT(UNKNOWN_INSTRUCTION)
+            EthereumOperation.CALLDATALOAD -> LOAD(CALL_DATA)
             EthereumOperation.CALLDATASIZE -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.CALLDATACOPY -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.CODESIZE -> HALT(UNKNOWN_INSTRUCTION)
