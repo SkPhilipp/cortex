@@ -45,6 +45,14 @@ class VARIABLETest : InstructionTest() {
     }
 
     @Test
+    fun testAddressOrigin() {
+        val instructions = listOf(VARIABLE(ADDRESS_ORIGIN))
+        val stack = this.run(instructions).stack
+        Assert.assertEquals(stack.size(), 1)
+        Assert.assertEquals(BigInteger(stack.pop()), 0.toBigInteger())
+    }
+
+    @Test
     fun testStartTime() {
         val startTime = System.currentTimeMillis()
         val instructions = listOf(VARIABLE(START_TIME))

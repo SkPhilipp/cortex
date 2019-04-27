@@ -1,7 +1,6 @@
 package com.hileco.cortex.instructions.stack
 
 
-import com.hileco.cortex.constraints.expressions.Expression
 import com.hileco.cortex.constraints.expressions.Expression.Value
 import com.hileco.cortex.instructions.Instruction
 import com.hileco.cortex.instructions.ProgramException
@@ -35,6 +34,10 @@ data class VARIABLE(val executionVariable: ExecutionVariable) : Instruction() {
                 val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else 0.toBigInteger()
                 programContext.stack.push(address.toByteArray())
             }
+            ADDRESS_ORIGIN -> {
+                val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address else 0.toBigInteger()
+                programContext.stack.push(address.toByteArray())
+            }
             else -> {
                 val value = virtualMachine.variables[executionVariable] ?: 0.toBigInteger()
                 programContext.stack.push(value.toByteArray())
@@ -55,7 +58,11 @@ data class VARIABLE(val executionVariable: ExecutionVariable) : Instruction() {
             }
             ADDRESS_CALLER -> {
                 val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address.toLong() else 0
-                programContext.stack.push(Expression.Value(address))
+                programContext.stack.push(Value(address))
+            }
+            ADDRESS_ORIGIN -> {
+                val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address.toLong() else 0
+                programContext.stack.push(Value(address))
             }
             else -> {
                 virtualMachine.variables[executionVariable]
