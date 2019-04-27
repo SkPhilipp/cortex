@@ -54,7 +54,7 @@ class EthereumTranspiler {
             EthereumOperation.SAR -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.ROL -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.ROR -> HALT(UNKNOWN_INSTRUCTION)
-            EthereumOperation.SHA3 -> HASH("keccak256")
+            EthereumOperation.SHA3 -> HASH("SHA-256")
             EthereumOperation.ADDRESS -> VARIABLE(ADDRESS_SELF)
             EthereumOperation.BALANCE -> HALT(UNKNOWN_INSTRUCTION)
             EthereumOperation.ORIGIN -> VARIABLE(ADDRESS_CALLER)

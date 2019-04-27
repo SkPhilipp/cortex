@@ -1,11 +1,11 @@
 package com.hileco.cortex.documentation
 
+import com.hileco.cortex.analysis.VisualGraph
 import com.hileco.cortex.instructions.Instruction
 import java.io.IOException
 import java.io.OutputStream
-import java.util.*
 
-class Document (private val outputStream: OutputStream) {
+class Document(private val outputStream: OutputStream) {
     private val exceptionHandler: (IOException) -> Nothing
 
     init {
@@ -41,8 +41,14 @@ class Document (private val outputStream: OutputStream) {
         return this.append(body, "\n\n")
     }
 
-    fun image(bytes: ByteArray): Document {
-        return this.append("++++\n<p style=\"text-align: center\">\n<img src=\"data:image/png;base64,",
-                Base64.getEncoder().encodeToString(bytes), "\"/>\n</p>\n++++\n\n")
+    fun image(visualGraph: VisualGraph): Document {
+        try {
+            append("++++\n")
+            visualGraph.render(this.outputStream)
+            append("\n++++\n\n")
+        } catch (e: IOException) {
+            exceptionHandler(e)
+        }
+        return this
     }
 }

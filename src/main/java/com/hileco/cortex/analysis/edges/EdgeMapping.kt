@@ -3,6 +3,7 @@ package com.hileco.cortex.analysis.edges
 import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.instructions.Instruction
+import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.instructions.stack.VARIABLE
 import com.hileco.cortex.vm.ProgramZone
@@ -59,12 +60,20 @@ class EdgeMapping {
         return predicate(graphNode) && allParameters(graphNode) { parameter -> fully(parameter, predicate) }
     }
 
-    // TODO: And ensure that all child parameters do not have multiple parameter-consumers
     fun isSelfContained(graphNode: GraphNode): Boolean {
         return fully(graphNode) {
             val instruction = it.instruction
-            setOf(ProgramZone.STACK).containsAll(instruction.instructionModifiers) && instruction !is SWAP && instruction !is VARIABLE
+            listOf(ProgramZone.STACK) == instruction.instructionModifiers
+                    && instruction !is SWAP
+                    && instruction !is VARIABLE
+                    && parametersKnownOnce(it)
         }
+    }
+
+    private fun parametersKnownOnce(graphNode: GraphNode): Boolean {
+        val parameters = this.get(graphNode, EdgeParameters::class.java).toList()
+        return parameters.all { it.graphNodes.filterNotNull().size == graphNode.instruction.stackParameters.size }
+                && (parameters.size == 1 || graphNode.instruction.stackParameters.isEmpty())
     }
 
     private fun addInstructionsByLine(graphNode: GraphNode, list: MutableList<GraphNode>) {

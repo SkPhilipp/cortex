@@ -2,8 +2,10 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.debug.NOOP
 import com.hileco.cortex.instructions.math.ADD
+import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.ExecutionVariable.INSTRUCTION_POSITION
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.instructions.stack.VARIABLE
@@ -48,6 +50,21 @@ class KnownProcessorTest : ProcessorFuzzTest() {
                 VARIABLE(INSTRUCTION_POSITION),
                 PUSH(10),
                 ADD()
+        )
+        val graph = graphBuilder.build(original)
+        val instructions = graph.toInstructions()
+        Assert.assertEquals(instructions, original)
+    }
+
+    @Test
+    fun processMissing() {
+        val graphBuilder = GraphBuilder(listOf(
+                ParameterProcessor(),
+                KnownProcessor()
+        ))
+        val original = listOf(
+                DUPLICATE(0),
+                IS_ZERO()
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()

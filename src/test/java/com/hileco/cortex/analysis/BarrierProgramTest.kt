@@ -35,7 +35,7 @@ class BarrierProgramTest {
                 .paragraph("Description: ${barrierProgram.description}")
                 .paragraph("Pseudocode").source(barrierProgram.pseudocode)
                 .paragraph("Source").source(barrierProgram.instructions)
-                .paragraph("Visualization:").image(basicGraphVisualized.toBytes())
+                .paragraph("Visualization:").image(basicGraphVisualized)
         if (barrierProgram.diskSetup.isNotEmpty()) {
             document.paragraph("Disk setup").source(barrierProgram.diskSetup)
         }

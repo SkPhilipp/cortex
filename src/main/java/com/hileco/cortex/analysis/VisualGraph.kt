@@ -12,7 +12,9 @@ import guru.nidi.graphviz.model.Factory.*
 import guru.nidi.graphviz.model.Link
 import guru.nidi.graphviz.model.Link.between
 import guru.nidi.graphviz.model.Node
-import java.io.ByteArrayOutputStream
+import java.io.FilterOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.util.*
 
 class VisualGraph {
@@ -35,7 +37,7 @@ class VisualGraph {
 
     private fun map(flowMapping: FlowMapping) {
         val nodeMapping = HashMap<Node, ArrayList<Link>>()
-        flowMapping.flowsFromSource.forEach { source, flows ->
+        flowMapping.flowsFromSource.forEach { (source, flows) ->
             if (source != null) {
                 val sourceVizNode = vizNodeMapping[source]!!
                 flows.forEach { flow ->
@@ -49,7 +51,7 @@ class VisualGraph {
                 }
             }
         }
-        nodeMapping.forEach { node, links -> vizGraph = vizGraph.with(node.link(*links.toTypedArray())) }
+        nodeMapping.forEach { (node, links) -> vizGraph = vizGraph.with(node.link(*links.toTypedArray())) }
     }
 
     fun map(graph: Graph) {
@@ -59,10 +61,13 @@ class VisualGraph {
         }
     }
 
-    fun toBytes(): ByteArray {
+    fun render(outputStream: OutputStream) {
         val graphViz = Graphviz.fromGraph(vizGraph)
-        val outputStream = ByteArrayOutputStream()
-        graphViz.render(Format.PNG).toOutputStream(outputStream)
-        return outputStream.toByteArray()
+        val closeProtectedStream = object : FilterOutputStream(outputStream) {
+            @Throws(IOException::class)
+            override fun close() {
+            }
+        }
+        graphViz.render(Format.SVG).toOutputStream(closeProtectedStream)
     }
 }

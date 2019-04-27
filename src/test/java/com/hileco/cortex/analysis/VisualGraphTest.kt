@@ -23,7 +23,7 @@ class VisualGraphTest {
         Documentation.of(VisualGraph::class.simpleName!!)
                 .headingParagraph(VisualGraph::class.simpleName!!)
                 .paragraph("Program:").source(instructions)
-                .paragraph("Visualization: (As basic graph)").image(basicGraphVisualized.toBytes())
-                .paragraph("Visualization: (As optimized graph)").image(optimizedGraphVisualized.toBytes())
+                .paragraph("Visualization: (As basic graph)").image(basicGraphVisualized)
+                .paragraph("Visualization: (As optimized graph)").image(optimizedGraphVisualized)
     }
 }
