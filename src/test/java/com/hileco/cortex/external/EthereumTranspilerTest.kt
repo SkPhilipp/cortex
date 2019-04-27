@@ -6,7 +6,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class EthereumTranspilerTest {
-
     @Test
     fun test() {
         val bytecode = SolidityCompilerTest.TEST_COMPILER.compile("05_greeter.sol")
