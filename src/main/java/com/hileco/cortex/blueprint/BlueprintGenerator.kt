@@ -1,6 +1,6 @@
 package com.hileco.cortex.blueprint
 
-import com.hileco.cortex.blueprint.Blueprints.*
+import com.hileco.cortex.blueprint.Blueprint.*
 
 class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int = Int.MAX_VALUE) {
 
@@ -139,12 +139,13 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val statementKindGenerator = randomContext.pick(mapOf(
-            StatementKind.LOOP to 16,
-            StatementKind.CONDITIONAL to 32,
-            StatementKind.VARIABLE_UPDATE to 128,
-            StatementKind.INVOKE_FUNCTION to 64,
-            StatementKind.INVOKE_PROGRAM to 1,
-            StatementKind.NATIVE_INSTRUCTION to 4
+            StatementKind.LOOP to 1600,
+            StatementKind.CONDITIONAL to 3200,
+            StatementKind.VARIABLE_UPDATE to 12800,
+            StatementKind.INVOKE_FUNCTION to 6400,
+            StatementKind.INVOKE_PROGRAM to 100,
+            StatementKind.NATIVE_INSTRUCTION to 400,
+            StatementKind.CREATE_EMBEDDED_PROGRAM to 1
     ))
 
     fun generateStatement(statementsCount: Int = randomContext.randomIntBetween(0, 3),

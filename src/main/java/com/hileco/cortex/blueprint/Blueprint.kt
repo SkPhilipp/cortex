@@ -1,7 +1,7 @@
 package com.hileco.cortex.blueprint
 
 
-class Blueprints {
+class Blueprint {
 
     enum class VariableKind {
         NUMBER,
@@ -30,7 +30,8 @@ class Blueprints {
         VARIABLE_UPDATE,
         INVOKE_FUNCTION,
         INVOKE_PROGRAM,
-        NATIVE_INSTRUCTION
+        NATIVE_INSTRUCTION,
+        CREATE_EMBEDDED_PROGRAM
     }
 
     data class StatementBlueprint(
