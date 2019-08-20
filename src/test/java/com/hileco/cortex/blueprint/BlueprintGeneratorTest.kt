@@ -23,9 +23,21 @@ class BlueprintGeneratorTest {
     }
 
     @Test(timeout = 1000)
-    fun generateVariable() {
+    fun generateProgramVariable() {
         val blueprintGenerator = BlueprintGenerator(1)
-        blueprintGenerator.generateVariable()
+        blueprintGenerator.generateProgramVariable()
+    }
+
+    @Test(timeout = 1000)
+    fun generateFunctionVariable() {
+        val blueprintGenerator = BlueprintGenerator(1)
+        blueprintGenerator.generateFunctionVariable()
+    }
+
+    @Test(timeout = 1000)
+    fun generateStatementVariable() {
+        val blueprintGenerator = BlueprintGenerator(1)
+        blueprintGenerator.generateStatementVariable()
     }
 
     @Test(timeout = 1000)

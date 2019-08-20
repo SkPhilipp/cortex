@@ -35,7 +35,7 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
                         traitCount: Int = randomContext.randomIntBetween(1, 10)): ProgramBlueprint {
         return ProgramBlueprint(
                 functions = List(functionCount) { generateFunction() },
-                variables = List(variableCount) { generateVariable() },
+                variables = List(variableCount) { generateProgramVariable() },
                 traits = List(traitCount) { programTraitGenerator() },
                 scope = programScopeGenerator(),
                 accessibility = programAccessibilityGenerator(),
@@ -62,36 +62,79 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     ))
 
     fun generateFunction(statementsCount: Int = randomContext.randomIntBetween(1, 10),
-            // TODO: Function-level variable generator with its own allocation / chance table
                          variablesCount: Int = randomContext.randomIntBetween(1, 10),
                          traitsCount: Int = randomContext.randomIntBetween(1, 10)): FunctionBlueprint {
         return FunctionBlueprint(
                 statements = List(statementsCount) { generateStatement() },
-                variables = List(variablesCount) { generateVariable() },
+                variables = List(variablesCount) { generateFunctionVariable() },
                 traits = List(traitsCount) { functionTraitGenerator() },
                 accessibility = functionAccessibilityGenerator(),
                 address = randomContext.randomIntBetween(0, addressCeiling)
         )
     }
 
-    private val variableKindGenerator = randomContext.pick(mapOf(
+    private val programVariableKindGenerator = randomContext.pick(mapOf(
             VariableKind.ADDRESS to 3.toDouble(),
             VariableKind.ADDRESS_MAPPING to 1.toDouble(),
             VariableKind.NUMBER to 10.toDouble(),
             VariableKind.NUMBER_MAPPING to 1.toDouble()
     ))
 
-    private val variableResidenceGenerator = randomContext.pick(mapOf(
+    private val programVariableResidenceGenerator = randomContext.pick(mapOf(
             VariableResidence.MEMORY to 10.toDouble(),
             VariableResidence.DISK to 4.toDouble(),
             VariableResidence.STACK to 20.toDouble(),
             VariableResidence.NONE to 1.toDouble()
     ))
 
-    fun generateVariable(): VariableBlueprint {
+    fun generateProgramVariable(): VariableBlueprint {
         return VariableBlueprint(
-                kind = variableKindGenerator(),
-                residence = variableResidenceGenerator(),
+                kind = programVariableKindGenerator(),
+                residence = programVariableResidenceGenerator(),
+                address = randomContext.randomIntBetween(0, addressCeiling)
+        )
+    }
+
+    private val functionVariableKindGenerator = randomContext.pick(mapOf(
+            VariableKind.ADDRESS to 3.toDouble(),
+            VariableKind.ADDRESS_MAPPING to 1.toDouble(),
+            VariableKind.NUMBER to 10.toDouble(),
+            VariableKind.NUMBER_MAPPING to 1.toDouble()
+    ))
+
+    private val functionVariableResidenceGenerator = randomContext.pick(mapOf(
+            VariableResidence.MEMORY to 10.toDouble(),
+            VariableResidence.DISK to 4.toDouble(),
+            VariableResidence.STACK to 20.toDouble(),
+            VariableResidence.NONE to 1.toDouble()
+    ))
+
+    fun generateFunctionVariable(): VariableBlueprint {
+        return VariableBlueprint(
+                kind = functionVariableKindGenerator(),
+                residence = functionVariableResidenceGenerator(),
+                address = randomContext.randomIntBetween(0, addressCeiling)
+        )
+    }
+
+    private val statementVariableKindGenerator = randomContext.pick(mapOf(
+            VariableKind.ADDRESS to 3.toDouble(),
+            VariableKind.ADDRESS_MAPPING to 1.toDouble(),
+            VariableKind.NUMBER to 10.toDouble(),
+            VariableKind.NUMBER_MAPPING to 1.toDouble()
+    ))
+
+    private val statementVariableResidenceGenerator = randomContext.pick(mapOf(
+            VariableResidence.MEMORY to 10.toDouble(),
+            VariableResidence.DISK to 4.toDouble(),
+            VariableResidence.STACK to 20.toDouble(),
+            VariableResidence.NONE to 1.toDouble()
+    ))
+
+    fun generateStatementVariable(): VariableBlueprint {
+        return VariableBlueprint(
+                kind = statementVariableKindGenerator(),
+                residence = statementVariableResidenceGenerator(),
                 address = randomContext.randomIntBetween(0, addressCeiling)
         )
     }
@@ -106,11 +149,10 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     ))
 
     fun generateStatement(statementsCount: Int = randomContext.randomIntBetween(0, 3),
-            // TODO: Statement-level variable generator with its own allocation / chance table
                           variableCount: Int = randomContext.randomIntBetween(1, 10)): StatementBlueprint {
         return StatementBlueprint(
                 statements = List(statementsCount) { generateStatement() },
-                variables = List(variableCount) { generateVariable() },
+                variables = List(variableCount) { generateStatementVariable() },
                 kind = statementKindGenerator()
         )
     }
