@@ -8,7 +8,7 @@ class RandomContext(private val seed: Long) {
 
     private val random: Random = Random(seed)
 
-    fun <T> pick(chancedMap: Map<T, Double>): () -> T {
+    fun <T> pick(chancedMap: Map<T, Int>): () -> T {
         val total = chancedMap.map { it.value }.sum()
         return {
             var choice = this.random.nextDouble() * total

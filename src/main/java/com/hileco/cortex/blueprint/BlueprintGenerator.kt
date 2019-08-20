@@ -13,21 +13,21 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val programTraitGenerator = randomContext.pick(mapOf(
-            ProgramTrait.LIBRARY to 1.toDouble(),
-            ProgramTrait.VULNERABLE to 1.toDouble(),
-            ProgramTrait.OVERFLOW_SAFE to 1.toDouble(),
-            ProgramTrait.WALLET to 1.toDouble(),
-            ProgramTrait.TOKEN to 1.toDouble()
+            ProgramTrait.LIBRARY to 1,
+            ProgramTrait.VULNERABLE to 1,
+            ProgramTrait.OVERFLOW_SAFE to 1,
+            ProgramTrait.WALLET to 1,
+            ProgramTrait.TOKEN to 1
     ))
 
     private val programScopeGenerator = randomContext.pick(mapOf(
-            ProgramScope.EMBEDDED to 1.toDouble(),
-            ProgramScope.PERMANENT to 1.toDouble()
+            ProgramScope.EMBEDDED to 1,
+            ProgramScope.PERMANENT to 16
     ))
 
     private val programAccessibilityGenerator = randomContext.pick(mapOf(
-            ProgramAccessibility.OWNER to 1.toDouble(),
-            ProgramAccessibility.PUBLIC to 1.toDouble()
+            ProgramAccessibility.OWNER to 1,
+            ProgramAccessibility.PUBLIC to 4
     ))
 
     fun generateProgram(functionCount: Int = randomContext.randomIntBetween(1, 10),
@@ -45,20 +45,20 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val functionAccessibilityGenerator = randomContext.pick(mapOf(
-            FunctionAccessibility.OWNER to 1.toDouble(),
-            FunctionAccessibility.PRIVATE to 1.toDouble(),
-            FunctionAccessibility.PUBLIC to 1.toDouble()
+            FunctionAccessibility.OWNER to 1,
+            FunctionAccessibility.PRIVATE to 4,
+            FunctionAccessibility.PUBLIC to 8
     ))
 
     private val functionTraitGenerator = randomContext.pick(mapOf(
-            FunctionTrait.CALLABLE to 1.toDouble(),
-            FunctionTrait.UTILITY to 1.toDouble(),
-            FunctionTrait.TRANSFER to 1.toDouble(),
-            FunctionTrait.READ to 1.toDouble(),
-            FunctionTrait.WRITE to 1.toDouble(),
-            FunctionTrait.BACKDOOR to 1.toDouble(),
-            FunctionTrait.RECURSIVE to 1.toDouble(),
-            FunctionTrait.NUMBER_GENERATOR to 1.toDouble()
+            FunctionTrait.CALLABLE to 1,
+            FunctionTrait.UTILITY to 1,
+            FunctionTrait.TRANSFER to 2,
+            FunctionTrait.READ to 4,
+            FunctionTrait.WRITE to 4,
+            FunctionTrait.BACKDOOR to 1,
+            FunctionTrait.RECURSIVE to 1,
+            FunctionTrait.NUMBER_GENERATOR to 1
     ))
 
     fun generateFunction(statementsCount: Int = randomContext.randomIntBetween(1, 10),
@@ -74,17 +74,17 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val programVariableKindGenerator = randomContext.pick(mapOf(
-            VariableKind.ADDRESS to 3.toDouble(),
-            VariableKind.ADDRESS_MAPPING to 1.toDouble(),
-            VariableKind.NUMBER to 10.toDouble(),
-            VariableKind.NUMBER_MAPPING to 1.toDouble()
+            VariableKind.ADDRESS to 16,
+            VariableKind.ADDRESS_MAPPING to 8,
+            VariableKind.NUMBER to 16,
+            VariableKind.NUMBER_MAPPING to 8
     ))
 
     private val programVariableResidenceGenerator = randomContext.pick(mapOf(
-            VariableResidence.MEMORY to 10.toDouble(),
-            VariableResidence.DISK to 4.toDouble(),
-            VariableResidence.STACK to 20.toDouble(),
-            VariableResidence.NONE to 1.toDouble()
+            VariableResidence.MEMORY to 32,
+            VariableResidence.DISK to 64,
+            VariableResidence.STACK to 2,
+            VariableResidence.NONE to 16
     ))
 
     fun generateProgramVariable(): VariableBlueprint {
@@ -96,17 +96,17 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val functionVariableKindGenerator = randomContext.pick(mapOf(
-            VariableKind.ADDRESS to 3.toDouble(),
-            VariableKind.ADDRESS_MAPPING to 1.toDouble(),
-            VariableKind.NUMBER to 10.toDouble(),
-            VariableKind.NUMBER_MAPPING to 1.toDouble()
+            VariableKind.ADDRESS to 16,
+            VariableKind.ADDRESS_MAPPING to 1,
+            VariableKind.NUMBER to 32,
+            VariableKind.NUMBER_MAPPING to 1
     ))
 
     private val functionVariableResidenceGenerator = randomContext.pick(mapOf(
-            VariableResidence.MEMORY to 10.toDouble(),
-            VariableResidence.DISK to 4.toDouble(),
-            VariableResidence.STACK to 20.toDouble(),
-            VariableResidence.NONE to 1.toDouble()
+            VariableResidence.MEMORY to 32,
+            VariableResidence.DISK to 1,
+            VariableResidence.STACK to 4,
+            VariableResidence.NONE to 8
     ))
 
     fun generateFunctionVariable(): VariableBlueprint {
@@ -118,17 +118,16 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val statementVariableKindGenerator = randomContext.pick(mapOf(
-            VariableKind.ADDRESS to 3.toDouble(),
-            VariableKind.ADDRESS_MAPPING to 1.toDouble(),
-            VariableKind.NUMBER to 10.toDouble(),
-            VariableKind.NUMBER_MAPPING to 1.toDouble()
+            VariableKind.ADDRESS to 16,
+            VariableKind.ADDRESS_MAPPING to 1,
+            VariableKind.NUMBER to 64,
+            VariableKind.NUMBER_MAPPING to 1
     ))
 
     private val statementVariableResidenceGenerator = randomContext.pick(mapOf(
-            VariableResidence.MEMORY to 10.toDouble(),
-            VariableResidence.DISK to 4.toDouble(),
-            VariableResidence.STACK to 20.toDouble(),
-            VariableResidence.NONE to 1.toDouble()
+            VariableResidence.MEMORY to 2,
+            VariableResidence.STACK to 8,
+            VariableResidence.NONE to 4
     ))
 
     fun generateStatementVariable(): VariableBlueprint {
@@ -140,12 +139,12 @@ class BlueprintGenerator(private val seed: Long, private val addressCeiling: Int
     }
 
     private val statementKindGenerator = randomContext.pick(mapOf(
-            StatementKind.LOOP to 10.toDouble(),
-            StatementKind.CONDITIONAL to 10.toDouble(),
-            StatementKind.VARIABLE_UPDATE to 10.toDouble(),
-            StatementKind.INVOKE_FUNCTION to 10.toDouble(),
-            StatementKind.INVOKE_PROGRAM to 10.toDouble(),
-            StatementKind.NATIVE_INSTRUCTION to 10.toDouble()
+            StatementKind.LOOP to 16,
+            StatementKind.CONDITIONAL to 32,
+            StatementKind.VARIABLE_UPDATE to 128,
+            StatementKind.INVOKE_FUNCTION to 64,
+            StatementKind.INVOKE_PROGRAM to 1,
+            StatementKind.NATIVE_INSTRUCTION to 4
     ))
 
     fun generateStatement(statementsCount: Int = randomContext.randomIntBetween(0, 3),
