@@ -1,20 +1,6 @@
-# Function Inversion
+# Layered
 
-Given an output and a function, create an inverse function which could result in multiple outputs.
-
-These may be able to be solved using Layered Structures, if memory overhead was previously the limit.
-
-# Layered Structures
-
-Copyable structures with minimal memory usage.
-
-These are implemented as a linked tree, where the end-nodes are inherently thread-unsafe and non-end-nodes are only writeable by optimization processes.
-
-## Optimizer
-
-Essentially a garbage-collector for Layered Structures.
-
-### Merge-Equivalence Flatten
+## Merge-Equivalence Flatten
 
     0
       \
@@ -38,7 +24,7 @@ As parent 1 has a parent of its own, 0, 2.N is linked to parent 0.
 As a new child-parent link is established, another flatten may be performed on 2.N, this should be evaluated until no flatten is possible.
 As a child-parent link was removed, 1 should be checked for only children.
 
-### One-Child Flatten
+## One-Child Flatten
 
     0
   /   \
@@ -56,16 +42,7 @@ As a child-parent link was removed, 1 should be checked for only children.
 2.N and 1 merge as 2.N is the only remaining child of 1, 2.N now references 0 as its parent.
 1 can be cleaned up.
 
-### Flatten Reporting & Tuning
-
-The optimizer is to report on:
-- Structure layer sizes (average, median)
-- Amount of merges performed
-- Amount of space saved per optimization operation
-- Amount of layers (average, 50th percentile, 99th percentile, total)
-- Amount of children per layer (average, 50th percentile, 99th percentile, total)
-
-### Sibling-Equivalence Flatten
+## Sibling-Equivalence Flatten
 
     0
   /   \
@@ -87,7 +64,7 @@ This would allow further optimizations upward. In this example 2 is the only chi
   \
  3&4&5&6
 
-### Entry Hoisting
+## Entry Hoisting
 
     0
   /   \
@@ -105,7 +82,7 @@ To save space at the cost of time, when 1 and 2 are not fully equal but contain 
 1 | {..., x: 1}
 2 | {..., x: 3}
 
-### Minimal Layer Size
+## Minimal Layer Size
 
     0
   /   \
@@ -129,38 +106,35 @@ To save time at the cost of space, layers could be merged into their children wh
 2 | merge(2, 1)
 3 | merge(3, 1)
 
-### Preferred Depth Limit
+## Unoptimized Copy-Structures
 
-A preferred depth limit may be configured, which when detected to be reached could be used to dynamically increment the minimum layer size.
+Alternate copy-based implementation of the Layered\* for fuzzing & benchmarking;
 
-### Bloom Filter Wrappers
+    Variation.equals(100, variation -> {
+        ...
+        Assertions.assertEquals(copyBasedImpl.view(), realImpl.view());
+    });
 
-It may be interesting to add a Bloom Filter in front of certain Layered Collection operations.
-These could be recalculated for child nodes.
+## Optimizations
 
-### Caches
-
-Read values from parents could be stored in an end-node cache, this would allow for most hot variables
-stored at the root to be available at the end-nodes.
-
-## Fuzzing
-
-### Unoptimized Copy-Structures
-
-A minimal copy-based implementation of the Layered Structures interfaces could be useful for:
-- Fuzzing single-thread Layered Structures
-- Fuzzing thread safety of Layered Structures
-- Fuzzing Layered Structures optimizers
-- Constructing benchmarks
-
-Fuzzing would be set up as such:
-- Determine a PRNG seed
-- Initialize the PRNG
-- Fuzz by executing instructions on the real and the minimal implementation,
-  as such that they would result in the same view of end-nodes
-- Every X instructions, compare all end-nodes for equality
-- When a mismatch is found:
-  - Determine the failing instruction by re-running the simulation, validating end-nodes for equality from the last non-mismatch to the mismatch
-  - Repeat this process using varying optimizer options as well as the exact instruction position on which a mismatch occurs
-  - Log the PRNG seed, instructions executed, guilty optimizer option combinations, and mismatching nodes
-
+- Implementation:
+    - Keep optimizations separate for minimum branching
+    - Potentially apply bloom filters
+    - Determine proper List size for LayerData
+    - Lock-free children list
+    - Lock-free layer modifications
+- Merge modes:
+    - Layer "Upwards": A layer merges with its parent as such that it could reference it's grandparent as its parent instead
+    - Layer "Downwards": A layer merges with all its children as such that they could reference it's parent as their parent instead
+    - Entry "Upwards": A layer merges a single entry with its parent as such that the entry does not need to remain in the current layer
+    - Entry "Downwards": A layer merges a single entry with all its children as such that the entry does not need to remain in the current layer
+- Merges:
+    - When a (non-edge) child overwrites all Entries in its parent, that child Layer can be merged Upwards
+    - When all children (at any depth) of a parent contain the same Entry, the Entry can be merged Upwards
+    - When two (non-edge) children of a parent are equivalent, children of the first can reference the second as their new parent, and the first child can be closed
+    - When a parent has only one child, the child Layer can be merged Upwards
+    - When a (non-edge) child contains no entries, it can be merged Upwards
+    - When an Entry is accessed often, it can be merged Downards
+- Configurations:
+    - Minimum layer size (hard) which would merge layers on creation unless the parent is of a certain size
+    - Maximum depth (soft) which when reached could increase the minimum layer size
