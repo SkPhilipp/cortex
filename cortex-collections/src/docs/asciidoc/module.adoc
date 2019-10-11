@@ -1,0 +1,12 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex
+:snippets: ../../../build/generated-snippets
+
+= Cortex
+
+include::{snippets}/module.adoc[]

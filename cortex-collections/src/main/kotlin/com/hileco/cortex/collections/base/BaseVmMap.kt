@@ -2,6 +2,7 @@ package com.hileco.cortex.collections.base
 
 import com.hileco.cortex.collections.VmMap
 
+@Suppress("UNCHECKED_CAST")
 abstract class BaseVmMap<K, V> : VmMap<K, V> {
     override fun size(): Int {
         return keySet().size

@@ -12,6 +12,7 @@ import java.util.*
  * - When changing internal parent or children references; add first, then remove
  * - When merging with parent; do not modify the parent & attach first, then detatch
  */
+@Suppress("UNCHECKED_CAST")
 abstract class Layer<T : Layer<T>>(parent: T?) {
     val children: MutableList<T>
     var parent: T? = null
