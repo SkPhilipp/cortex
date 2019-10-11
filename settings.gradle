@@ -1,2 +1,3 @@
 rootProject.name = 'cortex'
-
+includeBuild 'cortex-documentation'
+includeBuild 'cortex-data'
