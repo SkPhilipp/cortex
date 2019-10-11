@@ -30,7 +30,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return toString(constant)
+            return constant.toString()
         }
     }
 

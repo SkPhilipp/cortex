@@ -1,3 +1,6 @@
 rootProject.name = 'cortex'
-includeBuild 'cortex-documentation'
-includeBuild 'cortex-data'
+include ':cortex-documentation'
+include ':cortex-collections'
+include ':cortex-vm'
+include ':cortex-symbolic'
+
