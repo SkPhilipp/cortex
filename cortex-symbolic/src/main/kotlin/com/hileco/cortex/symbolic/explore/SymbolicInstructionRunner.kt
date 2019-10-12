@@ -1,0 +1,298 @@
+package com.hileco.cortex.symbolic.explore
+
+import com.hileco.cortex.collections.VmMap
+import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.symbolic.expressions.Expression.*
+import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
+import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
+import com.hileco.cortex.vm.ProgramException
+import com.hileco.cortex.vm.ProgramException.Reason.STACK_OVERFLOW
+import com.hileco.cortex.vm.ProgramException.Reason.STACK_UNDERFLOW
+import com.hileco.cortex.vm.ProgramRunner.Companion.STACK_LIMIT
+import com.hileco.cortex.vm.ProgramStoreZone.*
+import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
+import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
+import com.hileco.cortex.vm.instructions.calls.CALL
+import com.hileco.cortex.vm.instructions.conditions.EQUALS
+import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
+import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
+import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
+import com.hileco.cortex.vm.instructions.debug.DROP
+import com.hileco.cortex.vm.instructions.debug.HALT
+import com.hileco.cortex.vm.instructions.debug.NOOP
+import com.hileco.cortex.vm.instructions.io.LOAD
+import com.hileco.cortex.vm.instructions.io.SAVE
+import com.hileco.cortex.vm.instructions.jumps.EXIT
+import com.hileco.cortex.vm.instructions.jumps.JUMP
+import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
+import com.hileco.cortex.vm.instructions.math.*
+import com.hileco.cortex.vm.instructions.stack.*
+import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
+import java.math.BigInteger
+
+class SymbolicInstructionRunner {
+    fun execute(instruction: Instruction, virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+        when (instruction) {
+            is BITWISE_AND -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(BitwiseAnd(left, right))
+            }
+            is BITWISE_OR -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(BitwiseOr(left, right))
+            }
+            is CALL -> {
+                if (programContext.stack.size() < 6) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val recipientAddress = programContext.stack.pop()
+                val valueTransferred = programContext.stack.pop()
+                val inOffset = programContext.stack.pop()
+                val inSize = programContext.stack.pop()
+                val outOffset = programContext.stack.pop()
+                val outSize = programContext.stack.pop()
+                if (inOffset != Value(0)
+                        || inSize != Value(0)
+                        || outOffset != Value(0)
+                        || outSize != Value(0)) {
+                    throw java.lang.UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
+                }
+                if (recipientAddress !is Value) {
+                    throw java.lang.UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
+                }
+                val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()] ?: throw ProgramException(ProgramException.Reason.CALL_RECIPIENT_MISSING)
+                val sourceAddress = programContext.program.address
+                recipient.transfers.push(Value(sourceAddress.toLong()) to valueTransferred)
+                val newContext = SymbolicProgramContext(recipient)
+                virtualMachine.programs.add(newContext)
+            }
+            is EQUALS -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(Equals(left, right))
+            }
+            is GREATER_THAN -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(GreaterThan(left, right))
+            }
+            is IS_ZERO -> {
+                if (programContext.stack.size() < 1) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                programContext.stack.push(IsZero(left))
+            }
+            is LESS_THAN -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(LessThan(left, right))
+            }
+            is DROP -> {
+                if (programContext.stack.size() < instruction.elements) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                repeat(instruction.elements) {
+                    programContext.stack.pop()
+                }
+            }
+            is HALT -> {
+                throw ProgramException(instruction.reason)
+            }
+            is NOOP -> {
+            }
+            is LOAD -> {
+                if (programContext.stack.size() < 1) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val addressExpression = programContext.stack.pop() as? Value
+                        ?: throw java.lang.UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
+                val address = addressExpression.constant.toBigInteger()
+                val storage: VmMap<BigInteger, Expression> = when (instruction.programStoreZone) {
+                    MEMORY -> programContext.memory
+                    DISK -> programContext.program.storage
+                    CALL_DATA -> programContext.callData
+                }
+                val expression = storage[address] ?: Reference(instruction.programStoreZone, addressExpression)
+                programContext.stack.push(expression)
+            }
+            is SAVE -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val addressExpression = programContext.stack.pop() as? Value
+                        ?: throw java.lang.UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
+                val storage: VmMap<BigInteger, Expression> = when (instruction.programStoreZone) {
+                    MEMORY -> programContext.memory
+                    DISK -> programContext.program.storage
+                    CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")
+                }
+                val valueExpression = programContext.stack.pop()
+                storage[addressExpression.constant.toBigInteger()] = valueExpression
+            }
+            is EXIT -> {
+                virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
+            }
+            is JUMP -> {
+                if (programContext.stack.size() < 1) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val addressExpression = programContext.stack.pop() as? Value
+                        ?: throw java.lang.UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
+                val nextInstructionPosition = addressExpression.constant.toInt()
+                if (nextInstructionPosition < 0) {
+                    throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
+                }
+                val instructions = programContext.program.instructions
+                if (nextInstructionPosition >= instructions.size) {
+                    throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
+                }
+                instructions[nextInstructionPosition] as? JUMP_DESTINATION ?: throw ProgramException(ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION)
+                programContext.instructionPosition = nextInstructionPosition
+            }
+            is JUMP_DESTINATION -> {
+            }
+            is JUMP_IF -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val addressExpression = programContext.stack.pop() as? Value
+                        ?: throw java.lang.UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
+                val conditionExpression = programContext.stack.pop() as? Value
+                        ?: throw java.lang.UnsupportedOperationException("Jumps using non-concrete conditions should not be performed via this method")
+                if (conditionExpression.constant > 0) {
+                    val nextInstructionPosition = addressExpression.constant.toInt()
+                    if (nextInstructionPosition < 0) {
+                        throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
+                    }
+                    val instructions = programContext.program.instructions
+                    if (nextInstructionPosition >= instructions.size) {
+                        throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
+                    }
+                    instructions[nextInstructionPosition] as? JUMP_DESTINATION ?: throw ProgramException(ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION)
+                    programContext.instructionPosition = nextInstructionPosition
+                }
+            }
+            is ADD -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(Add(left, right))
+            }
+            is DIVIDE -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(Divide(left, right))
+            }
+            is HASH -> {
+                if (programContext.stack.size() < 1) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                programContext.stack.push(Hash(left, instruction.method))
+            }
+            is MODULO -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(Modulo(left, right))
+            }
+            is MULTIPLY -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(Multiply(left, right))
+            }
+            is SUBTRACT -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(Subtract(left, right))
+            }
+            is DUPLICATE -> {
+                if (programContext.stack.size() <= instruction.topOffset) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                programContext.stack.duplicate(instruction.topOffset)
+                if (programContext.stack.size() > STACK_LIMIT) {
+                    throw ProgramException(STACK_OVERFLOW)
+                }
+            }
+            is POP -> {
+                if (programContext.stack.size() < 1) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                programContext.stack.pop()
+            }
+            is PUSH -> {
+                programContext.stack.push(Expression.Value(BigInteger(instruction.bytes).toLong()))
+                if (programContext.stack.size() > STACK_LIMIT) {
+                    throw ProgramException(STACK_OVERFLOW)
+                }
+            }
+            is SWAP -> {
+                if (programContext.stack.size() <= instruction.topOffsetLeft || programContext.stack.size() <= instruction.topOffsetRight) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                programContext.stack.swap(instruction.topOffsetLeft, instruction.topOffsetRight)
+            }
+            is VARIABLE -> {
+                when (instruction.executionVariable) {
+                    ADDRESS_SELF -> {
+                        programContext.stack.push(Value(programContext.program.address.toLong()))
+                    }
+                    INSTRUCTION_POSITION -> {
+                        programContext.stack.push(Value(programContext.instructionPosition.toLong()))
+                    }
+                    ADDRESS_CALLER -> {
+                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address.toLong() else 0
+                        programContext.stack.push(Value(address))
+                    }
+                    ADDRESS_ORIGIN -> {
+                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address.toLong() else 0
+                        programContext.stack.push(Value(address))
+                    }
+                    else -> {
+                        virtualMachine.variables[instruction.executionVariable]
+                    }
+                }
+                if (programContext.stack.size() > STACK_LIMIT) {
+                    throw ProgramException(STACK_OVERFLOW)
+                }
+            }
+            else -> {
+                throw UnsupportedOperationException()
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@ import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
-import com.hileco.cortex.symbolic.Expression
+import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.instructions.Instruction
 import java.math.BigInteger
 

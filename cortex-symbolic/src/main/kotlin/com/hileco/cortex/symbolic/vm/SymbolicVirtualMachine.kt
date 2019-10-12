@@ -2,12 +2,9 @@ package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmMap
-import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
-import com.hileco.cortex.symbolic.Expression
-import com.hileco.cortex.symbolic.Not
-import com.hileco.cortex.symbolic.Value
+import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
 import java.math.BigInteger
@@ -17,7 +14,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
     val atlas: MutableMap<BigInteger, SymbolicProgram>
     val variables: VmMap<ExecutionVariable, Expression>
-    val path: VmStack<SymbolicPathEntry>
+    val path: LayeredVmStack<SymbolicPathEntry>
     var instructionsExecuted: Int
     var exited: Boolean = false
     var exitedReason: ProgramException.Reason? = null
@@ -27,7 +24,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         atlas = HashMap()
         path = LayeredVmStack()
         variables = LayeredVmMap()
-        variables[ExecutionVariable.START_TIME] = Value(startTime)
+        variables[ExecutionVariable.START_TIME] = Expression.Value(startTime)
         instructionsExecuted = 0
         for (programContext in programContexts) {
             programs.add(programContext)
@@ -36,7 +33,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
 
     private constructor(programs: MutableList<SymbolicProgramContext>,
                         atlas: MutableMap<BigInteger, SymbolicProgram>,
-                        path: VmStack<SymbolicPathEntry>,
+                        path: LayeredVmStack<SymbolicPathEntry>,
                         variables: VmMap<ExecutionVariable, Expression>,
                         instructionsExecuted: Int) {
         this.programs = programs
@@ -49,7 +46,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     fun condition(): Expression {
         val expressions: MutableList<Expression> = arrayListOf()
         path.asSequence()
-                .map { if (it.taken) it.condition else Not(it.condition) }
+                .map { if (it.taken) it.condition else Expression.Not(it.condition) }
                 .forEach { expression -> expressions.add(expression) }
         return Expression.constructAnd(expressions)
     }

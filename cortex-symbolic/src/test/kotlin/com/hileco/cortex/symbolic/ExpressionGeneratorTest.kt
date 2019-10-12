@@ -1,15 +1,15 @@
-package com.hileco.cortex.constraints
+package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.instructions.debug.DROP
-import com.hileco.cortex.instructions.io.LOAD
-import com.hileco.cortex.instructions.math.ADD
-import com.hileco.cortex.instructions.math.SUBTRACT
-import com.hileco.cortex.instructions.stack.DUPLICATE
-import com.hileco.cortex.instructions.stack.POP
-import com.hileco.cortex.instructions.stack.PUSH
-import com.hileco.cortex.instructions.stack.SWAP
 import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.instructions.debug.DROP
+import com.hileco.cortex.vm.instructions.io.LOAD
+import com.hileco.cortex.vm.instructions.math.ADD
+import com.hileco.cortex.vm.instructions.math.SUBTRACT
+import com.hileco.cortex.vm.instructions.stack.DUPLICATE
+import com.hileco.cortex.vm.instructions.stack.POP
+import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.vm.instructions.stack.SWAP
 import org.junit.Assert
 import org.junit.Test
 

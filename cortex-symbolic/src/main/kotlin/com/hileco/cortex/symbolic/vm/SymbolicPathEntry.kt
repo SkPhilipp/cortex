@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.vm
 
-import com.hileco.cortex.symbolic.Expression
+import com.hileco.cortex.symbolic.expressions.Expression
 
 data class SymbolicPathEntry(val source: Int,
                              val target: Expression,

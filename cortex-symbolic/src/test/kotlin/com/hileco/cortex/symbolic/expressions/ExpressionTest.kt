@@ -1,4 +1,4 @@
-package com.hileco.cortex.constraints.expressions
+package com.hileco.cortex.symbolic.expressions
 
 import org.junit.Assert
 import org.junit.Test
