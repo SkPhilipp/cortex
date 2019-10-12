@@ -4,7 +4,7 @@ package com.hileco.cortex.collections.layer
 import com.hileco.cortex.collections.base.BaseVmStack
 
 class LayeredVmStack<V> : BaseVmStack<V> {
-    private var edge: StackLayer<V>
+    var edge: StackLayer<V>
 
     private constructor(edge: StackLayer<V>) {
         this.edge = edge

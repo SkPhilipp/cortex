@@ -1,25 +1,17 @@
 package com.hileco.cortex.collections
 
-import com.hileco.cortex.collections.backed.BackedVmStack
-import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.collections.test.Variation
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class VmStackTest {
-    @Test
-    fun testBacked() {
-        test { BackedVmStack() }
-    }
+abstract class VmStackTest {
+
+    abstract fun <T> implementation(): VmStack<T>
 
     @Test
-    fun testLayered() {
-        test { LayeredVmStack() }
-    }
-
-    private fun test(stackSupplier: () -> VmStack<Int>) {
+    private fun fuzz() {
         Variation.fuzzed(100) { variation ->
-            val vmStack = stackSupplier()
+            val vmStack = implementation<Int>()
             variation.maybe { vmStack.copy() }
             vmStack.push(1)
             variation.maybe { vmStack.copy() }

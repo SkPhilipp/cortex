@@ -52,7 +52,7 @@ abstract class BaseVmStack<V> : VmStack<V> {
     override fun asSequence() = sequence {
         val size = size()
         for (i in 0 until size) {
-            yield(peek(size))
+            yield(peek(i))
         }
     }
 }

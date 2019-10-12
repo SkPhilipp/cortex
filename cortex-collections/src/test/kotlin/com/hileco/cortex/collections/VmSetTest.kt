@@ -1,25 +1,17 @@
 package com.hileco.cortex.collections
 
-import com.hileco.cortex.collections.backed.BackedVmSet
-import com.hileco.cortex.collections.layer.LayeredVmSet
 import com.hileco.cortex.collections.test.Variation
 import org.junit.Assert
 import org.junit.Test
 
-class VmSetTest {
-    @Test
-    fun testBacked() {
-        test { BackedVmSet() }
-    }
+abstract class VmSetTest {
+
+    abstract fun <T> implementation(): VmSet<T>
 
     @Test
-    fun testLayered() {
-        test { LayeredVmSet() }
-    }
-
-    private fun test(setSupplier: () -> VmSet<Int>) {
+    private fun fuzz() {
         Variation.fuzzed(100) { variation ->
-            val layeredSet = setSupplier()
+            val layeredSet = implementation<Int>()
             variation.maybe { layeredSet.copy() }
             layeredSet.add(1)
             variation.maybe { layeredSet.copy() }
