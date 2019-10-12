@@ -10,7 +10,7 @@ abstract class VmMapTest {
     abstract fun <K, V> implementation(): VmMap<K, V>
 
     @Test
-    private fun fuzz() {
+    fun fuzz() {
         Variation.fuzzed(100) { variation ->
             val vmMap = implementation<Int, String>()
             variation.maybe { vmMap.copy() }

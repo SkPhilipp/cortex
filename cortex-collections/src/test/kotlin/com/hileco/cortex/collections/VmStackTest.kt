@@ -9,7 +9,7 @@ abstract class VmStackTest {
     abstract fun <T> implementation(): VmStack<T>
 
     @Test
-    private fun fuzz() {
+    fun fuzz() {
         Variation.fuzzed(100) { variation ->
             val vmStack = implementation<Int>()
             variation.maybe { vmStack.copy() }
