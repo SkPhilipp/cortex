@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 import org.junit.Assert
 import org.junit.Test

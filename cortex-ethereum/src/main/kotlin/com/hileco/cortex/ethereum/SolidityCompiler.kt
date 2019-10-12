@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -31,7 +31,7 @@ class SolidityCompiler(private val volume: String,
         val errorsResult = errors ?: listOf()
         val outputResult = output ?: listOf()
         if (errorsResult.isNotEmpty()) {
-            throw IllegalStateException(errorsResult.joinToString())
+            throw IllegalStateException("Error from ${command.joinToString(separator = " ")}:\n ${errorsResult.joinToString()}")
         }
         return outputResult.asSequence()
     }

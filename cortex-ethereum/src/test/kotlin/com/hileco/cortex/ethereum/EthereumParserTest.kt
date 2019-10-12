@@ -1,7 +1,7 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.external.SolidityCompilerTest.Companion.TEST_COMPILER
+import com.hileco.cortex.ethereum.SolidityCompilerTest.Companion.TEST_COMPILER
 import org.junit.Assert
 import org.junit.Test
 

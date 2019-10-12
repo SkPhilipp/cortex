@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 import java.util.*
 
@@ -22,6 +22,4 @@ data class EthereumInstruction(val operation: EthereumOperation, val input: Byte
             "$operation"
         }
     }
-
-
 }

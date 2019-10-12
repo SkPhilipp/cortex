@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 import com.hileco.cortex.documentation.Documentation
 import org.junit.Test

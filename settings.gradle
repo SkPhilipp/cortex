@@ -3,3 +3,5 @@ include ':cortex-documentation'
 include ':cortex-collections'
 include ':cortex-vm'
 include ':cortex-symbolic'
+include ':cortex-ethereum'
+

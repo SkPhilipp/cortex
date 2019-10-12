@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 class EthereumParser {
     fun parse(bytecode: ByteArray): List<EthereumInstruction> {

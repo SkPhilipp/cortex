@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 enum class EthereumOperation(val code: Byte?, val inputBytes: Int = 0) {
     STOP("00".deserializeByte()),

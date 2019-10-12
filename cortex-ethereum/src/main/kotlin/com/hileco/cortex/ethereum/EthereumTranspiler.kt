@@ -1,28 +1,28 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
-import com.hileco.cortex.instructions.Instruction
-import com.hileco.cortex.instructions.ProgramException.Reason.UNKNOWN_INSTRUCTION
-import com.hileco.cortex.instructions.bits.BITWISE_AND
-import com.hileco.cortex.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.instructions.bits.BITWISE_OR
-import com.hileco.cortex.instructions.bits.BITWISE_XOR
-import com.hileco.cortex.instructions.calls.CALL_RETURN
-import com.hileco.cortex.instructions.conditions.EQUALS
-import com.hileco.cortex.instructions.conditions.GREATER_THAN
-import com.hileco.cortex.instructions.conditions.IS_ZERO
-import com.hileco.cortex.instructions.conditions.LESS_THAN
-import com.hileco.cortex.instructions.debug.DROP
-import com.hileco.cortex.instructions.debug.HALT
-import com.hileco.cortex.instructions.io.LOAD
-import com.hileco.cortex.instructions.io.SAVE
-import com.hileco.cortex.instructions.jumps.EXIT
-import com.hileco.cortex.instructions.jumps.JUMP
-import com.hileco.cortex.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.instructions.jumps.JUMP_IF
-import com.hileco.cortex.instructions.math.*
-import com.hileco.cortex.instructions.stack.*
-import com.hileco.cortex.instructions.stack.ExecutionVariable.*
+import com.hileco.cortex.vm.ProgramException.Reason.UNKNOWN_INSTRUCTION
 import com.hileco.cortex.vm.ProgramStoreZone.*
+import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
+import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
+import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
+import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
+import com.hileco.cortex.vm.instructions.conditions.EQUALS
+import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
+import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
+import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
+import com.hileco.cortex.vm.instructions.debug.DROP
+import com.hileco.cortex.vm.instructions.debug.HALT
+import com.hileco.cortex.vm.instructions.io.LOAD
+import com.hileco.cortex.vm.instructions.io.SAVE
+import com.hileco.cortex.vm.instructions.jumps.EXIT
+import com.hileco.cortex.vm.instructions.jumps.JUMP
+import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
+import com.hileco.cortex.vm.instructions.math.*
+import com.hileco.cortex.vm.instructions.stack.*
+import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
 
 class EthereumTranspiler {
     private fun map(ethereumInstruction: EthereumInstruction): Instruction {

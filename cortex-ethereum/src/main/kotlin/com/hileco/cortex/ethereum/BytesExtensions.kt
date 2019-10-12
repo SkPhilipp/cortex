@@ -1,4 +1,4 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 /**
  * Converts a [String] to [ByteArray], inverse of [String.deserializeBytes].

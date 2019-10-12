@@ -1,7 +1,7 @@
-package com.hileco.cortex.external
+package com.hileco.cortex.ethereum
 
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.instructions.stack.PUSH
+import com.hileco.cortex.vm.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
