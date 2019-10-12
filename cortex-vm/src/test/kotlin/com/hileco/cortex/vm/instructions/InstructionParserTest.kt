@@ -1,8 +1,8 @@
-package com.hileco.cortex.database
+package com.hileco.cortex.vm.instructions
 
-import com.hileco.cortex.instructions.ProgramException.Reason.WINNER
-import com.hileco.cortex.instructions.debug.HALT
-import com.hileco.cortex.instructions.debug.NOOP
+import com.hileco.cortex.vm.ProgramException.Reason.WINNER
+import com.hileco.cortex.vm.instructions.debug.HALT
+import com.hileco.cortex.vm.instructions.debug.NOOP
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
