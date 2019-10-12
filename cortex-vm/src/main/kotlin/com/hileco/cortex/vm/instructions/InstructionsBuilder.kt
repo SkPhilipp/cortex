@@ -3,7 +3,7 @@ package com.hileco.cortex.vm.instructions
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
-import com.hileco.cortex.vm.instructions.ProgramBuilder.FunctionCallConvention.*
+import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.*
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
@@ -27,70 +27,70 @@ import com.hileco.cortex.vm.instructions.math.*
 import com.hileco.cortex.vm.instructions.stack.*
 import java.util.*
 
-class ProgramBuilderHandle
+class InstructionsBuilderHandle
 
 @Suppress("UNUSED_PARAMETER")
-class ProgramBuilder {
-    private val handle: ProgramBuilderHandle = ProgramBuilderHandle()
+class InstructionsBuilder {
+    private val handle: InstructionsBuilderHandle = InstructionsBuilderHandle()
     private val instructions: MutableList<() -> Instruction> = ArrayList()
     private val labelAddresses: MutableMap<String, Int> = HashMap()
 
-    fun bitwiseAnd(right: ProgramBuilderHandle = handle,
-                   left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun bitwiseAnd(right: InstructionsBuilderHandle = handle,
+                   left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { BITWISE_AND() }
         return handle
     }
 
-    fun bitwiseNot(value: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun bitwiseNot(value: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { BITWISE_NOT() }
         return handle
     }
 
-    fun bitwiseOr(right: ProgramBuilderHandle = handle,
-                  left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun bitwiseOr(right: InstructionsBuilderHandle = handle,
+                  left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { BITWISE_OR() }
         return handle
     }
 
-    fun bitwiseXor(right: ProgramBuilderHandle = handle,
-                   left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun bitwiseXor(right: InstructionsBuilderHandle = handle,
+                   left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { BITWISE_XOR() }
         return handle
     }
 
-    fun call(outSize: ProgramBuilderHandle = handle,
-             outOffset: ProgramBuilderHandle = handle,
-             inSize: ProgramBuilderHandle = handle,
-             inOffset: ProgramBuilderHandle = handle,
-             valueTransferred: ProgramBuilderHandle = handle,
-             recipientAddress: ProgramBuilderHandle = handle) {
+    fun call(outSize: InstructionsBuilderHandle = handle,
+             outOffset: InstructionsBuilderHandle = handle,
+             inSize: InstructionsBuilderHandle = handle,
+             inOffset: InstructionsBuilderHandle = handle,
+             valueTransferred: InstructionsBuilderHandle = handle,
+             recipientAddress: InstructionsBuilderHandle = handle) {
         instructions.add { CALL() }
     }
 
-    fun callReturn(size: ProgramBuilderHandle = handle,
-                   offset: ProgramBuilderHandle = handle) {
+    fun callReturn(size: InstructionsBuilderHandle = handle,
+                   offset: InstructionsBuilderHandle = handle) {
         instructions.add { CALL_RETURN() }
     }
 
-    fun equals(right: ProgramBuilderHandle = handle,
-               left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun equals(right: InstructionsBuilderHandle = handle,
+               left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { EQUALS() }
         return handle
     }
 
-    fun greaterThan(right: ProgramBuilderHandle = handle,
-                    left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun greaterThan(right: InstructionsBuilderHandle = handle,
+                    left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { GREATER_THAN() }
         return handle
     }
 
-    fun isZero(value: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun isZero(value: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { IS_ZERO() }
         return handle
     }
 
-    fun lessThan(right: ProgramBuilderHandle = handle,
-                 left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun lessThan(right: InstructionsBuilderHandle = handle,
+                 left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { LESS_THAN() }
         return handle
     }
@@ -104,14 +104,14 @@ class ProgramBuilder {
     }
 
     fun load(programStoreZone: ProgramStoreZone,
-             address: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+             address: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { LOAD(programStoreZone) }
         return handle
     }
 
     fun save(programStoreZone: ProgramStoreZone,
-             bytes: ProgramBuilderHandle = handle,
-             address: ProgramBuilderHandle = handle) {
+             bytes: InstructionsBuilderHandle = handle,
+             address: InstructionsBuilderHandle = handle) {
         instructions.add { SAVE(programStoreZone) }
     }
 
@@ -119,7 +119,7 @@ class ProgramBuilder {
         instructions.add { EXIT() }
     }
 
-    fun jump(address: ProgramBuilderHandle = handle) {
+    fun jump(address: InstructionsBuilderHandle = handle) {
         instructions.add { JUMP() }
     }
 
@@ -140,87 +140,87 @@ class ProgramBuilder {
         instructions.add { JUMP_DESTINATION() }
     }
 
-    fun jumpIf(condition: ProgramBuilderHandle = handle,
-               address: ProgramBuilderHandle = handle) {
+    fun jumpIf(condition: InstructionsBuilderHandle = handle,
+               address: InstructionsBuilderHandle = handle) {
         instructions.add { JUMP_IF() }
     }
 
-    fun jumpIf(condition: ProgramBuilderHandle = handle,
+    fun jumpIf(condition: InstructionsBuilderHandle = handle,
                label: String) {
         push(label)
         instructions.add { JUMP_IF() }
     }
 
-    fun add(right: ProgramBuilderHandle = handle,
-            left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun add(right: InstructionsBuilderHandle = handle,
+            left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { ADD() }
         return handle
     }
 
-    fun divide(right: ProgramBuilderHandle = handle,
-               left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun divide(right: InstructionsBuilderHandle = handle,
+               left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { DIVIDE() }
         return handle
     }
 
     fun hash(hashMethod: String,
-             input: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+             input: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { HASH(hashMethod) }
         return handle
     }
 
-    fun modulo(right: ProgramBuilderHandle = handle,
-               left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun modulo(right: InstructionsBuilderHandle = handle,
+               left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { MODULO() }
         return handle
     }
 
-    fun multiply(right: ProgramBuilderHandle = handle,
-                 left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun multiply(right: InstructionsBuilderHandle = handle,
+                 left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { MULTIPLY() }
         return handle
     }
 
-    fun subtract(right: ProgramBuilderHandle = handle,
-                 left: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun subtract(right: InstructionsBuilderHandle = handle,
+                 left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { SUBTRACT() }
         return handle
     }
 
-    fun duplicate(topOffset: Int): ProgramBuilderHandle {
+    fun duplicate(topOffset: Int): InstructionsBuilderHandle {
         instructions.add { DUPLICATE(topOffset) }
         return handle
     }
 
-    fun duplicate(value: ProgramBuilderHandle = handle): ProgramBuilderHandle {
+    fun duplicate(value: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { DUPLICATE(0) }
         return handle
     }
 
-    fun pop(value: ProgramBuilderHandle = handle) {
+    fun pop(value: InstructionsBuilderHandle = handle) {
         instructions.add { POP() }
     }
 
-    fun drop(vararg values: ProgramBuilderHandle) {
+    fun drop(vararg values: InstructionsBuilderHandle) {
         instructions.add { DROP(values.size) }
     }
 
-    fun push(value: ByteArray): ProgramBuilderHandle {
+    fun push(value: ByteArray): InstructionsBuilderHandle {
         instructions.add { PUSH(value) }
         return handle
     }
 
-    fun push(value: Long): ProgramBuilderHandle {
+    fun push(value: Long): InstructionsBuilderHandle {
         instructions.add { PUSH(value) }
         return handle
     }
 
-    fun variable(executionVariable: ExecutionVariable): ProgramBuilderHandle {
+    fun variable(executionVariable: ExecutionVariable): InstructionsBuilderHandle {
         instructions.add { VARIABLE(executionVariable) }
         return handle
     }
 
-    fun push(label: String): ProgramBuilderHandle {
+    fun push(label: String): InstructionsBuilderHandle {
         instructions.add {
             val address = labelAddresses[label]
             if (address == null) {
@@ -236,8 +236,8 @@ class ProgramBuilder {
         instructions.add { SWAP(topOffsetLeft, topOffsetRight) }
     }
 
-    fun swap(right: ProgramBuilderHandle = handle,
-             left: ProgramBuilderHandle = handle) {
+    fun swap(right: InstructionsBuilderHandle = handle,
+             left: InstructionsBuilderHandle = handle) {
         instructions.add { SWAP(0, 1) }
     }
 
@@ -370,7 +370,7 @@ class ProgramBuilder {
         save(MEMORY, push(FUNCTION_CALL_INDEX + 1), push(FUNCTION_CALL_INDEX))
     }
 
-    fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN): ProgramBuilderHandle {
+    fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN): InstructionsBuilderHandle {
         val returnLabel = UUID.randomUUID().toString()
         when (callConvention) {
             STACK_ADDRESS_WITH_RETURN -> {

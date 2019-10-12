@@ -54,6 +54,6 @@ class ProgramContext : VmComponent<ProgramContext> {
     }
 
     override fun copy(): ProgramContext {
-        return ProgramContext(program, instructionsExecuted, instructionPosition, stack.copy(), memory.copy(), returnDataOffset, returnDataSize, callData.copy())
+        return ProgramContext(program.copy(), instructionsExecuted, instructionPosition, stack.copy(), memory.copy(), returnDataOffset, returnDataSize, callData.copy())
     }
 }

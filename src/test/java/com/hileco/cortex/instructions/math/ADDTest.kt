@@ -5,35 +5,12 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.InstructionTest
 import com.hileco.cortex.instructions.stack.PUSH
 import com.hileco.cortex.vm.ProgramConstants.Companion.OVERFLOW_LIMIT
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable
 import org.junit.Assert
 import org.junit.Test
+import java.util.*
 
 class ADDTest : InstructionTest() {
-    @Test
-    fun run() {
-        val instructions = listOf(
-                PUSH(byteArrayOf(100)),
-                PUSH(byteArrayOf(1)),
-                ADD())
-        val stack = this.run(instructions).stack
-        Documentation.of("instructions/add")
-                .headingParagraph("ADD").paragraph("The ADD operation removes two elements from the stack, adds them together and puts the " +
-                        "result on the stack. (This result may overflow if it would have been larger than $OVERFLOW_LIMIT)")
-                .paragraph("Example program:").source(instructions)
-                .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(101))
-    }
-
-    @Test
-    fun runOverflow() {
-        val instructions = listOf(
-                PUSH(OVERFLOW_LIMIT.toByteArray()),
-                PUSH(10),
-                ADD())
-        val stack = this.run(instructions).stack
-        Assert.assertArrayEquals(9.toBigInteger().toByteArray(), stack.pop())
-    }
 
     @Test
     fun symbolicValueToValue() {
@@ -43,7 +20,7 @@ class ADDTest : InstructionTest() {
 
     @Test
     fun symbolicValueToAddVariableToValue() {
-        val result = runSymbolic(ADD(), Value(1), Add(Stack(0), Value(1)))
+        val result = runSymbolic(ADD(), Value(1), ArithmeticOpTable.BinaryOp.Add(Stack(0), Value(1)))
         Assert.assertEquals(Add(Stack(0), Value(2)), result)
     }
 

@@ -4,7 +4,6 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.instructions.conditions.IS_ZERO
 import com.hileco.cortex.instructions.debug.NOOP
-import com.hileco.cortex.instructions.math.ADD
 import com.hileco.cortex.instructions.stack.DUPLICATE
 import com.hileco.cortex.instructions.stack.ExecutionVariable.INSTRUCTION_POSITION
 import com.hileco.cortex.instructions.stack.PUSH

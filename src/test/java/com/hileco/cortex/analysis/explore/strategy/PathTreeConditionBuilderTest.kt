@@ -7,6 +7,7 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.layer.LayeredStack
 import com.hileco.cortex.vm.layer.LayeredStack.Companion.MINIMUM_LAYER_SIZE
 import com.hileco.cortex.vm.symbolic.SymbolicPathEntry
+import com.sun.org.apache.xpath.internal.operations.Equals
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.core.AnyOf.anyOf
 import org.junit.After
