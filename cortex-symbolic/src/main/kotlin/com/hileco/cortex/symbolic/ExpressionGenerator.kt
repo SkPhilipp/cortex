@@ -22,6 +22,7 @@ import com.hileco.cortex.vm.instructions.stack.SWAP
 import java.math.BigInteger
 
 class ExpressionGenerator {
+    private val expressionOptimizer = ExpressionOptimizer()
     private val stack = LayeredVmStack<Expression>()
     private var missing: Int = 0
 
@@ -47,60 +48,60 @@ class ExpressionGenerator {
             is ADD -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Add(left, right))
+                stack.push(expressionOptimizer.optimize(Add(left, right)))
             }
             is SUBTRACT -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Subtract(left, right))
+                stack.push(expressionOptimizer.optimize(Subtract(left, right)))
             }
             is MULTIPLY -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Multiply(left, right))
+                stack.push(expressionOptimizer.optimize(Multiply(left, right)))
             }
             is DIVIDE -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Divide(left, right))
+                stack.push(expressionOptimizer.optimize(Divide(left, right)))
             }
             is MODULO -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Modulo(left, right))
+                stack.push(expressionOptimizer.optimize(Modulo(left, right)))
             }
             is EQUALS -> {
                 val left = pop()
                 val right = pop()
-                stack.push(Equals(left, right))
+                stack.push(expressionOptimizer.optimize(Equals(left, right)))
             }
             is GREATER_THAN -> {
                 val left = pop()
                 val right = pop()
-                stack.push(GreaterThan(left, right))
+                stack.push(expressionOptimizer.optimize(GreaterThan(left, right)))
             }
             is LESS_THAN -> {
                 val left = pop()
                 val right = pop()
-                stack.push(LessThan(left, right))
+                stack.push(expressionOptimizer.optimize(LessThan(left, right)))
             }
             is BITWISE_AND -> {
                 val left = pop()
                 val right = pop()
-                stack.push(BitwiseAnd(left, right))
+                stack.push(expressionOptimizer.optimize(BitwiseAnd(left, right)))
             }
             is BITWISE_OR -> {
                 val left = pop()
                 val right = pop()
-                stack.push(BitwiseOr(left, right))
+                stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
             }
             is IS_ZERO -> {
                 val input = pop()
-                stack.push(IsZero(input))
+                stack.push(expressionOptimizer.optimize(IsZero(input)))
             }
             is HASH -> {
                 val input = pop()
-                stack.push(Hash(input, instruction.method))
+                stack.push(expressionOptimizer.optimize(Hash(input, instruction.method)))
             }
             is BITWISE_XOR -> throw UnsupportedOperationException()
             is BITWISE_NOT -> throw UnsupportedOperationException()

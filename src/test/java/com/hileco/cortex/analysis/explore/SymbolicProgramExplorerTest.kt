@@ -14,6 +14,7 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.symbolic.SymbolicProgram
 import com.hileco.cortex.vm.symbolic.SymbolicProgramContext
 import com.hileco.cortex.vm.symbolic.SymbolicVirtualMachine
+import jdk.jshell.SourceCodeAnalysis
 import org.junit.Assert
 import org.junit.Test
 
@@ -30,7 +31,7 @@ class SymbolicProgramExplorerTest {
         val solution = strategy.solve()
         val time = System.currentTimeMillis() - start
         Assert.assertTrue(solution.solvable)
-        Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
+        SourceCodeAnalysis.Documentation.of(SymbolicProgramExplorer::class.simpleName!!)
                 .headingParagraph("Exploring ${barrierProgram.name}")
                 .paragraph("Program:").source(barrierProgram.pseudocode)
                 .paragraph("Total time in milliseconds:").source(time)

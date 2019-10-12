@@ -1,64 +1,178 @@
 package com.hileco.cortex.symbolic
 
-// multiply & divide & modulo & conditional operations & bitwise operations
-//    if (left is Value && right is Value) {
-//            val result = calculate(left.constant.toBigInteger(), right.constant.toBigInteger())
-//            return Value(result.toLong())
-//        }
-//        return Modulo(left, right)
-//    }
+import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.symbolic.expressions.Expression.*
+import com.hileco.cortex.vm.ProgramRunner.Companion.OVERFLOW_LIMIT
+import java.math.BigInteger
 
-// add
-//                 if (left is Value && right is Value) {
-//                    val result = left.constant.toBigInteger().add(right.constant.toBigInteger()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-//                    stack.push(Value(result.toLong()))
-//                } else if (left is Add && right is Value) {
-//                    if (left.left is Value) {
-//                        val result = left.left.constant.toBigInteger().add(right.constant.toBigInteger()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-//                        stack.push(Add(left.right, Value(result.toLong())))
-//                    } else if (left.right is Value) {
-//                        val result = left.right.constant.toBigInteger().add(right.constant.toBigInteger()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-//                        stack.push(Add(left.left, Value(result.toLong())))
-//                    }
-//                } else if (right is Add && left is Value) {
-//                    if (right.left is Value) {
-//                        val result = right.left.constant.toBigInteger().add(left.constant.toBigInteger()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-//                        stack.push(Add(right.right, Value(result.toLong())))
-//                    } else if (right.right is Value) {
-//                        val result = right.right.constant.toBigInteger().add(left.constant.toBigInteger()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-//                        stack.push(Add(right.left, Value(result.toLong())))
-//                    }
-//                } else {
-//                    stack.push(Add(left, right))
-//                }
+class ExpressionOptimizer {
+    private fun optimizeAdd(expression: Add): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            // a + b == result
+            val a = expression.left.constant.toBigInteger()
+            val b = expression.right.constant.toBigInteger()
+            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Value(result.longValueExact())
+        } else if (expression.left is Value && expression.left.constant == 0L) {
+            // 0 + ? == ?
+            return expression.right
+        } else if (expression.right is Value && expression.right.constant == 0L) {
+            // ? + 0 == ?
+            return expression.left
+        } else if (expression.left is Add && expression.left.left is Value && expression.right is Value) {
+            // ( a + ? ) + b == ? + result
+            val a = expression.left.left.constant.toBigInteger()
+            val b = expression.right.constant.toBigInteger()
+            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Add(expression.left.right, Value(result.toLong()))
+        } else if (expression.left is Add && expression.left.right is Value && expression.right is Value) {
+            // ( ? + a ) + b == ? + result
+            val a = expression.left.right.constant.toBigInteger()
+            val b = expression.right.constant.toBigInteger()
+            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Add(expression.left.left, Value(result.toLong()))
+        } else if (expression.right is Add && expression.right.left is Value && expression.left is Value) {
+            // a + ( b + ? ) = ? + result
+            val a = expression.left.constant.toBigInteger()
+            val b = expression.right.left.constant.toBigInteger()
+            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Add(expression.right.right, Value(result.toLong()))
+        } else if (expression.right is Add && expression.right.right is Value && expression.left is Value) {
+            // a + ( ? + b ) == ? + result
+            val a = expression.left.constant.toBigInteger()
+            val b = expression.right.right.constant.toBigInteger()
+            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Add(expression.right.left, Value(result.toLong()))
+        } else {
+            return expression
+        }
+    }
 
-// subtract
-//         if (left is Value && right is Value) {
-//            val result = calculate(left.constant.toBigInteger(), right.constant.toBigInteger())
-//            return Value(result.toLong())
-//        } else if (right is Value) {
-//            if (right.constant == 0L) {
-//                return left
-//            } else if (left is Subtract) {
-//                if (left.left is Value) {
-//                    val result = calculate(left.left.constant.toBigInteger(), right.constant.toBigInteger())
-//                    return Subtract(Value(result.toLong()), left.right)
-//                } else if (left.right is Value) {
-//                    val result = calculateAdd(left.right.constant.toBigInteger(), right.constant.toBigInteger())
-//                    return Subtract(left.left, Value(result.toLong()))
-//                }
-//            }
-//        } else if (left is Value) {
-//            if (left.constant == 0L) {
-//                return right
-//            } else if (right is Subtract) {
-//                if (right.left is Value) {
-//                    val result = calculate(right.left.constant.toBigInteger(), left.constant.toBigInteger())
-//                    return Subtract(right.right, Value(result.toLong()))
-//                } else if (right.right is Value) {
-//                    val result = calculateAdd(right.right.constant.toBigInteger(), left.constant.toBigInteger())
-//                    return Subtract(Value(result.toLong()), right.left)
-//                }
-//            }
-//        }
-//        return Subtract(left, right)
+    private fun optimizeSubtract(expression: Subtract): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            return Value(expression.left.constant - expression.right.constant)
+        } else if (expression.right is Value && expression.right.constant == 0L) {
+            // ? - 0 == ?
+            return expression.left
+        } else if (expression.right is Value && expression.left is Subtract && expression.left.left is Value) {
+            // ( a - ? ) - b == ( result == a - b ) - ?
+            val a = expression.left.left.constant
+            val b = expression.right.constant
+            val result = a - b
+            return Subtract(Value(result), expression.left.right)
+        } else if (expression.right is Value && expression.left is Subtract && expression.left.right is Value) {
+            // ( ? - a ) - b == ? - ( result == a + b )
+            val a = expression.left.right.constant.toBigInteger()
+            val b = expression.right.constant.toBigInteger()
+            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Subtract(expression.left.left, Value(result.longValueExact()))
+        } else if (expression.left is Value && expression.right is Subtract && expression.right.left is Value) {
+            // a - ( b - ? ) ==
+            val a = expression.left.constant
+            val b = expression.right.left.constant
+            val result = b - a
+            return Subtract(expression.right.right, Value(result))
+        } else if (expression.left is Value && expression.right is Subtract && expression.right.right is Value) {
+            // a - ( ? - b ) ==
+            val a = expression.left.constant.toBigInteger()
+            val b = expression.right.right.constant.toBigInteger()
+            val result = b.add(a).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Subtract(Value(result.toLong()), expression.right.left)
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeMultiply(expression: Multiply): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            // a * b
+            val a = expression.left.constant.toBigInteger()
+            val b = expression.right.constant.toBigInteger()
+            val result = a.multiply(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Value(result.longValueExact())
+        } else if (expression.left is Value && expression.left.constant == 0L) {
+            // 0 * ?
+            return Value(0L)
+        } else if (expression.right is Value && expression.right.constant == 0L) {
+            // ? * 0
+            return Value(0L)
+        } else if (expression.left is Value && expression.left.constant == 1L) {
+            // 1 * ?
+            return expression.right
+        } else if (expression.right is Value && expression.right.constant == 1L) {
+            // ? * 1
+            return expression.left
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeDivide(expression: Divide): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            val left = expression.left.constant.toBigInteger()
+            val right = expression.right.constant.toBigInteger()
+            val result = left.divide(right)
+            return Value(result.longValueExact())
+        } else if (expression.right is Value && expression.right.constant == 1L) {
+            // ? / 1
+            return expression.left
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeModulo(expression: Modulo): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            return Value(expression.left.constant % expression.right.constant)
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeEquals(expression: Equals): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            return if (expression.left.constant == expression.right.constant) True else False
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeGreaterThan(expression: GreaterThan): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            return if (expression.left.constant > expression.right.constant) True else False
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeLessThan(expression: LessThan): Expression {
+        if (expression.left is Value && expression.right is Value) {
+            return if (expression.left.constant < expression.right.constant) True else False
+        } else {
+            return expression
+        }
+    }
+
+    private fun optimizeIsZero(expression: IsZero): Expression {
+        if (expression.input is Value) {
+            return if (expression.input.constant == 0L) True else False
+        } else {
+            return expression
+        }
+    }
+
+    fun optimize(expression: Expression): Expression {
+        return when (expression) {
+            is Add -> optimizeAdd(expression)
+            is Subtract -> optimizeSubtract(expression)
+            is Multiply -> optimizeMultiply(expression)
+            is Divide -> optimizeDivide(expression)
+            is Modulo -> optimizeModulo(expression)
+            is Equals -> optimizeEquals(expression)
+            is GreaterThan -> optimizeGreaterThan(expression)
+            is LessThan -> optimizeLessThan(expression)
+            is IsZero -> optimizeIsZero(expression)
+            else -> expression
+        }
+    }
+}

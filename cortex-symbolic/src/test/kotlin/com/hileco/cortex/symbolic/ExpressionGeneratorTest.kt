@@ -73,8 +73,8 @@ class ExpressionGeneratorTest {
                 SUBTRACT())
         val builder = ExpressionGenerator()
         instructions.forEach { builder.addInstruction(it) }
-        Documentation.of(ExpressionGenerator::class.simpleName!!)
-                .headingParagraph(ExpressionGenerator::class.simpleName!!)
+        Documentation.of(ExpressionGenerator::class.java.simpleName)
+                .headingParagraph(ExpressionGenerator::class.java.simpleName)
                 .paragraph("Program:").source(instructions)
                 .paragraph("Resulting expressions:").source(builder.viewAllExpressions())
         Assert.assertEquals("0", builder.currentExpression.toString())
