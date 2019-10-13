@@ -1,11 +1,5 @@
 package com.hileco.cortex.analysis.attack
 
-import com.hileco.cortex.analysis.BarrierProgram
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_00
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_02
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.attack.Attacker.Companion.CONSTRAINT_CALL_ADDRESS
 import com.hileco.cortex.analysis.attack.Attacker.Companion.TARGET_IS_CALL
@@ -15,6 +9,12 @@ import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.expressions.Expression.Reference
 import com.hileco.cortex.symbolic.expressions.Expression.Value
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.barrier.BarrierProgram
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_00
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_02
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_03
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_06
 import com.hileco.cortex.vm.instructions.Instruction
 import org.junit.Assert
 import org.junit.FixMethodOrder

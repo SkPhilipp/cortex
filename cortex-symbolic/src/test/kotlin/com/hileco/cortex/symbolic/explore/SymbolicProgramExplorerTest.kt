@@ -1,20 +1,20 @@
-package com.hileco.cortex.analysis.explore
+package com.hileco.cortex.symbolic.explore
 
-import com.hileco.cortex.analysis.BarrierProgram
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_00
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_02
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_09
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
 import com.hileco.cortex.symbolic.explore.strategies.PathTreeExploreStrategy
+import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
+import com.hileco.cortex.vm.barrier.BarrierProgram
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_00
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_02
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_03
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_04
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_05
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_07
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_09
 import org.junit.Assert
 import org.junit.Test
 
@@ -22,7 +22,9 @@ class SymbolicProgramExplorerTest {
     private fun testBarrier(barrierProgram: BarrierProgram) {
         val start = System.currentTimeMillis()
         val program = SymbolicProgram(barrierProgram.instructions)
-        barrierProgram.setup(program)
+        barrierProgram.diskSetup.forEach { (key, value) ->
+            program.storage[key] = Expression.Value(value.toLong())
+        }
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
         val strategy = PathTreeExploreStrategy()

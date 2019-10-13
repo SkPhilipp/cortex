@@ -1,13 +1,12 @@
 package com.hileco.cortex.vm.barrier
 
-import com.hileco.cortex.vm.ProgramException
+import com.hileco.cortex.vm.ProgramException.Reason.WINNER
 import com.hileco.cortex.vm.ProgramRunner.Companion.OVERFLOW_LIMIT
 import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
 import java.math.BigInteger
-
 
 data class BarrierProgram(val name: String,
                           val description: String,
@@ -20,7 +19,7 @@ data class BarrierProgram(val name: String,
                 "An unconditional win.",
                 """HALT(WINNER)""",
                 with(InstructionsBuilder()) {
-                    halt(ProgramException.Reason.WINNER)
+                    halt(WINNER)
                     build()
                 })
         val BARRIER_01 = BarrierProgram("Barrier 01",
@@ -32,7 +31,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(divide(push(2), load(CALL_DATA, push(1))), push(12345))
                     }, thenBody = {
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     build()
                 })
@@ -50,7 +49,7 @@ data class BarrierProgram(val name: String,
                         blockIf(conditionBody = {
                             equals(modulo(push(500), load(CALL_DATA, push(2))), push(12))
                         }, thenBody = {
-                            halt(ProgramException.Reason.WINNER)
+                            halt(WINNER)
                         })
                     })
                     build()
@@ -64,7 +63,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(add(push(OVERFLOW_LIMIT.minus(BigInteger.ONE).toByteArray()), load(CALL_DATA, push(1))), push(12345))
                     }, thenBody = {
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     build()
                 })
@@ -92,7 +91,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(push(5), load(MEMORY, push(varY)))
                     }, thenBody = {
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     build()
                 })
@@ -113,7 +112,7 @@ data class BarrierProgram(val name: String,
                             load(CALL_DATA, push(1))
                         }), push(27))
                     }, thenBody = {
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     internalFunction("cube", {
                         internalFunctionCall("square", {
@@ -155,7 +154,7 @@ data class BarrierProgram(val name: String,
                             equals(modulo(push(500), load(CALL_DATA, push(2))), push(12))
                         }, loopBody = { _, _ ->
                         })
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     build()
                 })
@@ -171,7 +170,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(hash("SHA-256", load(CALL_DATA, push(1))), load(MEMORY, push(varSeed)))
                     }, thenBody = {
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     build()
                 })
@@ -184,7 +183,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(load(CALL_DATA, push(1)), load(DISK, push(1)))
                     }, thenBody = {
-                        halt(ProgramException.Reason.WINNER)
+                        halt(WINNER)
                     })
                     build()
                 },
@@ -207,7 +206,7 @@ data class BarrierProgram(val name: String,
                         blockIf(conditionBody = {
                             equals(load(DISK, push(1)), push(12345))
                         }, thenBody = {
-                            halt(ProgramException.Reason.WINNER)
+                            halt(WINNER)
                         })
                     })
                     blockIf(conditionBody = {

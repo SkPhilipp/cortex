@@ -1,10 +1,10 @@
 package com.hileco.cortex.analysis.attack
 
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.vm.*
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

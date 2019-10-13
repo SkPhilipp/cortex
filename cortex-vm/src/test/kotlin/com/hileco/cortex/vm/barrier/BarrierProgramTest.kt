@@ -1,36 +1,29 @@
-package com.hileco.cortex.analysis
+package com.hileco.cortex.vm.barrier
 
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_00
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_02
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_03
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_04
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_05
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_06
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_07
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_08
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_09
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_10
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.*
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_00
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_02
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_03
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_04
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_05
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_06
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_07
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_08
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_09
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_10
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.io.LOAD
 import org.junit.Test
 
 class BarrierProgramTest {
     private fun documentBarrier(barrierProgram: BarrierProgram) {
-        val basicGraph = GraphBuilder.BASIC_GRAPH_BUILDER.build(barrierProgram.instructions)
-        val basicGraphVisualized = VisualGraph()
-        basicGraphVisualized.map(basicGraph)
-        val optimizedGraph = GraphBuilder.OPTIMIZED_GRAPH_BUILDER.build(barrierProgram.instructions)
-        val optimizedGraphVisualized = VisualGraph()
-        optimizedGraphVisualized.map(optimizedGraph)
         val document = Documentation.of(BarrierProgram::class.java.simpleName)
         document.headingParagraph(barrierProgram.name)
                 .paragraph("Description: ${barrierProgram.description}")
                 .paragraph("Pseudocode").source(barrierProgram.pseudocode)
                 .paragraph("Source").source(barrierProgram.instructions)
-                .paragraph("Visualization:").image(basicGraphVisualized::render)
         if (barrierProgram.diskSetup.isNotEmpty()) {
             document.paragraph("Disk setup").source(barrierProgram.diskSetup)
         }
@@ -155,7 +148,10 @@ class BarrierProgramTest {
         val startTime = System.currentTimeMillis()
         val program = Program(BARRIER_09.instructions)
         val programContext = ProgramContext(program)
-        BARRIER_09.setup(program)
+        BARRIER_09.diskSetup.forEach { (key, value) ->
+            val valueBytes = value.toByteArray()
+            program.storage.write(key.toInt() * LOAD.SIZE + (LOAD.SIZE - valueBytes.size), valueBytes)
+        }
         val callDataOne = 12345.toBigInteger().toByteArray()
         programContext.callData.write(1 * LOAD.SIZE + (LOAD.SIZE - callDataOne.size), callDataOne)
         val virtualMachine = VirtualMachine(programContext, startTime = startTime)

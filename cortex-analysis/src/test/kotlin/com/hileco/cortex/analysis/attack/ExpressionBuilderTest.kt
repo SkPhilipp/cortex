@@ -1,12 +1,12 @@
 package com.hileco.cortex.analysis.attack
 
-import com.hileco.cortex.analysis.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowType
 import com.hileco.cortex.symbolic.ExpressionGenerator
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
 import com.hileco.cortex.vm.instructions.io.LOAD
