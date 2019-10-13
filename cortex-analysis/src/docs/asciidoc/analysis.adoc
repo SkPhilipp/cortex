@@ -6,6 +6,7 @@
 :toclevels: 4
 :toc-title: Cortex Analysis
 :snippets: ../../../build/generated-snippets
+:nofooter:
 
 = Cortex Analysis Capabilities
 
