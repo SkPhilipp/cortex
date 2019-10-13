@@ -6,11 +6,6 @@ import java.util.*
  * [Layer] structures' internal layering must be thread-safe.
  *
  * Objects implementing [Layer] do not have to be thread safe
- *
- * To ensure proper thread-safety when implementing [Layer], follow these rules:
- * - Methods modifying internal layering structure must be [Synchronized]
- * - When changing internal parent or children references; add first, then remove
- * - When merging with parent; do not modify the parent & attach first, then detatch
  */
 @Suppress("UNCHECKED_CAST")
 abstract class Layer<T : Layer<T>>(parent: T?) {
@@ -26,15 +21,28 @@ abstract class Layer<T : Layer<T>>(parent: T?) {
             currentParent = currentParent.parent
         }
         this.parent = currentParent
-        currentParent?.children?.add(this as T)
+        currentParent?.addChild(this as T)
+    }
+
+    @Synchronized
+    private fun addChild(child: T) {
+        this.children.add(child)
+    }
+
+    @Synchronized
+    private fun removeChild(child: T): Boolean {
+        this.children.remove(child)
+        return this.children.isEmpty()
     }
 
     fun close() {
         var currentParent = this.parent
         while (currentParent != null) {
-            currentParent.children.remove(this)
-            if (currentParent.children.isEmpty()) {
+            val removedLastChild = currentParent.removeChild(this as T)
+            if (removedLastChild) {
                 currentParent = currentParent.parent
+            } else {
+                break
             }
         }
         this.parent = null

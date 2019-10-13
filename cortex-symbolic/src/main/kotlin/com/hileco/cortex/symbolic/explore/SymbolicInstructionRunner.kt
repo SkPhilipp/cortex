@@ -1,6 +1,7 @@
 package com.hileco.cortex.symbolic.explore
 
 import com.hileco.cortex.collections.VmMap
+import com.hileco.cortex.symbolic.ExpressionOptimizer
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
@@ -33,6 +34,9 @@ import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
 import java.math.BigInteger
 
 class SymbolicInstructionRunner {
+
+    private val expressionOptimizer = ExpressionOptimizer()
+
     fun execute(instruction: Instruction, virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
         when (instruction) {
             is BITWISE_AND -> {
@@ -41,7 +45,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(BitwiseAnd(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(BitwiseAnd(left, right)))
             }
             is BITWISE_OR -> {
                 if (programContext.stack.size() < 2) {
@@ -49,7 +53,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(BitwiseOr(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
             }
             is CALL -> {
                 if (programContext.stack.size() < 6) {
@@ -82,7 +86,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(Equals(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(Equals(left, right)))
             }
             is GREATER_THAN -> {
                 if (programContext.stack.size() < 2) {
@@ -90,14 +94,14 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(GreaterThan(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(GreaterThan(left, right)))
             }
             is IS_ZERO -> {
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
-                programContext.stack.push(IsZero(left))
+                programContext.stack.push(expressionOptimizer.optimize(IsZero(left)))
             }
             is LESS_THAN -> {
                 if (programContext.stack.size() < 2) {
@@ -105,7 +109,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(LessThan(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(LessThan(left, right)))
             }
             is DROP -> {
                 if (programContext.stack.size() < instruction.elements) {
@@ -198,7 +202,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(Add(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(Add(left, right)))
             }
             is DIVIDE -> {
                 if (programContext.stack.size() < 2) {
@@ -206,14 +210,14 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(Divide(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(Divide(left, right)))
             }
             is HASH -> {
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
-                programContext.stack.push(Hash(left, instruction.method))
+                programContext.stack.push(expressionOptimizer.optimize(Hash(left, instruction.method)))
             }
             is MODULO -> {
                 if (programContext.stack.size() < 2) {
@@ -221,7 +225,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(Modulo(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(Modulo(left, right)))
             }
             is MULTIPLY -> {
                 if (programContext.stack.size() < 2) {
@@ -229,7 +233,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(Multiply(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(Multiply(left, right)))
             }
             is SUBTRACT -> {
                 if (programContext.stack.size() < 2) {
@@ -237,7 +241,7 @@ class SymbolicInstructionRunner {
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(Subtract(left, right))
+                programContext.stack.push(expressionOptimizer.optimize(Subtract(left, right)))
             }
             is DUPLICATE -> {
                 if (programContext.stack.size() <= instruction.topOffset) {

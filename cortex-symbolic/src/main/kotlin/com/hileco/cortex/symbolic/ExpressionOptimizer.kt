@@ -154,10 +154,11 @@ class ExpressionOptimizer {
     }
 
     private fun optimizeIsZero(expression: IsZero): Expression {
-        if (expression.input is Value) {
-            return if (expression.input.constant == 0L) True else False
-        } else {
-            return expression
+        when (expression.input) {
+            is Value -> return if (expression.input.constant == 0L) True else False
+            is True -> return False
+            is False -> return True
+            else -> return expression
         }
     }
 
