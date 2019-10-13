@@ -7,7 +7,7 @@
 :toc-title: Cortex Symbolic Execution
 :snippets: ../../../build/generated-snippets
 
-= Symbolic Execution
+= Cortex Symbolic Execution Engine
 
 == Constraint Solving
 

@@ -7,7 +7,7 @@
 :toc-title: Cortex Ethereum Integration
 :snippets: ../../../build/generated-snippets
 
-= Ethereum Integration
+= Cortex Ethereum Integration
 
 include::{snippets}/EthereumOperation.adoc[]
 

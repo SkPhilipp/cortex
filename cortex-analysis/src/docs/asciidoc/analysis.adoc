@@ -7,7 +7,7 @@
 :toc-title: Cortex Analysis
 :snippets: ../../../build/generated-snippets
 
-= Analysis
+= Cortex Analysis Capabilities
 
 Analysis within Cortex is a process in which instructions are converted to a graph. Such a graph
 contains edges, which represent additional information, generally linked to one or more instructions.

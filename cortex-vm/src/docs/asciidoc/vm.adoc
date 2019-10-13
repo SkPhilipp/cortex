@@ -7,7 +7,7 @@
 :toc-title: Cortex Virtual Machine
 :snippets: ../../../build/generated-snippets
 
-= Virtual Machine
+= Cortex Virtual Machine
 
 The Cortex virtual machine can execute Cortex instruction set compatible programs.
 The virtual machine and instruction set are used to define and simulate behaviour of compiled smart contracts,

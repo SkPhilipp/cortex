@@ -7,9 +7,9 @@
 :toc-title: Cortex Fuzzer
 :snippets: ../../../build/generated-snippets
 
-= Fuzzer
+= Cortex Fuzzer
 
-The fuzzer can generate random programs, which are generally used to verify correctness of other components.
+The fuzzer generates random programs, which are used to verify correctness of other components.
 
 Sample output of the fuzzer:
 

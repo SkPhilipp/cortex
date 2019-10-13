@@ -1,6 +1,6 @@
-== Roadmap
+= Cortex Roadmap
 
-=== Improvements
+== Improvements
 
 * Implement options for DIVIDE and MODULO to allow for signed and unsigned operation,
     specifically for 32 byte integers.
@@ -57,11 +57,11 @@
 * Barrier program which calls itself
 * Refactor symbolic references to allow named variables (such as start time), as well as program-context bound named variables (such as caller address)
 
-=== Product
+== Product
 
 * Given a self-made minimal contract's handle, extract and solve, then perform the call to extract on the test network.
 
-=== Concept Documents
+== Concept Documents
 
 * `design-connected.md`
 * `design-decompiler.md`
