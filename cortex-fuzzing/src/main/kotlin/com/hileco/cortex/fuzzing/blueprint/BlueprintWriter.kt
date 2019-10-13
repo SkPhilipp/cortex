@@ -5,6 +5,7 @@ import com.hileco.cortex.fuzzing.blueprint.Blueprint.StatementKind.*
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
 
+@Suppress("unused")
 class BlueprintWriter {
     fun writeAtlas(atlas: AtlasBlueprint) {
         // TODO: Return mapOf(addresses to com.hileco.cortex.vm.concrete.Program instances)
