@@ -1,4 +1,13 @@
-== Analysis
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex Analysis
+:snippets: ../../../build/generated-snippets
+
+= Analysis
 
 Analysis within Cortex is a process in which instructions are converted to a graph. Such a graph
 contains edges, which represent additional information, generally linked to one or more instructions.
@@ -7,7 +16,7 @@ The analysis process is split into separate pieces known as processors.
 A processor receives the graph and can make any modification to to the graph,
 such as adding edges and replacing instructions.
 
-=== Processors
+== Processors
 
 include::{snippets}/ParameterProcessor.adoc[]
 
@@ -44,6 +53,20 @@ include::{snippets}/JumpThreadingProcessor.adoc[]
 // include::{snippets}/DeadPathConstraintProcessor.adoc[]
 
 
-=== Visualization
+== Visualization
 
 include::{snippets}/VisualGraph.adoc[]
+
+== Attacks
+
+=== Attack Generators
+
+Below is a demonstration of Cortex analysing and finding the solution to barrier programs.
+This method works by planning a path through the program without executing it,
+then calculating and solving the constraints required to get to the targeted point in the program.
+
+Cortex will try to reach `HALT WINNER`, or `CALL` with a recipient address of `1234`.
+
+include::{snippets}/Attacker.adoc[]
+
+include::{snippets}/AttackProgramBuilder.adoc[]

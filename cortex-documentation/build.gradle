@@ -13,17 +13,13 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-asciidoctor {
-    dependsOn test
-}
-
-build {
-    dependsOn asciidoctor
-}
-
 tasks.withType(Test) {
     reports.html.enabled = false
     reports.junitXml.enabled = false
+}
+
+asciidoctor {
+    dependsOn test
 }
 
 compileKotlin {

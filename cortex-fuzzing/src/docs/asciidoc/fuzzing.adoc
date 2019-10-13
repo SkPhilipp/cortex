@@ -1,4 +1,13 @@
-== Fuzzer
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex Fuzzer
+:snippets: ../../../build/generated-snippets
+
+= Fuzzer
 
 The fuzzer can generate random programs, which are generally used to verify correctness of other components.
 

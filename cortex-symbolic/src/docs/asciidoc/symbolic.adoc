@@ -1,0 +1,24 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex Symbolic Execution
+:snippets: ../../../build/generated-snippets
+
+= Symbolic Execution
+
+== Constraint Solving
+
+include::{snippets}/ExpressionGenerator.adoc[]
+
+include::{snippets}/Solver.adoc[]
+
+== Symbolic Explorer
+
+Below is a demonstration of Cortex navigating through possible paths of barrier programs, using purely symbolic execution.
+
+Per barrier program a solution for the first path ending in `HALT WINNER` has also been documented.
+
+include::{snippets}/SymbolicProgramExplorer.adoc[]

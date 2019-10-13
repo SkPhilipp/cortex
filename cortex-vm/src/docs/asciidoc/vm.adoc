@@ -1,4 +1,13 @@
-== Virtual Machine
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex Virtual Machine
+:snippets: ../../../build/generated-snippets
+
+= Virtual Machine
 
 The Cortex virtual machine can execute Cortex instruction set compatible programs.
 The virtual machine and instruction set are used to define and simulate behaviour of compiled smart contracts,
@@ -6,7 +15,7 @@ such as those available on the Ethereum or Bitcoin blockchains.
 
 Notably, the virtual machine also supports snapshots, and in-memory copies at near-zero memory cost.
 
-=== Operations
+== Instructions
 
 include::{snippets}/instructions/push.adoc[]
 
@@ -65,3 +74,10 @@ include::{snippets}/instructions/call-return.adoc[]
 include::{snippets}/instructions/noop.adoc[]
 
 include::{snippets}/instructions/drop.adoc[]
+
+== Barrier Programs
+
+Barrier programs are short programs used to measure the capabilities of Cortex.
+This chapter contains the barrier programs which Cortex should be able to solve, or are on the roadmap to be solved.
+
+include::{snippets}/BarrierProgram.adoc[]

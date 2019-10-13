@@ -30,16 +30,11 @@ Smart contracts open up new attack surfaces.
 Their machine-code, storage, and any interactions with them are public.
 Cortex takes smart contracts apart, analyses them & exploits all of their weaknesses.
 
-include::01-virtual-machine.adoc[]
+Read more about Cortex':
 
-include::02-fuzzer.adoc[]
-
-include::03-analysis.adoc[]
-
-include::04-constraints.adoc[]
-
-include::05-attacks.adoc[]
-
-include::06-integration.adoc[]
-
-include::07-roadmap.adoc[]
+- <<vm.adoc#,Virtual Machine>>
+- <<symbolic.adoc#,Symbolic Execution>>
+- <<fuzzing.adoc#,Fuzzer>>
+- <<analysis.adoc#,Analysis>>
+- <<ethereum.adoc#,Ethereum Integration>>
+- <<roadmap.adoc#,Roadmap>>

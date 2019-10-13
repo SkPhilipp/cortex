@@ -1,5 +1,0 @@
-== Constraints
-
-include::{snippets}/ExpressionGenerator.adoc[]
-
-include::{snippets}/Solver.adoc[]

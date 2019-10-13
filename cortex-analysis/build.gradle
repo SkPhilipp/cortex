@@ -28,10 +28,6 @@ asciidoctor {
     dependsOn test
 }
 
-build {
-    dependsOn asciidoctor
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

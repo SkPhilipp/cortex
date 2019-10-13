@@ -20,10 +20,6 @@ asciidoctor {
     dependsOn test
 }
 
-build {
-    dependsOn asciidoctor
-}
-
 tasks.withType(Test) {
     reports.html.enabled = false
     reports.junitXml.enabled = false
