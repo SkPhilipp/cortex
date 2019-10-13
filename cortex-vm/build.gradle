@@ -23,6 +23,11 @@ build {
     dependsOn asciidoctor
 }
 
+tasks.withType(Test) {
+    reports.html.enabled = false
+    reports.junitXml.enabled = false
+}
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

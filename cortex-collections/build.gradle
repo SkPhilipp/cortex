@@ -18,6 +18,11 @@ asciidoctor {
     dependsOn test
 }
 
+tasks.withType(Test) {
+    reports.html.enabled = false
+    reports.junitXml.enabled = false
+}
+
 build {
     dependsOn asciidoctor
 }
