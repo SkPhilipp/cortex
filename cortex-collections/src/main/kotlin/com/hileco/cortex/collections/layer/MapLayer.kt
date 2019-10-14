@@ -8,4 +8,12 @@ class MapLayer<K, V>(parent: MapLayer<K, V>?) : Layer<MapLayer<K, V>>(parent) {
 
     override val isEmpty: Boolean
         get() = entries.isEmpty() && deletions.isEmpty()
+
+    fun contentEquals(other: MapLayer<K, V>): Boolean {
+        return entries == other.entries && deletions == other.deletions
+    }
+
+    fun overwrites(key: K): Boolean {
+        return entries.containsKey(key) || deletions.contains(key)
+    }
 }

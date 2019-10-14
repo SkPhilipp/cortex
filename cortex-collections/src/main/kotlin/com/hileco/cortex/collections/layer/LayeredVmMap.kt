@@ -3,7 +3,7 @@ package com.hileco.cortex.collections.layer
 import com.hileco.cortex.collections.base.BaseVmMap
 
 class LayeredVmMap<K, V> : BaseVmMap<K, V> {
-    private var edge: MapLayer<K, V>
+    var edge: MapLayer<K, V>
 
     private constructor(edge: MapLayer<K, V>) {
         this.edge = edge

@@ -11,6 +11,7 @@ import java.util.*
 abstract class Layer<T : Layer<T>>(parent: T?) {
     val children: MutableList<T>
     var parent: T? = null
+        private set
 
     internal abstract val isEmpty: Boolean
 
@@ -33,6 +34,22 @@ abstract class Layer<T : Layer<T>>(parent: T?) {
     private fun removeChild(child: T): Boolean {
         this.children.remove(child)
         return this.children.isEmpty()
+    }
+
+    @Synchronized
+    fun changeParent(newParent: T?) {
+        val currentParent = parent
+        if (newParent == currentParent) {
+            return
+        }
+        if (currentParent != null) {
+            val removedLastChild = currentParent.removeChild(this as T)
+            if (removedLastChild) {
+                currentParent.close()
+            }
+        }
+        parent = newParent
+        parent?.addChild(this as T)
     }
 
     fun close() {
