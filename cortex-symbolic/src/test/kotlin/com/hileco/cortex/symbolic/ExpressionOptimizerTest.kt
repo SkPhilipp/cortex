@@ -109,7 +109,7 @@ class ExpressionOptimizerTest {
      * Tests for "2 - ( 1 - x ) == x + 1" (or rather "x - -1")
      */
     @Test
-    fun symbolicValueToSubtractValuetoVariable() {
+    fun subtractValueToSubtractValueToVariable() {
         val expression = Subtract(Value(2), Subtract(Value(1), Stack(0)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Subtract(Stack(0), Value(-1)), result)
@@ -119,7 +119,7 @@ class ExpressionOptimizerTest {
      * Tests for "( x - 2 ) - 1 == x - 3"
      */
     @Test
-    fun symbolicSubtractVariableToValueToValue() {
+    fun subtractSubtractVariableToValueToValue() {
         val expression = Subtract(Subtract(Stack(0), Value(2)), Value(1))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Subtract(Stack(0), Value(3)), result)
@@ -129,10 +129,107 @@ class ExpressionOptimizerTest {
      * Tests for "( 2 - x ) - 1 == 1 - x"
      */
     @Test
-    fun symbolicSubtractValuetoVariableToValue() {
+    fun subtractSubtractValueToVariableToValue() {
         val expression = Subtract(Subtract(Value(2), Stack(0)), Value(1))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Subtract(Value(1), Stack(0)), result)
     }
 
+    @Test
+    fun equalsUnwrappedHash() {
+        val expression = Equals(Hash(Stack(0), "SHA3"), Hash(Stack(1), "SHA3"))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedNot() {
+        val expression = Equals(Not(Stack(0)), Not(Stack(1)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedAddOnRightRight() {
+        val expression = Equals(Add(Stack(0), Stack(2)), Add(Stack(1), Stack(2)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedAddOnLeftRight() {
+        val expression = Equals(Add(Stack(2), Stack(0)), Add(Stack(1), Stack(2)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedAddOnRightLeft() {
+        val expression = Equals(Add(Stack(0), Stack(2)), Add(Stack(2), Stack(1)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedAddOnLeftLeft() {
+        val expression = Equals(Add(Stack(2), Stack(0)), Add(Stack(2), Stack(1)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedMultiply() {
+        val expression = Equals(Multiply(Stack(0), Value(3)), Multiply(Stack(1), Value(3)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun equalsUnwrappedDivide() {
+        val expression = Equals(Divide(Stack(0), Value(3)), Divide(Stack(1), Value(3)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Equals(Stack(0), Stack(1)), result)
+    }
+
+    @Test
+    fun andEquivalentTrue() {
+        val expression = And(listOf(Value(1), Value(2)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(True, result)
+    }
+
+    @Test
+    fun andEquivalentFalse() {
+        val expression = And(listOf(Value(1), Value(0)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(False, result)
+    }
+
+    @Test
+    fun andSame() {
+        val expression = And(listOf(Stack(0), Stack(0)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Stack(0), result)
+    }
+
+    @Test
+    fun orEquivalentTrue() {
+        val expression = Or(listOf(Value(1), Value(0)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(True, result)
+    }
+
+    @Test
+    fun orEquivalentFalse() {
+        val expression = Or(listOf(Value(0), Value(0)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(False, result)
+    }
+
+    @Test
+    fun orSame() {
+        val expression = Or(listOf(Stack(0), Stack(0)))
+        val result = expressionOptimizer.optimize(expression)
+        Assert.assertEquals(Stack(0), result)
+    }
 }

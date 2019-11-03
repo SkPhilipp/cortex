@@ -1,5 +1,7 @@
 == Processors
 
+- Check https://www.agner.org/optimize/
+- Check https://llvm.org/docs/Passes.html
 - Implementation of InliningProcessor
 - Implementation of InstructionHoistProcessor
 - Implementation of DeadPathConstraintProcessor
