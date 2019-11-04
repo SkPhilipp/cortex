@@ -188,7 +188,6 @@ data class BarrierProgram(val name: String,
                     build()
                 },
                 mapOf(1.toBigInteger() to 12345.toBigInteger()))
-
         val BARRIER_10 = BarrierProgram("Barrier 10",
                 "Requires multiple calls and understanding of `DISK` state throughout the multiple calls.",
                 """ if (CALL_DATA[1] == 1) {
@@ -216,6 +215,93 @@ data class BarrierProgram(val name: String,
                     })
                     build()
                 })
+        val BARRIER_11 = BarrierProgram("Barrier 11",
+                "Matching hashed input with a hashed value.",
+                """ VAR hash = HASH(1234)
+                  | if (hash == HASH(CALL_DATA[1])) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(InstructionsBuilder()) {
+                    val varHash = 1000L
+                    save(MEMORY, hash("SHA-256", push(1234)), push(varHash))
+                    blockIf(conditionBody = {
+                        equals(hash("SHA-256", load(CALL_DATA, push(1))), load(MEMORY, push(varHash)))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
+        val BARRIER_12 = BarrierProgram("Barrier 12",
+                "Matching hashed input with another hashed input.",
+                """ VAR hash = HASH(1234)
+                  | if (HASH(CALL_DATA[0]) == HASH(CALL_DATA[1])) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(InstructionsBuilder()) {
+                    blockIf(conditionBody = {
+                        equals(hash("SHA-256", load(CALL_DATA, push(1))),
+                                hash("SHA-256", load(CALL_DATA, push(0))))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
+        val BARRIER_13 = BarrierProgram("Barrier 13",
+                "Matching input with a hashed value.",
+                """ VAR hash = HASH(1234)
+                  | if (hash == CALL_DATA[1]) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(InstructionsBuilder()) {
+                    val varHash = 1000L
+                    save(MEMORY, hash("SHA-256", push(1234)), push(varHash))
+                    blockIf(conditionBody = {
+                        equals(load(CALL_DATA, push(1)), load(MEMORY, push(varHash)))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
+        val BARRIER_14 = BarrierProgram("Barrier 14",
+                "Matching hashed input with an known hash.",
+                """ VAR hash = 0x....5678
+                  | if (hash == HASH(CALL_DATA[1])) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(InstructionsBuilder()) {
+                    blockIf(conditionBody = {
+                        equals(load(CALL_DATA, push(1)), push(5678))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
+        val BARRIER_15 = BarrierProgram("Barrier 15",
+                "Solving accidental use of a hash as a condition",
+                """ if (HASH(CALL_DATA[0] == CALL_DATA[1])) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(InstructionsBuilder()) {
+                    blockIf(conditionBody = {
+                        hash("SHA-256", equals(load(CALL_DATA, push(1)), load(CALL_DATA, push(0))))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
+        val BARRIER_16 = BarrierProgram("Barrier 16",
+                "Comparing input with the hash of another input.",
+                """ if (CALL_DATA[0] == HASH(CALL_DATA[1])) {
+                  |     HALT(WINNER)
+                  | }""".trimMargin(),
+                with(InstructionsBuilder()) {
+                    blockIf(conditionBody = {
+                        equals(load(CALL_DATA, push(0)), hash("SHA-256", load(CALL_DATA, push(1))))
+                    }, thenBody = {
+                        halt(WINNER)
+                    })
+                    build()
+                })
 
         val BARRIERS = listOf(
                 BARRIER_00,
@@ -228,6 +314,11 @@ data class BarrierProgram(val name: String,
                 BARRIER_07,
                 BARRIER_08,
                 BARRIER_09,
-                BARRIER_10)
+                BARRIER_11,
+                BARRIER_12,
+                BARRIER_13,
+                BARRIER_14,
+                BARRIER_15,
+                BARRIER_16)
     }
 }
