@@ -232,4 +232,8 @@ class ExpressionOptimizerTest {
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Stack(0), result)
     }
+
+    // TODO: potential target for fuzzing
+    // TODO: inner-expression optimization checking
+    // TODO: checks on equals x divide by zero and equals x multiply by zero
 }
