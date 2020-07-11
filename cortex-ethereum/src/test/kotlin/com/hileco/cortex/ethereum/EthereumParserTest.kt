@@ -1,7 +1,5 @@
 package com.hileco.cortex.ethereum
 
-import com.hileco.cortex.analysis.GraphBuilder.Companion.BASIC_GRAPH_BUILDER
-import com.hileco.cortex.analysis.VisualGraph
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.ethereum.SolidityCompilerTest.Companion.TEST_COMPILER
 import org.junit.Assert
