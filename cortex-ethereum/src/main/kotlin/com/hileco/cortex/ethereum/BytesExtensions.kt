@@ -5,7 +5,7 @@ package com.hileco.cortex.ethereum
  */
 fun String.deserializeBytes(): ByteArray {
     val bytes = ByteArray(length / 2)
-    for (i in 0 until bytes.size) {
+    for (i in bytes.indices) {
         val index = i * 2
         val integer = Integer.parseInt(this.substring(index, index + 2), 16)
         bytes[i] = integer.toByte()
