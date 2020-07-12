@@ -25,6 +25,7 @@ The `./scripts` directory is available in the `docker-compose`-launched services
 
     docker-compose exec miner geth attach --exec 'loadScript("/scripts/navigate.js")'
 
-Contracts can be compiled with:
+Barrier programs can be compiled with:
 
-    docker run -v "$(pwd)/scripts/contracts:/volume" -w /volume ethereum/solc:0.5.7 --bin barrier000.sol
+    cd scripts/contracts
+    docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin barrier001.sol > barrier001.txt
