@@ -1,0 +1,34 @@
+# bootnode
+# geth 0
+# geth N (attached)
+
+
+#bootnode=
+#  docker run -it --entrypoint bootnode
+#
+#miner=
+#  docker run -it --entrypoint geth cortex-sandbox
+#  depends: bootnode
+#
+#client=
+#  geth attach 'ipc:\\.\pipe\geth.ipc'
+
+version: '2'
+services:
+  bootnode:
+    container_name: "bootnode"
+    image: cortex-sandbox
+    command: "bash -c './scripts/start-bootnode.sh'"
+    ports:
+      - "30301:30301"
+    volumes:
+      - ./genesis.json:/root/genesis.json
+      - ./scripts:/scripts
+      - ./volume:/volume
+  miner:
+    container_name: "miner"
+    image: cortex-sandbox
+    command: "bash -c './scripts/start-miner.sh'"
+    volumes:
+      - ./scripts:/scripts
+      - ./volume:/volume
