@@ -1,4 +1,4 @@
-web3.personal.unlockAccount(eth.accounts[0], "i laugh", 15000)
+personal.unlockAccount(eth.accounts[0], "i laugh", 15000)
 
 function logger(error, result) {
 	if (error) {
@@ -37,9 +37,9 @@ var abi = [{
 
 var contractAddress = "0x7e30a7a21cd6e10787410a4e96f12d8f905ad1ed";
 
-var contract = web3.eth.contract(abi).at(contractAddress);
+var contract = eth.contract(abi).at(contractAddress);
 
-web3.eth.sendTransaction({
+eth.sendTransaction({
 	to: contractAddress,
 	from: web3.eth.accounts[0],
 	data: contract.set.getData(2)
@@ -48,13 +48,13 @@ web3.eth.sendTransaction({
 // the above transaction is executed asynchronously and as such the below calls will
 // generally always yield results on the state before the transaction was executed
 
-web3.eth.call({
+eth.call({
 	to: contractAddress,
 	from: web3.eth.accounts[0],
 	data: contract.get.getData()
 }, logger);
 
-web3.eth.call({
+eth.call({
 	to: contractAddress,
 	from: web3.eth.accounts[0],
 	data: contract.storedData.getData()

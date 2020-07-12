@@ -5,10 +5,10 @@ for (var blockIndex = 0; blockIndex <= eth.blockNumber; blockIndex++) {
 	block.transactions.forEach(function(transaction) {
 		if (transaction.gas > costContractCreate + costTransactionCreate) {
 			var receipt = eth.getTransactionReceipt(transaction.hash);
-			var contractCode = web3.eth.getCode(receipt.contractAddress);
+			var contractCode = eth.getCode(receipt.contractAddress);
 			var contractStorage = [];
 			for (var storageIndex = 0; storageIndex < 5; storageIndex++) {
-				var contractStorageElement = web3.eth.getStorageAt(receipt.contractAddress, storageIndex);
+				var contractStorageElement = eth.getStorageAt(receipt.contractAddress, storageIndex);
 				contractStorage.push(contractStorageElement);
 			}
 			var contractBalanceWei = eth.getBalance(receipt.contractAddress);
