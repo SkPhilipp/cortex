@@ -24,3 +24,7 @@ To interact with the chain enter the `docker-compose` miner service with `geth` 
 The `./scripts` directory is available in the `docker-compose`-launched services under `/scripts` and can be launched as such;
 
     docker-compose exec miner geth attach --exec 'loadScript("/scripts/navigate.js")'
+
+Contracts can be compiled with:
+
+    docker run -v "$(pwd)/scripts/contracts:/volume" -w /volume ethereum/solc:0.5.7 --bin barrier000.sol
