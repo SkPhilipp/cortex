@@ -4,6 +4,9 @@ package com.hileco.cortex.ethereum
  * Converts a [String] to [ByteArray], inverse of [String.deserializeBytes].
  */
 fun String.deserializeBytes(): ByteArray {
+    if (this.length >= 2 && this.substring(0, 2) == "0x") {
+        return this.substring(2).deserializeBytes()
+    }
     val bytes = ByteArray(length / 2)
     for (i in bytes.indices) {
         val index = i * 2
