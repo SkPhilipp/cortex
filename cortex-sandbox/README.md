@@ -27,5 +27,5 @@ The `./scripts` directory is available in the `docker-compose`-launched services
 
 Barrier programs can be compiled with:
 
-    cd scripts/contracts
-    docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin barrier001.sol > barrier001.txt
+    cd scripts
+    docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin contracts/barrier004.sol > contracts-compiled/barrier004.txt
