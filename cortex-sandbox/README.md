@@ -21,11 +21,12 @@ To interact with the chain enter the `docker-compose` miner service with `geth` 
 
     docker-compose exec miner geth attach --exec 'eth.accounts'
 
-The `./scripts` directory is available in the `docker-compose`-launched services under `/scripts` and can be launched as such;
+Scripts in the `./scripts` directory can be launched as such;
 
-    docker-compose exec miner geth attach --exec 'loadScript("/scripts/navigate.js")'
+    docker-compose exec miner geth attach --preload '/scripts/barriers-bytecode.js' --exec 'loadScript("/scripts/barriers-deploy.js")'
+    docker-compose exec miner geth attach --preload '/scripts/barriers-bytecode.js' --exec 'loadScript("/scripts/barriers-navigate.js")' > barriers.json
 
-Barrier programs can be compiled with:
+Note that barrier programs can be compiled with `solc`:
 
     cd scripts
-    docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin contracts/barrier004.sol > contracts-compiled/barrier004.txt
+    docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin contracts/barrier000.sol
