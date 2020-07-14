@@ -74,7 +74,8 @@ class SymbolicInstructionRunner {
                 if (recipientAddress !is Value) {
                     throw java.lang.UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
                 }
-                val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()] ?: throw ProgramException(ProgramException.Reason.CALL_RECIPIENT_MISSING)
+                val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()]
+                        ?: throw ProgramException(ProgramException.Reason.CALL_RECIPIENT_MISSING)
                 val sourceAddress = programContext.program.address
                 recipient.transfers.push(Value(sourceAddress.toLong()) to valueTransferred)
                 val newContext = SymbolicProgramContext(recipient)
@@ -267,7 +268,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.pop()
             }
             is PUSH -> {
-                programContext.stack.push(Expression.Value(BigInteger(instruction.bytes).toLong()))
+                programContext.stack.push(Value(BigInteger(instruction.bytes).toLong()))
                 if (programContext.stack.size() > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
@@ -289,6 +290,14 @@ class SymbolicInstructionRunner {
                     ADDRESS_CALLER -> {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address.toLong() else 0
                         programContext.stack.push(Value(address))
+                    }
+                    CALL_DATA_SIZE -> {
+                        // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
+                        programContext.stack.push(Reference(CALL_DATA, Value(999)))
+                    }
+                    TRANSACTION_FUNDS -> {
+                        // TODO: This is a quick workaround to get TRANSACTION_FUNDS to work
+                        programContext.stack.push(Value(0))
                     }
                     ADDRESS_ORIGIN -> {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address.toLong() else 0

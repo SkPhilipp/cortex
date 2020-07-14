@@ -1,5 +1,6 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.vm.ProgramException.Reason.REVERT
 import com.hileco.cortex.vm.ProgramException.Reason.UNKNOWN_INSTRUCTION
 import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.instructions.Instruction
@@ -58,9 +59,9 @@ class EthereumTranspiler {
             EthereumOperation.BALANCE -> HALT(UNKNOWN_INSTRUCTION, "BALANCE")
             EthereumOperation.ORIGIN -> VARIABLE(ADDRESS_ORIGIN)
             EthereumOperation.CALLER -> VARIABLE(ADDRESS_CALLER)
-            EthereumOperation.CALLVALUE -> HALT(UNKNOWN_INSTRUCTION, "CALLVALUE")
+            EthereumOperation.CALLVALUE -> VARIABLE(TRANSACTION_FUNDS)
             EthereumOperation.CALLDATALOAD -> LOAD(CALL_DATA)
-            EthereumOperation.CALLDATASIZE -> HALT(UNKNOWN_INSTRUCTION, "CALLDATASIZE")
+            EthereumOperation.CALLDATASIZE -> VARIABLE(CALL_DATA_SIZE)
             EthereumOperation.CALLDATACOPY -> HALT(UNKNOWN_INSTRUCTION, "CALLDATACOPY")
             EthereumOperation.CODESIZE -> HALT(UNKNOWN_INSTRUCTION, "CODESIZE")
             EthereumOperation.CODECOPY -> HALT(UNKNOWN_INSTRUCTION, "CODECOPY")
@@ -102,7 +103,7 @@ class EthereumTranspiler {
             EthereumOperation.DELEGATECALL -> HALT(UNKNOWN_INSTRUCTION, "DELEGATECALL")
             EthereumOperation.CALLBLACKBOX -> HALT(UNKNOWN_INSTRUCTION, "CALLBLACKBOX")
             EthereumOperation.STATICCALL -> HALT(UNKNOWN_INSTRUCTION, "STATICCALL")
-            EthereumOperation.REVERT -> HALT(UNKNOWN_INSTRUCTION, "REVERT")
+            EthereumOperation.REVERT -> HALT(REVERT)
             EthereumOperation.STOP2 -> EXIT()
             EthereumOperation.SELFDESTRUCT -> HALT(UNKNOWN_INSTRUCTION, "SELFDESTRUCT")
             EthereumOperation.PUSH1 -> PUSH(ethereumInstruction.input)

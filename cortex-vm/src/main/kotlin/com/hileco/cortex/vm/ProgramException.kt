@@ -15,6 +15,7 @@ class ProgramException(val reason: Reason) : Exception() {
         CALL_RETURN_DATA_TOO_LARGE,
         CALL_RECIPIENT_MISSING,
         WINNER,
-        UNKNOWN_INSTRUCTION
+        UNKNOWN_INSTRUCTION,
+        REVERT
     }
 }

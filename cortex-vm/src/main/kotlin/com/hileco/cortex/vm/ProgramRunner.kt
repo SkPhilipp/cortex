@@ -366,7 +366,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                 if (programContext.stack.size() <= instruction.topOffsetLeft || programContext.stack.size() <= instruction.topOffsetRight) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                programContext.stack.swap(instruction.topOffsetLeft, instruction.    topOffsetRight)
+                programContext.stack.swap(instruction.topOffsetLeft, instruction.topOffsetRight)
             }
             is VARIABLE -> {
                 when (instruction.executionVariable) {
@@ -379,6 +379,15 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                     ADDRESS_CALLER -> {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else 0.toBigInteger()
                         programContext.stack.push(address.toByteArray())
+                    }
+                    CALL_DATA_SIZE -> {
+                        // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
+                        val size = programContext.callData.size()
+                        programContext.stack.push(BigInteger.valueOf(size.toLong()).toByteArray())
+                    }
+                    TRANSACTION_FUNDS -> {
+                        // TODO: This is a quick workaround to get TRANSACTION_FUNDS to work
+                        programContext.stack.push(BigInteger.valueOf(0L).toByteArray())
                     }
                     ADDRESS_ORIGIN -> {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address else 0.toBigInteger()

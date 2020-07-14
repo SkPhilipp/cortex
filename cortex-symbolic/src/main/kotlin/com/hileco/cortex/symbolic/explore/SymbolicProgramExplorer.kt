@@ -63,10 +63,10 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                     programContext.instructionsExecuted++
                     virtualMachine.instructionsExecuted++
                     if (programContext.instructionsExecuted >= INSTRUCTION_LIMIT) {
-                        throw ProgramException(ProgramException.Reason.REACHED_LIMIT_INSTRUCTIONS_ON_PROGRAM)
+                        throw ProgramException(REACHED_LIMIT_INSTRUCTIONS_ON_PROGRAM)
                     }
                     if (virtualMachine.instructionsExecuted >= INSTRUCTION_LIMIT) {
-                        throw ProgramException(ProgramException.Reason.REACHED_LIMIT_INSTRUCTIONS_ON_VIRTUAL_MACHINE)
+                        throw ProgramException(REACHED_LIMIT_INSTRUCTIONS_ON_VIRTUAL_MACHINE)
                     }
                 }
                 if (programContext.instructionPosition == programContext.program.instructions.size) {
