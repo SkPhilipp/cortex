@@ -21,7 +21,6 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class AttackerTest {
     private fun attackBarrier(barrierProgram: BarrierProgram,
                               targetPredicate: (Instruction) -> Boolean = TARGET_IS_HALT_WINNER,
