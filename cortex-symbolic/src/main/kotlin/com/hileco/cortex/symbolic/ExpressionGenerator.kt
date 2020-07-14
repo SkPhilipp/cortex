@@ -70,6 +70,11 @@ class ExpressionGenerator {
                 val right = pop()
                 stack.push(expressionOptimizer.optimize(Modulo(left, right)))
             }
+            is EXPONENT -> {
+                val left = pop()
+                val right = pop()
+                stack.push(expressionOptimizer.optimize(Exponent(left, right)))
+            }
             is EQUALS -> {
                 val left = pop()
                 val right = pop()

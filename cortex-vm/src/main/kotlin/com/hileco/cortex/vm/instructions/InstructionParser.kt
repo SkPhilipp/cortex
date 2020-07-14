@@ -68,6 +68,7 @@ class InstructionParser {
                 "JUMP_DESTINATION" to require(0) { JUMP_DESTINATION() },
                 "JUMP_IF" to require(0) { JUMP_IF() },
                 "ADD" to require(0) { ADD() },
+                "EXPONENT" to require(0) { EXPONENT() },
                 "DIVIDE" to require(0) { DIVIDE() },
                 "HASH" to require(1) { parameters -> HASH(parameters[1]) },
                 "MODULO" to require(0) { MODULO() },

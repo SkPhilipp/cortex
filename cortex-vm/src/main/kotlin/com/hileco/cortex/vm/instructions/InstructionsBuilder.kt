@@ -157,6 +157,12 @@ class InstructionsBuilder {
         return handle
     }
 
+    fun exponent(right: InstructionsBuilderHandle = handle,
+                 left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
+        instructions.add { EXPONENT() }
+        return handle
+    }
+
     fun divide(right: InstructionsBuilderHandle = handle,
                left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { DIVIDE() }

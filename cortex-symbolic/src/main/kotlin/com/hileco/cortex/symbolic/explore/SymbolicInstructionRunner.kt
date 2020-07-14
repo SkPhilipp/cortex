@@ -227,6 +227,14 @@ class SymbolicInstructionRunner {
                 val right = programContext.stack.pop()
                 programContext.stack.push(expressionOptimizer.optimize(Modulo(left, right)))
             }
+            is EXPONENT -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(expressionOptimizer.optimize(Exponent(left, right)))
+            }
             is MULTIPLY -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)

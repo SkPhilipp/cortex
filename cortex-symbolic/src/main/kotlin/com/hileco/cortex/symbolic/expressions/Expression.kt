@@ -214,6 +214,18 @@ interface Expression {
         }
     }
 
+    data class Exponent(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkPower(leftExpr as IntExpr, rightExpr as IntExpr)
+        }
+
+        override fun toString(): String {
+            return "($left ** $right)"
+        }
+    }
+
     data class IsZero(val input: Expression) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val inputExpr = input.asZ3Expr(context, referenceMapping)

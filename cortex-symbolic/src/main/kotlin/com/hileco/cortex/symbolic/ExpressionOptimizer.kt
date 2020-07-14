@@ -139,6 +139,33 @@ class ExpressionOptimizer {
         }
     }
 
+    private fun optimizeExponent(unoptimizedExpression: Exponent): Expression {
+        val left = optimize(unoptimizedExpression.left)
+        val right = optimize(unoptimizedExpression.right)
+        if (left is Value && right is Value) {
+            // a ** b
+            val a = left.constant.toBigInteger()
+            val b = right.constant.toBigInteger()
+            // TODO: Verify that b fits in Int
+            val result = a.pow(b.toInt()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
+            return Value(result.longValueExact())
+        } else if (left is Value && left.constant == 0L) {
+            // 0 ** ? == 0
+            return Value(0L)
+        } else if (right is Value && right.constant == 0L) {
+            // ? ** 0 == 1
+            return left
+        } else if (left is Value && left.constant == 1L) {
+            // 1 ** ? == 1
+            return Value(1L)
+        } else if (right is Value && right.constant == 1L) {
+            // ? ** 1 = ?
+            return left
+        } else {
+            return Exponent(left, right)
+        }
+    }
+
     /**
      * Removes common parts from two given expressions, preserving them as such that [Equals] will yield the same outcome.
      *
@@ -267,6 +294,7 @@ class ExpressionOptimizer {
             is Multiply -> optimizeMultiply(expression)
             is Divide -> optimizeDivide(expression)
             is Modulo -> optimizeModulo(expression)
+            is Exponent -> optimizeExponent(expression)
             is Equals -> optimizeEquals(expression)
             is GreaterThan -> optimizeGreaterThan(expression)
             is LessThan -> optimizeLessThan(expression)
