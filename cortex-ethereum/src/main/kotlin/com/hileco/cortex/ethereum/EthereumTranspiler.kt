@@ -171,7 +171,7 @@ class EthereumTranspiler {
             EthereumOperation.SWAP14 -> SWAP(0, 14)
             EthereumOperation.SWAP15 -> SWAP(0, 15)
             EthereumOperation.SWAP16 -> SWAP(0, 16)
-            EthereumOperation.UNKNOWN -> HALT(UNKNOWN_INSTRUCTION, "UNKNOWN")
+            EthereumOperation.UNKNOWN -> HALT(UNKNOWN_INSTRUCTION, "UNKNOWN: " + ethereumInstruction.input.serialize())
         }
     }
 
