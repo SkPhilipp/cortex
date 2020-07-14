@@ -4,10 +4,7 @@ import com.hileco.cortex.vm.ProgramException.Reason.REVERT
 import com.hileco.cortex.vm.ProgramException.Reason.UNKNOWN_INSTRUCTION
 import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
@@ -53,7 +50,7 @@ class EthereumTranspiler {
             EthereumOperation.NOT -> BITWISE_NOT()
             EthereumOperation.BYTE -> HALT(UNKNOWN_INSTRUCTION, "BYTE")
             EthereumOperation.SHL -> HALT(UNKNOWN_INSTRUCTION, "SHL")
-            EthereumOperation.SHR -> HALT(UNKNOWN_INSTRUCTION, "SHR")
+            EthereumOperation.SHR -> SHIFT_RIGHT()
             EthereumOperation.SAR -> HALT(UNKNOWN_INSTRUCTION, "SAR")
             EthereumOperation.SHA3 -> HASH("SHA-256")
             EthereumOperation.ADDRESS -> VARIABLE(ADDRESS_SELF)

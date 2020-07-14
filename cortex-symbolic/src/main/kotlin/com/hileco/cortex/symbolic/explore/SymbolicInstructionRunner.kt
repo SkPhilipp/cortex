@@ -14,6 +14,7 @@ import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
+import com.hileco.cortex.vm.instructions.bits.SHIFT_RIGHT
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
@@ -54,6 +55,14 @@ class SymbolicInstructionRunner {
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
                 programContext.stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
+            }
+            is SHIFT_RIGHT -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(expressionOptimizer.optimize(ShiftRight(left, right)))
             }
             is CALL -> {
                 if (programContext.stack.size() < 7) {

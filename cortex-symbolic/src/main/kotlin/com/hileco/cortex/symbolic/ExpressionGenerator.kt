@@ -5,10 +5,7 @@ import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
@@ -99,6 +96,11 @@ class ExpressionGenerator {
                 val left = pop()
                 val right = pop()
                 stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
+            }
+            is SHIFT_RIGHT -> {
+                val left = pop()
+                val right = pop()
+                stack.push(expressionOptimizer.optimize(ShiftRight(left, right)))
             }
             is IS_ZERO -> {
                 val input = pop()

@@ -202,6 +202,18 @@ interface Expression {
         }
     }
 
+    data class ShiftRight(val left: Expression, val right: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val leftExpr = left.asZ3Expr(context, referenceMapping)
+            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            return context.mkBVASHR(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
+        }
+
+        override fun toString(): String {
+            return "($left >> $right)"
+        }
+    }
+
     data class Modulo(val left: Expression, val right: Expression) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)

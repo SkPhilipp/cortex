@@ -2,10 +2,7 @@ package com.hileco.cortex.vm.instructions
 
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
@@ -26,6 +23,7 @@ import com.hileco.cortex.vm.instructions.stack.*
 import java.io.IOException
 import java.math.BigInteger
 
+// TODO: Get rid of this (?) Barrier programs can now be provided through transpiled bytecode of compiled Solidity
 class InstructionParser {
     fun parse(string: String): Instruction {
         val split = string.replace("(.*?)\\s*--.*".toRegex(), "$1")
@@ -52,6 +50,7 @@ class InstructionParser {
                 "BITWISE_NOT" to require(0) { BITWISE_NOT() },
                 "BITWISE_OR" to require(0) { BITWISE_OR() },
                 "BITWISE_XOR" to require(0) { BITWISE_XOR() },
+                "SHIFT_RIGHT" to require(0) { SHIFT_RIGHT() },
                 "CALL" to require(0) { CALL() },
                 "CALL_RETURN" to require(0) { CALL_RETURN() },
                 "EQUALS" to require(0) { EQUALS() },

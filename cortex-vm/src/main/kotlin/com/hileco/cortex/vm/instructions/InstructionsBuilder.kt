@@ -4,10 +4,7 @@ import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.*
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
@@ -29,6 +26,7 @@ import java.util.*
 
 class InstructionsBuilderHandle
 
+// TODO: Get rid of this entirely as Barrier programs can now be provided through transpiled bytecode of compiled Solitity programs
 @Suppress("UNUSED_PARAMETER")
 class InstructionsBuilder {
     private val handle: InstructionsBuilderHandle = InstructionsBuilderHandle()
@@ -55,6 +53,12 @@ class InstructionsBuilder {
     fun bitwiseXor(right: InstructionsBuilderHandle = handle,
                    left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { BITWISE_XOR() }
+        return handle
+    }
+
+    fun shiftRight(right: InstructionsBuilderHandle = handle,
+                   left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
+        instructions.add { SHIFT_RIGHT() }
         return handle
     }
 
