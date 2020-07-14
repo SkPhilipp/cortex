@@ -118,9 +118,10 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                 programContext.stack.push(result)
             }
             is CALL -> {
-                if (programContext.stack.size() < 6) {
+                if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
+                val gas = BigInteger(programContext.stack.pop())
                 val recipientAddress = BigInteger(programContext.stack.pop())
                 val valueTransferred = BigInteger(programContext.stack.pop())
                 val inOffset = BigInteger(programContext.stack.pop())

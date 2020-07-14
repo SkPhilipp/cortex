@@ -56,9 +56,10 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
             }
             is CALL -> {
-                if (programContext.stack.size() < 6) {
+                if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
+                val gas = programContext.stack.pop()
                 val recipientAddress = programContext.stack.pop()
                 val valueTransferred = programContext.stack.pop()
                 val inOffset = programContext.stack.pop()

@@ -135,7 +135,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(divide(push(2), load(CALL_DATA, push(1))), push(12345))
                     }, thenBody = {
-                        call(push(0), push(0), push(0), push(0), push(1), load(CALL_DATA, push(2)))
+                        call(push(0), push(0), push(0), push(0), push(1), load(CALL_DATA, push(2)), push(0))
                     })
                     build()
                 })

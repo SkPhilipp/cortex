@@ -63,7 +63,8 @@ class InstructionsBuilder {
              inSize: InstructionsBuilderHandle = handle,
              inOffset: InstructionsBuilderHandle = handle,
              valueTransferred: InstructionsBuilderHandle = handle,
-             recipientAddress: InstructionsBuilderHandle = handle) {
+             recipientAddress: InstructionsBuilderHandle = handle,
+             gas: InstructionsBuilderHandle = handle) {
         instructions.add { CALL() }
     }
 

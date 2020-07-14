@@ -34,6 +34,7 @@ class AttackProgramBuilder {
         instructions.add(PUSH(0))
         instructions.add(PUSH(0))
         instructions.add(PUSH(targetAddress))
+        instructions.add(PUSH(0))
         instructions.add(CALL())
         return instructions
     }

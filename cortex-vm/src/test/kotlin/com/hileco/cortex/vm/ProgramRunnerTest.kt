@@ -113,6 +113,7 @@ class ProgramRunnerTest {
                 PUSH(10),
                 PUSH(0),
                 PUSH(LIBRARY_ADDRESS),
+                PUSH(0),
                 CALL()
         )
         val libraryInstructions = listOf(
@@ -148,6 +149,7 @@ class ProgramRunnerTest {
                 PUSH(0),
                 PUSH(0),
                 PUSH(LIBRARY_ADDRESS),
+                PUSH(0),
                 CALL(),
                 PUSH(0),
                 LOAD(ProgramStoreZone.MEMORY)

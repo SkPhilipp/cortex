@@ -8,6 +8,7 @@ import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
 import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
@@ -97,7 +98,7 @@ class EthereumTranspiler {
             EthereumOperation.SSTOREBYTES -> HALT(UNKNOWN_INSTRUCTION, "SSTOREBYTES")
             EthereumOperation.SSIZE -> HALT(UNKNOWN_INSTRUCTION, "SSIZE")
             EthereumOperation.CREATE -> HALT(UNKNOWN_INSTRUCTION, "CREATE")
-            EthereumOperation.CALL -> HALT(UNKNOWN_INSTRUCTION, "CALL")
+            EthereumOperation.CALL -> CALL()
             EthereumOperation.CALLCODE -> HALT(UNKNOWN_INSTRUCTION, "CALLCODE")
             EthereumOperation.RETURN -> CALL_RETURN()
             EthereumOperation.DELEGATECALL -> HALT(UNKNOWN_INSTRUCTION, "DELEGATECALL")
