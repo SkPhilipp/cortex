@@ -1,7 +1,5 @@
 package com.hileco.cortex.ethereum
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.hileco.cortex.analysis.GraphBuilder.Companion.BASIC_GRAPH_BUILDER
 import com.hileco.cortex.analysis.VisualGraph
 import com.hileco.cortex.documentation.Documentation
@@ -11,8 +9,8 @@ import org.junit.Test
 
 class EthereumTranspilerTest {
 
-    val ethereumParser = EthereumParser()
-    val ethereumTranspiler = EthereumTranspiler()
+    private val ethereumParser = EthereumParser()
+    private val ethereumTranspiler = EthereumTranspiler()
 
     @Test
     fun test() {
@@ -47,31 +45,5 @@ class EthereumTranspilerTest {
                 .paragraph("Visualization:").image(basicGraphVisualized::render)
 
         Assert.assertTrue(instructions.first() is PUSH)
-    }
-
-    data class BarrierEntry(var contractAddress: String,
-                            var contractCode: String,
-                            var transactionInput: String,
-                            var transactionIdentifiedAs: String)
-
-    @Test
-    fun testBarriers() {
-        val jacksonObjectMapper = jacksonObjectMapper()
-        val barriersJsonText = javaClass.getResource("/barriers.json").readText()
-        val barriers: List<BarrierEntry> = jacksonObjectMapper.readValue(barriersJsonText)
-        barriers.forEach { barrier ->
-            val ethereumInstructions = ethereumParser.parse(barrier.contractCode.deserializeBytes())
-            val instructions = ethereumTranspiler.transpile(ethereumInstructions)
-            val basicGraph = BASIC_GRAPH_BUILDER.build(instructions)
-            val basicGraphVisualized = VisualGraph()
-            basicGraphVisualized.map(basicGraph)
-            Documentation.of(EthereumTranspiler::class.java.simpleName)
-                    .headingParagraph("${barrier.transactionIdentifiedAs} Transpiled")
-                    .paragraph("Source bytecode:")
-                    .source(barrier.contractCode)
-                    .paragraph("Cortex instructions:")
-                    .source(instructions)
-                    .paragraph("Visualization:").image(basicGraphVisualized::render)
-        }
     }
 }

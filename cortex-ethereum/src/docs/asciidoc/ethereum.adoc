@@ -17,3 +17,5 @@ include::{snippets}/SolidityCompiler.adoc[]
 include::{snippets}/EthereumParser.adoc[]
 
 include::{snippets}/EthereumTranspiler.adoc[]
+
+include::{snippets}/EthereumBarriers.adoc[]

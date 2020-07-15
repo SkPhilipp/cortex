@@ -26,6 +26,7 @@ class Attacker(private val targetPredicate: (Instruction) -> Boolean,
                 try {
                     val expression = expressionBuilder.build(instructions, path, stackConstraints)
                     val solver = Solver()
+                    println("solving expression: $expression")
                     solutions.add(solver.solve(expression))
                 } catch (ignored: IllegalStateException) {
                 }
