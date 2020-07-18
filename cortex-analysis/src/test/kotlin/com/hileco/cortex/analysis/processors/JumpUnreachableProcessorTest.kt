@@ -32,12 +32,12 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program before:").source(original)
                 .paragraph("Program after:").source(instructions)
 
-        Assert.assertEquals(instructions, listOf(
+        Assert.assertEquals(listOf(
                 PUSH(3),
                 JUMP(),
                 NOOP(),
                 JUMP_DESTINATION()
-        ))
+        ), instructions)
         Assert.assertEquals(graph.graphBlocks.size, 2)
     }
 
@@ -54,12 +54,12 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
         ))
-        Assert.assertEquals(graph.toInstructions(), listOf(
+        Assert.assertEquals(listOf(
                 PUSH(2),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
-        ))
+        ), graph.toInstructions())
     }
 
     override fun fuzzTestableProcessor(): Processor {

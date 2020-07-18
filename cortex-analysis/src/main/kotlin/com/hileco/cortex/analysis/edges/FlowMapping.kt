@@ -9,14 +9,14 @@ import kotlin.collections.HashMap
 data class FlowMapping(val flowsFromSource: MutableMap<Int?, MutableSet<Flow>> = HashMap(),
                        val flowsToTarget: MutableMap<Int?, MutableSet<Flow>> = HashMap(),
                        val flows: MutableList<Flow> = ArrayList(),
-                       val blockLineMapping: MutableMap<Int, GraphBlock> = HashMap(),
-                       val nodeLineMapping: MutableMap<Int, GraphNode> = HashMap()) : Edge {
-    fun putLineMapping(key: Int, value: GraphBlock) {
-        blockLineMapping[key] = value
+                       val blockPositionMapping: MutableMap<Int, GraphBlock> = HashMap(),
+                       val nodePositionMapping: MutableMap<Int, GraphNode> = HashMap()) : Edge {
+    fun putPositionMapping(position: Int, value: GraphBlock) {
+        blockPositionMapping[position] = value
     }
 
-    fun putLineMapping(key: Int, value: GraphNode) {
-        nodeLineMapping[key] = value
+    fun putPositionMapping(position: Int, value: GraphNode) {
+        nodePositionMapping[position] = value
     }
 
     fun map(flow: Flow) {

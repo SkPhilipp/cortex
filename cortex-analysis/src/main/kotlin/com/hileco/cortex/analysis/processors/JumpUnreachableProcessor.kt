@@ -13,7 +13,7 @@ class JumpUnreachableProcessor : Processor {
             targets.addAll(it.flowsToTarget.keys.filterNotNull())
             val unreachableBlocks = graph.graphBlocks.filterNot { graphBlock ->
                 val startNode = graphBlock.graphNodes.first()
-                targets.contains(startNode.line)
+                targets.contains(startNode.position)
             }
             unreachableBlocks.forEach { graphBlock ->
                 graphBlock.graphNodes.forEach { graphNode -> graphNode.instruction = NOOP() }

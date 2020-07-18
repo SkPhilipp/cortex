@@ -14,9 +14,9 @@ class JumpIllegalProcessor : Processor {
         flowMapping.flowsFromSource.values.forEach { flows ->
             val onlyJumpFlow = flows.singleOrNull { flow -> flow.type == INSTRUCTION_JUMP }
             if (onlyJumpFlow != null) {
-                val sourceNode = flowMapping.nodeLineMapping[onlyJumpFlow.source]
+                val sourceNode = flowMapping.nodePositionMapping[onlyJumpFlow.source]
                 if (sourceNode != null) {
-                    val targetedNode = flowMapping.nodeLineMapping[onlyJumpFlow.target]
+                    val targetedNode = flowMapping.nodePositionMapping[onlyJumpFlow.target]
                     if (targetedNode == null) {
                         sourceNode.instruction = HALT(JUMP_TO_OUT_OF_BOUNDS)
                     } else if (targetedNode.instruction !is JUMP_DESTINATION) {

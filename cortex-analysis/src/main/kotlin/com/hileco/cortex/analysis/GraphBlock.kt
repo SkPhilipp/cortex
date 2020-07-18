@@ -6,9 +6,12 @@ import java.util.*
 class GraphBlock {
     val graphNodes: MutableList<GraphNode> = ArrayList()
 
-    fun include(lineOffset: Int, instructions: List<Instruction>) {
+    fun include(initialOffset: Int, instructions: List<Instruction>) {
+        var offset = initialOffset
         for (i in instructions.indices) {
-            val graphNode = GraphNode(instructions[i], lineOffset + i)
+            val instruction = instructions[i]
+            val graphNode = GraphNode(instruction, offset)
+            offset += instruction.width
             graphNodes.add(graphNode)
         }
     }

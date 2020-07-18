@@ -92,7 +92,7 @@ class EdgeMapping {
         val list = ArrayList<GraphNode>()
         addInstructionsByLine(graphNode, list)
         return list.asSequence()
-                .sortedBy { it.line }
+                .sortedBy { it.position }
                 .map { it.instruction }
                 .toList()
     }

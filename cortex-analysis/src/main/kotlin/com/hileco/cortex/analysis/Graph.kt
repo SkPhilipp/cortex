@@ -11,26 +11,28 @@ class Graph() {
 
     constructor(instructions: List<Instruction>) : this() {
         val block = ArrayList<Instruction>()
-        var currentBlockLine = 0
-        for (currentLine in instructions.indices) {
-            val instruction = instructions[currentLine]
+        var blockPosition = 0
+        var currentPosition = 0
+        for (instructionsIndex in instructions.indices) {
+            val instruction = instructions[instructionsIndex]
             if (instruction is JUMP_DESTINATION) {
                 if (block.isNotEmpty()) {
-                    includeAsBlock(currentBlockLine, block)
-                    currentBlockLine = currentLine
+                    includeAsBlock(blockPosition, block)
+                    blockPosition = currentPosition
                 }
                 block.clear()
             }
             block.add(instruction)
+            currentPosition += instruction.width
         }
         if (block.isNotEmpty()) {
-            includeAsBlock(currentBlockLine, block)
+            includeAsBlock(blockPosition, block)
         }
     }
 
-    private fun includeAsBlock(line: Int, instructions: List<Instruction>) {
+    private fun includeAsBlock(position: Int, instructions: List<Instruction>) {
         val block = GraphBlock()
-        block.include(line, instructions)
+        block.include(position, instructions)
         graphBlocks.add(block)
     }
 
@@ -42,10 +44,10 @@ class Graph() {
         return index
     }
 
-    fun blockAt(line: Int): GraphBlock? {
+    fun blockAt(position: Int): GraphBlock? {
         return graphBlocks.firstOrNull { graphBlock: GraphBlock ->
             graphBlock.graphNodes.any { graphNode: GraphNode ->
-                graphNode.line == line
+                graphNode.position == position
             }
         }
     }

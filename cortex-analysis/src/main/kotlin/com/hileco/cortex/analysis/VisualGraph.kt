@@ -23,15 +23,15 @@ class VisualGraph {
 
     private fun map(graphBlock: GraphBlock) {
         val records = ArrayList<String>()
-        val lines = ArrayList<Int>()
+        val positions = ArrayList<Int>()
         for (graphNode in graphBlock.graphNodes) {
-            lines.add(graphNode.line)
-            records.add(rec(graphNode.line.toString(), "${graphNode.line}: ${graphNode.instruction}"))
+            positions.add(graphNode.position)
+            records.add(rec(graphNode.position.toString(), "${graphNode.position}: ${graphNode.instruction}"))
         }
-        val node = node("${lines.first()}")
+        val node = node("${positions.first()}")
                 .with(Records.of(*records.toTypedArray()))
                 .with(Color.WHITE.fill())
-        lines.forEach { line -> vizNodeMapping[line] = node }
+        positions.forEach { position -> vizNodeMapping[position] = node }
         vizGraph = vizGraph.with(node)
     }
 

@@ -17,9 +17,9 @@ import java.math.BigInteger
 
 class FlowProcessor : Processor {
     private fun mapLinesToBlocksForNode(edgeMapping: EdgeMapping, edge: FlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {
-        val line = graphNode.line
-        edge.putLineMapping(line, graphBlock)
-        edge.putLineMapping(line, graphNode)
+        val position = graphNode.position
+        edge.putPositionMapping(position, graphBlock)
+        edge.putPositionMapping(position, graphNode)
         edgeMapping.parameters(graphNode)
                 .filterNotNull()
                 .forEach { mapLinesToBlocksForNode(edgeMapping, edge, graphBlock, it) }
@@ -48,12 +48,12 @@ class FlowProcessor : Processor {
                         val target = BigInteger(targetInstruction.bytes).toInt()
                         when (it.instruction) {
                             is JUMP -> {
-                                val flow = Flow(INSTRUCTION_JUMP, it.line, target)
+                                val flow = Flow(INSTRUCTION_JUMP, it.position, target)
                                 graph.edgeMapping.add(it, flow)
                                 graphEdge.map(flow)
                             }
                             is JUMP_IF -> {
-                                val flow = Flow(INSTRUCTION_JUMP_IF, it.line, target)
+                                val flow = Flow(INSTRUCTION_JUMP_IF, it.position, target)
                                 graph.edgeMapping.add(it, flow)
                                 graphEdge.map(flow)
                             }
@@ -69,12 +69,12 @@ class FlowProcessor : Processor {
                 .forEach {
                     when (it.instruction) {
                         is JUMP -> {
-                            val flow = Flow(INSTRUCTION_JUMP_DYNAMIC, it.line, null)
+                            val flow = Flow(INSTRUCTION_JUMP_DYNAMIC, it.position, null)
                             graph.edgeMapping.add(it, flow)
                             graphEdge.map(flow)
                         }
                         is JUMP_IF -> {
-                            val flow = Flow(INSTRUCTION_JUMP_IF_DYNAMIC, it.line, null)
+                            val flow = Flow(INSTRUCTION_JUMP_IF_DYNAMIC, it.position, null)
                             graph.edgeMapping.add(it, flow)
                             graphEdge.map(flow)
                         }
@@ -86,14 +86,14 @@ class FlowProcessor : Processor {
                 .flatMap { it.graphNodes.asSequence() }
                 .filter { it.instruction::class.java in PROGRAM_ENDS }
                 .forEach {
-                    val flow = Flow(PROGRAM_END, it.line, null)
+                    val flow = Flow(PROGRAM_END, it.position, null)
                     graph.edgeMapping.add(it, flow)
                     graphEdge.map(flow)
                 }
         val lastBlock = graphBlocks.lastOrNull()
         if (lastBlock != null && lastBlock.graphNodes.asSequence().none { it.instruction::class.java in PROGRAM_ENDS }) {
             val lastNode = lastBlock.graphNodes.last()
-            val flow = Flow(PROGRAM_END, lastNode.line, null)
+            val flow = Flow(PROGRAM_END, lastNode.position, null)
             graph.edgeMapping.add(lastNode, flow)
             graphEdge.map(flow)
         }
@@ -105,12 +105,12 @@ class FlowProcessor : Processor {
                 if (indexB in indexA..limit) {
                     val guaranteedEnd = graphBlockB.graphNodes.firstOrNull { it.instruction::class.java in GUARANTEED_ENDS }
                     if (guaranteedEnd != null) {
-                        val flow = Flow(PROGRAM_FLOW, graphBlockA.graphNodes.first().line, guaranteedEnd.line)
+                        val flow = Flow(PROGRAM_FLOW, graphBlockA.graphNodes.first().position, guaranteedEnd.position)
                         graphEdge.map(flow)
                         graph.edgeMapping.add(graphBlockA, flow)
                         limit = indexB
                     } else if (indexB == limit) {
-                        val flow = Flow(PROGRAM_FLOW, graphBlockA.graphNodes.first().line, graphBlockB.graphNodes.last().line)
+                        val flow = Flow(PROGRAM_FLOW, graphBlockA.graphNodes.first().position, graphBlockB.graphNodes.last().position)
                         graphEdge.map(flow)
                         graph.edgeMapping.add(graphBlockA, flow)
                     }
