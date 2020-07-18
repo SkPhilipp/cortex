@@ -11,6 +11,9 @@ abstract class Instruction {
     open val stackParameters: List<StackParameter>
         get() = listOf()
 
+    open val width: Int
+        get() = 1
+
     override fun equals(other: Any?): Boolean {
         return other != null && other::class == this::class
     }

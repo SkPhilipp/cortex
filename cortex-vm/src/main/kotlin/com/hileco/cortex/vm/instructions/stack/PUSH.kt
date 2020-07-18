@@ -6,7 +6,8 @@ import com.hileco.cortex.vm.instructions.InstructionModifier
 import com.hileco.cortex.vm.instructions.InstructionModifier.STACK
 import java.math.BigInteger
 
-data class PUSH(val bytes: ByteArray) : Instruction() {
+data class PUSH(val bytes: ByteArray,
+                override val width: Int = 1) : Instruction() {
 
     constructor(value: Long) : this(value.toBigInteger().toByteArray())
 
@@ -20,11 +21,11 @@ data class PUSH(val bytes: ByteArray) : Instruction() {
         get() = BigInteger(bytes).toLong()
 
     override fun toString(): String {
-        return "PUSH ${BigInteger(bytes)}"
+        return "PUSH ${BigInteger(bytes)} $width"
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is PUSH) bytes.contentEquals(other.bytes) else false
+        return if (other is PUSH) bytes.contentEquals(other.bytes) and (width == other.width) else false
     }
 
     override fun hashCode(): Int {
