@@ -21,7 +21,7 @@ data class PUSH(val bytes: ByteArray,
         get() = BigInteger(bytes).toLong()
 
     override fun toString(): String {
-        return "PUSH ${BigInteger(bytes)} $width"
+        return "PUSH ${BigInteger(bytes)} (width=$width)"
     }
 
     override fun equals(other: Any?): Boolean {
