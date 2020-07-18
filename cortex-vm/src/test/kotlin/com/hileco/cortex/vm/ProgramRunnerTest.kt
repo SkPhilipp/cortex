@@ -32,7 +32,7 @@ import java.math.BigInteger
 
 class ProgramRunnerTest {
 
-    fun run(instructions: List<Instruction>, customSetup: (VirtualMachine, ProgramContext) -> Unit = { _, _ -> }): ProgramContext {
+    private fun run(instructions: List<Instruction>, customSetup: (VirtualMachine, ProgramContext) -> Unit = { _, _ -> }): ProgramContext {
         val program = Program(instructions)
         val programContext = ProgramContext(program)
         val virtualMachine = VirtualMachine(programContext)
@@ -314,6 +314,17 @@ class ProgramRunnerTest {
                         "program itself. JUMPs may only result in instruction positions which point to a JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
+        Assert.assertEquals(stack.size(), 0)
+    }
+
+    @Test
+    fun testJumpMultiWidth() {
+        val instructions = listOf(
+                PUSH(byteArrayOf(6), width = 2),
+                JUMP(),
+                PUSH(byteArrayOf(100), width = 3),
+                JUMP_DESTINATION())
+        val stack = this.run(instructions).stack
         Assert.assertEquals(stack.size(), 0)
     }
 
