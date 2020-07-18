@@ -40,16 +40,18 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
             return
         }
         var programContext: ProgramContext = virtualMachine.programs.last()
-        while (programContext.instructionPosition < programContext.program.instructions.size) {
+        while (programContext.program.instructionsRelative.isNotEmpty()
+                && programContext.instructionPosition <= programContext.program.instructionsRelative.last().absolutePosition) {
             val currentInstructionPosition = programContext.instructionPosition
-            val instruction = programContext.program.instructions[currentInstructionPosition]
-            runInstruction(instruction, programContext)
+            val positionedInstruction = programContext.program.instructionsAbsolute[currentInstructionPosition]
+                    ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+            runInstruction(positionedInstruction.instruction, programContext)
             if (virtualMachine.programs.isEmpty()) {
                 break
             }
             programContext = virtualMachine.programs.last()
             if (programContext.instructionPosition == currentInstructionPosition) {
-                programContext.instructionPosition = currentInstructionPosition + 1
+                programContext.instructionPosition = currentInstructionPosition + positionedInstruction.instruction.width
             }
             programContext.instructionsExecuted++
             virtualMachine.instructionsExecuted++
@@ -156,6 +158,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                     val dataExpanded = data.copyOf(wSize.toInt())
                     val wOffset = nextContext.returnDataOffset
                     nextContext.memory.write(wOffset.toInt(), dataExpanded, wSize.toInt())
+                    // TODO: If `CALL` would have a width other than 1 this will not be enough
                     nextContext.instructionPosition++
                 }
             }
@@ -253,14 +256,8 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val address = BigInteger(programContext.stack.pop()).toInt()
-                if (address < 0) {
-                    throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-                }
-                val instructions = programContext.program.instructions
-                if (address >= instructions.size) {
-                    throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-                }
-                instructions[address] as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
+                val positionedInstruction = programContext.program.instructionsAbsolute[address] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                positionedInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
                 programContext.instructionPosition = address
             }
             is JUMP_DESTINATION -> {
@@ -272,14 +269,8 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
                 val address = BigInteger(programContext.stack.pop()).toInt()
                 val condition = BigInteger(programContext.stack.pop())
                 if (condition.signum() == 1) {
-                    if (address < 0) {
-                        throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-                    }
-                    val instructions = programContext.program.instructions
-                    if (address >= instructions.size) {
-                        throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-                    }
-                    instructions[address] as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
+                    val positionedInstruction = programContext.program.instructionsAbsolute[address] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                    positionedInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
                     programContext.instructionPosition = address
                 }
             }
