@@ -4,10 +4,10 @@ import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowType
 import com.hileco.cortex.vm.instructions.Instruction
 
-class PathStream(private val instructions: List<Instruction>,
+class PathStream(instructions: List<Instruction>,
                  private val path: List<Flow>) {
 
-    val instructionsAbsolute: Map<Int, Instruction>
+    private val instructionsAbsolute: Map<Int, Instruction>
 
     init {
         var position = 0

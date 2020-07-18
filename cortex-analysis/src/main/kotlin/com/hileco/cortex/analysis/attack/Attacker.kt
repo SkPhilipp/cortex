@@ -2,7 +2,6 @@ package com.hileco.cortex.analysis.attack
 
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.edges.FlowMapping
-
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression
@@ -28,7 +27,8 @@ class Attacker(private val targetPredicate: (Instruction) -> Boolean,
                     val solver = Solver()
                     println("solving expression: $expression")
                     solutions.add(solver.solve(expression))
-                } catch (ignored: IllegalStateException) {
+                } catch (e: IllegalStateException) {
+                } catch (e: UnsupportedOperationException) {
                 }
             }
         }

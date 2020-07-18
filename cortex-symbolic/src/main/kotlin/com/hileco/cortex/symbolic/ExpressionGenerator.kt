@@ -110,9 +110,9 @@ class ExpressionGenerator {
                 val input = pop()
                 stack.push(expressionOptimizer.optimize(Hash(input, instruction.method)))
             }
-            is BITWISE_XOR -> throw UnsupportedOperationException()
-            is BITWISE_NOT -> throw UnsupportedOperationException()
-            is SAVE -> throw UnsupportedOperationException()
+            is BITWISE_XOR -> throw UnsupportedOperationException("BITWISE_XOR is not supported by ExpressionGenerator")
+            is BITWISE_NOT -> throw UnsupportedOperationException("BITWISE_NOT is not supported by ExpressionGenerator")
+            is SAVE -> throw UnsupportedOperationException("SAVE is not supported by ExpressionGenerator")
             is LOAD -> stack.push(Reference(instruction.programStoreZone, pop()))
             is PUSH -> {
                 val value = BigInteger(instruction.bytes)

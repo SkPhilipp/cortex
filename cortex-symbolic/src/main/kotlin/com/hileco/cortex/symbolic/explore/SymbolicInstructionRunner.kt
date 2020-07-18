@@ -79,10 +79,10 @@ class SymbolicInstructionRunner {
                         || inSize != Value(0)
                         || outOffset != Value(0)
                         || outSize != Value(0)) {
-                    throw java.lang.UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
+                    throw UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
                 }
                 if (recipientAddress !is Value) {
-                    throw java.lang.UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
+                    throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
                 }
                 val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()]
                         ?: throw ProgramException(ProgramException.Reason.CALL_RECIPIENT_MISSING)
@@ -140,7 +140,7 @@ class SymbolicInstructionRunner {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw java.lang.UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
+                        ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
                 val address = addressExpression.constant.toBigInteger()
                 val storage: VmMap<BigInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
@@ -155,7 +155,7 @@ class SymbolicInstructionRunner {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw java.lang.UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
+                        ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
                 val storage: VmMap<BigInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
@@ -172,7 +172,7 @@ class SymbolicInstructionRunner {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw java.lang.UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
+                        ?: throw UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
                 val nextInstructionPosition = addressExpression.constant.toInt()
                 if (nextInstructionPosition < 0) {
                     throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
@@ -191,9 +191,9 @@ class SymbolicInstructionRunner {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw java.lang.UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
+                        ?: throw UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
                 val conditionExpression = programContext.stack.pop() as? Value
-                        ?: throw java.lang.UnsupportedOperationException("Jumps using non-concrete conditions should not be performed via this method")
+                        ?: throw UnsupportedOperationException("Jumps using non-concrete conditions should not be performed via this method")
                 if (conditionExpression.constant > 0) {
                     val nextInstructionPosition = addressExpression.constant.toInt()
                     if (nextInstructionPosition < 0) {

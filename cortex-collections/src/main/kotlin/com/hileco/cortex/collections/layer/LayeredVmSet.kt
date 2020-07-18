@@ -36,7 +36,7 @@ class LayeredVmSet<T> private constructor(private var edge: SetLayer<T>) : VmSet
     }
 
     override fun size(): Int {
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("size is not supported by LayeredVmSet")
     }
 
     override fun copy(): LayeredVmSet<T> {
