@@ -25,7 +25,7 @@ class EthereumBarriersTest {
             val visualGraph = VisualGraph()
             visualGraph.map(graph)
             Documentation.of(EthereumBarriers::class.java.simpleName)
-                    .headingParagraph("Ethereum Barrier ${ethereumBarrier.id} Visualized (Basic)")
+                    .headingParagraph("Barrier ${ethereumBarrier.id} Visualized")
                     .image(visualGraph::render)
         }
     }
@@ -34,7 +34,7 @@ class EthereumBarriersTest {
     fun barriersBytecode() {
         ethereumBarriers.all().forEach { ethereumBarrier ->
             Documentation.of(EthereumBarriers::class.java.simpleName)
-                    .headingParagraph("Ethereum Barrier ${ethereumBarrier.id} Bytecode")
+                    .headingParagraph("Barrier ${ethereumBarrier.id} Bytecode")
                     .source(ethereumBarrier.contractCode)
         }
     }
@@ -43,21 +43,12 @@ class EthereumBarriersTest {
     fun barriersCortexInstructions() {
         ethereumBarriers.all().forEach { ethereumBarrier ->
             Documentation.of(EthereumBarriers::class.java.simpleName)
-                    .headingParagraph("Ethereum Barrier ${ethereumBarrier.id} Cortex Instructions")
+                    .headingParagraph("Barrier ${ethereumBarrier.id} Instructions")
                     .source(ethereumBarrier.cortexInstructions)
         }
     }
 
-    @Test
-    fun barriersEthereumInstructions() {
-        ethereumBarriers.all().forEach { ethereumBarrier ->
-            Documentation.of(EthereumBarriers::class.java.simpleName)
-                    .headingParagraph("Ethereum Barrier ${ethereumBarrier.id} Ethereum Instructions")
-                    .source(ethereumBarrier.ethereumInstructions)
-        }
-    }
-
-    // TODO: Reslve & unignore transpiled barrier attack
+    // TODO: Resolve & un-ignore transpiled barrier attack
     @Ignore("Multi-width instructions on basic graph appear to have triggered something in Attacker")
     @Test
     fun barriersAttack() {
@@ -67,7 +58,7 @@ class EthereumBarriersTest {
             try {
                 val solutions = attacker.solve(graph)
                 Documentation.of(EthereumBarriers::class.java.simpleName)
-                        .headingParagraph("Ethereum Barrier ${ethereumBarrier.id} Attacker Solve")
+                        .headingParagraph("Barrier ${ethereumBarrier.id} Attacker Solve")
                         .source(solutions)
             } catch (e: UnsupportedOperationException) {
                 Documentation.of(EthereumBarriers::class.java.simpleName)
@@ -88,7 +79,7 @@ class EthereumBarriersTest {
             symbolicProgramExplorer.explore(virtualMachine)
             val solution = strategy.solve()
             Documentation.of(EthereumBarriers::class.java.simpleName)
-                    .headingParagraph("Ethereum Barrier ${ethereumBarrier.id} Symbolic Program Explore")
+                    .headingParagraph("Barrier ${ethereumBarrier.id} Symbolic Explore")
                     .source(solution)
         }
     }
