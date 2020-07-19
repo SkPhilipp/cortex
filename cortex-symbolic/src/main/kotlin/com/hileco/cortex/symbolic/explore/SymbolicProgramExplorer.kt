@@ -39,7 +39,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
         try {
             if (virtualMachine.programs.isNotEmpty()) {
                 var programContext: SymbolicProgramContext = virtualMachine.programs.last()
-                while (programContext.instructionPosition < programContext.program.instructions.size) {
+                while (programContext.instructionPosition < programContext.program.instructionsLastPosition) {
                     val currentInstructionPosition = programContext.instructionPosition
                     val instruction = programContext.program.instructions[currentInstructionPosition]
                     if (instruction is JUMP_IF
@@ -58,7 +58,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                     }
                     programContext = virtualMachine.programs.last()
                     if (programContext.instructionPosition == currentInstructionPosition) {
-                        programContext.instructionPosition = currentInstructionPosition + 1
+                        programContext.instructionPosition = currentInstructionPosition + instruction.width
                     }
                     programContext.instructionsExecuted++
                     virtualMachine.instructionsExecuted++
@@ -69,7 +69,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                         throw ProgramException(REACHED_LIMIT_INSTRUCTIONS_ON_VIRTUAL_MACHINE)
                     }
                 }
-                if (programContext.instructionPosition == programContext.program.instructions.size) {
+                if (programContext.instructionPosition == programContext.program.instructionsLastPosition) {
                     virtualMachine.exited = true
                     strategy.handleComplete(virtualMachine)
                 }
@@ -98,15 +98,14 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
             if (address !is Expression.Value) {
                 throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
             }
-            if (address.constant < 0) {
-                throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+
+            val nextInstructionPosition = address.constant.toInt()
+            val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+            if (nextInstruction.instruction is JUMP_DESTINATION) {
+                programContext.instructionPosition = nextInstructionPosition
+            } else {
+                throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
             }
-            val instructions = programContext.program.instructions
-            if (address.constant >= instructions.size) {
-                throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-            }
-            instructions[address.constant.toInt()] as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
-            programContext.instructionPosition = address.constant.toInt()
         } else {
             programContext.instructionPosition++
         }

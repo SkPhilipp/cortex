@@ -6,15 +6,12 @@ import com.hileco.cortex.symbolic.explore.strategies.PathTreeExploreStrategy
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import org.junit.Ignore
 import org.junit.Test
 
 class EthereumBarriersExploreTest {
 
     private val ethereumBarriers = EthereumBarriers()
 
-    // TODO: Resolve & un-ignore transpiled barrier explore
-    @Ignore("Multi-width instructions on basic graph appear to have triggered something in Explore")
     @Test
     fun barriersExplore() {
         ethereumBarriers.all().forEach { ethereumBarrier ->

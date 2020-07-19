@@ -6,11 +6,15 @@ import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.vm.PositionedInstruction
 import com.hileco.cortex.vm.instructions.Instruction
 import java.math.BigInteger
 
 class SymbolicProgram : VmComponent<SymbolicProgram> {
     val instructions: List<Instruction>
+    val instructionsRelative: List<PositionedInstruction>
+    val instructionsAbsolute: Map<Int, PositionedInstruction>
+    val instructionsLastPosition: Int
     val address: BigInteger
     val storage: VmMap<BigInteger, Expression>
     val transfers: VmStack<Pair<Expression, Expression>>
@@ -18,16 +22,34 @@ class SymbolicProgram : VmComponent<SymbolicProgram> {
     constructor(instructions: List<Instruction>,
                 address: BigInteger = BigInteger.ZERO) {
         this.instructions = instructions
+        var absolutePosition = 0
+        var relativePosition = 0
+        this.instructionsRelative = this.instructions.map { instruction: Instruction ->
+            val position = PositionedInstruction(absolutePosition, relativePosition, instruction)
+            absolutePosition += instruction.width
+            relativePosition++
+            position
+        }.toList()
+        this.instructionsAbsolute = this.instructionsRelative.map {
+            it.absolutePosition to it
+        }.toMap()
+        this.instructionsLastPosition = absolutePosition
         this.address = address
         this.storage = LayeredVmMap()
         this.transfers = LayeredVmStack()
     }
 
     private constructor(instructions: List<Instruction>,
+                        instructionsRelative: List<PositionedInstruction>,
+                        instructionsAbsolute: Map<Int, PositionedInstruction>,
+                        instructionsLastPosition: Int,
                         address: BigInteger,
                         storage: VmMap<BigInteger, Expression>,
                         transfers: VmStack<Pair<Expression, Expression>>) {
         this.instructions = instructions
+        this.instructionsRelative = instructionsRelative
+        this.instructionsAbsolute = instructionsAbsolute
+        this.instructionsLastPosition = instructionsLastPosition
         this.address = address
         this.storage = storage
         this.transfers = transfers
@@ -39,6 +61,6 @@ class SymbolicProgram : VmComponent<SymbolicProgram> {
     }
 
     override fun copy(): SymbolicProgram {
-        return SymbolicProgram(instructions, address, storage.copy(), transfers.copy())
+        return SymbolicProgram(instructions, instructionsRelative, instructionsAbsolute, instructionsLastPosition, address, storage.copy(), transfers.copy())
     }
 }

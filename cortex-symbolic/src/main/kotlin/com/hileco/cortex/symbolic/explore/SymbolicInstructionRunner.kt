@@ -7,8 +7,7 @@ import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.ProgramException
-import com.hileco.cortex.vm.ProgramException.Reason.STACK_OVERFLOW
-import com.hileco.cortex.vm.ProgramException.Reason.STACK_UNDERFLOW
+import com.hileco.cortex.vm.ProgramException.Reason.*
 import com.hileco.cortex.vm.ProgramRunner.Companion.STACK_LIMIT
 import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.instructions.Instruction
@@ -174,15 +173,12 @@ class SymbolicInstructionRunner {
                 val addressExpression = programContext.stack.pop() as? Value
                         ?: throw UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
                 val nextInstructionPosition = addressExpression.constant.toInt()
-                if (nextInstructionPosition < 0) {
-                    throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
+                val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                if (nextInstruction.instruction is JUMP_DESTINATION) {
+                    programContext.instructionPosition = nextInstructionPosition
+                } else {
+                    throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
                 }
-                val instructions = programContext.program.instructions
-                if (nextInstructionPosition >= instructions.size) {
-                    throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
-                }
-                instructions[nextInstructionPosition] as? JUMP_DESTINATION ?: throw ProgramException(ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION)
-                programContext.instructionPosition = nextInstructionPosition
             }
             is JUMP_DESTINATION -> {
             }
@@ -196,15 +192,12 @@ class SymbolicInstructionRunner {
                         ?: throw UnsupportedOperationException("Jumps using non-concrete conditions should not be performed via this method")
                 if (conditionExpression.constant > 0) {
                     val nextInstructionPosition = addressExpression.constant.toInt()
-                    if (nextInstructionPosition < 0) {
-                        throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
+                    val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                    if (nextInstruction.instruction is JUMP_DESTINATION) {
+                        programContext.instructionPosition = nextInstructionPosition
+                    } else {
+                        throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
                     }
-                    val instructions = programContext.program.instructions
-                    if (nextInstructionPosition >= instructions.size) {
-                        throw ProgramException(ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS)
-                    }
-                    instructions[nextInstructionPosition] as? JUMP_DESTINATION ?: throw ProgramException(ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION)
-                    programContext.instructionPosition = nextInstructionPosition
                 }
             }
             is ADD -> {

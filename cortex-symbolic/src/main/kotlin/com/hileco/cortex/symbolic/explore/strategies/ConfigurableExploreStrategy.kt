@@ -10,6 +10,22 @@ class ConfigurableExploreStrategy : ExploreStrategy() {
     private val handleDrops: MutableList<(SymbolicVirtualMachine) -> Unit> = ArrayList()
     private val handleCompletes: MutableList<(SymbolicVirtualMachine) -> Unit> = ArrayList()
 
+    fun addCheckDrops(item: (SymbolicVirtualMachine) -> Boolean) {
+        checkDrops.add(item)
+    }
+
+    fun checkStops(item: () -> Boolean) {
+        checkStops.add(item)
+    }
+
+    fun handleDrops(item: (SymbolicVirtualMachine) -> Unit) {
+        handleDrops.add(item)
+    }
+
+    fun handleCompletes(item: (SymbolicVirtualMachine) -> Unit) {
+        handleCompletes.add(item)
+    }
+
     override fun checkDrop(symbolicVirtualMachine: SymbolicVirtualMachine): Boolean {
         return checkDrops.any { it(symbolicVirtualMachine) }
     }
