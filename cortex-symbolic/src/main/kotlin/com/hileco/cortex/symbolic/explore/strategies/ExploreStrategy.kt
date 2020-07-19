@@ -2,6 +2,7 @@ package com.hileco.cortex.symbolic.explore.strategies
 
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
+import com.hileco.cortex.vm.instructions.Instruction
 
 abstract class ExploreStrategy {
     /**
@@ -29,6 +30,12 @@ abstract class ExploreStrategy {
      * To be invoked when a [SymbolicVirtualMachine] completes execution, halting further exploration.
      */
     abstract fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine)
+
+    /**
+     * To be invoked when a [SymbolicVirtualMachine] completes execution of an instruction.
+     */
+    open fun handleInstruction(symbolicVirtualMachine: SymbolicVirtualMachine, instruction: Instruction) {
+    }
 
     abstract fun solve(): Solution
 

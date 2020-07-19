@@ -67,28 +67,32 @@ class SymbolicInstructionRunner {
                 if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val gas = programContext.stack.pop()
+                programContext.stack.pop() // gas
                 val recipientAddress = programContext.stack.pop()
                 val valueTransferred = programContext.stack.pop()
                 val inOffset = programContext.stack.pop()
                 val inSize = programContext.stack.pop()
                 val outOffset = programContext.stack.pop()
                 val outSize = programContext.stack.pop()
-                if (inOffset != Value(0)
-                        || inSize != Value(0)
-                        || outOffset != Value(0)
-                        || outSize != Value(0)) {
-                    throw UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
+                // TODO: Support non-concrete memory transfer through CALL
+                // if (inOffset != Value(0)
+                //         || inSize != Value(0)
+                //         || outOffset != Value(0)
+                //         || outSize != Value(0)) {
+                //     throw UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
+                // }
+                if (recipientAddress is Value) {
+                    val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()]
+                            ?: throw ProgramException(CALL_RECIPIENT_MISSING)
+                    val sourceAddress = programContext.program.address
+                    recipient.transfers.push(Value(sourceAddress.toLong()) to valueTransferred)
+                    val newContext = SymbolicProgramContext(recipient)
+                    virtualMachine.programs.add(newContext)
+                } else {
+                    // TODO: Support non-concrete targets
+                    println("Would have transferred to: $recipientAddress")
+                    // throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
                 }
-                if (recipientAddress !is Value) {
-                    throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
-                }
-                val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()]
-                        ?: throw ProgramException(ProgramException.Reason.CALL_RECIPIENT_MISSING)
-                val sourceAddress = programContext.program.address
-                recipient.transfers.push(Value(sourceAddress.toLong()) to valueTransferred)
-                val newContext = SymbolicProgramContext(recipient)
-                virtualMachine.programs.add(newContext)
             }
             is EQUALS -> {
                 if (programContext.stack.size() < 2) {
@@ -170,9 +174,10 @@ class SymbolicInstructionRunner {
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
-                val nextInstructionPosition = addressExpression.constant.toInt()
+                val addressExpression = programContext.stack.pop()
+                val addressValue = addressExpression as? Value
+                        ?: throw UnsupportedOperationException("Jumps to non-concrete addresses such as $addressExpression are not supported for symbolic execution")
+                val nextInstructionPosition = addressValue.constant.toInt()
                 val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
                 if (nextInstruction.instruction is JUMP_DESTINATION) {
                     programContext.instructionPosition = nextInstructionPosition
@@ -186,12 +191,13 @@ class SymbolicInstructionRunner {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw UnsupportedOperationException("Jumps to non-concrete addresses are not supported for symbolic execution")
+                val addressExpression = programContext.stack.pop()
+                val addressValue = addressExpression as? Value
+                        ?: throw UnsupportedOperationException("Jumps to non-concrete addresses such as $addressExpression are not supported for symbolic execution")
                 val conditionExpression = programContext.stack.pop() as? Value
                         ?: throw UnsupportedOperationException("Jumps using non-concrete conditions should not be performed via this method")
                 if (conditionExpression.constant > 0) {
-                    val nextInstructionPosition = addressExpression.constant.toInt()
+                    val nextInstructionPosition = addressValue.constant.toInt()
                     val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
                     if (nextInstruction.instruction is JUMP_DESTINATION) {
                         programContext.instructionPosition = nextInstructionPosition

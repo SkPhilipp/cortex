@@ -45,7 +45,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                             ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
                     val instruction = positionedInstruction.instruction
                     if (instruction is JUMP_IF
-                            && programContext.stack.size() <= JUMP_IF.CONDITION.position + 1
+                            && programContext.stack.size() >= JUMP_IF.CONDITION.position + 1
                             && programContext.stack.peek(JUMP_IF.CONDITION.position) !is Expression.Value) {
                         val branchedVirtualMachine = virtualMachine.copy()
                         chooseJumpIf(branchedVirtualMachine, currentInstructionPosition, false)
@@ -53,6 +53,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                         break
                     }
                     symbolicInstructionRunner.execute(instruction, virtualMachine, programContext)
+                    strategy.handleInstruction(virtualMachine, instruction)
                     if (virtualMachine.programs.isEmpty()) {
                         virtualMachine.exited = true
                         strategy.handleComplete(virtualMachine)
@@ -83,6 +84,9 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
             virtualMachine.exited = true
             virtualMachine.exitedReason = e.reason
             strategy.handleComplete(virtualMachine)
+        } catch (e: Exception) {
+            System.err.println("Process erred: ${e.message}")
+            throw e
         } finally {
             tasks.decrementAndGet()
         }

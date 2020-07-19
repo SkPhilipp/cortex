@@ -6,7 +6,7 @@ import com.hileco.cortex.documentation.Documentation
 import org.junit.Ignore
 import org.junit.Test
 
-class EthereumOperationAttackTest {
+class EthereumBarrierAttackTest {
 
     private val ethereumBarriers = EthereumBarriers()
 

@@ -9,6 +9,7 @@ import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
 import java.math.BigInteger
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
@@ -18,8 +19,10 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     var instructionsExecuted: Int
     var exited: Boolean = false
     var exitedReason: ProgramException.Reason? = null
+    var id: Int
 
     constructor(vararg programContexts: SymbolicProgramContext, startTime: Long = System.currentTimeMillis()) {
+        id = nextId.getAndIncrement()
         programs = Stack()
         atlas = HashMap()
         path = LayeredVmStack()
@@ -36,6 +39,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
                         path: LayeredVmStack<SymbolicPathEntry>,
                         variables: VmMap<ExecutionVariable, Expression>,
                         instructionsExecuted: Int) {
+        this.id = nextId.getAndIncrement()
         this.programs = programs
         this.atlas = atlas
         this.path = path
@@ -62,5 +66,9 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         val branchPrograms = programs.map { program -> program.copy() }.toMutableList()
         val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.copy() }.toMutableMap()
         return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.copy(), variables.copy(), instructionsExecuted)
+    }
+
+    companion object {
+        private val nextId = AtomicInteger(0)
     }
 }
