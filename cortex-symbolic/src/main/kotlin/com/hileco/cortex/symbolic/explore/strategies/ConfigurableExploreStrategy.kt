@@ -1,7 +1,11 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
+import com.hileco.cortex.collections.layer.StackLayer
 import com.hileco.cortex.symbolic.Solution
+import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ConfigurableExploreStrategy : ExploreStrategy() {
 
@@ -14,17 +18,19 @@ class ConfigurableExploreStrategy : ExploreStrategy() {
         checkDrops.add(item)
     }
 
-    fun checkStops(item: () -> Boolean) {
+    fun addCheckStops(item: () -> Boolean) {
         checkStops.add(item)
     }
 
-    fun handleDrops(item: (SymbolicVirtualMachine) -> Unit) {
+    fun addHandleDrops(item: (SymbolicVirtualMachine) -> Unit) {
         handleDrops.add(item)
     }
 
-    fun handleCompletes(item: (SymbolicVirtualMachine) -> Unit) {
+    fun addHandleCompletes(item: (SymbolicVirtualMachine) -> Unit) {
         handleCompletes.add(item)
     }
+
+    private val paths = Collections.synchronizedList(arrayListOf<StackLayer<SymbolicPathEntry>>())
 
     override fun checkDrop(symbolicVirtualMachine: SymbolicVirtualMachine): Boolean {
         return checkDrops.any { it(symbolicVirtualMachine) }

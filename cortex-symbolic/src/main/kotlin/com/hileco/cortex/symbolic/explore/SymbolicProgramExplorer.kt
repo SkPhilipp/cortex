@@ -41,7 +41,9 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                 var programContext: SymbolicProgramContext = virtualMachine.programs.last()
                 while (programContext.instructionPosition < programContext.program.instructionsLastPosition) {
                     val currentInstructionPosition = programContext.instructionPosition
-                    val instruction = programContext.program.instructions[currentInstructionPosition]
+                    val positionedInstruction = programContext.program.instructionsAbsolute[currentInstructionPosition]
+                            ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                    val instruction = positionedInstruction.instruction
                     if (instruction is JUMP_IF
                             && programContext.stack.size() <= JUMP_IF.CONDITION.position + 1
                             && programContext.stack.peek(JUMP_IF.CONDITION.position) !is Expression.Value) {
