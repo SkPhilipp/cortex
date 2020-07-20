@@ -1,0 +1,70 @@
+1)
+
+
+- Jumps to non-concrete (-32 >> CALL_DATA[0])
+    an example of this can be found in transpiled barrier 00
+    the program starts with a jump table as such;
+        13: PUSH 0 (width=2)
+        15: LOAD CALL_DATA
+        16: PUSH -32 (width=2)
+        18: SHIFT_RIGHT
+        19: DUPLICATE 0
+        20: PUSH -1173636544 (width=5)
+        25: EQUALS
+        26: PUSH 46 (width=3)
+        29: JUMP_IF
+        30: DUPLICATE 0
+        31: PUSH -798515916 (width=5)
+        36: EQUALS
+        37: PUSH 190 (width=3)
+        40: JUMP_IF
+        ...
+        45: HALT REVERT
+    within this jump table (-32 >> CALL_DATA[0]) must match either -1173636544 or -798515916
+    when it does not match either, the program ends in HALT REVERT. this means that at any point
+    further on in the program the outcome of (-32 >> CALL_DATA[0]) is already a concrete value,
+    by knowing the path we can infer that it is either -1173636544 when containing jump to 47
+    or alternatively -798515916 when containing jump to 190. this means that the jump to a non-concrete
+    value could have its expression more intelligently inferred as being either of the two values.
+    this would apply to every other inferred expression as well.
+
+    potentially a kind of 'inference table' could be set up, where any time EQUALS is performed on
+    an expression, the EQUALS is required ("pathed") to be true, and one of the sides of the EQUALS
+    is a concrete value then we know that the other side will always be a specific concrete value,
+    whether that is possible through solving or not, does not even matter at that point.
+- Transfer to: (-1 && (-1 && CALL_DATA[4]))
+    -> also that should have been optimized to true or false
+    -> it was that bitwise AND ...?
+    -> at which point bitwise and -1 is probably 0xffffffff
+    -> maybe its some trick to change byte size?
+- BigInteger out of long range
+
+
+2)
+
+I would like a user interface for symbolic explores or attacks,
+that supports the following use cases:
+- Navigating the virtual machines tree structure
+- Navigating a virtual machines instance's programs
+- Navigating a virtual machines instance's program's instructions
+- Navigating a virtual machines instance's program's stack
+- Navigating a virtual machines instance's program's memory
+- Navigating a virtual machines instance's program's disk
+- Navigating a virtual machines instance's program's call data
+- Navigating a virtual machines instance's program's transfers
+- Seeing from which instruction an expression came (and all its sub-expressions)
+- Seeing the un-optimized version of an expression
+
+For visualization of SVM trees (and their contents' trees), paths, programs, jumps, heatmaps:
+
+    https://observablehq.com/@d3/streamgraph-transitions
+    https://observablehq.com/@d3/zoomable-treemap
+    https://observablehq.com/@d3/zoomable-circle-packing?collection=@d3/d3-hierarchy
+    https://observablehq.com/@d3/circle-packing-monochrome?collection=@d3/d3-hierarchy
+    https://observablehq.com/@d3/hierarchical-edge-bundling?collection=@d3/d3-hierarchy
+    https://observablehq.com/@d3/hierarchical-edge-bundling/2?collection=@d3/d3-hierarchy
+    https://observablehq.com/@d3/radial-tidy-tree?collection=@d3/d3-hierarchy
+    https://observablehq.com/@d3/d3-bin-time-thresholds?collection=@d3/d3-array
+    https://observablehq.com/@d3/working-with-color?collection=@d3/d3-color
+    https://observablehq.com/@d3/hexbin?collection=@d3/d3-hexbin
+    https://observablehq.com/@d3/random-tree?collection=@d3/d3-hierarchy SVMs as they run
