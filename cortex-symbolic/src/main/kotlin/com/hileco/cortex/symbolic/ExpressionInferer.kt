@@ -1,53 +1,101 @@
 package com.hileco.cortex.symbolic
 
+import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.symbolic.expressions.Expression.*
+
+
 class ExpressionInferer {
 
-    // with an expression like..
-    // CALL_DATA[0] == 1234
+    /**
+     * Constructs a set of all [Expression.Reference] contained within the given expression,
+     * whose address is a [Expression.Value].
+     */
+    private fun directReferences(expression: Expression): Set<Expression> {
+        if (expression is Reference && expression.address is Value) {
+            return setOf(expression)
+        }
+        return expression.subexpressions().flatMap { directReferences(it) }.toSet()
+    }
 
-    // we can infer
-    // CALL_DATA[0] == 1234
-    // CALL_DATA[0] = 1234
+    /**
+     * Locates potential inference subexpressions from another expression.
+     *
+     * These are expressions from which we can infer that a variable is exactly one value.
+     * For example from a constraint such as `1234 == CALL_DATA[0] && CALL_DATA[1] != 12345`
+     * it can be inferred that `CALL_DATA[0]` is `1234`.
+     */
+    fun locatePotentialInferenceExpressions(constraint: Expression): List<Equals> {
+        if (constraint is And) {
+            return constraint.inputs.flatMap { locatePotentialInferenceExpressions(it) }.toList()
+        }
+        if (constraint is Equals) {
+            val directReferencesLeft = directReferences(constraint.left)
+            val directReferencesRight = directReferences(constraint.right)
+            if (directReferencesLeft.size + directReferencesRight.size == 1) {
+                return listOf(constraint)
+            }
+        }
+        return listOf()
+    }
 
-    // with an expression like..
-    // CALL_DATA[0] * 2 == 1234
+    /**
+     * Attempts to rearrange the subexpressions of the given [equals] as such that in the resulting expression the left side of the equals contains only a
+     * reference.
+     */
+    private fun rearrangeEqualsExpression(equals: Equals): Equals {
 
-    // we could infer
-    // CALL_DATA[0] * 2 == 1234
-    // CALL_DATA[0] == 1234 / 2
-    // CALL_DATA[0] = 617
+        if (equals.left is Add && directReferences(equals.left.right).isEmpty()) {
+            // A + B == C --> A == C - B
+            return rearrangeEqualsExpression(Equals(equals.left.left, Subtract(equals.right, equals.left.right)))
+        }
+        if (equals.left is Add && directReferences(equals.left.left).isEmpty()) {
+            // A + B == C --> B == C - A
+            return rearrangeEqualsExpression(Equals(equals.left.right, Subtract(equals.right, equals.left.left)))
+        }
 
-    // the flow would be as such
+        if (equals.left is Subtract && directReferences(equals.left.right).isEmpty()) {
+            // A - B == C --> A == C + B
+            return rearrangeEqualsExpression(Equals(equals.left.left, Add(equals.right, equals.left.right)))
+        }
+        if (equals.left is Subtract && directReferences(equals.left.left).isEmpty()) {
+            // A - B == C --> B == A - C
+            return rearrangeEqualsExpression(Equals(equals.left.right, Subtract(equals.left.left, equals.right)))
+        }
 
-    // 0) the expressions are always pre-optimized
-    // 1) find whether the expression contains a subexpression that allows us to infer a value
-    //    examples:
-    //        CALL_DATA[0] == 1234 && CALL_DATA[1] != 12345
-    //        (32 >> CALL_DATA[0]) == 1234 && CALL_DATA[1] != 12345
-    //    counterexamples:
-    //        CALL_DATA[0] == 1234 || CALL_DATA[0] != 12345
-    //      > CALL_DATA[0] == 1234 is such a subexpression however it is part of || meaning nothing can be inferred
-    //      !(CALL_DATA[0] == 1234)
-    //      > CALL_DATA[0] == 1234 is such a subexpression however it is part of ! meaning nothing can be inferred
-    //    we can find such expressions by looking for == expressions where both sides reference exactly 1 variable
-    //    and they are not part of logical not or logical or
+        if (equals.left is Multiply && directReferences(equals.left.right).isEmpty()) {
+            // A * B == C --> A == C / B
+            return rearrangeEqualsExpression(Equals(equals.left.left, Divide(equals.right, equals.left.right)))
+        }
+        if (equals.left is Multiply && directReferences(equals.left.left).isEmpty()) {
+            // A * B == C --> B == C / A
+            return rearrangeEqualsExpression(Equals(equals.left.right, Divide(equals.right, equals.left.left)))
+        }
 
-    // 2) once such an inference subexpression has been identified
-    //    we can then rearrange the subexpression so that only the variable is on one side, for simplicity the variable is moved left
-    //    example:
-    //    total expression:           1234 == (5 + CALL_DATA[0]) && CALL_DATA[1] != 12345
-    //    inference subexpression:    1234 == (5 + CALL_DATA[0])
-    //    '' repositioned:            (5 + CALL_DATA[0]) == 1234
-    //
-    //    then, we can look at whether the expression allows to be rearranged as such that we end with `VARIABLE == expression`
-    //    at this point we can choose whether or not to ignore changes caused by expression rearranging, as certain nuances such as
-    //    integer overflow would cause an expression such as `(CALL_DATA[0] + 1) * 100 == 100` to behave differently from `CALL_DATA[0] == (100 / 100) - 1`
-    //    '' repositioned:            (5 + CALL_DATA[0]) == 1234
-    //    '' rearranged:              CALL_DATA[0] == (1234 - 5)
-    //    once the expression on the right contains only subexpressions referencing values, it can simply be optimized to one value expression
-    //    '' rearranged:              CALL_DATA[0] == (1234 - 5)
-    //    '' optimized:               CALL_DATA[0] == 1229
-    //    if optimization to a single value was successful, we now have an inference rule where the variable on the left can be set to the value on the right
-    //    this inference could be stored on a symbolic virtual machine, and its contents can be reevaluated based on the newly known inference
+        if (equals.left is Divide && directReferences(equals.left.right).isEmpty()) {
+            // A / B == C --> A == C * B
+            return rearrangeEqualsExpression(Equals(equals.left.left, Multiply(equals.right, equals.left.right)))
+        }
+        if (equals.left is Divide && directReferences(equals.left.left).isEmpty()) {
+            // A / B == C --> B == A / C
+            return rearrangeEqualsExpression(Equals(equals.left.right, Divide(equals.left.left, equals.right)))
+        }
+
+        return equals
+    }
+
+    fun rearrangePotentialInferenceExpression(expression: Equals): Equals {
+        val directReferencesLeft = directReferences(expression.left)
+        val directReferencesRight = directReferences(expression.right)
+        val leftSide = directReferencesRight.isEmpty() && directReferencesLeft.size == 1
+        val equals = if (leftSide) Equals(expression.left, expression.right) else Equals(expression.right, expression.left)
+        return rearrangeEqualsExpression(equals)
+    }
+
+    // concept for arrays:
+    // A[B[0]] == 1
+    // rearrange and infer:
+    // B[0] == 1 in A[]
+    // so you could say what is 1 in A[]
+    // then you have a value for B[0]
 
 }

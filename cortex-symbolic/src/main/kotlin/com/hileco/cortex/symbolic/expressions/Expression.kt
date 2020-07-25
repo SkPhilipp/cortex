@@ -6,16 +6,22 @@ import com.microsoft.z3.*
 interface Expression {
     fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr
 
+    fun subexpressions(): List<Expression>
+
     data class Reference(val type: ProgramStoreZone,
                          val address: Expression) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val reference = referenceMapping.referencesForward.computeIfAbsent(this@Reference) { unmappedReference ->
-                val key = Integer.toString(referenceMapping.referencesForward.size)
+                val key = referenceMapping.referencesForward.size.toString()
                 referenceMapping.referencesBackward[key] = unmappedReference
                 key
             }
             val referenceSymbol = context.mkSymbol(reference)
             return context.mkIntConst(referenceSymbol)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(address)
         }
 
         override fun toString(): String {
@@ -28,6 +34,10 @@ interface Expression {
             return context.mkInt(constant)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf()
+        }
+
         override fun toString(): String {
             return constant.toString()
         }
@@ -36,6 +46,10 @@ interface Expression {
     data class Stack(val address: Int = 0) : Expression {
         override fun toString(): String {
             return "STACK[$address]"
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf()
         }
 
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
@@ -49,6 +63,10 @@ interface Expression {
             return context.mkNot(inputExpr as BoolExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(input)
+        }
+
         override fun toString(): String {
             return "!($input)"
         }
@@ -57,6 +75,10 @@ interface Expression {
     data class And(val inputs: List<Expression>) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkAnd(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return inputs
         }
 
         override fun toString(): String {
@@ -69,6 +91,10 @@ interface Expression {
             return context.mkOr(*inputs.map { it.asZ3Expr(context, referenceMapping) as BoolExpr }.toTypedArray())
         }
 
+        override fun subexpressions(): List<Expression> {
+            return inputs
+        }
+
         override fun toString(): String {
             return inputs.joinToString(separator = " || ", prefix = "(", postfix = ")") { "$it" }
         }
@@ -79,6 +105,10 @@ interface Expression {
             return context.mkTrue()
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf()
+        }
+
         override fun toString(): String {
             return "TRUE"
         }
@@ -87,6 +117,10 @@ interface Expression {
     object False : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             return context.mkFalse()
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf()
         }
 
         override fun toString(): String {
@@ -101,6 +135,10 @@ interface Expression {
             return context.mkAdd(leftExpr as ArithExpr, rightExpr as ArithExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
+        }
+
         override fun toString(): String {
             return "($left + $right)"
         }
@@ -111,6 +149,10 @@ interface Expression {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
             return context.mkSub(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
         }
 
         override fun toString(): String {
@@ -125,6 +167,10 @@ interface Expression {
             return context.mkMul(leftExpr as ArithExpr, rightExpr as ArithExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
+        }
+
         override fun toString(): String {
             return "($left * $right)"
         }
@@ -135,6 +181,10 @@ interface Expression {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
             return context.mkDiv(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
         }
 
         override fun toString(): String {
@@ -149,6 +199,10 @@ interface Expression {
             return context.mkLt(leftExpr as ArithExpr, rightExpr as ArithExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
+        }
+
         override fun toString(): String {
             return "($left < $right)"
         }
@@ -159,6 +213,10 @@ interface Expression {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
             return context.mkGt(leftExpr as ArithExpr, rightExpr as ArithExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
         }
 
         override fun toString(): String {
@@ -173,6 +231,10 @@ interface Expression {
             return context.mkEq(leftExpr, rightExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
+        }
+
         override fun toString(): String {
             return "($left == $right)"
         }
@@ -183,6 +245,10 @@ interface Expression {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
             return context.mkOr(leftExpr as BoolExpr, rightExpr as BoolExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
         }
 
         override fun toString(): String {
@@ -197,6 +263,10 @@ interface Expression {
             return context.mkAnd(leftExpr as BoolExpr, rightExpr as BoolExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
+        }
+
         override fun toString(): String {
             return "($left && $right)"
         }
@@ -207,6 +277,10 @@ interface Expression {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
             return context.mkBVASHR(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
         }
 
         override fun toString(): String {
@@ -221,6 +295,10 @@ interface Expression {
             return context.mkMod(leftExpr as IntExpr, rightExpr as IntExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
+        }
+
         override fun toString(): String {
             return "($left % $right)"
         }
@@ -231,6 +309,10 @@ interface Expression {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
             return context.mkPower(leftExpr as IntExpr, rightExpr as IntExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(left, right)
         }
 
         override fun toString(): String {
@@ -248,6 +330,10 @@ interface Expression {
             }
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(input)
+        }
+
         override fun toString(): String {
             return "0 == $input"
         }
@@ -263,13 +349,17 @@ interface Expression {
             return context.mkApp(hashFunction, inputExpr)
         }
 
+        override fun subexpressions(): List<Expression> {
+            return listOf(input)
+        }
+
         override fun toString(): String {
             return "HASH_$method($input)"
         }
     }
 
     companion object {
-        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Expression.Value && it.constant >= 0) }
+        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Value && it.constant >= 0) }
         private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(0) }
         fun constructAnd(inputs: List<Expression>): Expression {
             val distinctInputs = inputs.distinct().filterNot(IS_EQUIVALENT_TRUE)
