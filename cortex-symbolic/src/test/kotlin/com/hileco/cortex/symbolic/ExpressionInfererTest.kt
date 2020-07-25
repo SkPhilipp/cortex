@@ -11,7 +11,7 @@ class ExpressionInfererTest {
     private val expressionInferer = ExpressionInferer()
 
     @Test
-    fun testPotentialInference() {
+    fun testLocatePotentialInferenceExpressions() {
         val expectedInferenceExpressions = listOf(
                 Equals(Reference(CALL_DATA, Value(0L)), Value(200L)),
                 Equals(Value(100L), Reference(MEMORY, Value(1L))),
@@ -32,90 +32,113 @@ class ExpressionInfererTest {
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionAddLeft() {
+    fun testSimplifyPotentialInferenceExpressionAddLeft() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Add(reference, Value(500))
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Subtract(Value(1000), Value(500)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionAddRight() {
+    fun testSimplifyPotentialInferenceExpressionAddRight() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Add(Value(500), reference)
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Subtract(Value(1000), Value(500)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionSubtractLeft() {
+    fun testSimplifyPotentialInferenceExpressionSubtractLeft() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Subtract(reference, Value(500))
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Add(Value(1000), Value(500)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionSubtractRight() {
+    fun testSimplifyPotentialInferenceExpressionSubtractRight() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Subtract(Value(500), reference)
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Subtract(Value(500), Value(1000)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionMultiplyLeft() {
+    fun testSimplifyPotentialInferenceExpressionMultiplyLeft() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Multiply(reference, Value(500))
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Divide(Value(1000), Value(500)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionMultiplyRight() {
+    fun testSimplifyPotentialInferenceExpressionMultiplyRight() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Multiply(Value(500), reference)
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Divide(Value(1000), Value(500)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionDivideLeft() {
+    fun testSimplifyPotentialInferenceExpressionDivideLeft() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Divide(reference, Value(500))
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Multiply(Value(1000), Value(500)), result.right)
     }
 
     @Test
-    fun testRearrangePotentialInferenceExpressionDivideRight() {
+    fun testSimplifyPotentialInferenceExpressionDivideRight() {
         val reference = Reference(CALL_DATA, Value(0))
         val left = Divide(Value(500), reference)
 
-        val result = expressionInferer.rearrangePotentialInferenceExpression(Equals(left, Value(1000)))
+        val result = expressionInferer.simplifyPotentialInferenceExpression(Equals(left, Value(1000)))
 
         Assert.assertEquals(reference, result.left)
         Assert.assertEquals(Divide(Value(500), Value(1000)), result.right)
+    }
+
+    @Test
+    fun testInfer() {
+        val expectedInferenceExpressions = listOf(
+                Equals(Reference(CALL_DATA, Value(1L)), Value(100L)),
+                Equals(Reference(CALL_DATA, Value(2L)), Add(Value(100L), Value(100L))),
+                Equals(Divide(Reference(CALL_DATA, Value(3L)), Value(3L)), Value(100L))
+        )
+        val additionalExpressions = listOf(
+                GreaterThan(Reference(CALL_DATA, Value(1L)), Value(400L)),
+                Equals(Reference(CALL_DATA, Value(1L)), Reference(CALL_DATA, Value(2L)))
+        )
+
+        val inferences = expressionInferer.infer(And(
+                expectedInferenceExpressions.union(additionalExpressions).toList()
+        ))
+
+        Assert.assertEquals(listOf(
+                Reference(CALL_DATA, Value(1L)) to Value(100L),
+                Reference(CALL_DATA, Value(2L)) to Value(200L),
+                Reference(CALL_DATA, Value(3L)) to Value(300L)
+        ), inferences)
     }
 }

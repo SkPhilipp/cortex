@@ -4,7 +4,7 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
 
 
-class ExpressionInferer {
+class ExpressionInferer(private val expressionOptimizer: ExpressionOptimizer = ExpressionOptimizer()) {
 
     /**
      * Constructs a set of all [Expression.Reference] contained within the given expression,
@@ -83,7 +83,11 @@ class ExpressionInferer {
         return equals
     }
 
-    fun rearrangePotentialInferenceExpression(expression: Equals): Equals {
+    /**
+     * Rearranged a potential [Equals] inference, moving the direct reference to the left side of the equals and passes it through further
+     * rearrangement using [rearrangeEqualsExpression], so that it can potentially result in a value inference.
+     */
+    fun simplifyPotentialInferenceExpression(expression: Equals): Equals {
         val directReferencesLeft = directReferences(expression.left)
         val directReferencesRight = directReferences(expression.right)
         val leftSide = directReferencesRight.isEmpty() && directReferencesLeft.size == 1
@@ -91,11 +95,18 @@ class ExpressionInferer {
         return rearrangeEqualsExpression(equals)
     }
 
-    // concept for arrays:
-    // A[B[0]] == 1
-    // rearrange and infer:
-    // B[0] == 1 in A[]
-    // so you could say what is 1 in A[]
-    // then you have a value for B[0]
-
+    /**
+     * Infers values for references using the given constraint.
+     *
+     * For example a simple constraint such as `10 == CALL_DATA[0] + 4` would result in the inference that `CALL_DATA[0]` is `6`.
+     *
+     * Note that there are inferences that can be made which will not be detected by this fairly rudimentary implementation.
+     */
+    fun infer(constraint: Expression): List<Pair<Reference, Value>> {
+        return locatePotentialInferenceExpressions(constraint).asSequence()
+                .map { simplifyPotentialInferenceExpression(it) }
+                .map { Equals(it.left, expressionOptimizer.optimize(it.right)) }
+                .mapNotNull { if (it.left is Reference && it.right is Value) it.left to it.right else null }
+                .toList()
+    }
 }
