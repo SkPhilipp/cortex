@@ -47,12 +47,16 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         this.instructionsExecuted = instructionsExecuted
     }
 
-    fun condition(): Expression {
+    fun conditions(): MutableList<Expression> {
         val expressions: MutableList<Expression> = arrayListOf()
         path.asSequence()
                 .map { if (it.taken) it.condition else Expression.Not(it.condition) }
                 .forEach { expression -> expressions.add(expression) }
-        return Expression.constructAnd(expressions)
+        return expressions
+    }
+
+    fun condition(): Expression {
+        return Expression.constructAnd(conditions())
     }
 
     override fun close() {

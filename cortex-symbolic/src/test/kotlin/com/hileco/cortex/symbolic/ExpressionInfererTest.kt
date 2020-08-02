@@ -136,9 +136,19 @@ class ExpressionInfererTest {
         ))
 
         Assert.assertEquals(listOf(
-                Reference(CALL_DATA, Value(1L)) to Value(100L),
-                Reference(CALL_DATA, Value(2L)) to Value(200L),
-                Reference(CALL_DATA, Value(3L)) to Value(300L)
+                Reference(CALL_DATA, Value(1L)) to Equals(Reference(CALL_DATA, Value(1L)), Value(100L)),
+                Reference(CALL_DATA, Value(2L)) to Equals(Reference(CALL_DATA, Value(2L)), Value(200L)),
+                Reference(CALL_DATA, Value(3L)) to Equals(Reference(CALL_DATA, Value(3L)), Value(300L))
         ), inferences)
+    }
+
+    @Test
+    fun testUnoptimizableInference() {
+        val right = ShiftRight(Value(-32), Reference(CALL_DATA, Value(0)))
+        val left = Value(-1173636544)
+
+        val result = expressionInferer.infer(Equals(left, right))
+
+        Assert.assertEquals(listOf(Reference(CALL_DATA, Value(0)) to Equals(right, left)), result)
     }
 }

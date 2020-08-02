@@ -10,7 +10,7 @@ class ExpressionInferer(private val expressionOptimizer: ExpressionOptimizer = E
      * Constructs a set of all [Expression.Reference] contained within the given expression,
      * whose address is a [Expression.Value].
      */
-    private fun directReferences(expression: Expression): Set<Expression> {
+    private fun directReferences(expression: Expression): Set<Reference> {
         if (expression is Reference && expression.address is Value) {
             return setOf(expression)
         }
@@ -102,11 +102,28 @@ class ExpressionInferer(private val expressionOptimizer: ExpressionOptimizer = E
      *
      * Note that there are inferences that can be made which will not be detected by this fairly rudimentary implementation.
      */
-    fun infer(constraint: Expression): List<Pair<Reference, Value>> {
+    fun infer(constraint: Expression): List<Pair<Reference, Equals>> {
         return locatePotentialInferenceExpressions(constraint).asSequence()
                 .map { simplifyPotentialInferenceExpression(it) }
                 .map { Equals(it.left, expressionOptimizer.optimize(it.right)) }
-                .mapNotNull { if (it.left is Reference && it.right is Value) it.left to it.right else null }
+                .mapNotNull { directReferences(it.left).first() to it }
                 .toList()
+    }
+
+    /**
+     * Attempts to resolve any [expression] to a [Value] if it can be resolved using one of the given [constraints].
+     */
+    fun resolve(expression: Expression, constraints: List<Expression>): Value? {
+        val directReferences = directReferences(expression)
+        if (directReferences.size != 1) {
+            return null
+        }
+        val reference = directReferences.first()
+        val inferences = constraints.flatMap { infer(it) }
+                .groupBy({ it.first }, { it.second })
+                .getOrDefault(reference, listOf())
+        return inferences.filter { it.left == expression }
+                .mapNotNull { if (it.right is Value) it.right else null }
+                .firstOrNull()
     }
 }
