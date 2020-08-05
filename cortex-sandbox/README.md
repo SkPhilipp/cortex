@@ -24,7 +24,7 @@ To interact with the chain enter the `docker-compose` miner service with `geth` 
 Scripts in the `./scripts` directory can be launched as such;
 
     docker-compose exec miner geth attach --preload '/scripts/barriers-bytecode.js' --exec 'loadScript("/scripts/barriers-deploy.js")'
-    docker-compose exec miner geth attach --preload '/scripts/barriers-bytecode.js' --exec 'loadScript("/scripts/barriers-navigate.js")' > barriers.json
+    docker-compose exec miner geth attach --preload '/scripts/barriers-bytecode.js' --exec 'loadScript("/scripts/navigate-contracts.js")' > barriers.json
 
 Note that barrier programs can be compiled with `solc`:
 
