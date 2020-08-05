@@ -1,0 +1,13 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Cortex Server
+:snippets: ../../../build/generated-snippets
+:nofooter:
+
+= Cortex Server
+
+Check it on port 8080.
