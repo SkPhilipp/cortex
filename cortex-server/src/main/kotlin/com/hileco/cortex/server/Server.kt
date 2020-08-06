@@ -1,12 +1,12 @@
 package com.hileco.cortex.server
 
+import com.hileco.cortex.server.uploads.mapped
 import com.mitchellbosecke.pebble.loader.ClasspathLoader
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
-import io.ktor.http.content.PartData
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.pebble.Pebble
@@ -41,15 +41,8 @@ fun Application.module() {
             call.respond(PebbleContent("explorer-upload.html", mapOf()))
         }
         post("/explorer/upload") {
-            val multipart = call.receiveMultipart()
-            var bytecode = ""
-            while (true) {
-                val part = multipart.readPart() ?: break
-                if (part is PartData.FormItem && part.name == "bytecode") {
-                    bytecode = part.value
-                }
-                part.dispose()
-            }
+            val multipart = call.receiveMultipart().mapped()
+            val bytecode = multipart["bytecode"] ?: throw IllegalArgumentException("Bytecode missing")
             bytecodes.add(bytecode)
             call.respondRedirect("/explorer/view/" + (bytecodes.size - 1))
         }
@@ -64,5 +57,5 @@ fun Application.module() {
 }
 
 fun main() {
-    embeddedServer(Netty, 8080, watchPaths = listOf(), module = Application::module).start()
+    embeddedServer(Netty, port = 8080, watchPaths = listOf(), module = Application::module).start()
 }

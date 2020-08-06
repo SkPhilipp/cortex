@@ -63,7 +63,7 @@ table.table-compact td {
     white-space: nowrap;
 }
 
-p {
+.white {
     color: rgb(255, 255, 255);
 }
 
