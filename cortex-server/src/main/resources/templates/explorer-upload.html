@@ -1,0 +1,15 @@
+{% extends "template-base.html" %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+	<div class="col-4">
+		<form action="/explorer/upload" method="post" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label for="bytecode" class="form-label">Bytecode</label>
+				<input type="text" class="form-control" name="bytecode" id="bytecode">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+</div>
+{% endblock %}
