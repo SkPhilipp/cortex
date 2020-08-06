@@ -5,22 +5,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/css/bootstrap.css" crossorigin="anonymous">
 	<link rel="stylesheet" href="/css/custom.css" crossorigin="anonymous">
-	<title>{% block title %}Cortex Symbolic Explorer{% endblock %}</title>
+	<title>{% block title %}Cortex Explorer{% endblock %}</title>
 </head>
 <body>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-	<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Symbolic Explorer</a>
+	<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/">Cortex Explorer</a>
 	<input class="form-control form-control-dark w-100" type="text" placeholder="Search">
 </nav>
 <div class="container-fluid preformat white">
-	<div class="row justify-content-md-center">
-		<div class="col-4">
-			<p>
-				<a href="/">Index</a>
-				<a href="/explorer/upload">Upload</a>
-			</p>
-		</div>
-	</div>
 	{% block content %}{% endblock %}
 </div>
 </body>

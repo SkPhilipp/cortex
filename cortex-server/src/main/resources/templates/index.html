@@ -1,5 +1,29 @@
 {% extends "template-base.html" %}
 
 {% block content %}
-index
+<div class="row justify-content-md-center">
+	<div class="col-4">
+		<pre style="width: 25em;">
+                         cortex      ,
+              ,-.       _,---._ __  / \
+             /  )    .-'       `./ /   \
+            (  (   ,'            `/    /|
+             \  `-"             \'\   / |
+              `.              ,  \ \ /  |
+               /`.          ,'-`----Y   |
+              (            ;        |   '
+              |  ,-.    ,-'         |  /
+              |  | (   |     eth    | /
+              )  |  \  `.___________|/
+		</pre>
+		<p>
+			<a href="/explorer/upload">Upload</a><br/>
+			<br/>
+			Entries:<br/>
+			{% for entry in bytecodes %}
+			<a href="/explorer/view/{{ loop.index }}">entry {{ loop.index }}</a><br/>
+			{% endfor %}
+		</p>
+	</div>
+</div>
 {% endblock %}
