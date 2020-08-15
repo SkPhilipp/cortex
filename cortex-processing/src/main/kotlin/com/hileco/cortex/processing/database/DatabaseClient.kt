@@ -57,9 +57,9 @@ class DatabaseClient {
     }
 
     companion object {
-        private const val USERNAME = "pepe"
-        private const val PASSWORD = "VZFtAMMIY7hKOfro"
-        private const val HOST = "cortex-000.zules.mongodb.net"
-        private const val DATABASE_NAME = "cortex"
+        private val USERNAME = System.getProperty("CORTEX_DB_USERNAME", "pepe")
+        private val PASSWORD = System.getProperty("CORTEX_DB_PASSWORD", "VZFtAMMIY7hKOfro")
+        private val HOST = System.getProperty("CORTEX_DB_HOST", "cortex-000.zules.mongodb.net")
+        private val DATABASE_NAME = System.getProperty("CORTEX_DB_NAME", "cortex")
     }
 }
