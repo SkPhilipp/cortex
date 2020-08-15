@@ -49,7 +49,14 @@ class DatabaseClient {
         blocks().createIndex(Document(mapOf(
                 "blockchainName" to 1,
                 "blockchainNetwork" to 1,
-                "number" to 1
+                "number" to 1,
+                "loaded" to 1
+        )))
+        programs().createIndex(Document(mapOf(
+                "location.blockchainName" to 1,
+                "location.blockchainNetwork" to 1,
+                "location.blockNumber" to 1,
+                "location.transactionHash" to 1
         )))
     }
 

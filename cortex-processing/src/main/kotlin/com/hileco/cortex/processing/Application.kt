@@ -17,12 +17,8 @@ fun main() {
             latestBlock = BigDecimal(0),
             processing = true
     ))
-    val blockLoaderProcess = BlockLoaderProcess()
-    blockLoaderProcess.startThread()
-    val programAnalysisProcess = ProgramAnalysisProcess()
-    programAnalysisProcess.startThread()
-    val programLoaderProcess = ProgramLoaderProcess()
-    programLoaderProcess.startThread()
-    val transactionSendProcess = TransactionSendProcess()
-    transactionSendProcess.startThread()
+    BlockLoaderProcess().startThread()
+    ProgramLoaderProcess().startThread()
+    ProgramAnalysisProcess().startThread()
+    TransactionSendProcess().startThread()
 }

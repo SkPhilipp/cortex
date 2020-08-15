@@ -18,6 +18,7 @@ data class BlockModel @BsonCreator constructor(
         @BsonProperty("blockchainName") val blockchainName: String,
         @BsonProperty("blockchainNetwork") val blockchainNetwork: String,
         @BsonProperty("number") val number: BigDecimal,
+        @BsonProperty("loaded") var loaded: Boolean,
         @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
 )
 

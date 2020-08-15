@@ -1,7 +1,37 @@
 package com.hileco.cortex.processing.processes
 
+import com.hileco.cortex.processing.database.ModelClient
+import com.hileco.cortex.processing.database.ProgramModel
+import com.hileco.cortex.processing.database.TransactionLocationModel
+import com.hileco.cortex.processing.geth.GethContractLoader
+import com.hileco.cortex.processing.histogram.ProgramHistrogramBuilder
+
 class ProgramLoaderProcess : BaseProcess() {
+    private val gethContractLoader = GethContractLoader()
+    private val programHistogramBuilder = ProgramHistrogramBuilder()
+    private val modelClient = ModelClient()
+
     override fun run() {
-        println("Would load in some programs using GethContractLoader & GethReader")
+        val networkModel = modelClient.networkProcessing() ?: return
+        val blockModel = modelClient.blockLeastRecentUnloaded(networkModel) ?: return
+        val contracts = gethContractLoader.load(networkModel, blockModel)
+        contracts.forEach { contract ->
+            modelClient.programEnsure(ProgramModel(
+                    location = TransactionLocationModel(
+                            blockchainName = networkModel.name,
+                            blockchainNetwork = networkModel.networkAddress,
+                            blockNumber = blockModel.number,
+                            transactionHash = contract.transactionHash,
+                            programAddress = contract.address
+                    ),
+                    bytecode = contract.bytecode,
+                    histogram = programHistogramBuilder.hisogram(contract.bytecode),
+                    disk = mapOf(),
+                    currency = contract.currency,
+                    analyses = listOf()
+            ))
+        }
+        blockModel.loaded = true
+        modelClient.blockUpdate(blockModel)
     }
 }

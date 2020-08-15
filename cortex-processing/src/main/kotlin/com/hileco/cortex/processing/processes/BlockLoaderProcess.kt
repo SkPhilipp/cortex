@@ -27,7 +27,8 @@ class BlockLoaderProcess : BaseProcess() {
         modelClient.blockEnsure(BlockModel(
                 blockchainName = networkModel.name,
                 blockchainNetwork = networkModel.network,
-                number = gethBlock.number
+                number = gethBlock.number,
+                loaded = false
         ))
     }
 

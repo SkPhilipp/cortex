@@ -49,7 +49,7 @@ class ModelClient {
                         "blockchainName" to model.name,
                         "blockchainNetwork" to model.network
                 )))
-                .sort(Document("number", 1))
+                .sort(Document("number", -1))
                 .limit(1)
                 .firstOrNull()
     }
@@ -64,6 +64,44 @@ class ModelClient {
                         "network" to model.network
                 )),
                 Document("\$set", Document("latestBlock", model.latestBlock))
+        )
+    }
+
+    fun blockLeastRecentUnloaded(model: NetworkModel): BlockModel? {
+        return databaseClient.blocks().find(
+                Document(mapOf(
+                        "blockchainName" to model.name,
+                        "blockchainNetwork" to model.network,
+                        "loaded" to false
+                )))
+                .sort(Document("number", 1))
+                .limit(1)
+                .firstOrNull()
+    }
+
+    fun programEnsure(model: ProgramModel) {
+        val existing = databaseClient.programs().find(Document(mapOf(
+                "location" to Document(mapOf(
+                        "blockchainName" to model.location.blockchainName,
+                        "blockchainNetwork" to model.location.blockchainNetwork,
+                        "blockNumber" to model.location.blockNumber,
+                        "transactionHash" to model.location.transactionHash
+                ))
+        )))
+        if (existing.any()) {
+            return
+        }
+        databaseClient.programs().insertOne(model)
+    }
+
+    fun blockUpdate(model: BlockModel) {
+        databaseClient.blocks().updateOne(
+                Document(mapOf(
+                        "blockchainName" to model.blockchainName,
+                        "blockchainNetwork" to model.blockchainNetwork,
+                        "number" to model.number
+                )),
+                Document("\$set", Document("loaded", model.loaded))
         )
     }
 
