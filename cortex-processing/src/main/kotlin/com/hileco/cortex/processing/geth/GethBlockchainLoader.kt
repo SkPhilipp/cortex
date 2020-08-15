@@ -6,7 +6,7 @@ class GethBlockchainLoader : GethLoader() {
     private val loadBlockchainScript by lazy { unpackage("geth-scripts/load-blockchain.js") }
 
     fun load(networkModel: NetworkModel): GethBlockchainState {
-        val result = executeGethScript(loadBlockchainScript, mapOf(
+        val result = executeGeth(loadBlockchainScript, mapOf(
                 "networkAddress" to networkModel.networkAddress
         ))
         return GethBlockchainState(

@@ -7,7 +7,7 @@ class GethContractLoader : GethLoader() {
     private val loadContractsScript by lazy { unpackage("geth-scripts/load-contracts.js") }
 
     fun load(networkModel: NetworkModel, blockModel: BlockModel): List<GethContract> {
-        val result = executeGethScript(loadContractsScript, mapOf(
+        val result = executeGeth(loadContractsScript, mapOf(
                 "networkAddress" to networkModel.networkAddress,
                 "block" to blockModel.number.toString()
         ))

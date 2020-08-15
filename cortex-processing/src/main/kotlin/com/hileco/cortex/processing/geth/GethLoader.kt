@@ -25,9 +25,12 @@ open class GethLoader {
         return objectMapper.readTree(taken)
     }
 
-    fun executeGethScript(script: Path, parameters: Map<String, String>): JsonNode {
-        // TODO: Pass in network model arguments
-        val command = listOf("docker-compose", "exec", "miner", "geth", "attach", "--exec", "'loadScript(\"$script\")")
+    /**
+     * Note that [script] and all keys and values of [parameterMap] become part of executable commands and should only contain safe values.
+     */
+    fun executeGeth(script: Path, parameterMap: Map<String, String>): JsonNode {
+        val parameters = objectMapper.writeValueAsString(parameterMap)
+        val command = listOf("docker-compose", "exec", "miner", "geth", "attach", "--exec", "loadScript(\"$script\");run($parameters)")
         val processResult = processRunner.execute(command)
         if (processResult.exitCode > 0 && processResult.errors.isNotEmpty()) {
             val commandText = command.joinToString(separator = " ")
