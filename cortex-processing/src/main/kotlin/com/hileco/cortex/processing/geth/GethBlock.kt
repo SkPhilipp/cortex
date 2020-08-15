@@ -1,5 +1,5 @@
 package com.hileco.cortex.processing.geth
 
-class GethBlockLoader {
-
-}
+class GethBlock(
+        val number: Int
+)
