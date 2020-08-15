@@ -63,6 +63,9 @@ class DatabaseClient {
                 "location.blockNumber" to 1,
                 "analyses" to 1
         )))
+        programs().createIndex(Document(mapOf(
+                "histogram" to 1
+        )))
     }
 
     fun networks(): MongoCollection<NetworkModel> {
