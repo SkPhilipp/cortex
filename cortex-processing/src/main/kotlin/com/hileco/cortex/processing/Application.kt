@@ -14,7 +14,8 @@ fun main() {
             name = "Ethereum",
             network = "local",
             networkAddress = "localhost",
-            latestBlock = BigDecimal(0)
+            latestBlock = BigDecimal(0),
+            processing = true
     ))
     val blockLoaderProcess = BlockLoaderProcess()
     blockLoaderProcess.startThread()

@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
+import org.bson.Document
 import org.bson.codecs.BigDecimalCodec
 import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
@@ -38,6 +39,18 @@ class DatabaseClient {
         listOf("network", "block", "program", "transaction").minus(database.listCollectionNames()).forEach {
             database.createCollection(it)
         }
+        networks().createIndex(Document(mapOf(
+                "name" to 1,
+                "network" to 1
+        )))
+        networks().createIndex(Document(mapOf(
+                "processing" to 1
+        )))
+        blocks().createIndex(Document(mapOf(
+                "blockchainName" to 1,
+                "blockchainNetwork" to 1,
+                "number" to 1
+        )))
     }
 
     fun networks(): MongoCollection<NetworkModel> {

@@ -18,7 +18,11 @@ abstract class BaseProcess : Runnable {
 
     private fun executeIndefinitely() {
         while (true) {
-            run()
+            try {
+                run()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
             Thread.sleep(500)
         }
     }
