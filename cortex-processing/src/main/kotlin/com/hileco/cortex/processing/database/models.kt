@@ -28,14 +28,17 @@ data class ProgramModel @BsonCreator constructor(
         @BsonProperty("histogram") val histogram: String,
         @BsonProperty("disk") val disk: Map<String, String>,
         @BsonProperty("currency") val currency: BigDecimal,
-        @BsonProperty("analyses") val analyses: List<AnalysisReportModel>,
+        @BsonProperty("analyses") val analyses: MutableList<AnalysisReportModel>,
         @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
 )
 
 data class AnalysisReportModel @BsonCreator constructor(
-        @BsonProperty("callSolved") val callSolved: Boolean,
-        @BsonProperty("callSolution") val callSolution: String,
-        @BsonProperty("callTargetAddress") val callTargetAddress: String
+        @BsonProperty("type") val type: String,
+        @BsonProperty("completed") val completed: Boolean,
+        @BsonProperty("solution") val solution: String? = null,
+        @BsonProperty("solvable") val solvable: Boolean? = null,
+        @BsonProperty("errorStage") val errorStage: String? = null,
+        @BsonProperty("errorCause") val errorCause: String? = null
 )
 
 data class TransactionModel @BsonCreator constructor(

@@ -23,7 +23,7 @@ abstract class BaseProcess : Runnable {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Thread.sleep(500)
+            Thread.sleep(100)
         }
     }
 }

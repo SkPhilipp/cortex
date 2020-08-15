@@ -19,7 +19,7 @@ class ProgramLoaderProcess : BaseProcess() {
             modelClient.programEnsure(ProgramModel(
                     location = TransactionLocationModel(
                             blockchainName = networkModel.name,
-                            blockchainNetwork = networkModel.networkAddress,
+                            blockchainNetwork = networkModel.network,
                             blockNumber = blockModel.number,
                             transactionHash = contract.transactionHash,
                             programAddress = contract.address
@@ -28,7 +28,7 @@ class ProgramLoaderProcess : BaseProcess() {
                     histogram = programHistogramBuilder.hisogram(contract.bytecode),
                     disk = mapOf(),
                     currency = contract.currency,
-                    analyses = listOf()
+                    analyses = mutableListOf()
             ))
         }
         blockModel.loaded = true

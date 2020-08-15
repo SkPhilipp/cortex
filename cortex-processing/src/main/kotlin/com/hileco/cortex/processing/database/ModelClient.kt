@@ -58,7 +58,7 @@ class ModelClient {
      * Updates a given [NetworkModel].
      */
     fun networkUpdate(model: NetworkModel) {
-        databaseClient.networks().updateOne(
+        databaseClient.networks().updateMany(
                 Document(mapOf(
                         "name" to model.name,
                         "network" to model.network
@@ -81,12 +81,10 @@ class ModelClient {
 
     fun programEnsure(model: ProgramModel) {
         val existing = databaseClient.programs().find(Document(mapOf(
-                "location" to Document(mapOf(
-                        "blockchainName" to model.location.blockchainName,
-                        "blockchainNetwork" to model.location.blockchainNetwork,
-                        "blockNumber" to model.location.blockNumber,
-                        "transactionHash" to model.location.transactionHash
-                ))
+                "location.blockchainName" to model.location.blockchainName,
+                "location.blockchainNetwork" to model.location.blockchainNetwork,
+                "location.blockNumber" to model.location.blockNumber,
+                "location.transactionHash" to model.location.transactionHash
         )))
         if (existing.any()) {
             return
@@ -94,8 +92,33 @@ class ModelClient {
         databaseClient.programs().insertOne(model)
     }
 
+    fun programUpdate(model: ProgramModel) {
+        databaseClient.programs().updateMany(
+                Document(mapOf(
+                        "location.blockchainName" to model.location.blockchainName,
+                        "location.blockchainNetwork" to model.location.blockchainNetwork,
+                        "location.blockNumber" to model.location.blockNumber,
+                        "location.transactionHash" to model.location.transactionHash
+
+                )),
+                Document("\$set", Document("analyses", model.analyses))
+        )
+    }
+
+    fun programLeastRecentUnanalyzed(model: NetworkModel): ProgramModel? {
+        return databaseClient.programs().find(
+                Document(mapOf(
+                        "location.blockchainName" to model.name,
+                        "location.blockchainNetwork" to model.network,
+                        "analyses" to listOf<AnalysisReportModel>()
+                )))
+                .sort(Document("location.blockNumber", 1))
+                .limit(1)
+                .firstOrNull()
+    }
+
     fun blockUpdate(model: BlockModel) {
-        databaseClient.blocks().updateOne(
+        databaseClient.blocks().updateMany(
                 Document(mapOf(
                         "blockchainName" to model.blockchainName,
                         "blockchainNetwork" to model.blockchainNetwork,

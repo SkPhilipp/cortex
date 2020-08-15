@@ -20,10 +20,11 @@ class BlockLoaderProcess : BaseProcess() {
             return
         }
         val blockModelMostRecent = modelClient.blockMostRecent(networkModel)
-        if (blockModelMostRecent != null && blockModelMostRecent.number.min(networkModel.latestBlock) <= MARGIN) {
+        if (blockModelMostRecent != null && networkModel.latestBlock - blockModelMostRecent.number <= MARGIN) {
             return
         }
-        val gethBlock = gethBlockLoader.load(networkModel, networkModel.latestBlock)
+        val nextBlockNumber = if (blockModelMostRecent != null) blockModelMostRecent.number + BigDecimal.ONE else BigDecimal.ZERO
+        val gethBlock = gethBlockLoader.load(networkModel, nextBlockNumber)
         modelClient.blockEnsure(BlockModel(
                 blockchainName = networkModel.name,
                 blockchainNetwork = networkModel.network,

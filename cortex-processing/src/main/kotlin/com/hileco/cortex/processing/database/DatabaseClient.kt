@@ -58,6 +58,12 @@ class DatabaseClient {
                 "location.blockNumber" to 1,
                 "location.transactionHash" to 1
         )))
+        programs().createIndex(Document(mapOf(
+                "location.blockchainName" to 1,
+                "location.blockchainNetwork" to 1,
+                "location.blockNumber" to 1,
+                "analyses" to 1
+        )))
     }
 
     fun networks(): MongoCollection<NetworkModel> {

@@ -9,6 +9,7 @@ class GethBlockchainLoader {
      * TODO: Replace mock implementation
      */
     fun load(networkModel: NetworkModel): GethBlockchainState {
-        return GethBlockchainState(networkModel.latestBlock + BigDecimal.ONE)
+        val latestBlock = (networkModel.latestBlock + BigDecimal.ONE).min(BigDecimal.valueOf(250))
+        return GethBlockchainState(latestBlock)
     }
 }
