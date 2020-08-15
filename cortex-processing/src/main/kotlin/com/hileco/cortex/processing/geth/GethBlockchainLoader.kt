@@ -4,7 +4,6 @@ import com.hileco.cortex.processing.database.NetworkModel
 import java.math.BigDecimal
 
 class GethBlockchainLoader {
-
     /**
      * TODO: Replace mock implementation
      */

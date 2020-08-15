@@ -5,7 +5,6 @@ import com.hileco.cortex.processing.database.NetworkModel
 import java.math.BigDecimal
 
 class GethContractLoader {
-
     /**
      * TODO: Replace mock implementation
      */

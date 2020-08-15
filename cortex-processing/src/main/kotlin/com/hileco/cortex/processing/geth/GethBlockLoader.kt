@@ -4,7 +4,6 @@ import com.hileco.cortex.processing.database.NetworkModel
 import java.math.BigDecimal
 
 class GethBlockLoader {
-
     /**
      * TODO: Replace mock implementation
      */

@@ -15,7 +15,6 @@ import org.slf4j.impl.SimpleLogger
 
 
 class DatabaseClient {
-
     private val database: MongoDatabase
 
     init {

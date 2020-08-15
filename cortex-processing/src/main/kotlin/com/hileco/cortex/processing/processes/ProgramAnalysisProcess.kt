@@ -17,8 +17,6 @@ class ProgramAnalysisProcess : BaseProcess() {
     private val ethereumTranspiler = EthereumTranspiler()
 
     private enum class AnalysisStage {
-        PARSING,
-        TRANSPILING,
         EXPLORING,
         SOLVING,
         SOLVED
@@ -28,10 +26,9 @@ class ProgramAnalysisProcess : BaseProcess() {
     override fun run() {
         val networkModel = modelClient.networkProcessing() ?: return
         val programModel = modelClient.programLeastRecentUnanalyzed(networkModel) ?: return
-        var stage = AnalysisStage.PARSING
+        var stage = AnalysisStage.EXPLORING
         val report = try {
             val ethereumInstructions = ethereumParser.parse(programModel.bytecode.deserializeBytes())
-            stage = AnalysisStage.TRANSPILING
             val instructions = ethereumTranspiler.transpile(ethereumInstructions)
             val symbolicProgram = SymbolicProgram(instructions)
             val symbolicProgramContext = SymbolicProgramContext(symbolicProgram)

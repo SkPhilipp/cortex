@@ -3,7 +3,6 @@ package com.hileco.cortex.processing.database
 import org.bson.Document
 
 class ModelClient {
-
     /**
      * Ensures the given [NetworkModel] exists.
      */
