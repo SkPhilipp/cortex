@@ -2,12 +2,10 @@ package com.hileco.cortex.processing.processes
 
 import com.hileco.cortex.processing.database.BlockModel
 import com.hileco.cortex.processing.database.ModelClient
-import com.hileco.cortex.processing.geth.GethBlockLoader
 import com.hileco.cortex.processing.geth.GethBlockchainLoader
 import java.math.BigDecimal
 
 class BlockLoaderProcess : BaseProcess() {
-    private val gethBlockLoader = GethBlockLoader()
     private val gethBlockchainLoader = GethBlockchainLoader()
     private val modelClient = ModelClient()
 
@@ -24,11 +22,10 @@ class BlockLoaderProcess : BaseProcess() {
             return
         }
         val nextBlockNumber = if (blockModelMostRecent != null) blockModelMostRecent.number + BigDecimal.ONE else BigDecimal.ZERO
-        val gethBlock = gethBlockLoader.load(networkModel, nextBlockNumber)
         modelClient.blockEnsure(BlockModel(
                 blockchainName = networkModel.name,
                 blockchainNetwork = networkModel.network,
-                number = gethBlock.number,
+                number = nextBlockNumber,
                 loaded = false
         ))
     }

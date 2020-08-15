@@ -1,14 +1,16 @@
 package com.hileco.cortex.processing.geth
 
 import com.hileco.cortex.processing.database.NetworkModel
-import java.math.BigDecimal
 
-class GethBlockchainLoader {
-    /**
-     * TODO: Replace mock implementation
-     */
+class GethBlockchainLoader : GethLoader() {
+    private val loadBlockchainScript by lazy { unpackage("geth-scripts/load-blockchain.js") }
+
     fun load(networkModel: NetworkModel): GethBlockchainState {
-        val latestBlock = (networkModel.latestBlock + BigDecimal.ONE).min(BigDecimal.valueOf(250))
-        return GethBlockchainState(latestBlock)
+        val result = executeGethScript(loadBlockchainScript, mapOf(
+                "networkAddress" to networkModel.networkAddress
+        ))
+        return GethBlockchainState(
+                latestBlock = result.get("latestBlock").decimalValue()
+        )
     }
 }
