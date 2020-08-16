@@ -1,5 +1,3 @@
-personal.unlockAccount(eth.accounts[0], "i laugh", 15000);
-
 function logger(error, result) {
 	if (error) {
 		console.error(error);
