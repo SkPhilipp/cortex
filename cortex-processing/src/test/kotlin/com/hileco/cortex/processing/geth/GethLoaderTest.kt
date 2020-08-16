@@ -12,7 +12,7 @@ class GethLoaderTest {
     @Ignore("Requires a setup for GethLoader to be functional, should only be run when modifying GethLoader.")
     @Test
     fun testInvokeGeth() {
-        val result = gethLoader.executeGeth("geth-loader-test.js", 0, 1, "x", "y")
+        val result = gethLoader.executeGeth("test/geth-loader.js", 0, 1, "x", "y")
 
         assertEquals(0, result[0].asInt())
         assertEquals(1, result[1].asInt())

@@ -5,6 +5,10 @@ import org.junit.Assert
 import org.junit.Test
 
 class SolidityCompilerTest {
+
+    /**
+     * Manual compilation is possible with `docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin contract.sol`
+     */
     @Test
     fun testCompile() {
         val bytecode = TEST_COMPILER.compile("05_greeter.sol")
