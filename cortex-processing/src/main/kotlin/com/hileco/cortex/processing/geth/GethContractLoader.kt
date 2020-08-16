@@ -4,13 +4,8 @@ import com.hileco.cortex.processing.database.BlockModel
 import com.hileco.cortex.processing.database.NetworkModel
 
 class GethContractLoader : GethLoader() {
-    private val loadContractsScript by lazy { unpackage("geth-scripts/load-contracts.js") }
-
     fun load(networkModel: NetworkModel, blockModel: BlockModel): List<GethContract> {
-        val result = executeGeth(loadContractsScript, mapOf(
-                "networkAddress" to networkModel.networkAddress,
-                "block" to blockModel.number.toString()
-        ))
+        val result = executeGeth("load-contracts.js", networkModel.networkAddress, blockModel.number)
         return result.elements()
                 .asSequence()
                 .map { element ->

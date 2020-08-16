@@ -2,22 +2,10 @@ package com.hileco.cortex.processing.geth
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 
 open class GethLoader {
     private val objectMapper = ObjectMapper()
     private val processRunner = ProcessRunner()
-
-    fun unpackage(resourcePath: String): Path {
-        val tempDir = System.getProperty("java.io.tmpdir")
-        val targetFileName = Path.of(resourcePath).fileName.toString()
-        val targetPath = Path.of(tempDir, targetFileName)
-        val resource = this.javaClass.getResourceAsStream(resourcePath)
-        Files.copy(resource, targetPath, StandardCopyOption.REPLACE_EXISTING)
-        return targetPath
-    }
 
     private fun read(gethScriptOutput: List<String>): JsonNode {
         val taken = gethScriptOutput.takeWhile { !it.startsWith("___END___") }
@@ -26,11 +14,16 @@ open class GethLoader {
     }
 
     /**
-     * Note that [script] and all keys and values of [parameterMap] become part of executable commands and should only contain safe values.
+     * Executes a script's 'run' function for geth in the docker container 'miner'.
+     *
+     * Note that [script] and all keys and values of [parameterList] become part of executable commands and should only contain safe [a-Z0-9] characters.
+     *
+     * @param script A script local to the docker container 'miner'
+     * @param parameterList Parameters for the 'run' function of the script.
      */
-    fun executeGeth(script: Path, parameterMap: Map<String, String>): JsonNode {
-        val parameters = objectMapper.writeValueAsString(parameterMap)
-        val command = listOf("docker-compose", "exec", "miner", "geth", "attach", "--exec", "loadScript(\"$script\");run($parameters)")
+    fun executeGeth(script: String, vararg parameterList: Any): JsonNode {
+        val parameters = parameterList.joinToString { if (it is String) "'$it'" else "$it" }
+        val command = listOf("docker", "exec", "miner", "geth", "attach", "--exec", "loadScript(\'/scripts/$script\');run($parameters)")
         val processResult = processRunner.execute(command)
         if (processResult.exitCode > 0 && processResult.errors.isNotEmpty()) {
             val commandText = command.joinToString(separator = " ")

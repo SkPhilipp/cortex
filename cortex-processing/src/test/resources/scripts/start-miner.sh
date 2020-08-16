@@ -10,7 +10,7 @@ fi
 geth \
   --datadir ./volume/datadir \
   --networkid 1488 \
-  --bootnodes enode://832465276f89e0c4d1503c4b31f4815bbbef6d4f7cd25715b496ff1320440f7003bc1dad482e61212333c025efd3541b2bbeb714db3dea463c50827791319061@127.0.0.1:0?discport=30301 \
+  --bootnodes enode://99b0aa351632ced25ecbd6919fda2edc18584db7c5c220f9d8724251603c8a7d36e13cbce5fbf3ef5c952c45be14bc8ce4e88ec7abe2181e5bbf08e2f28def31@127.0.0.1:0?discport=30301 \
   --syncmode full \
   --mine \
   --miner.threads=1 \
