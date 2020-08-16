@@ -22,12 +22,16 @@ class BlockLoaderProcess : BaseProcess() {
             return
         }
         val nextBlockNumber = if (blockModelMostRecent != null) blockModelMostRecent.number + BigDecimal.ONE else BigDecimal.ZERO
-        modelClient.blockEnsure(BlockModel(
-                blockchainName = networkModel.name,
-                blockchainNetwork = networkModel.network,
-                number = nextBlockNumber,
-                loaded = false
-        ))
+        val limitBlockNumber = (gethBlockchainState.latestBlock - MARGIN).max(BigDecimal.ZERO)
+        val lastBlockNumber = (nextBlockNumber + BigDecimal.valueOf(100)).min(limitBlockNumber)
+        for (blockNumber in nextBlockNumber.toInt()..lastBlockNumber.toInt()) {
+            modelClient.blockEnsure(BlockModel(
+                    blockchainName = networkModel.name,
+                    blockchainNetwork = networkModel.network,
+                    number = BigDecimal(blockNumber),
+                    loaded = false
+            ))
+        }
     }
 
     companion object {

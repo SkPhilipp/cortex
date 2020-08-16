@@ -1,7 +1,7 @@
-function run(parameters) {
+function run() {
 	console.log(JSON.stringify(
 		{
-			"latestBlock": 25
+			"latestBlock": eth.blockNumber
 		}
 	));
 	console.log("___END___");
