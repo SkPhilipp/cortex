@@ -37,7 +37,7 @@ class ProgramLoaderProcess : BaseProcess() {
                     analyses = mutableListOf()
             ))
         }
-        modelClient.networkUpdateScannedBlock(networkModel, scanBlockNumberEnd)
+        modelClient.networkUpdateScannedBlock(networkModel, scanBlockNumberEnd + BigDecimal.ONE)
     }
 
     companion object {

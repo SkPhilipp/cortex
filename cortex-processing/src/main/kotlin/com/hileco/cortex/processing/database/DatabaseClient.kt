@@ -5,6 +5,8 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
+import org.bson.BsonDocument
+import org.bson.BsonDocumentWrapper
 import org.bson.Document
 import org.bson.codecs.BigDecimalCodec
 import org.bson.codecs.configuration.CodecRegistries
@@ -72,6 +74,10 @@ class DatabaseClient {
 
     fun transactions(): MongoCollection<TransactionModel> {
         return database.getCollection("transaction", TransactionModel::class.java)
+    }
+
+    fun asDocument(any: Any): BsonDocument {
+        return BsonDocumentWrapper.asBsonDocument(any, database.codecRegistry)
     }
 
     companion object {

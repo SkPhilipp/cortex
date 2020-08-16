@@ -4,6 +4,7 @@ services:
   #    docker exec -it miner geth attach --exec 'eth.accounts'
   #
   # Scripts in the `./scripts` directory can be launched as such;
+  #    cd cortex-processing/src/main/docker/
   #    docker exec miner geth attach --preload '/scripts/test/barriers-bytecode.js' --exec 'loadScript("/scripts/test/barriers-deploy.js")'
   #    docker exec miner geth attach --preload '/scripts/test/barriers-bytecode.js' --exec 'loadScript("/scripts/test/navigate-contracts.js")'
   miner:

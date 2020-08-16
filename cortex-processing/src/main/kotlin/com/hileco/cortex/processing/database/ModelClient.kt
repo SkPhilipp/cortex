@@ -1,5 +1,6 @@
 package com.hileco.cortex.processing.database
 
+import com.mongodb.client.model.UpdateOptions
 import org.bson.Document
 import java.math.BigDecimal
 
@@ -8,14 +9,12 @@ class ModelClient {
      * Ensures the given [NetworkModel] exists.
      */
     fun networkEnsure(model: NetworkModel) {
-        val existing = databaseClient.networks().find(Document(mapOf(
+        databaseClient.networks().updateOne(Document(mapOf(
                 "name" to model.name,
                 "network" to model.network
-        )))
-        if (existing.any()) {
-            return
-        }
-        databaseClient.networks().insertOne(model)
+        )),
+                Document("\$setOnInsert", databaseClient.asDocument(model)),
+                UpdateOptions().upsert(true))
     }
 
     /**
@@ -52,16 +51,14 @@ class ModelClient {
     }
 
     fun programEnsure(model: ProgramModel) {
-        val existing = databaseClient.programs().find(Document(mapOf(
+        databaseClient.programs().updateOne(Document(mapOf(
                 "location.blockchainName" to model.location.blockchainName,
                 "location.blockchainNetwork" to model.location.blockchainNetwork,
                 "location.blockNumber" to model.location.blockNumber,
                 "location.transactionHash" to model.location.transactionHash
-        )))
-        if (existing.any()) {
-            return
-        }
-        databaseClient.programs().insertOne(model)
+        )),
+                Document("\$setOnInsert", databaseClient.asDocument(model)),
+                UpdateOptions().upsert(true))
     }
 
     fun programUpdate(model: ProgramModel) {
