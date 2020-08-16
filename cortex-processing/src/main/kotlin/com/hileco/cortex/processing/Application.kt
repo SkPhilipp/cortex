@@ -15,6 +15,7 @@ fun main() {
             network = "local",
             networkAddress = "localhost",
             latestBlock = BigDecimal(0),
+            scanningBlock = BigDecimal(0),
             processing = true
     ))
     BlockLoaderProcess().startThread()

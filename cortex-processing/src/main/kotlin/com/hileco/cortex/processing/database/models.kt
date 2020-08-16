@@ -10,15 +10,8 @@ data class NetworkModel @BsonCreator constructor(
         @BsonProperty("network") val network: String,
         @BsonProperty("networkAddress") val networkAddress: String,
         @BsonProperty("latestBlock") var latestBlock: BigDecimal,
+        @BsonProperty("scanningBlock") var scanningBlock: BigDecimal,
         @BsonProperty("processing") var processing: Boolean,
-        @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
-)
-
-data class BlockModel @BsonCreator constructor(
-        @BsonProperty("blockchainName") val blockchainName: String,
-        @BsonProperty("blockchainNetwork") val blockchainNetwork: String,
-        @BsonProperty("number") val number: BigDecimal,
-        @BsonProperty("loaded") var loaded: Boolean,
         @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
 )
 

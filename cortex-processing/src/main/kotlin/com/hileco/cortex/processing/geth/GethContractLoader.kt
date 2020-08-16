@@ -1,11 +1,11 @@
 package com.hileco.cortex.processing.geth
 
-import com.hileco.cortex.processing.database.BlockModel
 import com.hileco.cortex.processing.database.NetworkModel
+import java.math.BigDecimal
 
 class GethContractLoader : GethLoader() {
-    fun load(networkModel: NetworkModel, blockModel: BlockModel): List<GethContract> {
-        val result = executeGeth("load-contracts.js", networkModel.networkAddress, blockModel.number)
+    fun load(networkModel: NetworkModel, blockNumberStart: BigDecimal, blockNumberEnd: BigDecimal): List<GethContract> {
+        val result = executeGeth("load-contracts.js", networkModel.networkAddress, blockNumberStart, blockNumberEnd)
         return result.elements()
                 .asSequence()
                 .map { element ->

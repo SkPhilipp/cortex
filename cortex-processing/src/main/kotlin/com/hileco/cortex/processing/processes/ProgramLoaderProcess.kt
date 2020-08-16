@@ -5,6 +5,7 @@ import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.processing.database.TransactionLocationModel
 import com.hileco.cortex.processing.geth.GethContractLoader
 import com.hileco.cortex.processing.histogram.ProgramHistogramBuilder
+import java.math.BigDecimal
 
 class ProgramLoaderProcess : BaseProcess() {
     private val gethContractLoader = GethContractLoader()
@@ -13,14 +14,19 @@ class ProgramLoaderProcess : BaseProcess() {
 
     override fun run() {
         val networkModel = modelClient.networkProcessing() ?: return
-        val blockModel = modelClient.blockLeastRecentUnloaded(networkModel) ?: return
-        val contracts = gethContractLoader.load(networkModel, blockModel)
+        val scanBlockNumberStart = networkModel.scanningBlock
+        val scanBlockNumberLimit = networkModel.latestBlock - MARGIN
+        if (scanBlockNumberLimit <= scanBlockNumberStart) {
+            return
+        }
+        val scanBlockNumberEnd = (networkModel.scanningBlock + BLOCKS_PER_SCAN).min(scanBlockNumberLimit)
+        val contracts = gethContractLoader.load(networkModel, scanBlockNumberStart, scanBlockNumberEnd)
         contracts.forEach { contract ->
             modelClient.programEnsure(ProgramModel(
                     location = TransactionLocationModel(
                             blockchainName = networkModel.name,
                             blockchainNetwork = networkModel.network,
-                            blockNumber = blockModel.number,
+                            blockNumber = scanBlockNumberStart,
                             transactionHash = contract.transactionHash,
                             programAddress = contract.address
                     ),
@@ -31,7 +37,11 @@ class ProgramLoaderProcess : BaseProcess() {
                     analyses = mutableListOf()
             ))
         }
-        blockModel.loaded = true
-        modelClient.blockUpdate(blockModel)
+        modelClient.networkUpdateScannedBlock(networkModel, scanBlockNumberEnd)
+    }
+
+    companion object {
+        private val BLOCKS_PER_SCAN = BigDecimal.valueOf(20)
+        private val MARGIN = BigDecimal(20)
     }
 }

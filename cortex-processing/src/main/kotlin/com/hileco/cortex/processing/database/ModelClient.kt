@@ -1,6 +1,7 @@
 package com.hileco.cortex.processing.database
 
 import org.bson.Document
+import java.math.BigDecimal
 
 class ModelClient {
     /**
@@ -25,57 +26,29 @@ class ModelClient {
     }
 
     /**
-     * Ensures the given [BlockModel] exists.
-     */
-    fun blockEnsure(model: BlockModel) {
-        val existing = databaseClient.blocks().find(Document(mapOf(
-                "blockchainName" to model.blockchainName,
-                "blockchainNetwork" to model.blockchainNetwork,
-                "number" to model.number
-        )))
-        if (existing.any()) {
-            return
-        }
-        databaseClient.blocks().insertOne(model)
-    }
-
-    /**
-     * Retrieves the most recent [BlockModel] for a network by its number.
-     */
-    fun blockMostRecent(model: NetworkModel): BlockModel? {
-        return databaseClient.blocks().find(
-                Document(mapOf(
-                        "blockchainName" to model.name,
-                        "blockchainNetwork" to model.network
-                )))
-                .sort(Document("number", -1))
-                .limit(1)
-                .firstOrNull()
-    }
-
-    /**
      * Updates a given [NetworkModel].
      */
-    fun networkUpdate(model: NetworkModel) {
+    fun networkUpdateLatestBlock(model: NetworkModel, latestBlock: BigDecimal) {
         databaseClient.networks().updateMany(
                 Document(mapOf(
                         "name" to model.name,
                         "network" to model.network
                 )),
-                Document("\$set", Document("latestBlock", model.latestBlock))
+                Document("\$set", Document("latestBlock", latestBlock))
         )
     }
 
-    fun blockLeastRecentUnloaded(model: NetworkModel): BlockModel? {
-        return databaseClient.blocks().find(
+    /**
+     * Updates a given [NetworkModel].
+     */
+    fun networkUpdateScannedBlock(model: NetworkModel, scanningBlock: BigDecimal) {
+        databaseClient.networks().updateMany(
                 Document(mapOf(
-                        "blockchainName" to model.name,
-                        "blockchainNetwork" to model.network,
-                        "loaded" to false
-                )))
-                .sort(Document("number", 1))
-                .limit(1)
-                .firstOrNull()
+                        "name" to model.name,
+                        "network" to model.network
+                )),
+                Document("\$set", Document("scanningBlock", scanningBlock))
+        )
     }
 
     fun programEnsure(model: ProgramModel) {
@@ -114,17 +87,6 @@ class ModelClient {
                 .sort(Document("location.blockNumber", 1))
                 .limit(1)
                 .firstOrNull()
-    }
-
-    fun blockUpdate(model: BlockModel) {
-        databaseClient.blocks().updateMany(
-                Document(mapOf(
-                        "blockchainName" to model.blockchainName,
-                        "blockchainNetwork" to model.blockchainNetwork,
-                        "number" to model.number
-                )),
-                Document("\$set", Document("loaded", model.loaded))
-        )
     }
 
     companion object {

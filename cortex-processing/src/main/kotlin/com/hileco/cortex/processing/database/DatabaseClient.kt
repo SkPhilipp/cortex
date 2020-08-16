@@ -35,7 +35,7 @@ class DatabaseClient {
                 .build()
         val client = MongoClients.create(settings)
         database = client.getDatabase(DATABASE_NAME)
-        listOf("network", "block", "program", "transaction").minus(database.listCollectionNames()).forEach {
+        listOf("network", "program", "transaction").minus(database.listCollectionNames()).forEach {
             database.createCollection(it)
         }
         networks().createIndex(Document(mapOf(
@@ -44,12 +44,6 @@ class DatabaseClient {
         )))
         networks().createIndex(Document(mapOf(
                 "processing" to 1
-        )))
-        blocks().createIndex(Document(mapOf(
-                "blockchainName" to 1,
-                "blockchainNetwork" to 1,
-                "number" to 1,
-                "loaded" to 1
         )))
         programs().createIndex(Document(mapOf(
                 "location.blockchainName" to 1,
@@ -70,10 +64,6 @@ class DatabaseClient {
 
     fun networks(): MongoCollection<NetworkModel> {
         return database.getCollection("network", NetworkModel::class.java)
-    }
-
-    fun blocks(): MongoCollection<BlockModel> {
-        return database.getCollection("block", BlockModel::class.java)
     }
 
     fun programs(): MongoCollection<ProgramModel> {
