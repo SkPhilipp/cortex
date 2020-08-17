@@ -2,8 +2,11 @@ package com.hileco.cortex.symbolic.explore
 
 import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.symbolic.ExpressionOptimizer
+import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_TAKE
+import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_THROW
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
+import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.ProgramException
@@ -37,7 +40,16 @@ class SymbolicInstructionRunner {
 
     private val expressionOptimizer = ExpressionOptimizer()
 
-    fun execute(instruction: Instruction, virtualMachine: SymbolicVirtualMachine, programContext: SymbolicProgramContext) {
+    enum class StepMode {
+        NON_CONCRETE_JUMP_TAKE,
+        NON_CONCRETE_JUMP_SKIP,
+        NON_CONCRETE_JUMP_THROW
+    }
+
+    fun execute(instruction: Instruction,
+                virtualMachine: SymbolicVirtualMachine,
+                programContext: SymbolicProgramContext,
+                stepMode: StepMode = NON_CONCRETE_JUMP_THROW) {
         when (instruction) {
             is BITWISE_AND -> {
                 if (programContext.stack.size() < 2) {
@@ -194,11 +206,17 @@ class SymbolicInstructionRunner {
                 val addressExpression = programContext.stack.pop()
                 val addressValue = addressExpression as? Value
                         ?: throw UnsupportedOperationException("Jumps to non-concrete addresses such as $addressExpression are not supported for symbolic execution")
-                val conditionExpression = programContext.stack.pop() as? Value
-                        ?: throw UnsupportedOperationException("Jumps using non-concrete conditions should not be performed via this method")
-                if (conditionExpression.constant > 0) {
+                val conditionExpression = programContext.stack.pop()
+                if (conditionExpression !is Value) {
+                    if (stepMode == NON_CONCRETE_JUMP_THROW) {
+                        throw UnsupportedOperationException("Jumps with a non-concrete conditions are not allowed")
+                    }
+                    virtualMachine.path.push(SymbolicPathEntry(programContext.instructionPosition, addressValue, stepMode == NON_CONCRETE_JUMP_TAKE, conditionExpression))
+                }
+                if (if (conditionExpression is Value) conditionExpression.constant > 0 else stepMode == NON_CONCRETE_JUMP_TAKE) {
                     val nextInstructionPosition = addressValue.constant.toInt()
-                    val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                    val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition]
+                            ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
                     if (nextInstruction.instruction is JUMP_DESTINATION) {
                         programContext.instructionPosition = nextInstructionPosition
                     } else {

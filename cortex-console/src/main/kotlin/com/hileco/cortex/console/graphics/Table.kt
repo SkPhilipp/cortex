@@ -6,8 +6,8 @@ import com.googlecode.lanterna.TextColor
 import com.googlecode.lanterna.screen.TerminalScreen
 
 class Table(screen: TerminalScreen,
-            private val position: TerminalPosition,
-            private val height: Int,
+            val position: TerminalPosition,
+            val height: Int,
             columnWidths: List<Int>,
             private val colorScheme: ColorScheme = ColorScheme(
                     foreground = TextColor.ANSI.WHITE,
@@ -18,11 +18,11 @@ class Table(screen: TerminalScreen,
     private val columnBoxes: List<Box>
 
     fun bottom(): Int {
-        return columnBoxes.lastOrNull()?.bottom() ?: 0
+        return columnBoxes.lastOrNull()?.bottom() ?: position.row
     }
 
     fun right(): Int {
-        return columnBoxes.lastOrNull()?.right() ?: 0
+        return columnBoxes.lastOrNull()?.right() ?: position.column
     }
 
     init {

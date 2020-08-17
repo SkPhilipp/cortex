@@ -7,28 +7,40 @@ import com.googlecode.lanterna.input.KeyType
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.googlecode.lanterna.terminal.Terminal
+import com.hileco.cortex.collections.VmMap
+import com.hileco.cortex.collections.VmStack
+import com.hileco.cortex.collections.layer.LayeredVmMap
+import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.console.graphics.Background
-import com.hileco.cortex.console.graphics.Table
+import com.hileco.cortex.console.views.InstructionsView
+import com.hileco.cortex.console.views.SymbolicProgramStoreZoneView
+import com.hileco.cortex.console.views.SymbolicStackView
+import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.instructions.stack.PUSH
+import java.math.BigInteger
 
-fun randomData(): List<List<String>> {
-    return listOf(
-            listOf("0x000000000000", "0x000000000000"),
-            listOf("0x000000000001", "0x000000000001"),
-            listOf("00x00000000002", "0x000000000002"),
-            listOf("00x00000000003", "0x000000000003"),
-            listOf("00x00000000004", "0x000000000004"),
-            listOf("00x00000000005", "0x000000000005"),
-            listOf("0x000000000006", "0x000000000006"),
-            listOf("0x000000000007", "0x000000000007"),
-            listOf("0x000000000008", "0x000000000008"),
-            listOf("0x000000000009", "0x000000000009"),
-            listOf("0x000000000010", "0x000000000010")
-    )
+fun randomVmMap(): VmMap<BigInteger, Expression> {
+    val layeredVmMap = LayeredVmMap<BigInteger, Expression>()
+    layeredVmMap[BigInteger.valueOf(0)] = Expression.Value(0)
+    layeredVmMap[BigInteger.valueOf(1)] = Expression.Add(Expression.Value(1), Expression.Value(2))
+    layeredVmMap[BigInteger.valueOf(2)] = Expression.Value(3)
+    layeredVmMap[BigInteger.valueOf(3)] = Expression.Value(4)
+    return layeredVmMap
+}
+
+fun randomVmStack(): VmStack<Expression> {
+    val layeredVmStack = LayeredVmStack<Expression>()
+    layeredVmStack.push(Expression.Value(0))
+    layeredVmStack.push(Expression.Add(Expression.Value(1), Expression.Value(2)))
+    layeredVmStack.push(Expression.Value(3))
+    layeredVmStack.push(Expression.Value(4))
+    return layeredVmStack
 }
 
 fun main() {
     val defaultTerminalFactory = DefaultTerminalFactory()
-    defaultTerminalFactory.setInitialTerminalSize(TerminalSize(110, 27))
+    defaultTerminalFactory.setInitialTerminalSize(TerminalSize(120, 27))
     val terminal: Terminal = defaultTerminalFactory.createTerminal()
     val screen = TerminalScreen(terminal)
     screen.startScreen()
@@ -37,47 +49,38 @@ fun main() {
     val background = Background(screen)
     background.draw()
 
-    val tableInstructions = Table(screen, TerminalPosition(1, 2), 10, listOf(6, 15))
-    tableInstructions.draw()
-    tableInstructions.title(value = "index", column = 0)
-    tableInstructions.title(value = "instruction", column = 1)
-    tableInstructions.textTable(listOf(
-            listOf("00000", "PUSH 80"),
-            listOf("00001", "PUSH 80"),
-            listOf("00002", "PUSH 80"),
-            listOf("00003", "PUSH 80"),
-            listOf("00004", "PUSH 80"),
-            listOf("00005", "PUSH 80"),
-            listOf("00006", "PUSH 80"),
-            listOf("00007", "PUSH 80"),
-            listOf("00008", "PUSH 80"),
-            listOf("00009", "PUSH 80"),
-            listOf("00010", "PUSH 80")
+    val instructionsView = InstructionsView(screen, TerminalPosition(1, 2), 23)
+    instructionsView.draw()
+    instructionsView.drawContent(listOf(
+            PUSH(80),
+            PUSH(81),
+            PUSH(82),
+            PUSH(83),
+            PUSH(84),
+            PUSH(85),
+            PUSH(86),
+            PUSH(87),
+            PUSH(88),
+            PUSH(89),
+            PUSH(90),
+            PUSH(91)
     ))
 
-    val tableStack = Table(screen, TerminalPosition(tableInstructions.right() + 2, 2), 10, listOf(15, 25))
-    tableStack.draw()
-    tableStack.title(value = "stack address", column = 0)
-    tableStack.title(value = "value", column = 1)
-    tableStack.textTable(randomData())
+    val stackView = SymbolicStackView(screen, TerminalPosition(instructionsView.right() + 2, 2), 10)
+    stackView.draw()
+    stackView.drawContent(randomVmStack())
 
-    val tableMemory = Table(screen, TerminalPosition(tableStack.right() + 2, 2), 10, listOf(15, 25))
-    tableMemory.draw()
-    tableMemory.title(value = "memory address", column = 0)
-    tableMemory.title(value = "value", column = 1)
-    tableMemory.textTable(randomData())
+    val memoryView = SymbolicProgramStoreZoneView(ProgramStoreZone.MEMORY, screen, TerminalPosition(stackView.right() + 2, 2), 10);
+    memoryView.draw()
+    memoryView.drawContent(randomVmMap())
 
-    val tableCallData = Table(screen, TerminalPosition(tableInstructions.right() + 2, tableInstructions.bottom() + 3), 10, listOf(15, 25))
-    tableCallData.draw()
-    tableCallData.title(value = "call address", column = 0)
-    tableCallData.title(value = "value", column = 1)
-    tableCallData.textTable(randomData())
+    val callDataView = SymbolicProgramStoreZoneView(ProgramStoreZone.CALL_DATA, screen, TerminalPosition(instructionsView.right() + 2, stackView.bottom() + 3), 10);
+    callDataView.draw()
+    callDataView.drawContent(randomVmMap())
 
-    val tableDisk = Table(screen, TerminalPosition(tableCallData.right() + 2, tableInstructions.bottom() + 3), 10, listOf(15, 25))
-    tableDisk.draw()
-    tableDisk.title(value = "disk address", column = 0)
-    tableDisk.title(value = "value", column = 1)
-    tableDisk.textTable(randomData())
+    val diskView = SymbolicProgramStoreZoneView(ProgramStoreZone.DISK, screen, TerminalPosition(callDataView.right() + 2, memoryView.bottom() + 3), 10);
+    diskView.draw()
+    diskView.drawContent(randomVmMap())
 
     while (true) {
         val keyStroke: KeyStroke? = screen.pollInput()
