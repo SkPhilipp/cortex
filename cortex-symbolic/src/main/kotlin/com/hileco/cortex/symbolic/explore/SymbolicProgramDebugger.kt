@@ -27,11 +27,13 @@ class SymbolicProgramDebugger(val virtualMachine: SymbolicVirtualMachine) {
             }
             if (virtualMachine.programs.isEmpty()) {
                 virtualMachine.exited = true
+                virtualMachine.exitedReason = NO_REMAINING_PROGRAMS
                 return
             }
             var programContext: SymbolicProgramContext = virtualMachine.programs.last()
             if (programContext.instructionPosition == programContext.program.instructionsLastPosition) {
                 virtualMachine.exited = true
+                virtualMachine.exitedReason = NO_REMAINING_INSTRUCTIONS
                 return
             }
             val currentInstructionPosition = programContext.instructionPosition
@@ -39,6 +41,7 @@ class SymbolicProgramDebugger(val virtualMachine: SymbolicVirtualMachine) {
             symbolicInstructionRunner.execute(positionedInstruction.instruction, virtualMachine, programContext, stepMode)
             if (virtualMachine.programs.isEmpty()) {
                 virtualMachine.exited = true
+                virtualMachine.exitedReason = NO_REMAINING_PROGRAMS
                 return
             }
             programContext = virtualMachine.programs.last()

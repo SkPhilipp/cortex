@@ -30,24 +30,22 @@ class SymbolicProgramStoreZoneView(private val programStoreZone: ProgramStoreZon
         table.title(value = "value", column = 1)
     }
 
-    fun drawFocus(focusLine: Int) {
+    fun drawContent(values: VmMap<BigInteger, Expression>, focusLine: Int = -1) {
+        this.values = values
         val topLine = (focusLine - TOP_OFFSET).coerceAtLeast(0)
         val valuesSize = values.size()
+        val sortedKeys = values.keySet().sorted()
         for (i in topLine..topLine + table.height - 2) {
             val relativeIndex = i - topLine
-            val values = if (i < valuesSize) {
-                val expression = values[BigInteger.valueOf(i.toLong())]
+            val row = if (i < valuesSize) {
+                val key = sortedKeys[i]
+                val expression = values[key]
                 listOf("$i", "$expression")
             } else {
                 listOf("", "")
             }
-            table.textRow(values, relativeIndex, focusLine == i)
+            table.textRow(row, relativeIndex, focusLine == i)
         }
-    }
-
-    fun drawContent(values: VmMap<BigInteger, Expression>) {
-        this.values = values
-        drawFocus(0)
     }
 
     companion object {

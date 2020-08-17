@@ -8,7 +8,6 @@ import com.hileco.cortex.vm.instructions.Instruction
 class InstructionsView(screen: TerminalScreen,
                        position: TerminalPosition,
                        height: Int) {
-    private var instructions: List<Instruction> = listOf()
     private val table: Table = Table(screen, position, height, listOf(7, 20))
 
     fun bottom(): Int {
@@ -25,7 +24,7 @@ class InstructionsView(screen: TerminalScreen,
         table.title(value = "instruction", column = 1)
     }
 
-    fun drawFocus(focusLine: Int) {
+    fun drawContent(instructions: List<Instruction>, focusLine: Int) {
         val topLine = (focusLine - TOP_OFFSET).coerceAtLeast(0)
         val instructionsSize = instructions.size
         for (i in topLine..topLine + table.height - 2) {
@@ -38,11 +37,6 @@ class InstructionsView(screen: TerminalScreen,
             }
             table.textRow(values, relativeIndex, focusLine == i)
         }
-    }
-
-    fun drawContent(instructions: List<Instruction>) {
-        this.instructions = instructions
-        drawFocus(0)
     }
 
     companion object {

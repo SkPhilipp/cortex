@@ -16,6 +16,8 @@ class ProgramException(val reason: Reason) : Exception() {
         CALL_RECIPIENT_MISSING,
         WINNER,
         UNKNOWN_INSTRUCTION,
-        REVERT
+        REVERT,
+        NO_REMAINING_PROGRAMS,
+        NO_REMAINING_INSTRUCTIONS
     }
 }
