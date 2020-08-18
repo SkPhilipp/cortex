@@ -1,4 +1,4 @@
-package com.hileco.cortex.console.views
+package com.hileco.cortex.console.components
 
 import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.screen.TerminalScreen
@@ -9,33 +9,21 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.ProgramStoreZone
 import java.math.BigInteger
 
-class SymbolicProgramStoreZoneView(private val programStoreZone: ProgramStoreZone,
-                                   screen: TerminalScreen,
-                                   position: TerminalPosition,
-                                   height: Int) {
+class SymbolicProgramStoreZoneComponent(private val programStoreZone: ProgramStoreZone,
+                                        screen: TerminalScreen,
+                                        initialPosition: TerminalPosition,
+                                        height: Int) : DelegatingComponent<Table>(Table(screen, initialPosition, height, listOf(15, 25))) {
     private var values: VmMap<BigInteger, Expression> = LayeredVmMap()
-    private val table: Table = Table(screen, position, height, listOf(15, 25))
+    private var focusLine: Int = -1
 
-    fun bottom(): Int {
-        return table.bottom()
-    }
-
-    fun right(): Int {
-        return table.right()
-    }
-
-    fun draw() {
-        table.draw()
-        table.title(value = "$programStoreZone address", column = 0)
-        table.title(value = "value", column = 1)
-    }
-
-    fun drawContent(values: VmMap<BigInteger, Expression>, focusLine: Int = -1) {
-        this.values = values
+    override fun draw() {
+        delegate.draw()
+        delegate.title(value = "$programStoreZone address", column = 0)
+        delegate.title(value = "value", column = 1)
         val topLine = (focusLine - TOP_OFFSET).coerceAtLeast(0)
         val valuesSize = values.size()
         val sortedKeys = values.keySet().sorted()
-        for (i in topLine..topLine + table.height - 2) {
+        for (i in topLine..topLine + delegate.height - 2) {
             val relativeIndex = i - topLine
             val row = if (i < valuesSize) {
                 val key = sortedKeys[i]
@@ -44,8 +32,13 @@ class SymbolicProgramStoreZoneView(private val programStoreZone: ProgramStoreZon
             } else {
                 listOf("", "")
             }
-            table.textRow(row, relativeIndex, focusLine == i)
+            delegate.textRow(row, relativeIndex, focusLine == i)
         }
+    }
+
+    fun content(values: VmMap<BigInteger, Expression>, focusLine: Int = -1) {
+        this.values = values
+        this.focusLine = focusLine
     }
 
     companion object {

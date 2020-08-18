@@ -7,18 +7,13 @@ import com.googlecode.lanterna.input.KeyType
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.googlecode.lanterna.terminal.Terminal
+import com.hileco.cortex.console.compositions.SymbolicProgramComposition
 import com.hileco.cortex.console.graphics.Background
-import com.hileco.cortex.console.graphics.Box
-import com.hileco.cortex.console.views.InstructionsView
-import com.hileco.cortex.console.views.SymbolicPathEntryView
-import com.hileco.cortex.console.views.SymbolicProgramStoreZoneView
-import com.hileco.cortex.console.views.SymbolicStackView
 import com.hileco.cortex.ethereum.EthereumBarriers
 import com.hileco.cortex.symbolic.explore.SymbolicProgramDebugger
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramStoreZone
 
 fun debugger(): SymbolicProgramDebugger {
     val ethereumBarriers = EthereumBarriers()
@@ -43,39 +38,12 @@ fun main() {
 
     var debugger = debugger()
 
-    val instructionsView = InstructionsView(screen, TerminalPosition(1, 2), 23)
-    val stackView = SymbolicStackView(screen, TerminalPosition(instructionsView.right() + 2, 2), 10)
-    val memoryView = SymbolicProgramStoreZoneView(ProgramStoreZone.MEMORY, screen, TerminalPosition(stackView.right() + 2, 2), 10);
-    val callDataView = SymbolicProgramStoreZoneView(ProgramStoreZone.CALL_DATA, screen, TerminalPosition(instructionsView.right() + 2, stackView.bottom() + 3), 10);
-    val diskView = SymbolicProgramStoreZoneView(ProgramStoreZone.DISK, screen, TerminalPosition(callDataView.right() + 2, memoryView.bottom() + 3), 10);
-    val exitView = Box(screen, TerminalPosition(1, instructionsView.bottom() + 3), TerminalSize(27, 3))
-    val pathView = SymbolicPathEntryView(screen, TerminalPosition(exitView.right() + 2, instructionsView.bottom() + 3), 10)
+    val composition = SymbolicProgramComposition(screen, debugger.virtualMachine, TerminalPosition(1, 2))
 
     var redraw = true
     loop@ while (true) {
-        instructionsView.draw()
-        val instructions = debugger.virtualMachine.programs.first().program.instructions
-        val positionedInstructions = debugger.virtualMachine.programs.first().program.instructionsAbsolute
-        val instructionPosition = debugger.virtualMachine.programs.first().instructionPosition
-        val positionedInstruction = positionedInstructions[instructionPosition] ?: throw IllegalStateException()
         if (redraw) {
-            instructionsView.drawContent(instructions, positionedInstruction.relativePosition)
-            stackView.draw()
-            stackView.drawContent(debugger.virtualMachine.programs.first().stack)
-            memoryView.draw()
-            memoryView.drawContent(debugger.virtualMachine.programs.first().memory)
-            callDataView.draw()
-            callDataView.drawContent(debugger.virtualMachine.programs.first().callData)
-            diskView.draw()
-            diskView.drawContent(debugger.virtualMachine.programs.first().program.storage)
-            exitView.title(value = "state")
-            exitView.draw()
-            pathView.draw()
-            pathView.drawContent(debugger.virtualMachine.path)
-            val exitedReason = debugger.virtualMachine.exitedReason
-            if (exitedReason != null) {
-                exitView.text(exitedReason.name)
-            }
+            composition.draw()
             screen.refresh()
             redraw = false
         }
@@ -96,6 +64,7 @@ fun main() {
                 }
                 keyStroke.character == 'r' -> {
                     debugger = debugger()
+                    composition.virtualMachine = debugger.virtualMachine
                     redraw = true
                 }
             }

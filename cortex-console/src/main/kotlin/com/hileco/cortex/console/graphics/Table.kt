@@ -4,9 +4,10 @@ import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.TerminalSize
 import com.googlecode.lanterna.TextColor
 import com.googlecode.lanterna.screen.TerminalScreen
+import com.hileco.cortex.console.components.Component
 
 class Table(screen: TerminalScreen,
-            val position: TerminalPosition,
+            override val position: TerminalPosition,
             val height: Int,
             columnWidths: List<Int>,
             private val colorScheme: ColorScheme = ColorScheme(
@@ -14,16 +15,18 @@ class Table(screen: TerminalScreen,
                     background = TextColor.ANSI.BLACK,
                     foregroundHighlight = TextColor.ANSI.BLACK,
                     backgroundHighlight = TextColor.ANSI.WHITE
-            )) {
+            )) : Component {
     private val columnBoxes: List<Box>
 
-    fun bottom(): Int {
-        return columnBoxes.lastOrNull()?.bottom() ?: position.row
-    }
+    override val bottom: Int
+        get() {
+            return columnBoxes.lastOrNull()?.bottom() ?: position.row
+        }
 
-    fun right(): Int {
-        return columnBoxes.lastOrNull()?.right() ?: position.column
-    }
+    override val right: Int
+        get() {
+            return columnBoxes.lastOrNull()?.right() ?: position.column
+        }
 
     init {
         var currentWidth = 0
@@ -43,7 +46,7 @@ class Table(screen: TerminalScreen,
                 .toList()
     }
 
-    fun draw() {
+    override fun draw() {
         columnBoxes.forEach {
             it.draw()
         }
