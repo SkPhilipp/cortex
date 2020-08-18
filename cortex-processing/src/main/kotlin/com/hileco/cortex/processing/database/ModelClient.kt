@@ -86,6 +86,13 @@ class ModelClient {
                 .firstOrNull()
     }
 
+    fun programs(skip: Int, limit: Int): Iterable<ProgramModel> {
+        return databaseClient.programs().find()
+                .sort(Document("location.blockNumber", 1))
+                .skip(skip)
+                .limit(limit)
+    }
+
     companion object {
         val databaseClient: DatabaseClient by lazy { DatabaseClient() }
     }
