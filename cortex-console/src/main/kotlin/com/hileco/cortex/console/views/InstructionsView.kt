@@ -8,7 +8,7 @@ import com.hileco.cortex.vm.instructions.Instruction
 class InstructionsView(screen: TerminalScreen,
                        position: TerminalPosition,
                        height: Int) {
-    private val table: Table = Table(screen, position, height, listOf(7, 20))
+    private val table: Table = Table(screen, position, height, listOf(7, 30))
 
     fun bottom(): Int {
         return table.bottom()

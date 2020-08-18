@@ -31,7 +31,7 @@ fun debugger(): SymbolicProgramDebugger {
 
 fun main() {
     val defaultTerminalFactory = DefaultTerminalFactory()
-    defaultTerminalFactory.setInitialTerminalSize(TerminalSize(120, 45))
+    defaultTerminalFactory.setInitialTerminalSize(TerminalSize(140, 45))
     defaultTerminalFactory.setTerminalEmulatorTitle("Cortex Console // Symbolic Virtual Machine Debugger")
     val terminal: Terminal = defaultTerminalFactory.createTerminal()
     val screen = TerminalScreen(terminal)

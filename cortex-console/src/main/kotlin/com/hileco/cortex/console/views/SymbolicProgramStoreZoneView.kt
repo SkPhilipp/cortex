@@ -40,7 +40,7 @@ class SymbolicProgramStoreZoneView(private val programStoreZone: ProgramStoreZon
             val row = if (i < valuesSize) {
                 val key = sortedKeys[i]
                 val expression = values[key]
-                listOf("$i", "$expression")
+                listOf("$key", "$expression")
             } else {
                 listOf("", "")
             }
