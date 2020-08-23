@@ -6,18 +6,15 @@ import org.junit.Test
 
 class SolidityCompilerTest {
 
-    /**
-     * Manual compilation is possible with `docker run -v "$(pwd):/volume" -w /volume ethereum/solc:0.5.7 --bin contract.sol`
-     */
     @Test
     fun testCompile() {
-        val bytecode = TEST_COMPILER.compile("05_greeter.sol")
+        val bytecode = TEST_COMPILER.compile("barrier000.sol")
 
         Documentation.of(SolidityCompiler::class.java.simpleName)
                 .headingParagraph(SolidityCompiler::class.java.simpleName)
                 .paragraph("Allows for direct integration with the Solidity compiler (current default version: ${SolidityCompiler.DEFAULT_VERSION})." +
                         "This allows for testing on bytecode of contracts found in the wild, on different versions and across platforms.")
-                .paragraph("Using the 05_greeter.sol example contract, the integration yields bytecode:")
+                .paragraph("Using the barrier000.sol example contract, the integration yields bytecode:")
                 .source(bytecode.serialize())
 
         Assert.assertTrue(bytecode.isNotEmpty())
@@ -25,7 +22,7 @@ class SolidityCompilerTest {
 
     @Test
     fun testAssembly() {
-        val output = TEST_COMPILER.execute("--bin", "--asm", "05_greeter.sol")
+        val output = TEST_COMPILER.execute("--bin", "--asm", "barrier000.sol")
 
         Assert.assertTrue(output.any { it.contains("EVM assembly") })
     }

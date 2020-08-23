@@ -2,6 +2,7 @@ package com.hileco.cortex.processing.geth
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.hileco.cortex.ethereum.process.ProcessRunner
 
 open class GethLoader {
     private val objectMapper = ObjectMapper()

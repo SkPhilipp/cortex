@@ -1,4 +1,4 @@
-package com.hileco.cortex.processing.geth
+package com.hileco.cortex.ethereum.process
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

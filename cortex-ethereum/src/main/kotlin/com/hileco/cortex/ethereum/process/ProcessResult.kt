@@ -1,4 +1,4 @@
-package com.hileco.cortex.processing.geth
+package com.hileco.cortex.ethereum.process
 
 data class ProcessResult(
         val output: List<String>,
