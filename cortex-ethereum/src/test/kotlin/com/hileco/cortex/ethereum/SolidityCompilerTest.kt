@@ -38,7 +38,7 @@ class SolidityCompilerTest {
             } else {
                 System.getProperty("user.dir")
             }
-            TEST_COMPILER = SolidityCompiler("$volumeBasePath/src/test/resources/contracts")
+            TEST_COMPILER = SolidityCompiler("$volumeBasePath/src/main/resources/contracts")
         }
     }
 }

@@ -1,30 +1,24 @@
 package com.hileco.cortex.ethereum
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-
-class EthereumBarriers(
-        ethereumParser: EthereumParser = EthereumParser(),
-        ethereumTranspiler: EthereumTranspiler = EthereumTranspiler(),
-        objectMapper: ObjectMapper = jacksonObjectMapper()
-) {
-
-    private var barriers: List<EthereumBarrier>
-
-    init {
-        val jsonBarriers: JsonNode = objectMapper.readTree(javaClass.getResource("/barriers.json").readText())
-        this.barriers = jsonBarriers.map { barrier ->
-            val id = barrier.get("id").asText()
-            val contractAddress = barrier.get("contractAddress").asText()
-            val contractCode = barrier.get("contractCode").asText()
-            val ethereumInstructions = ethereumParser.parse(contractCode.deserializeBytes())
-            val cortexInstructions = ethereumTranspiler.transpile(ethereumInstructions)
-            EthereumBarrier(id, contractAddress, contractCode, ethereumInstructions, cortexInstructions)
-        }
-    }
+class EthereumBarriers {
 
     fun all(): List<EthereumBarrier> {
-        return barriers
+        return BARRIERS
+    }
+
+    companion object {
+        private val BARRIERS: List<EthereumBarrier> by lazy {
+            val ethereumParser = EthereumParser()
+            val ethereumTranspiler = EthereumTranspiler()
+            IntRange(0, 16).asSequence()
+                    .map {
+                        val identifier = "$it".padStart(3, '0')
+                        val code = EthereumBarrier::class.java.getResource("/contracts/barrier$identifier.sol.bin").readText().trim()
+                        val ethereumInstructions = ethereumParser.parse(code.deserializeBytes())
+                        val cortexInstructions = ethereumTranspiler.transpile(ethereumInstructions)
+                        EthereumBarrier(identifier, code, ethereumInstructions, cortexInstructions)
+                    }
+                    .toList()
+        }
     }
 }
