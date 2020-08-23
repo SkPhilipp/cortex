@@ -13,7 +13,7 @@ class GethContractLoader : GethLoader() {
                             bytecode = element.get("bytecode").asText(),
                             transactionHash = element.get("transactionHash").asText(),
                             address = element.get("address").asText(),
-                            currency = element.get("currency").decimalValue()
+                            balance = element.get("balance").decimalValue()
                     )
                 }
                 .toList()

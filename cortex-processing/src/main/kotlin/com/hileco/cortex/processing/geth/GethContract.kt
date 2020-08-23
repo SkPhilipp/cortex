@@ -6,5 +6,5 @@ data class GethContract(
         val bytecode: String,
         val transactionHash: String,
         val address: String,
-        val currency: BigDecimal
+        val balance: BigDecimal
 )

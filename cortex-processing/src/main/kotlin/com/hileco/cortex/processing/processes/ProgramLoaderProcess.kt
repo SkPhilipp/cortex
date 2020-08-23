@@ -33,7 +33,7 @@ class ProgramLoaderProcess : BaseProcess() {
                     bytecode = contract.bytecode,
                     histogram = programHistogramBuilder.histogram(contract.bytecode),
                     disk = mapOf(),
-                    currency = contract.currency,
+                    balance = contract.balance,
                     analyses = mutableListOf()
             ))
         }

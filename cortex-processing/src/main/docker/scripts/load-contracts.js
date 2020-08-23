@@ -14,7 +14,7 @@ function run(networkAddress, blockNumberStart, blockNumberEnd) {
 					transactionHash: transaction.hash,
 					bytecode: contractCode,
 					address: receipt.contractAddress,
-					currency: contractBalanceWei
+					balance: contractBalanceWei
 				};
 				if (!firstElement) {
 					console.log(",");

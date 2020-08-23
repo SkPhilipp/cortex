@@ -20,7 +20,7 @@ data class ProgramModel @BsonCreator constructor(
         @BsonProperty("bytecode") val bytecode: String,
         @BsonProperty("histogram") val histogram: String,
         @BsonProperty("disk") val disk: Map<String, String>,
-        @BsonProperty("currency") val currency: BigDecimal,
+        @BsonProperty("balance") val balance: BigDecimal,
         @BsonProperty("analyses") val analyses: MutableList<AnalysisReportModel>,
         @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
 )
