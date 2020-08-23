@@ -18,7 +18,7 @@ contract Barrier005 {
     }
   }
 
-  function setup() public returns (string memory thanks) {
+  function setup() public payable returns (string memory thanks) {
     return "thanks";
   }
 }

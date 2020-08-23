@@ -13,7 +13,7 @@ contract Barrier006 {
     receiver.send(amount);
   }
 
-  function setup() public returns (string memory thanks) {
+  function setup() public payable returns (string memory thanks) {
     return "thanks";
   }
 }
