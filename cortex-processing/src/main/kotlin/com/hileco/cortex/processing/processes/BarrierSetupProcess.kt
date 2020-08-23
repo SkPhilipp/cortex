@@ -11,6 +11,7 @@ class BarrierSetupProcess : BaseProcess() {
     private val modelClient = ModelClient()
     private val gethLoader = GethLoader()
     private val ethereumBarriers = EthereumBarriers()
+    private var allocated = false
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
     override fun run() {
@@ -20,7 +21,6 @@ class BarrierSetupProcess : BaseProcess() {
         }
         barriersDeploy(networkModel)
         barriersAllocateBalance(networkModel)
-        barriersTrace(networkModel)
     }
 
     private fun barriersDeploy(networkModel: NetworkModel) {
@@ -35,22 +35,21 @@ class BarrierSetupProcess : BaseProcess() {
     }
 
     private fun barriersAllocateBalance(networkModel: NetworkModel) {
-        val ethereumBarrierPrograms = ethereumBarriers.all()
-        var programs = listOf<ProgramModel>()
-        while (programs.size < ethereumBarrierPrograms.size) {
-            programs = modelClient.programs(0, ethereumBarrierPrograms.size).toList()
-            Thread.sleep(1000)
-        }
-        programs.forEach { programModel ->
-            if (programModel.balance == BigDecimal.ZERO) {
-                val result = gethLoader.executeGeth("setup-barrier-balance.js", networkModel.networkAddress, programModel.location.programAddress)
-                println("Program Allocate ${programModel.location.programAddress}: $result")
+        if (!allocated) {
+            val ethereumBarrierPrograms = ethereumBarriers.all()
+            var programs = listOf<ProgramModel>()
+            while (programs.size < ethereumBarrierPrograms.size) {
+                programs = modelClient.programs(0, ethereumBarrierPrograms.size).toList()
+                Thread.sleep(1000)
             }
+            programs.forEach { programModel ->
+                if (programModel.balance == BigDecimal.ZERO) {
+                    val result = gethLoader.executeGeth("setup-barrier-balance.js", networkModel.networkAddress, programModel.location.programAddress)
+                    println("Program Allocate ${programModel.location.programAddress}: $result")
+                }
+            }
+            allocated = true
         }
-    }
-
-    private fun barriersTrace(networkModel: NetworkModel) {
-        // debug.traceTransaction("0xa35e1b362299a921c9ee869acfef95427b406b04dc2876bd50d86902f5a16027")
     }
 
     companion object {
