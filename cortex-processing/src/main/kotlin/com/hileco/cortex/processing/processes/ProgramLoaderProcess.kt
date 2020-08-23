@@ -41,7 +41,7 @@ class ProgramLoaderProcess : BaseProcess() {
     }
 
     companion object {
-        private val BLOCKS_PER_SCAN = BigDecimal.valueOf(20)
+        private val BLOCKS_PER_SCAN = BigDecimal.valueOf(100)
         private val MARGIN = BigDecimal(20)
     }
 }

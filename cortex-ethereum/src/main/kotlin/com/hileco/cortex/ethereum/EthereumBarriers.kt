@@ -16,7 +16,7 @@ class EthereumBarriers {
                         val code = EthereumBarrier::class.java.getResource("/contracts/barrier$identifier.sol.bin").readText().trim()
                         val ethereumInstructions = ethereumParser.parse(code.deserializeBytes())
                         val cortexInstructions = ethereumTranspiler.transpile(ethereumInstructions)
-                        EthereumBarrier(identifier, code, ethereumInstructions, cortexInstructions)
+                        EthereumBarrier(identifier, "0x$code", ethereumInstructions, cortexInstructions)
                     }
                     .toList()
         }

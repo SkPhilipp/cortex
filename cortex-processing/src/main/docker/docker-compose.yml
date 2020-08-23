@@ -5,8 +5,7 @@ services:
   #
   # Scripts in the `./scripts` directory can be launched as such;
   #    cd cortex-processing/src/main/docker/
-  #    docker exec miner geth attach --preload '/scripts/test/barriers-bytecode.js' --exec 'loadScript("/scripts/test/barriers-deploy.js")'
-  #    docker exec miner geth attach --preload '/scripts/test/barriers-bytecode.js' --exec 'loadScript("/scripts/test/navigate-contracts.js")'
+  #    docker exec miner geth attach --exec 'loadScript("/scripts/test/navigate-contracts.js")'
   miner:
     container_name: "miner"
     image: ethereum/client-go:alltools-v1.9.16
