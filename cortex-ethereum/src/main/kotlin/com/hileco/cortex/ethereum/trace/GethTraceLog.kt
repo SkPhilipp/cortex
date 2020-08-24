@@ -1,4 +1,4 @@
-package com.hileco.cortex.console.trace
+package com.hileco.cortex.ethereum.trace
 
 data class GethTraceLog(
         val depth: Int,

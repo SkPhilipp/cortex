@@ -15,7 +15,6 @@ dependencies {
     compile project(':cortex-processing')
     compile 'com.googlecode.lanterna:lanterna:3.0.3'
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.50'
-    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1'
     testCompile 'junit:junit:4.12'
 }
 

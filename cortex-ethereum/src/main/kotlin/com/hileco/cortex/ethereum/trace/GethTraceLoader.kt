@@ -1,4 +1,4 @@
-package com.hileco.cortex.console.trace
+package com.hileco.cortex.ethereum.trace
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
