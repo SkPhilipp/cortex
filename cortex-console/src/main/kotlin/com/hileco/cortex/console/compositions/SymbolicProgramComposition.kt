@@ -20,13 +20,13 @@ class SymbolicProgramComposition(screen: TerminalScreen,
     override val right: Int
         get() = pathView.right
 
-    private val instructionsView = InstructionsComponent(screen, initialPosition, 23)
-    private val stackView = SymbolicStackComponent(screen, TerminalPosition(instructionsView.right + 2, initialPosition.row), 10)
-    private val memoryView = SymbolicProgramStoreZoneComponent(ProgramStoreZone.MEMORY, screen, TerminalPosition(stackView.right + 2, initialPosition.row), 10)
-    private val callDataView = SymbolicProgramStoreZoneComponent(ProgramStoreZone.CALL_DATA, screen, TerminalPosition(instructionsView.right + 2, stackView.bottom + 3), 10)
-    private val diskView = SymbolicProgramStoreZoneComponent(ProgramStoreZone.DISK, screen, TerminalPosition(callDataView.right + 2, memoryView.bottom + 3), 10)
+    private val instructionsView = InstructionsTable(screen, initialPosition, 23)
+    private val stackView = SymbolicStackTable(screen, TerminalPosition(instructionsView.right + 2, initialPosition.row), 10)
+    private val memoryView = SymbolicProgramStoreZoneTable(ProgramStoreZone.MEMORY, screen, TerminalPosition(stackView.right + 2, initialPosition.row), 10)
+    private val callDataView = SymbolicProgramStoreZoneTable(ProgramStoreZone.CALL_DATA, screen, TerminalPosition(instructionsView.right + 2, stackView.bottom + 3), 10)
+    private val diskView = SymbolicProgramStoreZoneTable(ProgramStoreZone.DISK, screen, TerminalPosition(callDataView.right + 2, memoryView.bottom + 3), 10)
     private val exitView = Box(screen, TerminalPosition(initialPosition.column, instructionsView.bottom + 3), TerminalSize(27, 3))
-    private val pathView = SymbolicPathEntryComponent(screen, TerminalPosition(exitView.right() + 2, instructionsView.bottom + 3), 10)
+    private val pathView = SymbolicPathEntryTable(screen, TerminalPosition(exitView.right() + 2, instructionsView.bottom + 3), 10)
     private val background = Background(screen)
 
     override fun draw() {
@@ -35,7 +35,7 @@ class SymbolicProgramComposition(screen: TerminalScreen,
         val instructionPosition = virtualMachine.programs.first().instructionPosition
         val positionedInstruction = positionedInstructions[instructionPosition] ?: throw IllegalStateException()
         background.draw()
-        instructionsView.content(instructions = instructions, focusLine = positionedInstruction.relativePosition)
+        instructionsView.content(values = instructions, focusLine = positionedInstruction.relativePosition)
         instructionsView.draw()
         stackView.content(values = virtualMachine.programs.first().stack)
         stackView.draw()

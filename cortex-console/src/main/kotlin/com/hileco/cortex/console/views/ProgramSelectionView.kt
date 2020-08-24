@@ -5,14 +5,14 @@ import com.googlecode.lanterna.input.KeyStroke
 import com.googlecode.lanterna.input.KeyType
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.hileco.cortex.console.components.DelegatingComponent
-import com.hileco.cortex.console.components.ProgramModelComponent
+import com.hileco.cortex.console.components.ProgramModelTable
 import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.processing.database.ProgramModel
 
 class ProgramSelectionView(screen: TerminalScreen,
                            initialPosition: TerminalPosition,
                            private val onSelect: (ProgramModel) -> Unit) :
-        DelegatingComponent<ProgramModelComponent>(ProgramModelComponent(screen, initialPosition, 20)) {
+        DelegatingComponent<ProgramModelTable>(ProgramModelTable(screen, initialPosition, 20)) {
     private val modelClient = ModelClient()
     private var programs = listOf<ProgramModel>()
 
@@ -29,16 +29,16 @@ class ProgramSelectionView(screen: TerminalScreen,
     override fun handleKeyStroke(keyStroke: KeyStroke) {
         when (keyStroke.keyType) {
             KeyType.ArrowUp -> {
-                if (delegate.focusLine > 0) {
-                    delegate.focusLine--
+                if (delegate.delegate.focusLine > 0) {
+                    delegate.delegate.focusLine--
                 }
             }
             KeyType.ArrowDown -> {
-                delegate.focusLine++
+                delegate.delegate.focusLine++
             }
             KeyType.Enter -> {
-                if (delegate.focusLine < programs.size) {
-                    val programModel = programs[delegate.focusLine]
+                if (delegate.delegate.focusLine < programs.size) {
+                    val programModel = programs[delegate.delegate.focusLine]
                     onSelect(programModel)
                 }
             }

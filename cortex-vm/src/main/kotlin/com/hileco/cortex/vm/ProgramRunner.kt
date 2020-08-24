@@ -3,7 +3,6 @@ package com.hileco.cortex.vm
 import com.hileco.cortex.collections.VmByteArray
 import com.hileco.cortex.vm.ProgramException.Reason.*
 import com.hileco.cortex.vm.ProgramStoreZone.*
-import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
@@ -34,7 +33,8 @@ import kotlin.experimental.inv
 import kotlin.experimental.or
 import kotlin.experimental.xor
 
-class ProgramRunner(private val virtualMachine: VirtualMachine) {
+class ProgramRunner(private val virtualMachine: VirtualMachine,
+                    private var onInstruction: (PositionedInstruction, ProgramContext) -> Unit = { _, _ -> }) {
     fun run() {
         if (virtualMachine.programs.isEmpty()) {
             return
@@ -45,7 +45,8 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
             val currentInstructionPosition = programContext.instructionPosition
             val positionedInstruction = programContext.program.instructionsAbsolute[currentInstructionPosition]
                     ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-            runInstruction(positionedInstruction.instruction, programContext)
+            onInstruction(positionedInstruction, programContext)
+            runInstruction(positionedInstruction, programContext)
             if (virtualMachine.programs.isEmpty()) {
                 break
             }
@@ -64,8 +65,8 @@ class ProgramRunner(private val virtualMachine: VirtualMachine) {
         }
     }
 
-    private fun runInstruction(instruction: Instruction, programContext: ProgramContext) {
-        when (instruction) {
+    private fun runInstruction(positionedInstruction: PositionedInstruction, programContext: ProgramContext) {
+        when (val instruction = positionedInstruction.instruction) {
             is BITWISE_AND -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)

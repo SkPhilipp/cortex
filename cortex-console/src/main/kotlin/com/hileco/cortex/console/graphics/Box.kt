@@ -49,13 +49,6 @@ class Box(screen: TerminalScreen,
         text(value, -2)
     }
 
-    fun texts(values: List<String>) {
-        val limit = values.size.coerceAtMost(size.rows - 1)
-        for (i in 0 until limit) {
-            text(values[i], i)
-        }
-    }
-
     fun text(value: String, line: Int = 0, highlight: Boolean = false) {
         textGraphics.foregroundColor = if (highlight) colorScheme.foregroundHighlight else colorScheme.foreground
         textGraphics.backgroundColor = if (highlight) colorScheme.backgroundHighlight else colorScheme.background

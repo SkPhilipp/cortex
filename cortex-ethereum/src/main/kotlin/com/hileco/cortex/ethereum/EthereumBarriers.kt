@@ -2,6 +2,10 @@ package com.hileco.cortex.ethereum
 
 class EthereumBarriers {
 
+    fun byId(id: String): EthereumBarrier {
+        return BARRIERS.first { it.id == id }
+    }
+
     fun all(): List<EthereumBarrier> {
         return BARRIERS
     }

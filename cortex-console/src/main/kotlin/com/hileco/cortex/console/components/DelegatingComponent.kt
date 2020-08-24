@@ -3,8 +3,7 @@ package com.hileco.cortex.console.components
 import com.googlecode.lanterna.TerminalPosition
 
 
-abstract class DelegatingComponent<T : Component>(val delegate: T) : Component {
-
+abstract class DelegatingComponent<T : Component>(var delegate: T) : Component {
     override val position: TerminalPosition
         get() {
             return delegate.position

@@ -9,7 +9,7 @@ internal class ProgramIdentifierTest {
     @Test
     fun testIdentify() {
         val ethereumBarriers = EthereumBarriers()
-        val ethereumBarrier = ethereumBarriers.all().first()
+        val ethereumBarrier = ethereumBarriers.byId("000")
         val programHistogramBuilder = ProgramHistogramBuilder()
         val histogram = programHistogramBuilder.histogram(ethereumBarrier.contractCode)
 

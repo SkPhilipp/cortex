@@ -6,10 +6,12 @@ import com.googlecode.lanterna.TextColor
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.hileco.cortex.console.components.Component
 
-class Table(screen: TerminalScreen,
+class Table(private val screen: TerminalScreen,
             override val position: TerminalPosition,
-            val height: Int,
-            columnWidths: List<Int>,
+            private val height: Int,
+            private val columns: List<TableColumn>,
+            private val dataProvider: (Int) -> List<TableCell>,
+            var focusLine: Int = -1,
             private val colorScheme: ColorScheme = ColorScheme(
                     foreground = TextColor.ANSI.WHITE,
                     background = TextColor.ANSI.BLACK,
@@ -31,15 +33,15 @@ class Table(screen: TerminalScreen,
     init {
         var currentWidth = 0
         var currentIsExtension = false
-        columnBoxes = columnWidths.map { columnWidth ->
+        columnBoxes = columns.map { column ->
             val box = Box(
                     screen = screen,
                     position = position.withRelativeColumn(currentWidth),
-                    size = TerminalSize(columnWidth, height),
+                    size = TerminalSize(column.width, height),
                     colorScheme = colorScheme,
                     isExtension = currentIsExtension
             )
-            currentWidth += columnWidth
+            currentWidth += column.width
             currentIsExtension = true
             box
         }
@@ -47,30 +49,29 @@ class Table(screen: TerminalScreen,
     }
 
     override fun draw() {
-        columnBoxes.forEach {
-            it.draw()
+        columnBoxes.forEachIndexed { index, box ->
+            box.title(columns[index].title)
+            box.draw()
         }
     }
 
-    fun title(value: String, column: Int) {
-        columnBoxes[column].title(value)
-    }
-
-    fun textTable(values: List<List<String>>) {
-        val limit = values.size.coerceAtMost(height - 1)
-        for (i in 0 until limit) {
-            textRow(values[i], i)
+    fun refresh() {
+        val topLine = (focusLine - TOP_OFFSET).coerceAtLeast(0)
+        for (i in topLine..topLine + height - 2) {
+            val relativeIndex = i - topLine
+            val tableCells = dataProvider(i)
+            for (column in tableCells.indices) {
+                val highlight = focusLine == i
+                columnBoxes[column].text(tableCells[column].text, relativeIndex, highlight)
+            }
+            for (column in tableCells.size until columnBoxes.size) {
+                val highlight = focusLine == i
+                columnBoxes[column].text("", relativeIndex, highlight)
+            }
         }
     }
 
-    fun textRow(values: List<String>, line: Int = 0, highlight: Boolean = false) {
-        val limit = values.size.coerceAtMost(columnBoxes.size)
-        for (i in 0 until limit) {
-            textCell(values[i], i, line, highlight)
-        }
-    }
-
-    fun textCell(value: String, column: Int, line: Int = 0, highlight: Boolean = false) {
-        columnBoxes[column].text(value, line, highlight)
+    companion object {
+        private const val TOP_OFFSET = 2
     }
 }

@@ -30,7 +30,7 @@ class EthereumTranspilerTest {
 
     @Test
     fun testTransaction() {
-        val bytecode = ethereumBarriers.all().first().contractCode
+        val bytecode = ethereumBarriers.byId("000").contractCode
         val ethereumInstructions = ethereumParser.parse(bytecode.deserializeBytes())
         val instructions = ethereumTranspiler.transpile(ethereumInstructions)
         val basicGraph = BASIC_GRAPH_BUILDER.build(instructions)
