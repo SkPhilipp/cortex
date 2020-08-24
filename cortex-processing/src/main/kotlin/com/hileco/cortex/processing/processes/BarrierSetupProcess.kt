@@ -29,7 +29,7 @@ class BarrierSetupProcess : BaseProcess() {
             return
         }
         ethereumBarriers.all().forEach { ethereumBarrier ->
-            val result = gethLoader.executeGeth("setup-barrier-deploy.js", networkModel.networkAddress, ethereumBarrier.contractCode)
+            val result = gethLoader.executeGeth("setup-barrier-deploy.js", networkModel.networkAddress, ethereumBarrier.contractSetupCode)
             println("Barrier Program Deploy ${ethereumBarrier.id}: $result")
         }
     }

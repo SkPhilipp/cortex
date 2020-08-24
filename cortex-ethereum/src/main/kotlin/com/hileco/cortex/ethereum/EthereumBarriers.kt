@@ -13,12 +13,16 @@ class EthereumBarriers {
             IntRange(0, 16).asSequence()
                     .map {
                         val identifier = "$it".padStart(3, '0')
-                        val code = EthereumBarrier::class.java.getResource("/contracts/barrier$identifier.sol.bin").readText().trim()
-                        val ethereumInstructions = ethereumParser.parse(code.deserializeBytes())
+                        val contractSetupCode = EthereumBarrier::class.java.getResource("/contracts/barrier$identifier.sol.bin").readText().trim()
+                        SETUP_PREFIX.find(contractSetupCode) ?: throw IllegalStateException("No known prefix in $contractSetupCode")
+                        val contractCode = SETUP_PREFIX.replace(contractSetupCode, "6080604052")
+                        val ethereumInstructions = ethereumParser.parse(contractCode.deserializeBytes())
                         val cortexInstructions = ethereumTranspiler.transpile(ethereumInstructions)
-                        EthereumBarrier(identifier, "0x$code", ethereumInstructions, cortexInstructions)
+                        EthereumBarrier(identifier, "0x$contractCode", "0x$contractSetupCode", ethereumInstructions, cortexInstructions)
                     }
                     .toList()
         }
+
+        private val SETUP_PREFIX = "6080604052.*?6080604052".toRegex()
     }
 }

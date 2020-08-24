@@ -19,6 +19,7 @@ data class ProgramModel @BsonCreator constructor(
         @BsonProperty("location") val location: TransactionLocationModel,
         @BsonProperty("bytecode") val bytecode: String,
         @BsonProperty("histogram") val histogram: String,
+        @BsonProperty("identifiedAs") val identifiedAs: String,
         @BsonProperty("disk") val disk: Map<String, String>,
         @BsonProperty("balance") val balance: BigDecimal,
         @BsonProperty("analyses") val analyses: MutableList<AnalysisReportModel>,

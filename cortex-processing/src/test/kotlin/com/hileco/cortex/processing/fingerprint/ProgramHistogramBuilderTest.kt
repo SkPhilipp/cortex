@@ -1,4 +1,4 @@
-package com.hileco.cortex.processing.histogram
+package com.hileco.cortex.processing.fingerprint
 
 import org.junit.Assert
 import org.junit.Test

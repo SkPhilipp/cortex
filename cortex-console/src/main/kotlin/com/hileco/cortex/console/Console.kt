@@ -31,7 +31,7 @@ class Console(val screen: TerminalScreen) {
         }
     }
 
-    fun symbolicProgramDebugger(programModel: ProgramModel) {
+    private fun symbolicProgramDebugger(programModel: ProgramModel) {
         this.background.draw()
         this.view = SymbolicProgramDebuggerView(screen, TerminalPosition(1, 2)) {
             val ethereumParser = EthereumParser()
