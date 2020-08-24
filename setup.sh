@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 (
-  cd cortex-processing/src/main/docker || exit 1
+  cd cortex-ethereum/src/main/docker || exit 1
   docker-compose up
 )
