@@ -1,6 +1,7 @@
 package com.hileco.cortex.fuzzing
 
 import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 
 enum class FuzzFunction(private val chance: Double,
                         val implementation: (ProgramGeneratorContext) -> Unit) : Chanced {
@@ -10,8 +11,8 @@ enum class FuzzFunction(private val chance: Double,
 
     CALL_WITH_FUNDS(1.0, { context ->
         with(context.builder) {
-            push(context.random().toByteArray())
-            push(context.random().toByteArray())
+            push(context.random())
+            push(context.random())
             swap(0, context.randomIntBetween(1, STACK_SWAP_UPPER_BOUND))
             call()
         }
@@ -22,8 +23,8 @@ enum class FuzzFunction(private val chance: Double,
             val choices = context.atlas().keySet()
             if (choices.isNotEmpty()) {
                 val address = choices.toTypedArray()[context.randomIntBetween(0, choices.size)]
-                push(0)
-                push(address.toByteArray())
+                push(ZERO_32)
+                push(address)
                 call()
             } else {
                 exit()

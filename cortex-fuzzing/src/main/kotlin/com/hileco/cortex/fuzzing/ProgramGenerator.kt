@@ -2,11 +2,11 @@ package com.hileco.cortex.fuzzing
 
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.vm.Program
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
-import java.math.BigInteger
 
 class ProgramGenerator {
-    fun generate(seed: Long): LayeredVmMap<BigInteger, Program> {
+    fun generate(seed: Long): LayeredVmMap<BackedInteger, Program> {
         val context = ProgramGeneratorContext(seed)
         context.forRandom(1, LIMIT_INITIAL_PROGRAMS) {
             context.builder = InstructionsBuilder()

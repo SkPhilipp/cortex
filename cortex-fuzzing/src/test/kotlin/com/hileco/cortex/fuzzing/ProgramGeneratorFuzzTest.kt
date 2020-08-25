@@ -42,7 +42,7 @@ class ProgramGeneratorFuzzTest {
         val first = generated.keySet().first()
         val program = generated[first]
         Documentation.of("fuzzer/sample").source(program!!.instructions)
-        Assert.assertTrue(!program.instructions.isEmpty())
+        Assert.assertTrue(program.instructions.isNotEmpty())
     }
 
     companion object {

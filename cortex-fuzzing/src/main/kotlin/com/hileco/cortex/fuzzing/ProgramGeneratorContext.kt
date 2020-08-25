@@ -2,14 +2,15 @@ package com.hileco.cortex.fuzzing
 
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.vm.Program
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
-import java.math.BigInteger
 import java.util.*
 import java.util.stream.IntStream
 
 class ProgramGeneratorContext(seed: Long) {
     var builder: InstructionsBuilder = InstructionsBuilder()
-    private val atlas: LayeredVmMap<BigInteger, Program> = LayeredVmMap()
+    private val atlas: LayeredVmMap<BackedInteger, Program> = LayeredVmMap()
     private val random: Random = Random(seed)
     private val randomFuzzProgramLayout: () -> FuzzProgram
     private val randomFuzzFunctionLayout: () -> FuzzFunction
@@ -30,12 +31,14 @@ class ProgramGeneratorContext(seed: Long) {
         }
     }
 
-    fun randomBetween(minimum: Int, maximum: Int): BigInteger {
-        return randomIntBetween(minimum, maximum).toBigInteger()
+    fun randomBetween(minimum: Int, maximum: Int): BackedInteger {
+        return randomIntBetween(minimum, maximum).toBackedInteger()
     }
 
-    fun random(): BigInteger {
-        return this.random.nextLong().toBigInteger()
+    fun random(): BackedInteger {
+        val bytes = ByteArray(32)
+        this.random.nextBytes(bytes)
+        return BackedInteger(bytes)
     }
 
     fun randomIntBetween(minimum: Int, maximum: Int): Int {
@@ -47,7 +50,7 @@ class ProgramGeneratorContext(seed: Long) {
         IntStream.range(minimum, choice + 1).forEach(consumer)
     }
 
-    fun atlas(): LayeredVmMap<BigInteger, Program> {
+    fun atlas(): LayeredVmMap<BackedInteger, Program> {
         return this.atlas
     }
 
