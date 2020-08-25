@@ -13,7 +13,6 @@ class BarrierSetupProcess : BaseProcess() {
     private val ethereumBarriers = EthereumBarriers()
     private var allocated = false
 
-    @Suppress("NON_EXHAUSTIVE_WHEN")
     override fun run() {
         val networkModel = modelClient.networkProcessing() ?: return
         if (networkModel.name != LOCAL_NETWORK_NAME && networkModel.network != LOCAL_NETWORK) {

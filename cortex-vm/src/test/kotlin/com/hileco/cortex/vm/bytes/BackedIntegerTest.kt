@@ -53,7 +53,7 @@ internal class BackedIntegerTest {
 
     @Test
     fun testAsUInt256Zero() {
-        val value = 0.toBackedInteger()
+        val value = ZERO_32
 
         Assert.assertEquals(0, value.toInt())
     }
@@ -148,6 +148,16 @@ internal class BackedIntegerTest {
         val result = leftValue * rightValue
 
         Assert.assertEquals(LIMIT_32 - ONE_32, result)
+    }
+
+    @Test
+    fun testPowRegularValue() {
+        val leftValue = BackedInteger("0x1000".deserializeBytes())
+        val rightValue = BackedInteger("0x03".deserializeBytes())
+
+        val result = leftValue.pow(rightValue)
+
+        Assert.assertEquals(BackedInteger("0x1000000000".deserializeBytes()), result)
     }
 
     @Test

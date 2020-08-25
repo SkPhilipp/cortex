@@ -11,7 +11,7 @@ class InstructionsTable(screen: TerminalScreen,
                         override val position: TerminalPosition,
                         height: Int) : Component {
     private var values: List<Instruction> = listOf()
-    val delegate: Table
+    private val delegate: Table
 
     init {
         delegate = Table(screen,

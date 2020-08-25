@@ -13,7 +13,7 @@ import com.hileco.cortex.vm.instructions.Instruction
 
 class SymbolicProgram : VmComponent<SymbolicProgram> {
     val instructions: List<Instruction>
-    val instructionsRelative: List<PositionedInstruction>
+    private val instructionsRelative: List<PositionedInstruction>
     val instructionsAbsolute: Map<Int, PositionedInstruction>
     val instructionsLastPosition: Int
     val address: BackedInteger

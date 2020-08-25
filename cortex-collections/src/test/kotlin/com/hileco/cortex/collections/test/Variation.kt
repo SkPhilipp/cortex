@@ -5,10 +5,6 @@ import java.util.*
 class Variation(seed: Long) {
     private var random: Random? = Random(seed)
 
-    fun seed(seed: Long) {
-        this.random = Random(seed)
-    }
-
     fun maybe(runnable: () -> Unit) {
         if (random!!.nextBoolean()) {
             runnable()

@@ -25,7 +25,6 @@ class ProgramSelectionView(screen: TerminalScreen,
         delegate.draw()
     }
 
-    @Suppress("NON_EXHAUSTIVE_WHEN")
     override fun handleKeyStroke(keyStroke: KeyStroke) {
         when (keyStroke.keyType) {
             KeyType.ArrowUp -> {
@@ -41,6 +40,8 @@ class ProgramSelectionView(screen: TerminalScreen,
                     val programModel = programs[delegate.delegate.focusLine]
                     onSelect(programModel)
                 }
+            }
+            else -> {
             }
         }
     }

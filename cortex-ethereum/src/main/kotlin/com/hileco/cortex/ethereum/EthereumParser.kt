@@ -10,7 +10,7 @@ class EthereumParser {
             val instruction = if (operation == null) {
                 EthereumInstruction(EthereumOperation.UNKNOWN, byteArrayOf(byte))
             } else {
-                val input = bytecode.copyOfRange(i + 1, Math.min(i + 1 + operation.inputBytes, bytecode.size))
+                val input = bytecode.copyOfRange(i + 1, (i + 1 + operation.inputBytes).coerceAtMost(bytecode.size))
                 i += operation.inputBytes
                 EthereumInstruction(operation, input)
             }

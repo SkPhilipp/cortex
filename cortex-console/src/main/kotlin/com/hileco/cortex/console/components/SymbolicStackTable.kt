@@ -13,7 +13,7 @@ class SymbolicStackTable(screen: TerminalScreen,
                          override val position: TerminalPosition,
                          height: Int) : Component {
     private var values: VmStack<Expression> = LayeredVmStack()
-    val delegate: Table
+    private val delegate: Table
 
     init {
         delegate = Table(screen,

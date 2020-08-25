@@ -3,6 +3,8 @@ package com.hileco.cortex.vm
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.STACK_OVERFLOW
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.LIMIT_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
@@ -54,7 +56,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -192,7 +194,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -207,7 +209,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -221,7 +223,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -236,7 +238,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -254,7 +256,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test(expected = ProgramException::class)
@@ -444,7 +446,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -515,7 +517,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -532,7 +534,7 @@ class ProgramRunnerTest {
         Assert.assertEquals(3, stack.size())
         Assert.assertEquals(100.toBackedInteger(), stack.pop())
         Assert.assertEquals(10.toBackedInteger(), stack.pop())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -548,7 +550,7 @@ class ProgramRunnerTest {
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(2, stack.size())
         Assert.assertEquals(100.toBackedInteger(), stack.pop())
-        Assert.assertEquals(1.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ONE_32, stack.pop())
     }
 
     @Test
@@ -572,7 +574,7 @@ class ProgramRunnerTest {
         )
         val stack = this.run(instructions).stack
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(0.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ZERO_32, stack.pop())
     }
 
     @Test
@@ -594,7 +596,7 @@ class ProgramRunnerTest {
         )
         val stack = this.run(instructions).stack
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(0.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ZERO_32, stack.pop())
     }
 
     @Test
@@ -602,7 +604,7 @@ class ProgramRunnerTest {
         val instructions = listOf(VARIABLE(ADDRESS_ORIGIN))
         val stack = this.run(instructions).stack
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(0.toBackedInteger(), stack.pop())
+        Assert.assertEquals(ZERO_32, stack.pop())
     }
 
     @Test

@@ -16,7 +16,7 @@ class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
                                     override val position: TerminalPosition,
                                     height: Int) : Component {
     private var values: VmMap<BackedInteger, Expression> = LayeredVmMap()
-    val delegate: Table
+    private val delegate: Table
 
     init {
         delegate = Table(screen,

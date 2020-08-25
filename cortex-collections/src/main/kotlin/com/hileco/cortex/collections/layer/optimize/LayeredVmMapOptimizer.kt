@@ -38,15 +38,13 @@ class LayeredVmMapOptimizer {
      * When a parent is equivalent to a sibling which also happens to be a parent, their children can be merged.
      */
     fun <K, V> equivalentParentMerge(layer: MapLayer<K, V>) {
-        val layerParent = layer.parent
-        if (layerParent != null) {
-            layerParent.children.asSequence()
-                    .filter { it.children.isNotEmpty() }
-                    .filter { it !== layer }
-                    .filter { it.contentEquals(layer) }
-                    .flatMap { it.children.asSequence() }
-                    .forEach { it.changeParent(layer) }
-        }
+        val layerParent = layer.parent ?: return
+        layerParent.children.asSequence()
+                .filter { it.children.isNotEmpty() }
+                .filter { it !== layer }
+                .filter { it.contentEquals(layer) }
+                .flatMap { it.children.asSequence() }
+                .forEach { it.changeParent(layer) }
     }
 
     /**

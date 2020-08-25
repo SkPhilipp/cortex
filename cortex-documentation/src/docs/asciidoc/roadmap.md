@@ -62,15 +62,3 @@
    - This should allow for further constraints to be applied (To for example control a CALLs'; `Equals(callAddressStackElement, Value(1234))`)
 * Barrier program which calls itself
 * Refactor symbolic references to allow named variables (such as start time), as well as program-context bound named variables (such as caller address)
-
-== Product
-
-* Given a self-made minimal contract's handle, extract and solve, then perform the call to extract on the test network.
-
-== Concept Documents
-
-* `design-connected.md`
-* `design-decompiler.md`
-* `design-fuzzer.md`
-* `design-strategies.md`
-* `design-processors.md`

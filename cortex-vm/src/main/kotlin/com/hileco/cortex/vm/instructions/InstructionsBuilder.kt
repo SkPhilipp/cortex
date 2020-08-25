@@ -7,14 +7,10 @@ import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.*
-import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
-import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
-import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
-import com.hileco.cortex.vm.instructions.debug.DROP
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.io.LOAD
@@ -35,35 +31,6 @@ class InstructionsBuilder {
     private val handle: InstructionsBuilderHandle = InstructionsBuilderHandle()
     private val instructions: MutableList<() -> Instruction> = ArrayList()
     private val labelAddresses: MutableMap<String, BackedInteger> = HashMap()
-
-    fun bitwiseAnd(right: InstructionsBuilderHandle = handle,
-                   left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { BITWISE_AND() }
-        return handle
-    }
-
-    fun bitwiseNot(value: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { BITWISE_NOT() }
-        return handle
-    }
-
-    fun bitwiseOr(right: InstructionsBuilderHandle = handle,
-                  left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { BITWISE_OR() }
-        return handle
-    }
-
-    fun bitwiseXor(right: InstructionsBuilderHandle = handle,
-                   left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { BITWISE_XOR() }
-        return handle
-    }
-
-    fun shiftRight(right: InstructionsBuilderHandle = handle,
-                   left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { SHIFT_RIGHT() }
-        return handle
-    }
 
     fun call(outSize: InstructionsBuilderHandle = handle,
              outOffset: InstructionsBuilderHandle = handle,
@@ -86,20 +53,8 @@ class InstructionsBuilder {
         return handle
     }
 
-    fun greaterThan(right: InstructionsBuilderHandle = handle,
-                    left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { GREATER_THAN() }
-        return handle
-    }
-
-    fun isZero(value: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
+    private fun isZero(value: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { IS_ZERO() }
-        return handle
-    }
-
-    fun lessThan(right: InstructionsBuilderHandle = handle,
-                 left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { LESS_THAN() }
         return handle
     }
 
@@ -144,15 +99,6 @@ class InstructionsBuilder {
         instructions.add { JUMP_DESTINATION() }
     }
 
-    fun jumpDestination() {
-        instructions.add { JUMP_DESTINATION() }
-    }
-
-    fun jumpIf(condition: InstructionsBuilderHandle = handle,
-               address: InstructionsBuilderHandle = handle) {
-        instructions.add { JUMP_IF() }
-    }
-
     fun jumpIf(condition: InstructionsBuilderHandle = handle,
                label: String) {
         push(label)
@@ -162,12 +108,6 @@ class InstructionsBuilder {
     fun add(right: InstructionsBuilderHandle = handle,
             left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
         instructions.add { ADD() }
-        return handle
-    }
-
-    fun exponent(right: InstructionsBuilderHandle = handle,
-                 left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
-        instructions.add { EXPONENT() }
         return handle
     }
 
@@ -215,10 +155,6 @@ class InstructionsBuilder {
         instructions.add { POP() }
     }
 
-    fun drop(vararg values: InstructionsBuilderHandle) {
-        instructions.add { DROP(values.size) }
-    }
-
     fun push(value: BackedInteger): InstructionsBuilderHandle {
         instructions.add { PUSH(value) }
         return handle
@@ -250,26 +186,6 @@ class InstructionsBuilder {
         instructions.add { SWAP(0, 1) }
     }
 
-    fun blockLoop(loopBody: (doContinue: () -> Unit, doBreak: () -> Unit) -> Unit) {
-        val startLabel = UUID.randomUUID().toString()
-        val endLabel = UUID.randomUUID().toString()
-        jumpDestination(startLabel)
-        loopBody({
-            jump(startLabel)
-        }, {
-            jump(endLabel)
-        })
-        jump(startLabel)
-        jumpDestination(endLabel)
-    }
-
-    fun blockLoop(loopBody: () -> Unit) {
-        val startLabel = UUID.randomUUID().toString()
-        jumpDestination(startLabel)
-        loopBody()
-        jump(startLabel)
-    }
-
     fun blockWhile(conditionBody: () -> Unit,
                    loopBody: (doContinue: () -> Unit, doBreak: () -> Unit) -> Unit) {
         val startLabel = UUID.randomUUID().toString()
@@ -286,48 +202,12 @@ class InstructionsBuilder {
         jumpDestination(endLabel)
     }
 
-    fun blockDoWhile(body: (doContinue: () -> Unit, doBreak: () -> Unit) -> Unit) {
-        val startLabel = UUID.randomUUID().toString()
-        val endLabel = UUID.randomUUID().toString()
-        jumpDestination(startLabel)
-        body({
-            jump(startLabel)
-        }, {
-            jump(endLabel)
-        })
-        jumpIf(label = startLabel)
-        jumpDestination(endLabel)
-    }
-
-    fun blockDoWhile(body: () -> Unit) {
-        val startLabel = UUID.randomUUID().toString()
-        jumpDestination(startLabel)
-        body()
-        jumpIf(label = startLabel)
-    }
-
     fun blockIf(conditionBody: () -> Unit, thenBody: () -> Unit) {
         val endLabel = UUID.randomUUID().toString()
         conditionBody()
         jumpIf(isZero(), endLabel)
         thenBody()
         jumpDestination(endLabel)
-    }
-
-    fun blockIfElse(conditionBody: () -> Unit, thenBody: () -> Unit, elseBody: () -> Unit) {
-        val endLabel = UUID.randomUUID().toString()
-        val elseLabel = UUID.randomUUID().toString()
-        conditionBody()
-        jumpIf(isZero(), elseLabel)
-        thenBody()
-        jump(endLabel)
-        jumpDestination(elseLabel)
-        elseBody()
-        jumpDestination(endLabel)
-    }
-
-    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Pair<BackedInteger, () -> Unit>>) {
-        blockSwitch(controlBody, cases.map { it.first }, { caseNumber -> cases.first { it.first == caseNumber } })
     }
 
     fun blockSwitch(controlBody: () -> Unit = {}, cases: List<BackedInteger>, caseBuilder: (BackedInteger) -> Unit) {

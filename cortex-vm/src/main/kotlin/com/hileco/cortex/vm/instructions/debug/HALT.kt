@@ -4,7 +4,7 @@ import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.InstructionModifier
 
-class HALT(val reason: ProgramException.Reason, val description: String = "") : Instruction() {
+class HALT(val reason: ProgramException.Reason, private val description: String = "") : Instruction() {
     override val instructionModifiers: List<InstructionModifier>
         get() = listOf(InstructionModifier.PROGRAM_CONTEXT)
 

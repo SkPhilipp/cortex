@@ -13,6 +13,7 @@ import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_07
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_08
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_09
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_10
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.io.LOAD
@@ -173,7 +174,7 @@ class BarrierProgramTest {
         programRunnerOne.run()
 
         val programContextTwo = ProgramContext(program)
-        val secondCallDataOne = 1.toBackedInteger()
+        val secondCallDataOne = ONE_32
         programContextTwo.callData.write(1 * LOAD.SIZE, secondCallDataOne.getBackingArray())
         val virtualMachineTwo = VirtualMachine(programContextTwo, startTime = startTime)
         val programRunnerTwo = ProgramRunner(virtualMachineTwo)

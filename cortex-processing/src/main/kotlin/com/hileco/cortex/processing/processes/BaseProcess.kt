@@ -7,8 +7,8 @@ abstract class BaseProcess : Runnable {
 
     fun startThread() {
         if (!thread.isAlive) {
-            Runtime.getRuntime().addShutdownHook(Thread(this::stopThread));
-            thread.start();
+            Runtime.getRuntime().addShutdownHook(Thread(this::stopThread))
+            thread.start()
         }
     }
 

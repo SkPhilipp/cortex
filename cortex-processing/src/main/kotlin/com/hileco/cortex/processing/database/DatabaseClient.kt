@@ -20,7 +20,7 @@ class DatabaseClient {
     private val database: MongoDatabase
 
     init {
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "WARN");
+        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "WARN")
         val codecRegistry: CodecRegistry = CodecRegistries.fromRegistries(
                 CodecRegistries.fromCodecs(BigDecimalCodec()),
                 MongoClientSettings.getDefaultCodecRegistry(),

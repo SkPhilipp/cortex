@@ -29,7 +29,7 @@ class PathGenerator(private val flowMapping: FlowMapping,
                 .filter { next -> (next.type == PROGRAM_FLOW) == (current.type != PROGRAM_FLOW) }
                 .filter { next ->
                     return@filter when (next.type) {
-                        PROGRAM_FLOW -> current.target!! in next.source..(next.target!! - 1)
+                        PROGRAM_FLOW -> current.target!! in next.source until next.target!!
                         PROGRAM_END -> wrappingFlow.target!! == next.source
                         INSTRUCTION_JUMP_IF -> next.source in wrappingFlow.source..current.target!!
                         INSTRUCTION_JUMP -> next.source in wrappingFlow.source..current.target!!

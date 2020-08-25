@@ -26,14 +26,6 @@ class EdgeMapping {
         mapFor(type, key).removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) }
     }
 
-    fun <T : Edge> remove(key: GraphBlock, type: Class<T>, predicate: (T) -> Boolean = { true }) {
-        mapFor(type, key).removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) }
-    }
-
-    fun <T : Edge> remove(type: Class<T>, predicate: (T) -> Boolean = { true }) {
-        mapFor(type, this).removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) }
-    }
-
     fun <T : Edge> removeAll(type: Class<T>, predicate: (T) -> Boolean = { true }) {
         mapping[type]?.forEach { entry -> entry.value.removeAll { sequenceOf(it).filterIsInstance(type).all(predicate) } }
     }
