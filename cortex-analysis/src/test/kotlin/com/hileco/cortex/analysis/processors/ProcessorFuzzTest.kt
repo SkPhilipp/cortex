@@ -4,12 +4,12 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.fuzzing.ProgramGenerator
 import com.hileco.cortex.vm.*
+import com.hileco.cortex.vm.bytes.BackedInteger
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 abstract class ProcessorFuzzTest {
-    private fun executeAll(atlas: LayeredVmMap<BigInteger, Program>): ProgramContext {
+    private fun executeAll(atlas: LayeredVmMap<BackedInteger, Program>): ProgramContext {
         val caller = Program(listOf())
         val callerContext = ProgramContext(caller)
         for (programAddress in atlas.keySet()) {

@@ -3,6 +3,7 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.WINNER
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.jumps.EXIT
@@ -20,26 +21,26 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JumpThreadingProcessor()
         ))
         val original = listOf(
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
-                PUSH(5),
+                PUSH(5.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
-                PUSH(1234)
+                PUSH(1234.toBackedInteger())
         )
 
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
 
         assertEquals(instructions, listOf(
-                PUSH(5),
+                PUSH(5.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
-                PUSH(5),
+                PUSH(5.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
-                PUSH(1234)
+                PUSH(1234.toBackedInteger())
         ))
     }
 
@@ -50,7 +51,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
         ))
         val original = listOf(
                 JUMP_DESTINATION(),
-                PUSH(0),
+                PUSH(0.toBackedInteger()),
                 JUMP()
         )
 
@@ -66,7 +67,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JumpThreadingProcessor()
         ))
         val original = listOf(
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
                 HALT(WINNER)
@@ -89,7 +90,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JumpThreadingProcessor()
         ))
         val original = listOf(
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
                 EXIT()
@@ -112,7 +113,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JumpThreadingProcessor()
         ))
         val original = listOf(
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
                 NOOP()
@@ -135,11 +136,11 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JumpThreadingProcessor()
         ))
         val original = listOf(
-                PUSH(1),
-                PUSH(3),
+                PUSH(1.toBackedInteger()),
+                PUSH(3.toBackedInteger()),
                 JUMP_IF(),
                 JUMP_DESTINATION(),
-                PUSH(6),
+                PUSH(6.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION()
         )
@@ -156,8 +157,8 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         assertEquals(instructions, listOf(
-                PUSH(1),
-                PUSH(6),
+                PUSH(1.toBackedInteger()),
+                PUSH(6.toBackedInteger()),
                 JUMP_IF(),
                 JUMP_DESTINATION(),
                 NOOP(),

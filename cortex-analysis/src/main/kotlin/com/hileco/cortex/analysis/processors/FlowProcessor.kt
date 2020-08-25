@@ -13,7 +13,6 @@ import com.hileco.cortex.vm.instructions.jumps.EXIT
 import com.hileco.cortex.vm.instructions.jumps.JUMP
 import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
 import com.hileco.cortex.vm.instructions.stack.PUSH
-import java.math.BigInteger
 
 class FlowProcessor : Processor {
     private fun mapLinesToBlocksForNode(edgeMapping: EdgeMapping, edge: FlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {
@@ -45,7 +44,7 @@ class FlowProcessor : Processor {
                 .forEach {
                     graph.edgeMapping.parameters(it).elementAt(0)?.let { parameterNode ->
                         val targetInstruction = parameterNode.instruction as PUSH
-                        val target = BigInteger(targetInstruction.value).toInt()
+                        val target = targetInstruction.value.toInt()
                         when (it.instruction) {
                             is JUMP -> {
                                 val flow = Flow(INSTRUCTION_JUMP, it.position, target)

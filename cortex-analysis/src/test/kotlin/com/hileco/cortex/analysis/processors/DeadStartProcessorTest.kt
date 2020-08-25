@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.WINNER
 import com.hileco.cortex.vm.ProgramStoreZone.DISK
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.io.SAVE
@@ -18,8 +19,8 @@ class DeadStartProcessorTest : ProcessorFuzzTest() {
                 DeadStartProcessor()
         ))
         val original = listOf(
-                PUSH(10),
-                PUSH(1),
+                PUSH(10.toBackedInteger()),
+                PUSH(1.toBackedInteger()),
                 HALT(WINNER)
         )
         val graph = graphBuilder.build(original)
@@ -40,8 +41,8 @@ class DeadStartProcessorTest : ProcessorFuzzTest() {
                 DeadStartProcessor()
         ))
         val original = listOf(
-                PUSH(10),
-                PUSH(1)
+                PUSH(10.toBackedInteger()),
+                PUSH(1.toBackedInteger())
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -55,8 +56,8 @@ class DeadStartProcessorTest : ProcessorFuzzTest() {
                 DeadStartProcessor()
         ))
         val original = listOf(
-                PUSH(10),
-                PUSH(1),
+                PUSH(10.toBackedInteger()),
+                PUSH(1.toBackedInteger()),
                 SAVE(DISK),
                 HALT(WINNER)
         )

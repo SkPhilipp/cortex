@@ -2,6 +2,7 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.ReferenceMapping
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.microsoft.z3.*
 import java.util.*
 
@@ -17,7 +18,10 @@ class Solver : ReferenceMapping {
             solver.add(expression.asZ3Expr(context, this) as BoolExpr)
             val status = solver.check()
             val model = solver.model
-            val constants = model.constDecls.associateBy({ referencesBackward[it.name.toString()]!! }, { (model.getConstInterp(it) as IntNum).int64 })
+            val constants = model.constDecls.associateBy(
+                    { referencesBackward[it.name.toString()]!! },
+                    { (model.getConstInterp(it) as IntNum).int64.toBackedInteger() }
+            )
             Solution(constants, status == Status.SATISFIABLE)
         } catch (e: Z3Exception) {
             Solution(HashMap(), false)

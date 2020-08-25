@@ -7,6 +7,8 @@ import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
 import com.hileco.cortex.vm.instructions.io.LOAD
@@ -24,13 +26,15 @@ class ExpressionBuilderTest {
                 Flow(FlowType.PROGRAM_END, 9, null)
         ), listOf())
         val expressionGenerator = ExpressionGenerator()
-        listOf(PUSH(2),
-                PUSH(1),
+        listOf(
+                PUSH(2.toBackedInteger()),
+                PUSH(1.toBackedInteger()),
                 LOAD(CALL_DATA),
                 DIVIDE(),
-                PUSH(12345),
+                PUSH(12345.toBackedInteger()),
                 EQUALS(),
-                IS_ZERO()).forEach {
+                IS_ZERO()
+        ).forEach {
             expressionGenerator.addInstruction(it)
         }
         Assert.assertEquals(Not(expressionGenerator.currentExpression), expression)
@@ -41,19 +45,23 @@ class ExpressionBuilderTest {
         val expressionBuilder = ExpressionBuilder()
         val constraintUsedCallDataGreaterThan5 = StackConstraint(
                 { _, _, instruction -> instruction is LOAD && instruction.programStoreZone == CALL_DATA },
-                { loadAddressPosition -> GreaterThan(Reference(CALL_DATA, loadAddressPosition), Value(5)) },
+                { loadAddressPosition -> GreaterThan(Reference(CALL_DATA, loadAddressPosition), Value(5.toBackedInteger())) },
                 LOAD.ADDRESS.position)
         val instructions = listOf(
-                PUSH(1),
+                PUSH(1.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(3),
+                PUSH(3.toBackedInteger()),
                 LOAD(MEMORY))
         val expression = expressionBuilder.build(instructions, listOf(
                 Flow(FlowType.PROGRAM_FLOW, 0, 3),
                 Flow(FlowType.PROGRAM_END, 3, null)
         ), listOf(constraintUsedCallDataGreaterThan5))
-        Assert.assertEquals("((CALL_DATA[1] > 5) && (CALL_DATA[2] > 5))", "$expression")
+        val expectedExpression = And(listOf(
+                GreaterThan(Reference(CALL_DATA, Value(ONE_32)), Value(5.toBackedInteger())),
+                GreaterThan(Reference(CALL_DATA, Value(2.toBackedInteger())), Value(5.toBackedInteger())))
+        )
+        Assert.assertEquals(expectedExpression, expression)
     }
 }

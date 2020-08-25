@@ -2,12 +2,12 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.io.LOAD
 import com.hileco.cortex.vm.instructions.stack.PUSH
-import java.math.BigInteger
 
-class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInteger, BigInteger>>) : Processor {
+class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BackedInteger, BackedInteger>>) : Processor {
     override fun process(graph: Graph) {
         graph.graphBlocks.forEach { graphBlock ->
             graphBlock.graphNodes.asSequence()
@@ -18,11 +18,11 @@ class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInt
                         if (pushGraphNode != null) {
                             val load = it.instruction as LOAD
                             val push = pushGraphNode.instruction as PUSH
-                            val address = BigInteger(push.value)
+                            val address = push.value
                             knownData[load.programStoreZone]?.let { knownDataMap ->
-                                knownDataMap[address]?.let { knownData: BigInteger ->
+                                knownDataMap[address]?.let { knownData ->
                                     pushGraphNode.instruction = NOOP()
-                                    it.instruction = PUSH(knownData.toByteArray())
+                                    it.instruction = PUSH(knownData)
                                 }
                             }
                         }

@@ -2,6 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.stack.PUSH
 import com.hileco.cortex.vm.instructions.stack.SWAP
@@ -16,8 +17,8 @@ class DeadSwapProcessorTest : ProcessorFuzzTest() {
 
         ))
         val original = listOf(
-                PUSH(1),
-                PUSH(10),
+                PUSH(1.toBackedInteger()),
+                PUSH(10.toBackedInteger()),
                 SWAP(0, 0)
         )
         val graph = graphBuilder.build(original)
@@ -30,8 +31,8 @@ class DeadSwapProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(1),
-                PUSH(10),
+                PUSH(1.toBackedInteger()),
+                PUSH(10.toBackedInteger()),
                 NOOP()
         ))
     }

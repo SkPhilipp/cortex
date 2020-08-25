@@ -71,7 +71,7 @@ ending hash or nonsense added by the compilation tool contained _multiple_ immed
 - [x] module vm
 - [x] module symbolic
 - [x] module fuzzing
-- [ ] module analysis
+- [x] module analysis
 - [ ] module ethereum
 - [ ] module processing
 - [ ] module console

@@ -3,24 +3,25 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramStoreZone.DISK
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.io.LOAD
 import com.hileco.cortex.vm.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 import java.util.*
 
 class KnownLoadProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
-        val configuration = mapOf(DISK to mapOf(BigInteger.ONE to BigInteger.ZERO))
+        val configuration = mapOf(DISK to mapOf(ONE_32 to ZERO_32))
         val graphBuilder = GraphBuilder(listOf(
                 ParameterProcessor(),
                 KnownLoadProcessor(configuration)
         ))
         val original = listOf(
-                PUSH(1),
+                PUSH(ONE_32),
                 LOAD(DISK)
         )
         val graph = graphBuilder.build(original)
@@ -33,7 +34,7 @@ class KnownLoadProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
         Assert.assertEquals(instructions, listOf(
                 NOOP(),
-                PUSH(0)
+                PUSH(ZERO_32)
         ))
     }
 

@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
 import com.hileco.cortex.vm.ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.jumps.JUMP
 import com.hileco.cortex.vm.instructions.stack.PUSH
@@ -19,9 +20,9 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
                 JumpIllegalProcessor()
         ))
         val original = listOf(
-                PUSH(0),
+                PUSH(0.toBackedInteger()),
                 JUMP(),
-                PUSH(1)
+                PUSH(1.toBackedInteger())
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -33,9 +34,9 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(0),
+                PUSH(0.toBackedInteger()),
                 HALT(JUMP_TO_ILLEGAL_INSTRUCTION),
-                PUSH(1)
+                PUSH(1.toBackedInteger())
         ))
     }
 
@@ -47,16 +48,16 @@ class JumpIllegalProcessorTest : ProcessorFuzzTest() {
                 JumpIllegalProcessor()
         ))
         val original = listOf(
-                PUSH(10),
+                PUSH(10.toBackedInteger()),
                 JUMP(),
-                PUSH(1)
+                PUSH(1.toBackedInteger())
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
         Assert.assertEquals(instructions, listOf(
-                PUSH(10),
+                PUSH(10.toBackedInteger()),
                 HALT(JUMP_TO_OUT_OF_BOUNDS),
-                PUSH(1)
+                PUSH(1.toBackedInteger())
         ))
     }
 

@@ -2,6 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.jumps.JUMP
 import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
@@ -18,8 +19,8 @@ class KnownJumpIfProcessorTest : ProcessorFuzzTest() {
 
         ))
         val original = listOf(
-                PUSH(1),
-                PUSH(10),
+                PUSH(1.toBackedInteger()),
+                PUSH(10.toBackedInteger()),
                 JUMP_IF()
         )
         val graph = graphBuilder.build(original)
@@ -33,7 +34,7 @@ class KnownJumpIfProcessorTest : ProcessorFuzzTest() {
 
         Assert.assertEquals(instructions, listOf(
                 NOOP(),
-                PUSH(10),
+                PUSH(10.toBackedInteger()),
                 JUMP()
         ))
     }

@@ -2,10 +2,10 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.vm.*
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.jumps.JUMP
 import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
-import java.math.BigInteger
 
 class KnownJumpIfProcessor : Processor {
     override fun process(graph: Graph) {
@@ -26,7 +26,7 @@ class KnownJumpIfProcessor : Processor {
                                 throw IllegalStateException("Unknown cause for ProgramException", e)
                             }
                             val result = programContext.stack.peek()
-                            if (BigInteger(result) > BigInteger.ZERO) {
+                            if (result > ZERO_32) {
                                 graph.edgeMapping.fully(decidingNode) { node -> node.instruction = NOOP(); true }
                                 it.instruction = JUMP()
                             } else {

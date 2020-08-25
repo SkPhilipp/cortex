@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.INSTRUCTION_JUMP
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
 import com.hileco.cortex.vm.instructions.jumps.JUMP
 import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
@@ -15,11 +16,11 @@ class FlowProcessorTest : ProcessorFuzzTest() {
     @Test
     fun process() {
         val instructions = listOf(
-                PUSH(3),
+                PUSH(3.toBackedInteger()),
                 JUMP(),
-                PUSH(10),
+                PUSH(10.toBackedInteger()),
                 JUMP_DESTINATION(),
-                PUSH(1))
+                PUSH(1.toBackedInteger()))
         val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(instructions)
         Documentation.of(FlowProcessor::class.java.simpleName)
                 .headingParagraph(FlowProcessor::class.java.simpleName)
@@ -38,7 +39,7 @@ class FlowProcessorTest : ProcessorFuzzTest() {
     fun processDynamicJumps() {
         val instructions = with(InstructionsBuilder()) {
             internalFunctionCall("cube", {
-                push(123)
+                push(123.toBackedInteger())
             })
             internalFunction("cube", {
                 internalFunctionCall("square", {

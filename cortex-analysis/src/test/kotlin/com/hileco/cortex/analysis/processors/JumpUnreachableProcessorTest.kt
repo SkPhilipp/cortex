@@ -2,6 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.jumps.JUMP
 import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
@@ -18,7 +19,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 JumpUnreachableProcessor()
         ))
         val original = listOf(
-                PUSH(3),
+                PUSH(3.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
@@ -33,7 +34,7 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(listOf(
-                PUSH(3),
+                PUSH(3.toBackedInteger()),
                 JUMP(),
                 NOOP(),
                 JUMP_DESTINATION()
@@ -49,13 +50,13 @@ class JumpUnreachableProcessorTest : ProcessorFuzzTest() {
                 JumpUnreachableProcessor()
         ))
         val graph = graphBuilder.build(listOf(
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()
         ))
         Assert.assertEquals(listOf(
-                PUSH(2),
+                PUSH(2.toBackedInteger()),
                 JUMP(),
                 JUMP_DESTINATION(),
                 JUMP_DESTINATION()

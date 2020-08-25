@@ -147,6 +147,10 @@ class BackedInteger : Comparable<BackedInteger> {
         val ONE_32 = BackedInteger("0x0000000000000000000000000000000000000000000000000000000000000001".deserializeBytes())
         val ZERO_32 = BackedInteger("0x0000000000000000000000000000000000000000000000000000000000000000".deserializeBytes())
         val LIMIT_32 = BackedInteger("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".deserializeBytes())
+
+        fun max(left: BackedInteger, right: BackedInteger): BackedInteger {
+            return if (left >= right) left else right
+        }
     }
 }
 

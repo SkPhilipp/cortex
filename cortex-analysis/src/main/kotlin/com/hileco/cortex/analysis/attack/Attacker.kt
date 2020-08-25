@@ -6,6 +6,7 @@ import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.ProgramException
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.debug.HALT
@@ -42,7 +43,7 @@ class Attacker(private val targetPredicate: (Instruction) -> Boolean,
         val TARGET_IS_CALL: (Instruction) -> Boolean = {
             it is CALL
         }
-        val CONSTRAINT_CALL_ADDRESS: (address: Long) -> StackConstraint = { address ->
+        val CONSTRAINT_CALL_ADDRESS: (address: BackedInteger) -> StackConstraint = { address ->
             StackConstraint(
                     { _, _, instruction -> instruction is CALL },
                     { expression -> Expression.Equals(expression, Expression.Value(address)) },

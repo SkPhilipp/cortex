@@ -5,6 +5,7 @@ import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.vm.*
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +29,7 @@ class AttackProgramBuilderTest {
         val attackingProgramContext = ProgramContext(attackingProgram)
         val virtualMachine = VirtualMachine(attackingProgramContext)
         val solveableProgram = Program(BARRIER_01.instructions)
-        virtualMachine.atlas[SOLVEABLE_ADDRESS.toBigInteger()] = solveableProgram
+        virtualMachine.atlas[SOLVEABLE_ADDRESS] = solveableProgram
         val programRunner = ProgramRunner(virtualMachine)
         try {
             programRunner.run()
@@ -44,6 +45,6 @@ class AttackProgramBuilderTest {
     }
 
     companion object {
-        const val SOLVEABLE_ADDRESS = 0x123456789
+        val SOLVEABLE_ADDRESS = 0x123456789.toBackedInteger()
     }
 }
