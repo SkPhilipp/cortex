@@ -1,13 +1,12 @@
 package com.hileco.cortex.ethereum.trace
 
 import com.hileco.cortex.collections.deserializeBytes
-import com.hileco.cortex.collections.serialize
 import com.hileco.cortex.vm.PositionedInstruction
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.bytes.BackedInteger
 import org.junit.Assert
-import java.math.BigInteger
 
 class GethTraceDebugger(virtualMachine: VirtualMachine, private val gethTrace: GethTrace) {
 
@@ -42,10 +41,9 @@ class GethTraceDebugger(virtualMachine: VirtualMachine, private val gethTrace: G
 
         for (i in 0 until programContext.stack.size()) {
             val stackBytesExpected = gethTraceLog.stack[0]
-            val stackBytesActual = programContext.stack[0].serialize()
-            val stackValueExpected = BigInteger(gethTraceLog.stack[0].deserializeBytes())
-            val stackValueActual = BigInteger(programContext.stack[0])
-            Assert.assertEquals(message("Stack element $i ($stackBytesExpected vs $stackBytesActual)"), stackValueExpected, stackValueActual)
+            val stackBytesActual = programContext.stack[0]
+            val stackValueExpected = BackedInteger(gethTraceLog.stack[0].deserializeBytes())
+            Assert.assertEquals(message("Stack element $i ($stackBytesExpected vs $stackBytesActual)"), stackValueExpected, stackBytesActual)
         }
         instructionsExecuted++
     }

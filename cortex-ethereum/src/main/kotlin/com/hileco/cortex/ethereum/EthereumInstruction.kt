@@ -7,7 +7,7 @@ data class EthereumInstruction(val operation: EthereumOperation, val input: Byte
     override fun equals(other: Any?): Boolean {
         return other is EthereumInstruction
                 && Objects.equals(operation, other.operation)
-                && Arrays.equals(input, other.input)
+                && input.contentEquals(other.input)
     }
 
     override fun hashCode(): Int {
