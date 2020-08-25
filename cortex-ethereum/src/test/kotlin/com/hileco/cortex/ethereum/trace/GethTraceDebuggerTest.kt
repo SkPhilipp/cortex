@@ -5,13 +5,11 @@ import com.hileco.cortex.ethereum.EthereumBarriers
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
-import org.junit.Ignore
 import org.junit.Test
 
 
 class GethTraceDebuggerTest {
 
-    @Ignore("It is a goal currently not reached to match a full Geth trace")
     @Test
     fun traceBarrier000() {
         val gethTraceLoader = GethTraceLoader()

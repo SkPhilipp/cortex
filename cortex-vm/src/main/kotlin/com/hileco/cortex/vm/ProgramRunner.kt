@@ -7,10 +7,7 @@ import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
@@ -29,6 +26,7 @@ import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
 import com.hileco.cortex.vm.instructions.math.*
 import com.hileco.cortex.vm.instructions.stack.*
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
+import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlin.experimental.and
@@ -116,6 +114,21 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     result[i] = left[i] xor right[i]
                 }
                 programContext.stack.push(BackedInteger(result))
+            }
+            is SHIFT_RIGHT -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val times = programContext.stack.pop()
+                val value = programContext.stack.pop()
+                if(times > 256.toBackedInteger()){
+                    programContext.stack.push(ZERO_32)
+                }
+                else {
+                    val timesInt = times.toInt()
+                    val valueBigInt = BigInteger(1, value.getBackingArray()).shiftRight(timesInt)
+                    programContext.stack.push(BackedInteger(valueBigInt.toByteArray()))
+                }
             }
             is CALL -> {
                 if (programContext.stack.size() < 7) {
@@ -376,6 +389,9 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
+            }
+            else -> {
+                throw ProgramException(UNKNOWN_INSTRUCTION)
             }
         }
     }

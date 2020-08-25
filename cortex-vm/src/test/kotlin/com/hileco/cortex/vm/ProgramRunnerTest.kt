@@ -1,16 +1,15 @@
 package com.hileco.cortex.vm
 
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.STACK_OVERFLOW
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.LIMIT_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.BITWISE_XOR
+import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
@@ -101,6 +100,22 @@ class ProgramRunnerTest {
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
         Assert.assertEquals(7.toBackedInteger(), stack.pop())
+    }
+
+    @Test
+    fun runShiftRight() {
+        val instructions = listOf(
+                PUSH(BackedInteger("d0679d340000000000000000000000008da2b876612931038a56f60010b3964b".deserializeBytes())),
+                PUSH(BackedInteger("00000000000000000000000000000000000000000000000000000000000000e0".deserializeBytes())),
+                SHIFT_RIGHT())
+        val stack = this.run(instructions).stack
+        Documentation.of("instructions/shift-right")
+                .headingParagraph("SHIFT_RIGHT").paragraph("The SHIFT_RIGHT operation performs a bitwise on the second element on the stack, " +
+                        "based on the first element which indicates how many bytes to shift.")
+                .paragraph("Example program:").source(instructions)
+                .paragraph("Resulting stack:").source(stack)
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(BackedInteger("00000000000000000000000000000000000000000000000000000000d0679d34".deserializeBytes()), stack.pop())
     }
 
     @Test
