@@ -9,13 +9,13 @@ import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.ProgramStoreZone
-import java.math.BigInteger
+import com.hileco.cortex.vm.bytes.BackedInteger
 
 class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
                                     screen: TerminalScreen,
                                     override val position: TerminalPosition,
                                     height: Int) : Component {
-    private var values: VmMap<BigInteger, Expression> = LayeredVmMap()
+    private var values: VmMap<BackedInteger, Expression> = LayeredVmMap()
     val delegate: Table
 
     init {
@@ -42,7 +42,7 @@ class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
         )
     }
 
-    fun content(values: VmMap<BigInteger, Expression> = this.values,
+    fun content(values: VmMap<BackedInteger, Expression> = this.values,
                 focusLine: Int = delegate.focusLine) {
         this.values = values
         delegate.focusLine = focusLine

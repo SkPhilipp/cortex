@@ -15,10 +15,27 @@ import org.junit.Test
 
 class SolverTest {
     @Test
+    fun testSolveBasic() {
+        val instructions = listOf(
+                PUSH(10.toBackedInteger()),
+                PUSH(0.toBackedInteger()),
+                LOAD(CALL_DATA),
+                LESS_THAN()
+        )
+        val expressionGenerator = ExpressionGenerator()
+        instructions.forEach { expressionGenerator.addInstruction(it) }
+        val solver = Solver()
+        val solution = solver.solve(expressionGenerator.currentExpression)
+        val onlyValue = solution.values.values.first()
+        Assert.assertTrue(solution.solvable)
+        Assert.assertTrue(onlyValue < 10.toBackedInteger())
+    }
+
+    @Test
     fun testSolve() {
         val instructions = listOf(
                 PUSH(10.toBackedInteger()),
-                PUSH(0xffffff.toBackedInteger()),
+                PUSH(0x100000.toBackedInteger()),
                 PUSH(10.toBackedInteger()),
                 PUSH(0.toBackedInteger()),
                 LOAD(CALL_DATA),
@@ -37,7 +54,7 @@ class SolverTest {
                 .paragraph("Resulting expression:").source(expressionGenerator.currentExpression)
                 .paragraph("Suggested solution for expression to be true:").source(solution)
         Assert.assertTrue(solution.solvable)
-        Assert.assertTrue((10L + onlyValue) % 0xffffffL < 10)
+        Assert.assertTrue(onlyValue < 0xffffff.toBackedInteger())
     }
 
     @Test

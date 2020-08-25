@@ -2,7 +2,7 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.ReferenceMapping
-import com.hileco.cortex.vm.bytes.toBackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.microsoft.z3.*
 import java.util.*
 
@@ -20,7 +20,7 @@ class Solver : ReferenceMapping {
             val model = solver.model
             val constants = model.constDecls.associateBy(
                     { referencesBackward[it.name.toString()]!! },
-                    { (model.getConstInterp(it) as IntNum).int64.toBackedInteger() }
+                    { BackedInteger((model.getConstInterp(it) as BitVecNum).bigInteger.toByteArray()) }
             )
             Solution(constants, status == Status.SATISFIABLE)
         } catch (e: Z3Exception) {

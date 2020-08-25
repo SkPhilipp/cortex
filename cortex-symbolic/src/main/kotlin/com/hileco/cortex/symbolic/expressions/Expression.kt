@@ -3,9 +3,24 @@ package com.hileco.cortex.symbolic.expressions
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.microsoft.z3.*
+import com.microsoft.z3.BitVecExpr
+import com.microsoft.z3.BoolExpr
+import com.microsoft.z3.Context
+import com.microsoft.z3.Expr
 
 interface Expression {
+
+    /*
+        A comment on Z3's convention, as this class interfaces with Z3. Z3's interface may not be immediately
+        obvious; Z3 likes to abbreviate antyhing and everything possible to abbreviate.
+
+        Methods (for creating expressions) often follow the convention `make ($type)? (signed|unsigned)? $operation`.
+        This means to create a less-than on two bit vectors "make bit-vector unsigned less-than" would be needed.
+
+        This is abbreviated as `mk BV U LT`; `mkBVULT`.
+        Keep this convention in mind when reading or modifying this class.
+     */
+
     fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr
 
     fun subexpressions(): List<Expression>
@@ -19,7 +34,7 @@ interface Expression {
                 key
             }
             val referenceSymbol = context.mkSymbol(reference)
-            return context.mkIntConst(referenceSymbol)
+            return context.mkBVConst(referenceSymbol, BIT_VECTOR_SIZE)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -33,7 +48,8 @@ interface Expression {
 
     data class Value(val constant: BackedInteger) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            return context.mkInt(constant.toInt())
+            // TODO: Decimal string representation of the bit vector can be passed here
+            return context.mkBV(constant.toLong(), BIT_VECTOR_SIZE)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -134,7 +150,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkAdd(leftExpr as ArithExpr, rightExpr as ArithExpr)
+            return context.mkBVAdd(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -150,7 +166,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkSub(leftExpr as ArithExpr, rightExpr as ArithExpr)
+            return context.mkBVSub(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -166,7 +182,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkMul(leftExpr as ArithExpr, rightExpr as ArithExpr)
+            return context.mkBVMul(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -182,7 +198,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkDiv(leftExpr as ArithExpr, rightExpr as ArithExpr)
+            return context.mkBVUDiv(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -198,7 +214,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkLt(leftExpr as ArithExpr, rightExpr as ArithExpr)
+            return context.mkBVULT(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -214,7 +230,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkGt(leftExpr as ArithExpr, rightExpr as ArithExpr)
+            return context.mkBVUGT(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -294,7 +310,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkMod(leftExpr as IntExpr, rightExpr as IntExpr)
+            return context.mkBVURem(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -310,7 +326,8 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkPower(leftExpr as IntExpr, rightExpr as IntExpr)
+            // TODO: Implement
+            throw IllegalStateException("Not yet available for bit-vectors")
         }
 
         override fun subexpressions(): List<Expression> {
@@ -328,7 +345,7 @@ interface Expression {
             return if (inputExpr.isBool) {
                 context.mkEq(inputExpr, context.mkBool(false))
             } else {
-                context.mkEq(inputExpr, context.mkInt(0))
+                context.mkEq(inputExpr, context.mkBV(0, BIT_VECTOR_SIZE))
             }
         }
 
@@ -361,6 +378,7 @@ interface Expression {
     }
 
     companion object {
+        private const val BIT_VECTOR_SIZE = 256
         private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Value && it.constant >= ZERO_32) }
         private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(ZERO_32) }
         fun constructAnd(inputs: List<Expression>): Expression {

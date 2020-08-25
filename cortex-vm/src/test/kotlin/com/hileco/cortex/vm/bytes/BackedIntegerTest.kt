@@ -48,7 +48,7 @@ internal class BackedIntegerTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun testConstructorPastLimit() {
-        BackedInteger("0x000000000000000000000000000000000000000000000000000000000000000001".deserializeBytes())
+        BackedInteger("0xff0000000000000000000000000000000000000000000000000000000000000001".deserializeBytes())
     }
 
     @Test

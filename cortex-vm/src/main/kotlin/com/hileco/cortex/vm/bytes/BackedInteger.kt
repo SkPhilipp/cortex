@@ -3,6 +3,7 @@ package com.hileco.cortex.vm.bytes
 import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.collections.serialize
 import java.lang.Byte.compareUnsigned
+import java.lang.Byte.parseByte
 import java.math.BigInteger
 import java.util.*
 
@@ -25,7 +26,15 @@ class BackedInteger : Comparable<BackedInteger> {
                 }
             }
             else -> {
-                throw IllegalArgumentException("Arrays larger than 32 bytes can not be represented using BackedInteger.")
+                val pastLimit = sourceArray.size - 32
+                for (i in 0 until pastLimit) {
+                    if (sourceArray[i] != parseByte("00")) {
+                        throw IllegalArgumentException("Arrays with values larger than 32 bytes can not be represented using BackedInteger.")
+                    }
+                }
+                backingArray = ByteArray(32) { index ->
+                    sourceArray[index + pastLimit]
+                }
             }
         }
     }
