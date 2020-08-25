@@ -5,13 +5,11 @@ import com.hileco.cortex.ethereum.deserializeBytes
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
-import org.junit.Ignore
 import org.junit.Test
 
 
-internal class GethTraceDebuggerTest {
+class GethTraceDebuggerTest {
 
-    @Ignore("For manual comparison only")
     @Test
     fun traceBarrier000() {
         val gethTraceLoader = GethTraceLoader()
