@@ -2,8 +2,8 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
-import com.hileco.cortex.vm.ProgramRunner.Companion.OVERFLOW_LIMIT
-import java.math.BigInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 
 class ExpressionOptimizer {
     private fun optimizeAdd(unoptimizedExpression: Add): Expression {
@@ -11,40 +11,35 @@ class ExpressionOptimizer {
         val right = optimize(unoptimizedExpression.right)
         if (left is Value && right is Value) {
             // a + b == result
-            val a = left.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Value(result.longValueExact())
-        } else if (left is Value && left.constant == 0L) {
+            val a = left.constant
+            val b = right.constant
+            return Value(a + b)
+        } else if (left is Value && left.constant == ZERO_32) {
             // 0 + ? == ?
             return right
-        } else if (right is Value && right.constant == 0L) {
+        } else if (right is Value && right.constant == ZERO_32) {
             // ? + 0 == ?
             return left
         } else if (left is Add && left.left is Value && right is Value) {
             // ( a + ? ) + b == ? + result
-            val a = left.left.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Add(left.right, Value(result.toLong()))
+            val a = left.left.constant
+            val b = right.constant
+            return Add(left.right, Value(a + b))
         } else if (left is Add && left.right is Value && right is Value) {
             // ( ? + a ) + b == ? + result
-            val a = left.right.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Add(left.left, Value(result.toLong()))
+            val a = left.right.constant
+            val b = right.constant
+            return Add(left.left, Value(a + b))
         } else if (right is Add && right.left is Value && left is Value) {
             // a + ( b + ? ) = ? + result
-            val a = left.constant.toBigInteger()
-            val b = right.left.constant.toBigInteger()
-            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Add(right.right, Value(result.toLong()))
+            val a = left.constant
+            val b = right.left.constant
+            return Add(right.right, Value(a + b))
         } else if (right is Add && right.right is Value && left is Value) {
             // a + ( ? + b ) == ? + result
-            val a = left.constant.toBigInteger()
-            val b = right.right.constant.toBigInteger()
-            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Add(right.left, Value(result.toLong()))
+            val a = left.constant
+            val b = right.right.constant
+            return Add(right.left, Value(a + b))
         } else {
             return Add(left, right)
         }
@@ -55,21 +50,19 @@ class ExpressionOptimizer {
         val right = optimize(unoptimizedExpression.right)
         if (left is Value && right is Value) {
             return Value(left.constant - right.constant)
-        } else if (right is Value && right.constant == 0L) {
+        } else if (right is Value && right.constant == ZERO_32) {
             // ? - 0 == ?
             return left
         } else if (right is Value && left is Subtract && left.left is Value) {
             // ( a - ? ) - b == ( result == a - b ) - ?
             val a = left.left.constant
             val b = right.constant
-            val result = a - b
-            return Subtract(Value(result), left.right)
+            return Subtract(Value(a - b), left.right)
         } else if (right is Value && left is Subtract && left.right is Value) {
             // ( ? - a ) - b == ? - ( result == a + b )
-            val a = left.right.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            val result = a.add(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Subtract(left.left, Value(result.longValueExact()))
+            val a = left.right.constant
+            val b = right.constant
+            return Subtract(left.left, Value(a + b))
         } else if (left is Value && right is Subtract && right.left is Value) {
             // a - ( b - ? ) == ? - ( result == b - a )
             val a = left.constant
@@ -78,10 +71,9 @@ class ExpressionOptimizer {
             return Subtract(right.right, Value(result))
         } else if (left is Value && right is Subtract && right.right is Value) {
             // a - ( ? - b ) == ( result == a + b ) - ?
-            val a = left.constant.toBigInteger()
-            val b = right.right.constant.toBigInteger()
-            val result = b.add(a).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Subtract(Value(result.toLong()), right.left)
+            val a = left.constant
+            val b = right.right.constant
+            return Subtract(Value(a + b), right.left)
         } else {
             return Subtract(left, right)
         }
@@ -92,20 +84,19 @@ class ExpressionOptimizer {
         val right = optimize(unoptimizedExpression.right)
         if (left is Value && right is Value) {
             // a * b
-            val a = left.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            val result = a.multiply(b).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Value(result.longValueExact())
-        } else if (left is Value && left.constant == 0L) {
+            val a = left.constant
+            val b = right.constant
+            return Value(a * b)
+        } else if (left is Value && left.constant == ZERO_32) {
             // 0 * ?
-            return Value(0L)
-        } else if (right is Value && right.constant == 0L) {
+            return Value(ZERO_32)
+        } else if (right is Value && right.constant == ZERO_32) {
             // ? * 0
-            return Value(0L)
-        } else if (left is Value && left.constant == 1L) {
+            return Value(ZERO_32)
+        } else if (left is Value && left.constant == ONE_32) {
             // 1 * ?
             return right
-        } else if (right is Value && right.constant == 1L) {
+        } else if (right is Value && right.constant == ONE_32) {
             // ? * 1
             return left
         } else {
@@ -117,11 +108,10 @@ class ExpressionOptimizer {
         val left = optimize(unoptimizedExpression.left)
         val right = optimize(unoptimizedExpression.right)
         if (left is Value && right is Value) {
-            val a = left.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            val result = a.divide(b)
-            return Value(result.longValueExact())
-        } else if (right is Value && right.constant == 1L) {
+            val a = left.constant
+            val b = right.constant
+            return Value(a / b)
+        } else if (right is Value && right.constant == ONE_32) {
             // ? / 1
             return left
         } else {
@@ -144,21 +134,20 @@ class ExpressionOptimizer {
         val right = optimize(unoptimizedExpression.right)
         if (left is Value && right is Value) {
             // a ** b
-            val a = left.constant.toBigInteger()
-            val b = right.constant.toBigInteger()
-            // TODO: Verify that b fits in Int
-            val result = a.pow(b.toInt()).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-            return Value(result.longValueExact())
-        } else if (left is Value && left.constant == 0L) {
+            val a = left.constant
+            val b = right.constant
+            val result = a.pow(b)
+            return Value(result)
+        } else if (left is Value && left.constant == ZERO_32) {
             // 0 ** ? == 0
-            return Value(0L)
-        } else if (right is Value && right.constant == 0L) {
+            return Value(ZERO_32)
+        } else if (right is Value && right.constant == ZERO_32) {
             // ? ** 0 == 1
             return left
-        } else if (left is Value && left.constant == 1L) {
+        } else if (left is Value && left.constant == ONE_32) {
             // 1 ** ? == 1
-            return Value(1L)
-        } else if (right is Value && right.constant == 1L) {
+            return Value(ONE_32)
+        } else if (right is Value && right.constant == ONE_32) {
             // ? ** 1 = ?
             return left
         } else {
@@ -193,17 +182,17 @@ class ExpressionOptimizer {
         }
         if (expression is Multiply && counterpart is Multiply) {
             when {
-                expression.left is Value && expression.left.constant > 0 && expression.left == counterpart.left -> return unwrap(expression.right, counterpart.right)
-                expression.left is Value && expression.left.constant > 0 && expression.left == counterpart.right -> return unwrap(expression.right, counterpart.left)
-                expression.right is Value && expression.right.constant > 0 && expression.right == counterpart.left -> return unwrap(expression.left, counterpart.right)
-                expression.right is Value && expression.right.constant > 0 && expression.right == counterpart.right -> return unwrap(expression.left, counterpart.left)
+                expression.left is Value && expression.left.constant > ZERO_32 && expression.left == counterpart.left -> return unwrap(expression.right, counterpart.right)
+                expression.left is Value && expression.left.constant > ZERO_32 && expression.left == counterpart.right -> return unwrap(expression.right, counterpart.left)
+                expression.right is Value && expression.right.constant > ZERO_32 && expression.right == counterpart.left -> return unwrap(expression.left, counterpart.right)
+                expression.right is Value && expression.right.constant > ZERO_32 && expression.right == counterpart.right -> return unwrap(expression.left, counterpart.left)
                 else -> return expression to counterpart
             }
         }
         if (expression is Divide && counterpart is Divide) {
             when {
                 expression.left == counterpart.left -> return unwrap(expression.right, counterpart.right)
-                expression.right is Value && expression.right.constant > 0 && expression.right == counterpart.right -> return unwrap(expression.left, counterpart.left)
+                expression.right is Value && expression.right.constant > ZERO_32 && expression.right == counterpart.right -> return unwrap(expression.left, counterpart.left)
                 else -> return expression to counterpart
             }
         }
@@ -256,9 +245,8 @@ class ExpressionOptimizer {
     }
 
     private fun optimizeIsZero(unoptimizedExpression: IsZero): Expression {
-        val input = optimize(unoptimizedExpression.input)
-        when (input) {
-            is Value -> return if (input.constant == 0L) True else False
+        when (val input = optimize(unoptimizedExpression.input)) {
+            is Value -> return if (input.constant == ZERO_32) True else False
             is True -> return False
             is False -> return True
             else -> return IsZero(input)
@@ -306,7 +294,7 @@ class ExpressionOptimizer {
     }
 
     companion object {
-        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Value && it.constant > 0) }
-        private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(0) }
+        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Value && it.constant > ZERO_32) }
+        private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(ZERO_32) }
     }
 }

@@ -5,7 +5,7 @@ import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.*
 import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
@@ -140,7 +140,7 @@ class InstructionsBuilder {
         if (labelAddresses.containsKey(name)) {
             throw IllegalArgumentException("Name $name is already taken")
         }
-        labelAddresses[name] = instructions.size.asUInt256()
+        labelAddresses[name] = instructions.size.toBackedInteger()
         instructions.add { JUMP_DESTINATION() }
     }
 
@@ -404,6 +404,6 @@ class InstructionsBuilder {
     }
 
     companion object {
-        val FUNCTION_CALL_INDEX = 8005.asUInt256()
+        val FUNCTION_CALL_INDEX = 8005.toBackedInteger()
     }
 }

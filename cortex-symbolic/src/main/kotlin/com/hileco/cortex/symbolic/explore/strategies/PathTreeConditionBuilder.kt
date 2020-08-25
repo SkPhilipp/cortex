@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
-import com.hileco.cortex.analysis.explore.StrongReference
+import com.hileco.cortex.symbolic.explore.StrongReference
 import com.hileco.cortex.collections.layer.StackLayer
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry

@@ -23,7 +23,7 @@ class SymbolicProgramExplorerTest {
         val start = System.currentTimeMillis()
         val program = SymbolicProgram(barrierProgram.instructions)
         barrierProgram.diskSetup.forEach { (key, value) ->
-            program.storage[key] = Expression.Value(value.toLong())
+            program.storage[key] = Expression.Value(value)
         }
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)

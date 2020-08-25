@@ -48,8 +48,12 @@ class BackedInteger : Comparable<BackedInteger> {
         }
     }
 
-    fun asUInt(): Int {
+    fun toInt(): Int {
         return BigInteger(1, backingArray).toInt()
+    }
+
+    fun toLong(): Long {
+        return BigInteger(1, backingArray).toLong()
     }
 
     fun getBackingArray(): ByteArray {
@@ -109,6 +113,14 @@ class BackedInteger : Comparable<BackedInteger> {
         return BackedInteger(last32BytesOf(result.toByteArray()))
     }
 
+    fun pow(other: BackedInteger): BackedInteger {
+        val thisBigInt = BigInteger(1, backingArray)
+        val otherBigInt = BigInteger(1, other.backingArray)
+        val limitBigInt = BigInteger(1, LIMIT_32.backingArray)
+        val result = thisBigInt.modPow(otherBigInt, limitBigInt)
+        return BackedInteger(last32BytesOf(result.toByteArray()))
+    }
+
     override operator fun compareTo(other: BackedInteger): Int {
         val mismatchIndex = Arrays.mismatch(backingArray, other.backingArray)
         if (mismatchIndex < 0) {
@@ -138,7 +150,7 @@ class BackedInteger : Comparable<BackedInteger> {
     }
 }
 
-fun Long.asUInt256(): BackedInteger {
+fun Long.toBackedInteger(): BackedInteger {
     if (this < 0) {
         throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
     }
@@ -146,7 +158,7 @@ fun Long.asUInt256(): BackedInteger {
     return BackedInteger(toByteArray)
 }
 
-fun Int.asUInt256(): BackedInteger {
+fun Int.toBackedInteger(): BackedInteger {
     if (this < 0) {
         throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
     }

@@ -1,4 +1,4 @@
-package com.hileco.cortex.analysis.explore
+package com.hileco.cortex.symbolic.explore
 
 import com.hileco.cortex.collections.VmStack
 

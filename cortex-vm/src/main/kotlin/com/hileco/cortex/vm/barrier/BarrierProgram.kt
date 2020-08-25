@@ -6,7 +6,7 @@ import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.LIMIT_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
@@ -32,7 +32,7 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
-                        equals(divide(push(2.asUInt256()), load(CALL_DATA, push(1.asUInt256()))), push(12345.asUInt256()))
+                        equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(1.toBackedInteger()))), push(12345.toBackedInteger()))
                     }, thenBody = {
                         halt(WINNER)
                     })
@@ -47,10 +47,10 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
-                        equals(divide(push(2.asUInt256()), load(CALL_DATA, push(ONE_32))), push(12345.asUInt256()))
+                        equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, thenBody = {
                         blockIf(conditionBody = {
-                            equals(modulo(push(500.asUInt256()), load(CALL_DATA, push(2.asUInt256()))), push(12.asUInt256()))
+                            equals(modulo(push(500.toBackedInteger()), load(CALL_DATA, push(2.toBackedInteger()))), push(12.toBackedInteger()))
                         }, thenBody = {
                             halt(WINNER)
                         })
@@ -64,7 +64,7 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
-                        equals(add(push(LIMIT_32 - ONE_32), load(CALL_DATA, push(ONE_32))), push(12345.asUInt256()))
+                        equals(add(push(LIMIT_32 - ONE_32), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, thenBody = {
                         halt(WINNER)
                     })
@@ -81,8 +81,8 @@ data class BarrierProgram(val name: String,
                   |     HALT(WINNER)
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
-                    val varX = 2345.asUInt256()
-                    val varY = 6789.asUInt256()
+                    val varX = 2345.toBackedInteger()
+                    val varY = 6789.toBackedInteger()
                     save(MEMORY, load(CALL_DATA, push(ONE_32)), push(varX))
                     save(MEMORY, push(ZERO_32), push(varY))
                     blockWhile(conditionBody = {
@@ -92,7 +92,7 @@ data class BarrierProgram(val name: String,
                         save(MEMORY, add(push(ONE_32), load(MEMORY, push(varY))), push(varY))
                     })
                     blockIf(conditionBody = {
-                        equals(push(5.asUInt256()), load(MEMORY, push(varY)))
+                        equals(push(5.toBackedInteger()), load(MEMORY, push(varY)))
                     }, thenBody = {
                         halt(WINNER)
                     })
@@ -113,7 +113,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(internalFunctionCall("cube", {
                             load(CALL_DATA, push(ONE_32))
-                        }), push(27.asUInt256()))
+                        }), push(27.toBackedInteger()))
                     }, thenBody = {
                         halt(WINNER)
                     })
@@ -136,9 +136,9 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
-                        equals(divide(push(2.asUInt256()), load(CALL_DATA, push(ONE_32))), push(12345.asUInt256()))
+                        equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, thenBody = {
-                        call(push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ONE_32), load(CALL_DATA, push(2.asUInt256())), push(ZERO_32))
+                        call(push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ONE_32), load(CALL_DATA, push(2.toBackedInteger())), push(ZERO_32))
                     })
                     build()
                 })
@@ -151,10 +151,10 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockWhile(conditionBody = {
-                        equals(divide(push(2.asUInt256()), load(CALL_DATA, push(ONE_32))), push(12345.asUInt256()))
+                        equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, loopBody = { _, _ ->
                         blockWhile(conditionBody = {
-                            equals(modulo(push(500.asUInt256()), load(CALL_DATA, push(2.asUInt256()))), push(12.asUInt256()))
+                            equals(modulo(push(500.toBackedInteger()), load(CALL_DATA, push(2.toBackedInteger()))), push(12.toBackedInteger()))
                         }, loopBody = { _, _ ->
                         })
                         halt(WINNER)
@@ -168,7 +168,7 @@ data class BarrierProgram(val name: String,
                   |     HALT(WINNER)
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
-                    val varSeed = 1000.asUInt256()
+                    val varSeed = 1000.toBackedInteger()
                     save(MEMORY, hash("SHA-256", add(variable(ExecutionVariable.ADDRESS_SELF), add(variable(ExecutionVariable.ADDRESS_CALLER), variable(ExecutionVariable.START_TIME)))), push(varSeed))
                     blockIf(conditionBody = {
                         equals(hash("SHA-256", load(CALL_DATA, push(ONE_32))), load(MEMORY, push(varSeed)))
@@ -190,7 +190,7 @@ data class BarrierProgram(val name: String,
                     })
                     build()
                 },
-                mapOf(ONE_32 to 12345.asUInt256()))
+                mapOf(ONE_32 to 12345.toBackedInteger()))
         val BARRIER_10 = BarrierProgram("Barrier 10",
                 "Requires multiple calls and understanding of `DISK` state throughout the multiple calls.",
                 """ if (CALL_DATA[1] == 1) {
@@ -206,15 +206,15 @@ data class BarrierProgram(val name: String,
                         equals(load(CALL_DATA, push(ONE_32)), push(ONE_32))
                     }, thenBody = {
                         blockIf(conditionBody = {
-                            equals(load(DISK, push(ONE_32)), push(12345.asUInt256()))
+                            equals(load(DISK, push(ONE_32)), push(12345.toBackedInteger()))
                         }, thenBody = {
                             halt(WINNER)
                         })
                     })
                     blockIf(conditionBody = {
-                        equals(load(CALL_DATA, push(ONE_32)), push(2.asUInt256()))
+                        equals(load(CALL_DATA, push(ONE_32)), push(2.toBackedInteger()))
                     }, thenBody = {
-                        save(DISK, load(CALL_DATA, push(2.asUInt256())), push(ONE_32))
+                        save(DISK, load(CALL_DATA, push(2.toBackedInteger())), push(ONE_32))
                     })
                     build()
                 })
@@ -225,8 +225,8 @@ data class BarrierProgram(val name: String,
                   |     HALT(WINNER)
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
-                    val varHash = 1000.asUInt256()
-                    save(MEMORY, hash("SHA-256", push(1234.asUInt256())), push(varHash))
+                    val varHash = 1000.toBackedInteger()
+                    save(MEMORY, hash("SHA-256", push(1234.toBackedInteger())), push(varHash))
                     blockIf(conditionBody = {
                         equals(hash("SHA-256", load(CALL_DATA, push(ONE_32))), load(MEMORY, push(varHash)))
                     }, thenBody = {
@@ -256,8 +256,8 @@ data class BarrierProgram(val name: String,
                   |     HALT(WINNER)
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
-                    val varHash = 1000.asUInt256()
-                    save(MEMORY, hash("SHA-256", push(1234.asUInt256())), push(varHash))
+                    val varHash = 1000.toBackedInteger()
+                    save(MEMORY, hash("SHA-256", push(1234.toBackedInteger())), push(varHash))
                     blockIf(conditionBody = {
                         equals(load(CALL_DATA, push(ONE_32)), load(MEMORY, push(varHash)))
                     }, thenBody = {
@@ -273,7 +273,7 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
-                        equals(load(CALL_DATA, push(ONE_32)), push(5678.asUInt256()))
+                        equals(load(CALL_DATA, push(ONE_32)), push(5678.toBackedInteger()))
                     }, thenBody = {
                         halt(WINNER)
                     })

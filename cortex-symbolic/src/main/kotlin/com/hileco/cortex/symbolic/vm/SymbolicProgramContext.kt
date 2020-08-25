@@ -6,17 +6,18 @@ import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
-import java.math.BigInteger
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 
 class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
     val program: SymbolicProgram
     var instructionsExecuted: Int
     var instructionPosition: Int
     val stack: VmStack<Expression>
-    val memory: VmMap<BigInteger, Expression>
-    var returnDataOffset: BigInteger
-    var returnDataSize: BigInteger
-    val callData: VmMap<BigInteger, Expression>
+    val memory: VmMap<BackedInteger, Expression>
+    var returnDataOffset: BackedInteger
+    var returnDataSize: BackedInteger
+    val callData: VmMap<BackedInteger, Expression>
 
     constructor(program: SymbolicProgram) {
         this.program = program
@@ -24,8 +25,8 @@ class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
         instructionPosition = 0
         stack = LayeredVmStack()
         memory = LayeredVmMap()
-        returnDataOffset = BigInteger.ZERO
-        returnDataSize = BigInteger.ZERO
+        returnDataOffset = ZERO_32
+        returnDataSize = ZERO_32
         callData = LayeredVmMap()
     }
 
@@ -33,10 +34,10 @@ class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
                         instructionsExecuted: Int,
                         instructionPosition: Int,
                         stack: VmStack<Expression>,
-                        memory: VmMap<BigInteger, Expression>,
-                        returnDataOffset: BigInteger,
-                        returnDataSize: BigInteger,
-                        callData: VmMap<BigInteger, Expression>) {
+                        memory: VmMap<BackedInteger, Expression>,
+                        returnDataOffset: BackedInteger,
+                        returnDataSize: BackedInteger,
+                        callData: VmMap<BackedInteger, Expression>) {
         this.program = program
         this.instructionsExecuted = instructionsExecuted
         this.instructionPosition = instructionPosition

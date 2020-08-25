@@ -2,7 +2,7 @@ package com.hileco.cortex.vm.instructions
 
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
 import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
@@ -75,7 +75,7 @@ class InstructionParser {
                 "SUBTRACT" to require(0) { SUBTRACT() },
                 "DUPLICATE" to require(1) { parameters -> DUPLICATE(Integer.valueOf(parameters[1])) },
                 "POP" to require(0) { POP() },
-                "PUSH" to require(1) { parameters -> PUSH(Integer.parseInt(parameters[1]).asUInt256()) },
+                "PUSH" to require(1) { parameters -> PUSH(Integer.parseInt(parameters[1]).toBackedInteger()) },
                 "DROP" to require(1) { parameters -> DROP(Integer.valueOf(parameters[1])) },
                 "SWAP" to require(2) { parameters -> SWAP(Integer.valueOf(parameters[1]), Integer.valueOf(parameters[2])) },
                 "VARIABLE" to require(1) { parameters -> VARIABLE(ExecutionVariable.valueOf(parameters[1])) }

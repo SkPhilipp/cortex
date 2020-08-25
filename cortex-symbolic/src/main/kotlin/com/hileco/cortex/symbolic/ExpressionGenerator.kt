@@ -16,7 +16,6 @@ import com.hileco.cortex.vm.instructions.math.*
 import com.hileco.cortex.vm.instructions.stack.DUPLICATE
 import com.hileco.cortex.vm.instructions.stack.PUSH
 import com.hileco.cortex.vm.instructions.stack.SWAP
-import java.math.BigInteger
 
 class ExpressionGenerator {
     private val expressionOptimizer = ExpressionOptimizer()
@@ -115,8 +114,7 @@ class ExpressionGenerator {
             is SAVE -> throw UnsupportedOperationException("SAVE is not supported by ExpressionGenerator")
             is LOAD -> stack.push(Reference(instruction.programStoreZone, pop()))
             is PUSH -> {
-                val value = BigInteger(instruction.value)
-                stack.push(Value(value.toLong()))
+                stack.push(Value(instruction.value))
             }
             is DUPLICATE -> stack.duplicate(instruction.topOffset)
             is SWAP -> try {

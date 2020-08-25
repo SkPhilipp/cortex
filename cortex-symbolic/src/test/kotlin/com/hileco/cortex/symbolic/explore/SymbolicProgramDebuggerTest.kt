@@ -5,6 +5,7 @@ import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.io.LOAD
 import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
@@ -25,8 +26,8 @@ internal class SymbolicProgramDebuggerTest {
     @Test
     fun testSteps() {
         val programDebugger = symbolicProgramDebuggerFor(listOf(
-                PUSH(10),
-                PUSH(15),
+                PUSH(10.toBackedInteger()),
+                PUSH(15.toBackedInteger()),
                 ADD()
         ))
 
@@ -35,16 +36,16 @@ internal class SymbolicProgramDebuggerTest {
         programDebugger.stepTake()
 
         val topValue = programDebugger.virtualMachine.programs.first().stack.peek()
-        assertEquals(Expression.Value(25), topValue)
+        assertEquals(Expression.Value(25.toBackedInteger()), topValue)
     }
 
     @Test
     fun testTakeJump() {
         val programDebugger = symbolicProgramDebuggerFor(listOf(
                 JUMP_DESTINATION(),
-                PUSH(10),
+                PUSH(10.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(0),
+                PUSH(0.toBackedInteger()),
                 JUMP_IF()
         ))
 
@@ -62,9 +63,9 @@ internal class SymbolicProgramDebuggerTest {
     fun testSkipJump() {
         val programDebugger = symbolicProgramDebuggerFor(listOf(
                 JUMP_DESTINATION(),
-                PUSH(10),
+                PUSH(10.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(0),
+                PUSH(0.toBackedInteger()),
                 JUMP_IF()
         ))
 

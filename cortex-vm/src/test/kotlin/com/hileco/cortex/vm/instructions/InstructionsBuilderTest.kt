@@ -6,7 +6,7 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.VirtualMachine
 import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
 import com.hileco.cortex.vm.instructions.debug.NOOP
@@ -22,10 +22,10 @@ class InstructionsBuilderTest {
     @Test
     fun testJump() {
         val program = Program(listOf(
-                PUSH(123.asUInt256()),
-                PUSH(123.asUInt256()),
+                PUSH(123.toBackedInteger()),
+                PUSH(123.toBackedInteger()),
                 EQUALS(),
-                PUSH(10.asUInt256()),
+                PUSH(10.toBackedInteger()),
                 JUMP_IF(),
                 NOOP(),
                 NOOP(),
@@ -45,10 +45,10 @@ class InstructionsBuilderTest {
     @Test
     fun testNoJump() {
         val program = Program(listOf(
-                PUSH(123.asUInt256()),
-                PUSH(124.asUInt256()),
+                PUSH(123.toBackedInteger()),
+                PUSH(124.toBackedInteger()),
                 EQUALS(),
-                PUSH(10.asUInt256()),
+                PUSH(10.toBackedInteger()),
                 JUMP_IF(),
                 NOOP(),
                 NOOP(),
@@ -68,15 +68,15 @@ class InstructionsBuilderTest {
     @Test
     fun testLoop() {
         val program = Program(listOf(
-                PUSH(0.asUInt256()),
+                PUSH(0.toBackedInteger()),
                 JUMP_DESTINATION(),
-                PUSH(1.asUInt256()),
+                PUSH(1.toBackedInteger()),
                 ADD(),
                 DUPLICATE(0),
                 PUSH(BackedInteger("0x0100".deserializeBytes())),
                 EQUALS(),
                 IS_ZERO(),
-                PUSH(1.asUInt256()),
+                PUSH(1.toBackedInteger()),
                 JUMP_IF()
         ))
         val programContext = ProgramContext(program)

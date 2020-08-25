@@ -13,6 +13,9 @@ import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramException.Reason.*
 import com.hileco.cortex.vm.ProgramRunner.Companion.STACK_LIMIT
 import com.hileco.cortex.vm.ProgramStoreZone.*
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
@@ -34,7 +37,6 @@ import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
 import com.hileco.cortex.vm.instructions.math.*
 import com.hileco.cortex.vm.instructions.stack.*
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
-import java.math.BigInteger
 
 class SymbolicInstructionRunner {
 
@@ -94,10 +96,10 @@ class SymbolicInstructionRunner {
                 //     throw UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
                 // }
                 if (recipientAddress is Value) {
-                    val recipient = virtualMachine.atlas[recipientAddress.constant.toBigInteger()]
+                    val recipient = virtualMachine.atlas[recipientAddress.constant]
                             ?: throw ProgramException(CALL_RECIPIENT_MISSING)
                     val sourceAddress = programContext.program.address
-                    recipient.transfers.push(Value(sourceAddress.toLong()) to valueTransferred)
+                    recipient.transfers.push(Value(sourceAddress) to valueTransferred)
                     val newContext = SymbolicProgramContext(recipient)
                     virtualMachine.programs.add(newContext)
                 } else {
@@ -156,8 +158,8 @@ class SymbolicInstructionRunner {
                 }
                 val addressExpression = programContext.stack.pop() as? Value
                         ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
-                val address = addressExpression.constant.toBigInteger()
-                val storage: VmMap<BigInteger, Expression> = when (instruction.programStoreZone) {
+                val address = addressExpression.constant
+                val storage: VmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
@@ -171,13 +173,13 @@ class SymbolicInstructionRunner {
                 }
                 val addressExpression = programContext.stack.pop() as? Value
                         ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
-                val storage: VmMap<BigInteger, Expression> = when (instruction.programStoreZone) {
+                val storage: VmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")
                 }
                 val valueExpression = programContext.stack.pop()
-                storage[addressExpression.constant.toBigInteger()] = valueExpression
+                storage[addressExpression.constant] = valueExpression
             }
             is EXIT -> {
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
@@ -213,7 +215,7 @@ class SymbolicInstructionRunner {
                     }
                     virtualMachine.path.push(SymbolicPathEntry(programContext.instructionPosition, addressValue, stepMode == NON_CONCRETE_JUMP_TAKE, conditionExpression))
                 }
-                if (if (conditionExpression is Value) conditionExpression.constant > 0 else stepMode == NON_CONCRETE_JUMP_TAKE) {
+                if (if (conditionExpression is Value) conditionExpression.constant > ZERO_32 else stepMode == NON_CONCRETE_JUMP_TAKE) {
                     val nextInstructionPosition = addressValue.constant.toInt()
                     val nextInstruction = programContext.program.instructionsAbsolute[nextInstructionPosition]
                             ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
@@ -295,7 +297,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.pop()
             }
             is PUSH -> {
-                programContext.stack.push(Value(BigInteger(instruction.value).toLong()))
+                programContext.stack.push(Value(instruction.value))
                 if (programContext.stack.size() > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
@@ -309,25 +311,25 @@ class SymbolicInstructionRunner {
             is VARIABLE -> {
                 when (instruction.executionVariable) {
                     ADDRESS_SELF -> {
-                        programContext.stack.push(Value(programContext.program.address.toLong()))
+                        programContext.stack.push(Value(programContext.program.address))
                     }
                     INSTRUCTION_POSITION -> {
-                        programContext.stack.push(Value(programContext.instructionPosition.toLong()))
+                        programContext.stack.push(Value(programContext.instructionPosition.toBackedInteger()))
                     }
                     ADDRESS_CALLER -> {
-                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address.toLong() else 0
+                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else ZERO_32
                         programContext.stack.push(Value(address))
                     }
                     CALL_DATA_SIZE -> {
                         // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
-                        programContext.stack.push(Reference(CALL_DATA, Value(999)))
+                        programContext.stack.push(Reference(CALL_DATA, Value(999.toBackedInteger())))
                     }
                     TRANSACTION_FUNDS -> {
                         // TODO: This is a quick workaround to get TRANSACTION_FUNDS to work
-                        programContext.stack.push(Value(0))
+                        programContext.stack.push(Value(ZERO_32))
                     }
                     ADDRESS_ORIGIN -> {
-                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address.toLong() else 0
+                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address else ZERO_32
                         programContext.stack.push(Value(address))
                     }
                     else -> {

@@ -13,7 +13,7 @@ import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_07
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_08
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_09
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_10
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.io.LOAD
 import org.junit.Test
@@ -52,7 +52,7 @@ class BarrierProgramTest {
     fun testBarrier01() {
         val program = Program(BARRIER_01.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 24690.asUInt256()
+        val callDataOne = 24690.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -63,9 +63,9 @@ class BarrierProgramTest {
     fun testBarrier02() {
         val program = Program(BARRIER_02.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 24690.asUInt256()
+        val callDataOne = 24690.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
-        val callDataTwo = 512.asUInt256()
+        val callDataTwo = 512.toBackedInteger()
         programContext.callData.write(2 * LOAD.SIZE, callDataTwo.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -76,7 +76,7 @@ class BarrierProgramTest {
     fun testBarrier03() {
         val program = Program(BARRIER_03.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 12347.asUInt256()
+        val callDataOne = 12347.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -87,7 +87,7 @@ class BarrierProgramTest {
     fun testBarrier04() {
         val program = Program(BARRIER_04.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 6.asUInt256()
+        val callDataOne = 6.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -98,7 +98,7 @@ class BarrierProgramTest {
     fun testBarrier05() {
         val program = Program(BARRIER_05.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 3.asUInt256()
+        val callDataOne = 3.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -109,12 +109,12 @@ class BarrierProgramTest {
     fun testBarrier06() {
         val program = Program(BARRIER_06.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 24690.asUInt256()
+        val callDataOne = 24690.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
-        val callDataTwo = 1234.asUInt256()
+        val callDataTwo = 1234.toBackedInteger()
         programContext.callData.write(2 * LOAD.SIZE, callDataTwo.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
-        virtualMachine.atlas[1234.asUInt256()] = Program(listOf(HALT(ProgramException.Reason.WINNER)))
+        virtualMachine.atlas[1234.toBackedInteger()] = Program(listOf(HALT(ProgramException.Reason.WINNER)))
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
     }
@@ -123,9 +123,9 @@ class BarrierProgramTest {
     fun testBarrier07() {
         val program = Program(BARRIER_07.instructions)
         val programContext = ProgramContext(program)
-        val callDataOne = 24690.asUInt256()
+        val callDataOne = 24690.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
-        val callDataTwo = 513.asUInt256()
+        val callDataTwo = 513.toBackedInteger()
         programContext.callData.write(2 * LOAD.SIZE, callDataTwo.getBackingArray())
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
@@ -135,9 +135,9 @@ class BarrierProgramTest {
     @Test(expected = ProgramException::class)
     fun testBarrier08() {
         val startTime = System.currentTimeMillis()
-        val program = Program(BARRIER_08.instructions, 12345.asUInt256())
+        val program = Program(BARRIER_08.instructions, 12345.toBackedInteger())
         val programContext = ProgramContext(program)
-        val callDataOne = program.address + startTime.asUInt256()
+        val callDataOne = program.address + startTime.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
         val virtualMachine = VirtualMachine(programContext, startTime = startTime)
         val programRunner = ProgramRunner(virtualMachine)
@@ -150,9 +150,9 @@ class BarrierProgramTest {
         val program = Program(BARRIER_09.instructions)
         val programContext = ProgramContext(program)
         BARRIER_09.diskSetup.forEach { (key, value) ->
-            program.storage.write(key.asUInt() * LOAD.SIZE, value.getBackingArray())
+            program.storage.write(key.toInt() * LOAD.SIZE, value.getBackingArray())
         }
-        val callDataOne = 12345.asUInt256()
+        val callDataOne = 12345.toBackedInteger()
         programContext.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
         val virtualMachine = VirtualMachine(programContext, startTime = startTime)
         val programRunner = ProgramRunner(virtualMachine)
@@ -164,16 +164,16 @@ class BarrierProgramTest {
         val startTime = System.currentTimeMillis()
         val program = Program(BARRIER_10.instructions)
         val programContextOne = ProgramContext(program)
-        val callDataOne = 2.asUInt256()
+        val callDataOne = 2.toBackedInteger()
         programContextOne.callData.write(1 * LOAD.SIZE, callDataOne.getBackingArray())
-        val callDataTwo = 12345.asUInt256()
+        val callDataTwo = 12345.toBackedInteger()
         programContextOne.callData.write(2 * LOAD.SIZE, callDataTwo.getBackingArray())
         val virtualMachineOne = VirtualMachine(programContextOne, startTime = startTime)
         val programRunnerOne = ProgramRunner(virtualMachineOne)
         programRunnerOne.run()
 
         val programContextTwo = ProgramContext(program)
-        val secondCallDataOne = 1.asUInt256()
+        val secondCallDataOne = 1.toBackedInteger()
         programContextTwo.callData.write(1 * LOAD.SIZE, secondCallDataOne.getBackingArray())
         val virtualMachineTwo = VirtualMachine(programContextTwo, startTime = startTime)
         val programRunnerTwo = ProgramRunner(virtualMachineTwo)

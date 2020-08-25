@@ -7,20 +7,21 @@ import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.PositionedInstruction
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.instructions.Instruction
-import java.math.BigInteger
 
 class SymbolicProgram : VmComponent<SymbolicProgram> {
     val instructions: List<Instruction>
     val instructionsRelative: List<PositionedInstruction>
     val instructionsAbsolute: Map<Int, PositionedInstruction>
     val instructionsLastPosition: Int
-    val address: BigInteger
-    val storage: VmMap<BigInteger, Expression>
+    val address: BackedInteger
+    val storage: VmMap<BackedInteger, Expression>
     val transfers: VmStack<Pair<Expression, Expression>>
 
     constructor(instructions: List<Instruction>,
-                address: BigInteger = BigInteger.ZERO) {
+                address: BackedInteger = ZERO_32) {
         this.instructions = instructions
         var absolutePosition = 0
         var relativePosition = 0
@@ -43,8 +44,8 @@ class SymbolicProgram : VmComponent<SymbolicProgram> {
                         instructionsRelative: List<PositionedInstruction>,
                         instructionsAbsolute: Map<Int, PositionedInstruction>,
                         instructionsLastPosition: Int,
-                        address: BigInteger,
-                        storage: VmMap<BigInteger, Expression>,
+                        address: BackedInteger,
+                        storage: VmMap<BackedInteger, Expression>,
                         transfers: VmStack<Pair<Expression, Expression>>) {
         this.instructions = instructions
         this.instructionsRelative = instructionsRelative

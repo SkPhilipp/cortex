@@ -1,5 +1,6 @@
 package com.hileco.cortex.symbolic.expressions
 
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import org.junit.Assert
 import org.junit.Test
 
@@ -24,7 +25,7 @@ class ExpressionTest {
 
     @Test
     fun testAndContainingOnlyTrue() {
-        val result = Expression.constructAnd(listOf(Expression.True, Expression.Value(123)))
+        val result = Expression.constructAnd(listOf(Expression.True, Expression.Value(123.toBackedInteger())))
         Assert.assertEquals(Expression.True, result)
     }
 

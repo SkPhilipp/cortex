@@ -5,7 +5,7 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.VirtualMachine
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.MEMORY_INDEX_AND_ADDRESS
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.io.LOAD
@@ -21,15 +21,15 @@ class ProgramBuilderTest {
         val programBuilder = InstructionsBuilder()
         with(programBuilder) {
             jumpDestination("repeat")
-            jumpIf(equals(load(CALL_DATA, push(0.asUInt256())), push(123.asUInt256())), "repeat")
+            jumpIf(equals(load(CALL_DATA, push(0.toBackedInteger())), push(123.toBackedInteger())), "repeat")
         }
         Assert.assertEquals(listOf(
                 JUMP_DESTINATION(),
-                PUSH(0.asUInt256()),
+                PUSH(0.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(123.asUInt256()),
+                PUSH(123.toBackedInteger()),
                 EQUALS(),
-                PUSH(0.asUInt256()),
+                PUSH(0.toBackedInteger()),
                 JUMP_IF()
         ), programBuilder.build())
     }
@@ -39,12 +39,12 @@ class ProgramBuilderTest {
         val programBuilder = InstructionsBuilder()
         with(programBuilder) {
             internalFunctionCall("multiply", {
-                push(123.asUInt256())
-                push(123.asUInt256())
+                push(123.toBackedInteger())
+                push(123.toBackedInteger())
             })
             internalFunctionCall("multiply", {
-                push(123.asUInt256())
-                push(123.asUInt256())
+                push(123.toBackedInteger())
+                push(123.toBackedInteger())
             })
             internalFunction("multiply", {
                 multiply()
@@ -55,8 +55,8 @@ class ProgramBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals((123 * 123).asUInt256(), programContext.stack.pop())
-        Assert.assertEquals((123 * 123).asUInt256(), programContext.stack.pop())
+        Assert.assertEquals((123 * 123).toBackedInteger(), programContext.stack.pop())
+        Assert.assertEquals((123 * 123).toBackedInteger(), programContext.stack.pop())
         Assert.assertTrue(programContext.stack.isEmpty())
     }
 
@@ -65,7 +65,7 @@ class ProgramBuilderTest {
         val programBuilder = InstructionsBuilder()
         with(programBuilder) {
             internalFunctionCall("cube", {
-                push(123.asUInt256())
+                push(123.toBackedInteger())
             })
             internalFunction("cube", {
                 internalFunctionCall("square", {
@@ -83,7 +83,7 @@ class ProgramBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals((123 * 123 * 123).asUInt256(), programContext.stack.pop())
+        Assert.assertEquals((123 * 123 * 123).toBackedInteger(), programContext.stack.pop())
         Assert.assertTrue(programContext.stack.isEmpty())
     }
 
@@ -93,7 +93,7 @@ class ProgramBuilderTest {
         with(programBuilder) {
             configureCallConvention()
             internalFunctionCall("cube", {
-                push(123.asUInt256())
+                push(123.toBackedInteger())
             }, callConvention = MEMORY_INDEX_AND_ADDRESS)
             internalFunction("cube", {
                 internalFunctionCall("square", {
@@ -111,7 +111,7 @@ class ProgramBuilderTest {
         val virtualMachine = VirtualMachine(programContext)
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
-        Assert.assertEquals((123 * 123 * 123).asUInt256(), programContext.stack.pop())
+        Assert.assertEquals((123 * 123 * 123).toBackedInteger(), programContext.stack.pop())
         Assert.assertTrue(programContext.stack.isEmpty())
     }
 }

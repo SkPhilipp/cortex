@@ -4,7 +4,7 @@ import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
 
 class VirtualMachine : VmComponent<VirtualMachine> {
@@ -17,7 +17,7 @@ class VirtualMachine : VmComponent<VirtualMachine> {
         programs = ArrayList()
         atlas = HashMap()
         variables = LayeredVmMap()
-        variables[ExecutionVariable.START_TIME] = startTime.asUInt256()
+        variables[ExecutionVariable.START_TIME] = startTime.toBackedInteger()
         instructionsExecuted = 0
         for (programContext in programContexts) {
             programs.add(programContext)

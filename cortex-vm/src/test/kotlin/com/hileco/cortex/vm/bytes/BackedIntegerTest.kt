@@ -13,14 +13,14 @@ internal class BackedIntegerTest {
 
     @Test
     fun testIntAsUInt256() {
-        val result = 0xffffff.asUInt256()
+        val result = 0xffffff.toBackedInteger()
 
         Assert.assertEquals(BackedInteger("0xffffff".deserializeBytes()), result)
     }
 
     @Test
     fun testLongAsUInt256() {
-        val result = 0xffffffffffff.asUInt256()
+        val result = 0xffffffffffff.toBackedInteger()
 
         Assert.assertEquals(BackedInteger("0xffffffffffff".deserializeBytes()), result)
     }
@@ -29,21 +29,21 @@ internal class BackedIntegerTest {
     fun testConstructorEmpty() {
         val backedInteger = BackedInteger("".deserializeBytes())
 
-        Assert.assertEquals(0, backedInteger.asUInt())
+        Assert.assertEquals(0, backedInteger.toInt())
     }
 
     @Test
     fun testConstructorRegularValue() {
         val backedInteger = BackedInteger("0xabcd".deserializeBytes())
 
-        Assert.assertEquals(43981, backedInteger.asUInt())
+        Assert.assertEquals(43981, backedInteger.toInt())
     }
 
     @Test
     fun testConstructorFull() {
         val backedInteger = BackedInteger("0x0000000000000000000000000000000000000000000000000000000000000005".deserializeBytes())
 
-        Assert.assertEquals(5, backedInteger.asUInt())
+        Assert.assertEquals(5, backedInteger.toInt())
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -53,20 +53,26 @@ internal class BackedIntegerTest {
 
     @Test
     fun testAsUInt256Zero() {
-        val value = 0.asUInt256()
+        val value = 0.toBackedInteger()
 
-        Assert.assertEquals(0, value.asUInt())
+        Assert.assertEquals(0, value.toInt())
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun testAsUInt256Negative() {
-        (-1).asUInt256()
+        (-1).toBackedInteger()
     }
 
     @Test
     fun testAsUInt256Limit() {
-        val value = Int.MAX_VALUE.asUInt256()
-        Assert.assertEquals(Int.MAX_VALUE, value.asUInt())
+        val value = Int.MAX_VALUE.toBackedInteger()
+        Assert.assertEquals(Int.MAX_VALUE, value.toInt())
+    }
+
+    @Test
+    fun testAsULong256Limit() {
+        val value = Long.MAX_VALUE.toBackedInteger()
+        Assert.assertEquals(Long.MAX_VALUE, value.toLong())
     }
 
     @Test

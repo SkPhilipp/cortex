@@ -6,7 +6,7 @@ import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.asUInt256
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
@@ -134,7 +134,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 val sourceAddress = programContext.program.address
                 recipient.transfers.push(sourceAddress to valueTransferred)
                 val newContext = ProgramContext(recipient)
-                val inputData = programContext.memory.read(inOffset.asUInt() * LOAD.SIZE, inSize.asUInt())
+                val inputData = programContext.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
                 newContext.callData.clear()
                 newContext.callData.write(0, inputData)
                 virtualMachine.programs.add(newContext)
@@ -148,14 +148,14 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
                 if (virtualMachine.programs.isNotEmpty()) {
                     val nextContext = virtualMachine.programs.last()
-                    val data = programContext.memory.read(offset.asUInt(), size.asUInt())
+                    val data = programContext.memory.read(offset.toInt(), size.toInt())
                     val wSize = nextContext.returnDataSize
-                    if (data.size > wSize.asUInt()) {
+                    if (data.size > wSize.toInt()) {
                         throw ProgramException(CALL_RETURN_DATA_TOO_LARGE)
                     }
-                    val dataExpanded = data.copyOf(wSize.asUInt())
+                    val dataExpanded = data.copyOf(wSize.toInt())
                     val wOffset = nextContext.returnDataOffset
-                    nextContext.memory.write(wOffset.asUInt(), dataExpanded, wSize.asUInt())
+                    nextContext.memory.write(wOffset.toInt(), dataExpanded, wSize.toInt())
                     // TODO: If `CALL` would have a width other than 1 this will not be enough
                     nextContext.instructionPosition++
                 }
@@ -214,10 +214,10 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
                 }
-                if (address.asUInt() * LOAD.SIZE + LOAD.SIZE > storage.size()) {
+                if (address.toInt() * LOAD.SIZE + LOAD.SIZE > storage.size()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
                 }
-                val bytes = storage.read(address.asUInt() * LOAD.SIZE, LOAD.SIZE)
+                val bytes = storage.read(address.toInt() * LOAD.SIZE, LOAD.SIZE)
                 programContext.stack.push(BackedInteger(bytes))
 
             }
@@ -232,10 +232,10 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $instruction.programStoreZone")
                 }
                 val value = programContext.stack.pop()
-                if (address.asUInt() * LOAD.SIZE + 32 > storage.size()) {
+                if (address.toInt() * LOAD.SIZE + 32 > storage.size()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
                 }
-                storage.write(address.asUInt() * LOAD.SIZE, value.getBackingArray())
+                storage.write(address.toInt() * LOAD.SIZE, value.getBackingArray())
             }
             is EXIT -> {
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
@@ -245,9 +245,9 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val address = programContext.stack.pop()
-                val nextInstruction = programContext.program.instructionsAbsolute[address.asUInt()] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                val nextInstruction = programContext.program.instructionsAbsolute[address.toInt()] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
                 nextInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
-                programContext.instructionPosition = address.asUInt()
+                programContext.instructionPosition = address.toInt()
             }
             is JUMP_DESTINATION -> {
             }
@@ -255,7 +255,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val address = programContext.stack.pop().asUInt()
+                val address = programContext.stack.pop().toInt()
                 val condition = programContext.stack.pop()
                 if (condition != ZERO_32) {
                     val nextInstruction = programContext.program.instructionsAbsolute[address] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
@@ -349,7 +349,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                         programContext.stack.push(programContext.program.address)
                     }
                     INSTRUCTION_POSITION -> {
-                        programContext.stack.push(programContext.instructionPosition.asUInt256())
+                        programContext.stack.push(programContext.instructionPosition.toBackedInteger())
                     }
                     ADDRESS_CALLER -> {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else ZERO_32
@@ -358,7 +358,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     CALL_DATA_SIZE -> {
                         // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
                         val size = programContext.callData.size()
-                        programContext.stack.push(size.asUInt256())
+                        programContext.stack.push(size.toBackedInteger())
                     }
                     TRANSACTION_FUNDS -> {
                         // TODO: This is a quick workaround to get TRANSACTION_FUNDS to work

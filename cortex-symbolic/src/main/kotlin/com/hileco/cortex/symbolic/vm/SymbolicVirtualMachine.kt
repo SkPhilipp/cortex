@@ -6,14 +6,15 @@ import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.ProgramException
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
-import java.math.BigInteger
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
-    val atlas: MutableMap<BigInteger, SymbolicProgram>
+    val atlas: MutableMap<BackedInteger, SymbolicProgram>
     val variables: VmMap<ExecutionVariable, Expression>
     val path: LayeredVmStack<SymbolicPathEntry>
     var instructionsExecuted: Int
@@ -27,7 +28,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         atlas = HashMap()
         path = LayeredVmStack()
         variables = LayeredVmMap()
-        variables[ExecutionVariable.START_TIME] = Expression.Value(startTime)
+        variables[ExecutionVariable.START_TIME] = Expression.Value(startTime.toBackedInteger())
         instructionsExecuted = 0
         for (programContext in programContexts) {
             programs.add(programContext)
@@ -35,7 +36,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     }
 
     private constructor(programs: MutableList<SymbolicProgramContext>,
-                        atlas: MutableMap<BigInteger, SymbolicProgram>,
+                        atlas: MutableMap<BackedInteger, SymbolicProgram>,
                         path: LayeredVmStack<SymbolicPathEntry>,
                         variables: VmMap<ExecutionVariable, Expression>,
                         instructionsExecuted: Int) {

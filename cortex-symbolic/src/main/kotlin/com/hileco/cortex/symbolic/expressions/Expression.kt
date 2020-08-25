@@ -1,6 +1,8 @@
 package com.hileco.cortex.symbolic.expressions
 
 import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.microsoft.z3.*
 
 interface Expression {
@@ -29,9 +31,9 @@ interface Expression {
         }
     }
 
-    data class Value(val constant: Long) : Expression {
+    data class Value(val constant: BackedInteger) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            return context.mkInt(constant)
+            return context.mkInt(constant.toInt())
         }
 
         override fun subexpressions(): List<Expression> {
@@ -359,8 +361,8 @@ interface Expression {
     }
 
     companion object {
-        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Value && it.constant >= 0) }
-        private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(0) }
+        private val IS_EQUIVALENT_TRUE: (Expression) -> Boolean = { it == True || (it is Value && it.constant >= ZERO_32) }
+        private val IS_EQUIVALENT_FALSE: (Expression) -> Boolean = { it == False || it == Value(ZERO_32) }
         fun constructAnd(inputs: List<Expression>): Expression {
             val distinctInputs = inputs.distinct().filterNot(IS_EQUIVALENT_TRUE)
             val falseInputs = distinctInputs.count(IS_EQUIVALENT_FALSE)
