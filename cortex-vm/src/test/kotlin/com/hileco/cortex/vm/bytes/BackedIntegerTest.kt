@@ -12,6 +12,20 @@ import org.junit.Test
 internal class BackedIntegerTest {
 
     @Test
+    fun testIntAsUInt256() {
+        val result = 0xffffff.asUInt256()
+
+        Assert.assertEquals(BackedInteger("0xffffff".deserializeBytes()), result)
+    }
+
+    @Test
+    fun testLongAsUInt256() {
+        val result = 0xffffffffffff.asUInt256()
+
+        Assert.assertEquals(BackedInteger("0xffffffffffff".deserializeBytes()), result)
+    }
+
+    @Test
     fun testConstructorEmpty() {
         val backedInteger = BackedInteger("".deserializeBytes())
 
@@ -107,15 +121,83 @@ internal class BackedIntegerTest {
         Assert.assertEquals(LIMIT_32, result)
     }
 
-    // test times (without overflow and with overflow)
+    @Test
+    fun testTimesRegularValue() {
+        val leftValue = BackedInteger("0x1010".deserializeBytes())
+        val rightValue = BackedInteger("0x0f".deserializeBytes())
 
-    // test div (including divide 0)
+        val result = leftValue * rightValue
 
-    // test rem (including rem 0)
+        Assert.assertEquals(BackedInteger("0xf0f0".deserializeBytes()), result)
+    }
 
-    // test compareTo (compare zero, one, and limit)
+    /**
+     * `0xff...ff` * `0x02` overflows to `0xff...fe`
+     */
+    @Test
+    fun testTimesOverflow() {
+        val leftValue = LIMIT_32
+        val rightValue = BackedInteger("0x02".deserializeBytes())
 
-    // test equals, hashCode (put and retrieve from a map)
+        val result = leftValue * rightValue
 
-    // test toString on ZERO and LIMIT (compare with a fixed string)
+        Assert.assertEquals(LIMIT_32 - ONE_32, result)
+    }
+
+    @Test
+    fun testDivRegularValue() {
+        val leftValue = BackedInteger("0x1000".deserializeBytes())
+        val rightValue = BackedInteger("0x10".deserializeBytes())
+
+        val result = leftValue / rightValue
+
+        Assert.assertEquals(BackedInteger("0x0100".deserializeBytes()), result)
+    }
+
+    @Test
+    fun testDivRounding() {
+        val leftValue = BackedInteger("0x1001".deserializeBytes())
+        val rightValue = BackedInteger("0x10".deserializeBytes())
+
+        val result = leftValue / rightValue
+
+        Assert.assertEquals(BackedInteger("0x0100".deserializeBytes()), result)
+    }
+
+    @Test
+    fun testRemRegularValue() {
+        val leftValue = BackedInteger("0x100f".deserializeBytes())
+        val rightValue = BackedInteger("0x10".deserializeBytes())
+
+        val result = leftValue % rightValue
+
+        Assert.assertEquals(BackedInteger("0x0f".deserializeBytes()), result)
+    }
+
+    @Test
+    fun testCompareTo() {
+        Assert.assertTrue(ONE_32 > ZERO_32)
+        Assert.assertTrue(LIMIT_32 > ZERO_32)
+        Assert.assertTrue(LIMIT_32 > ONE_32)
+        Assert.assertTrue(ZERO_32 < ONE_32)
+        Assert.assertTrue(ZERO_32 < LIMIT_32)
+        Assert.assertTrue(ONE_32 < LIMIT_32)
+    }
+
+    @Test
+    fun testEquals() {
+        Assert.assertTrue(ZERO_32 == ZERO_32)
+        Assert.assertTrue(ONE_32 == ONE_32)
+        Assert.assertTrue(LIMIT_32 == LIMIT_32)
+        Assert.assertTrue(ZERO_32 != ONE_32)
+        Assert.assertTrue(ONE_32 != LIMIT_32)
+        Assert.assertTrue(LIMIT_32 != ZERO_32)
+    }
+
+    @Test
+    fun testToString() {
+        Assert.assertEquals("0000000000000000000000000000000000000000000000000000000000000000", ZERO_32.toString())
+        Assert.assertEquals("0000000000000000000000000000000000000000000000000000000000000001", ONE_32.toString())
+        Assert.assertEquals("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", LIMIT_32.toString())
+    }
 }

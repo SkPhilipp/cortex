@@ -1,9 +1,11 @@
 package com.hileco.cortex.vm.instructions
 
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
@@ -71,7 +73,7 @@ class InstructionsBuilderTest {
                 PUSH(1.asUInt256()),
                 ADD(),
                 DUPLICATE(0),
-                PUSH(17.asUInt256()),
+                PUSH(BackedInteger("0x0100".deserializeBytes())),
                 EQUALS(),
                 IS_ZERO(),
                 PUSH(1.asUInt256()),

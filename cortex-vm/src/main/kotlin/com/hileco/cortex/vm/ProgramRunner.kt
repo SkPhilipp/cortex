@@ -184,13 +184,12 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 programContext.stack.push(if (top == ZERO_32) ONE_32 else ZERO_32)
             }
             is LESS_THAN -> {
-
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                programContext.stack.push(if (left < right) ZERO_32 else ONE_32)
+                programContext.stack.push(if (left < right) ONE_32 else ZERO_32)
             }
             is DROP -> {
                 if (programContext.stack.size() < instruction.elements) {

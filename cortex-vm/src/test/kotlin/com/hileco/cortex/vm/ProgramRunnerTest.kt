@@ -68,7 +68,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(LIMIT_32 - 128.asUInt256(), stack.pop())
+        Assert.assertEquals(LIMIT_32 - 127.asUInt256(), stack.pop())
     }
 
     @Test
@@ -314,7 +314,7 @@ class ProgramRunnerTest {
                         "program itself. JUMPs may only result in instruction positions which point to a JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 0)
+        Assert.assertEquals(0, stack.size())
     }
 
     @Test
@@ -325,7 +325,7 @@ class ProgramRunnerTest {
                 PUSH(100.asUInt256(), width = 3),
                 JUMP_DESTINATION())
         val stack = this.run(instructions).stack
-        Assert.assertEquals(stack.size(), 0)
+        Assert.assertEquals(0, stack.size())
     }
 
     @Test
@@ -343,7 +343,7 @@ class ProgramRunnerTest {
                         "JUMP_DESTINATION instruction. The JUMP_DESTINATION by itself is equal to a NOOP.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 0)
+        Assert.assertEquals(0, stack.size())
     }
 
     @Test
@@ -356,7 +356,7 @@ class ProgramRunnerTest {
         val stack = this.run(instructions).stack
         Documentation.of("instructions/jump-destination")
                 .headingParagraph("JUMP_DESTINATION").paragraph("Marks a part of a program as being able to be jumped to.")
-        Assert.assertEquals(stack.size(), 0)
+        Assert.assertEquals(0, stack.size())
     }
 
     @Test
@@ -370,8 +370,8 @@ class ProgramRunnerTest {
                 .headingParagraph("EXIT").paragraph("The EXIT operation ends execution of the program.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size().toLong(), 1)
-        Assert.assertNotEquals(stack.pop(), 10.asUInt256())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(10.asUInt256(), stack.pop())
     }
 
     @Test
@@ -515,7 +515,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(100.asUInt256(), stack.pop())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
@@ -529,7 +529,7 @@ class ProgramRunnerTest {
                 .headingParagraph("PUSH").paragraph("The PUSH operation adds one element to top of the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 3)
+        Assert.assertEquals(3, stack.size())
         Assert.assertEquals(100.asUInt256(), stack.pop())
         Assert.assertEquals(10.asUInt256(), stack.pop())
         Assert.assertEquals(1.asUInt256(), stack.pop())
@@ -546,7 +546,7 @@ class ProgramRunnerTest {
                 .headingParagraph("SWAP").paragraph("The SWAP operation swaps two elements on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 2)
+        Assert.assertEquals(2, stack.size())
         Assert.assertEquals(100.asUInt256(), stack.pop())
         Assert.assertEquals(1.asUInt256(), stack.pop())
     }

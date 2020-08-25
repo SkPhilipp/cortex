@@ -2,6 +2,7 @@ package com.hileco.cortex.vm.bytes
 
 import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.collections.serialize
+import java.lang.Byte.compareUnsigned
 import java.math.BigInteger
 import java.util.*
 
@@ -109,7 +110,12 @@ class BackedInteger : Comparable<BackedInteger> {
     }
 
     override operator fun compareTo(other: BackedInteger): Int {
-        return Arrays.compare(this.backingArray, other.backingArray)
+        val mismatchIndex = Arrays.mismatch(backingArray, other.backingArray)
+        if (mismatchIndex < 0) {
+            return 0
+        } else {
+            return compareUnsigned(backingArray[mismatchIndex], other.backingArray[mismatchIndex])
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -132,7 +138,6 @@ class BackedInteger : Comparable<BackedInteger> {
     }
 }
 
-// TODO: Old implementation, should be changed to reflect ethereum implementation
 fun Long.asUInt256(): BackedInteger {
     if (this < 0) {
         throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
@@ -141,7 +146,6 @@ fun Long.asUInt256(): BackedInteger {
     return BackedInteger(toByteArray)
 }
 
-// TODO: Old implementation, should be changed to reflect ethereum implementation
 fun Int.asUInt256(): BackedInteger {
     if (this < 0) {
         throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
