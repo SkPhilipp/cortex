@@ -3,6 +3,10 @@ package com.hileco.cortex.vm
 import com.hileco.cortex.collections.VmByteArray
 import com.hileco.cortex.vm.ProgramException.Reason.*
 import com.hileco.cortex.vm.ProgramStoreZone.*
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
@@ -25,7 +29,6 @@ import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
 import com.hileco.cortex.vm.instructions.math.*
 import com.hileco.cortex.vm.instructions.stack.*
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
-import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlin.experimental.and
@@ -73,24 +76,22 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                val result = ByteArray(Math.max(left.size, right.size))
+                val result = ByteArray(32)
                 for (i in result.indices) {
-                    val leftByte = if (i < left.size) left[i] else 0
-                    val rightByte = if (i < right.size) right[i] else 0
-                    result[i] = leftByte and rightByte
+                    result[i] = left[i] and right[i]
                 }
-                programContext.stack.push(result)
+                programContext.stack.push(BackedInteger(result))
             }
             is BITWISE_NOT -> {
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val element = programContext.stack.pop()
-                val result = ByteArray(element.size)
+                val result = ByteArray(32)
                 for (i in result.indices) {
                     result[i] = element[i].inv()
                 }
-                programContext.stack.push(result)
+                programContext.stack.push(BackedInteger(result))
             }
             is BITWISE_OR -> {
                 if (programContext.stack.size() < 2) {
@@ -98,13 +99,11 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                val result = ByteArray(Math.max(left.size, right.size))
+                val result = ByteArray(32)
                 for (i in result.indices) {
-                    val leftByte = if (i < left.size) left[i] else 0
-                    val rightByte = if (i < right.size) right[i] else 0
-                    result[i] = leftByte or rightByte
+                    result[i] = left[i] or right[i]
                 }
-                programContext.stack.push(result)
+                programContext.stack.push(BackedInteger(result))
             }
             is BITWISE_XOR -> {
                 if (programContext.stack.size() < 2) {
@@ -112,32 +111,30 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                val result = ByteArray(Math.max(left.size, right.size))
+                val result = ByteArray(32)
                 for (i in result.indices) {
-                    val leftByte = if (i < left.size) left[i] else 0
-                    val rightByte = if (i < right.size) right[i] else 0
-                    result[i] = leftByte xor rightByte
+                    result[i] = left[i] xor right[i]
                 }
-                programContext.stack.push(result)
+                programContext.stack.push(BackedInteger(result))
             }
             is CALL -> {
                 if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val gas = BigInteger(programContext.stack.pop())
-                val recipientAddress = BigInteger(programContext.stack.pop())
-                val valueTransferred = BigInteger(programContext.stack.pop())
-                val inOffset = BigInteger(programContext.stack.pop())
-                val inSize = BigInteger(programContext.stack.pop())
-                val outOffset = BigInteger(programContext.stack.pop())
-                val outSize = BigInteger(programContext.stack.pop())
+                val gas = programContext.stack.pop()
+                val recipientAddress = programContext.stack.pop()
+                val valueTransferred = programContext.stack.pop()
+                val inOffset = programContext.stack.pop()
+                val inSize = programContext.stack.pop()
+                val outOffset = programContext.stack.pop()
+                val outSize = programContext.stack.pop()
                 programContext.returnDataOffset = outOffset
                 programContext.returnDataSize = outSize
                 val recipient = virtualMachine.atlas[recipientAddress] ?: throw ProgramException(CALL_RECIPIENT_MISSING)
                 val sourceAddress = programContext.program.address
                 recipient.transfers.push(sourceAddress to valueTransferred)
                 val newContext = ProgramContext(recipient)
-                val inputData = programContext.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
+                val inputData = programContext.memory.read(inOffset.asUInt() * LOAD.SIZE, inSize.asUInt())
                 newContext.callData.clear()
                 newContext.callData.write(0, inputData)
                 virtualMachine.programs.add(newContext)
@@ -146,19 +143,19 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val offset = BigInteger(programContext.stack.pop())
-                val size = BigInteger(programContext.stack.pop())
+                val offset = programContext.stack.pop()
+                val size = programContext.stack.pop()
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
                 if (virtualMachine.programs.isNotEmpty()) {
                     val nextContext = virtualMachine.programs.last()
-                    val data = programContext.memory.read(offset.toInt(), size.toInt())
+                    val data = programContext.memory.read(offset.asUInt(), size.asUInt())
                     val wSize = nextContext.returnDataSize
-                    if (data.size > wSize.toInt()) {
+                    if (data.size > wSize.asUInt()) {
                         throw ProgramException(CALL_RETURN_DATA_TOO_LARGE)
                     }
-                    val dataExpanded = data.copyOf(wSize.toInt())
+                    val dataExpanded = data.copyOf(wSize.asUInt())
                     val wOffset = nextContext.returnDataOffset
-                    nextContext.memory.write(wOffset.toInt(), dataExpanded, wSize.toInt())
+                    nextContext.memory.write(wOffset.asUInt(), dataExpanded, wSize.asUInt())
                     // TODO: If `CALL` would have a width other than 1 this will not be enough
                     nextContext.instructionPosition++
                 }
@@ -169,8 +166,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                val result = BigInteger(left) == BigInteger(right)
-                programContext.stack.push(if (result) TRUE.clone() else FALSE.clone())
+                programContext.stack.push(if (left == right) ONE_32 else ZERO_32)
             }
             is GREATER_THAN -> {
                 if (programContext.stack.size() < 2) {
@@ -178,17 +174,14 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                val result = BigInteger(left) > BigInteger(right)
-                programContext.stack.push(if (result) TRUE.clone() else FALSE.clone())
+                programContext.stack.push(if (left > right) ONE_32 else ZERO_32)
             }
             is IS_ZERO -> {
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val top = programContext.stack.pop()
-                val isZero = !top.any { byte -> byte > 0 }
-                val resultReference = if (isZero) TRUE else FALSE
-                programContext.stack.push(resultReference.clone())
+                programContext.stack.push(if (top == ZERO_32) ONE_32 else ZERO_32)
             }
             is LESS_THAN -> {
 
@@ -197,12 +190,11 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val left = programContext.stack.pop()
                 val right = programContext.stack.pop()
-                val result = BigInteger(left) < BigInteger(right)
-                programContext.stack.push(if (result) TRUE.clone() else FALSE.clone())
+                programContext.stack.push(if (left < right) ZERO_32 else ONE_32)
             }
             is DROP -> {
                 if (programContext.stack.size() < instruction.elements) {
-                    throw ProgramException(ProgramException.Reason.STACK_UNDERFLOW)
+                    throw ProgramException(STACK_UNDERFLOW)
                 }
                 repeat(instruction.elements) {
                     programContext.stack.pop()
@@ -217,37 +209,34 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val addressBytes = programContext.stack.pop()
-                val address = BigInteger(addressBytes)
+                val address = programContext.stack.pop()
                 val storage: VmByteArray = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
                 }
-                if (address.toInt() * LOAD.SIZE + LOAD.SIZE > storage.size()) {
+                if (address.asUInt() * LOAD.SIZE + LOAD.SIZE > storage.size()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
                 }
-                val bytes = storage.read(address.toInt() * LOAD.SIZE, LOAD.SIZE)
-                programContext.stack.push(bytes)
+                val bytes = storage.read(address.asUInt() * LOAD.SIZE, LOAD.SIZE)
+                programContext.stack.push(BackedInteger(bytes))
 
             }
             is SAVE -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val addressBytes = programContext.stack.pop()
-                val address = BigInteger(addressBytes)
+                val address = programContext.stack.pop()
                 val storage: VmByteArray = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $instruction.programStoreZone")
                 }
-                val bytes = programContext.stack.pop()
-                val alignmentOffset = LOAD.SIZE - bytes.size
-                if (address.toInt() * LOAD.SIZE + alignmentOffset + bytes.size > storage.size()) {
+                val value = programContext.stack.pop()
+                if (address.asUInt() * LOAD.SIZE + 32 > storage.size()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
                 }
-                storage.write(address.toInt() * LOAD.SIZE + alignmentOffset, bytes)
+                storage.write(address.asUInt() * LOAD.SIZE, value.getBackingArray())
             }
             is EXIT -> {
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
@@ -256,10 +245,10 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val address = BigInteger(programContext.stack.pop()).toInt()
-                val positionedInstruction = programContext.program.instructionsAbsolute[address] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-                positionedInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
-                programContext.instructionPosition = address
+                val address = programContext.stack.pop()
+                val nextInstruction = programContext.program.instructionsAbsolute[address.asUInt()] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                nextInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
+                programContext.instructionPosition = address.asUInt()
             }
             is JUMP_DESTINATION -> {
             }
@@ -267,11 +256,11 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val address = BigInteger(programContext.stack.pop()).toInt()
-                val condition = BigInteger(programContext.stack.pop())
-                if (condition.signum() == 1) {
-                    val positionedInstruction = programContext.program.instructionsAbsolute[address] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
-                    positionedInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
+                val address = programContext.stack.pop().asUInt()
+                val condition = programContext.stack.pop()
+                if (condition != ZERO_32) {
+                    val nextInstruction = programContext.program.instructionsAbsolute[address] ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
+                    nextInstruction.instruction as? JUMP_DESTINATION ?: throw ProgramException(JUMP_TO_ILLEGAL_INSTRUCTION)
                     programContext.instructionPosition = address
                 }
             }
@@ -279,19 +268,17 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val left = BigInteger(programContext.stack.pop())
-                val right = BigInteger(programContext.stack.pop())
-                val result = left.add(right).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-                programContext.stack.push(result.toByteArray())
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(left + right)
             }
             is DIVIDE -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val left = BigInteger(programContext.stack.pop())
-                val right = BigInteger(programContext.stack.pop())
-                val result = left.divide(right)
-                programContext.stack.push(result.toByteArray())
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(left / right)
             }
             is HASH -> {
                 try {
@@ -299,10 +286,9 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     if (programContext.stack.size() < 1) {
                         throw ProgramException(STACK_UNDERFLOW)
                     }
-                    // TODO: This conversion is currently needed due to BigInteger-sourced values not yet being padded with 0
-                    val byteArray = BigInteger(programContext.stack.pop()).toByteArray()
-                    messageDigest.update(byteArray)
-                    programContext.stack.push(messageDigest.digest())
+                    val value = programContext.stack.pop()
+                    messageDigest.update(value.getBackingArray())
+                    programContext.stack.push(BackedInteger(messageDigest.digest()))
                 } catch (e: NoSuchAlgorithmException) {
                     throw IllegalArgumentException("Unknown hash method: ${instruction.method}", e)
                 }
@@ -311,28 +297,25 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val left = BigInteger(programContext.stack.pop())
-                val right = BigInteger(programContext.stack.pop())
-                val result = left.mod(right)
-                programContext.stack.push(result.toByteArray())
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(left % right)
             }
             is MULTIPLY -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val left = BigInteger(programContext.stack.pop())
-                val right = BigInteger(programContext.stack.pop())
-                val result = left.multiply(right).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-                programContext.stack.push(result.toByteArray())
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(left * right)
             }
             is SUBTRACT -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val left = BigInteger(programContext.stack.pop())
-                val right = BigInteger(programContext.stack.pop())
-                val result = left.subtract(right)
-                programContext.stack.push(result.toByteArray())
+                val left = programContext.stack.pop()
+                val right = programContext.stack.pop()
+                programContext.stack.push(left - right)
             }
             is DUPLICATE -> {
                 if (programContext.stack.size() <= instruction.topOffset) {
@@ -350,7 +333,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 programContext.stack.pop()
             }
             is PUSH -> {
-                programContext.stack.push(instruction.bytes)
+                programContext.stack.push(instruction.value)
                 if (programContext.stack.size() > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
@@ -364,31 +347,31 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
             is VARIABLE -> {
                 when (instruction.executionVariable) {
                     ADDRESS_SELF -> {
-                        programContext.stack.push(programContext.program.address.toByteArray())
+                        programContext.stack.push(programContext.program.address)
                     }
                     INSTRUCTION_POSITION -> {
-                        programContext.stack.push(programContext.instructionPosition.toBigInteger().toByteArray())
+                        programContext.stack.push(programContext.instructionPosition.asUInt256())
                     }
                     ADDRESS_CALLER -> {
-                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else 0.toBigInteger()
-                        programContext.stack.push(address.toByteArray())
+                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else ZERO_32
+                        programContext.stack.push(address)
                     }
                     CALL_DATA_SIZE -> {
                         // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
                         val size = programContext.callData.size()
-                        programContext.stack.push(BigInteger.valueOf(size.toLong()).toByteArray())
+                        programContext.stack.push(size.asUInt256())
                     }
                     TRANSACTION_FUNDS -> {
                         // TODO: This is a quick workaround to get TRANSACTION_FUNDS to work
-                        programContext.stack.push(BigInteger.valueOf(0L).toByteArray())
+                        programContext.stack.push(ZERO_32)
                     }
                     ADDRESS_ORIGIN -> {
-                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address else 0.toBigInteger()
-                        programContext.stack.push(address.toByteArray())
+                        val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address else ZERO_32
+                        programContext.stack.push(address)
                     }
                     else -> {
-                        val value = virtualMachine.variables[instruction.executionVariable] ?: 0.toBigInteger()
-                        programContext.stack.push(value.toByteArray())
+                        val value = virtualMachine.variables[instruction.executionVariable] ?: ZERO_32
+                        programContext.stack.push(value)
                     }
                 }
                 if (programContext.stack.size() > STACK_LIMIT) {
@@ -400,9 +383,6 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
 
     companion object {
         const val STACK_LIMIT: Long = Long.MAX_VALUE
-        val OVERFLOW_LIMIT: BigInteger = BigInteger(byteArrayOf(2)).pow(256)
         const val INSTRUCTION_LIMIT = 100_000
-        private val TRUE = byteArrayOf(1)
-        private val FALSE = byteArrayOf(0)
     }
 }

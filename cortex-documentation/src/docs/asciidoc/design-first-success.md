@@ -67,7 +67,7 @@ ending hash or nonsense added by the compilation tool contained _multiple_ immed
 ## REFACTOR
 
 - [x] module collections
-- [ ] module documentation
+- [x] module documentation
 - [ ] module vm
 - [ ] module symbolic
 - [ ] module fuzzing

@@ -5,16 +5,17 @@ import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.backed.BackedVmByteArray
 import com.hileco.cortex.collections.layer.LayeredVmStack
-import java.math.BigInteger
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 
 class ProgramContext : VmComponent<ProgramContext> {
     val program: Program
     var instructionsExecuted: Int
     var instructionPosition: Int
-    val stack: VmStack<ByteArray>
+    val stack: VmStack<BackedInteger>
     val memory: VmByteArray
-    var returnDataOffset: BigInteger
-    var returnDataSize: BigInteger
+    var returnDataOffset: BackedInteger
+    var returnDataSize: BackedInteger
     val callData: VmByteArray
 
     constructor(program: Program) {
@@ -23,18 +24,18 @@ class ProgramContext : VmComponent<ProgramContext> {
         instructionPosition = 0
         stack = LayeredVmStack()
         memory = BackedVmByteArray()
-        returnDataOffset = BigInteger.ZERO
-        returnDataSize = BigInteger.ZERO
+        returnDataOffset = ZERO_32
+        returnDataSize = ZERO_32
         callData = BackedVmByteArray()
     }
 
     private constructor(program: Program,
                         instructionsExecuted: Int,
                         instructionPosition: Int,
-                        stack: VmStack<ByteArray>,
+                        stack: VmStack<BackedInteger>,
                         memory: VmByteArray,
-                        returnDataOffset: BigInteger,
-                        returnDataSize: BigInteger,
+                        returnDataOffset: BackedInteger,
+                        returnDataSize: BackedInteger,
                         callData: VmByteArray) {
         this.program = program
         this.instructionsExecuted = instructionsExecuted

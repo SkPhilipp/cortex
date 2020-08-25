@@ -18,7 +18,7 @@ class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BigInt
                         if (pushGraphNode != null) {
                             val load = it.instruction as LOAD
                             val push = pushGraphNode.instruction as PUSH
-                            val address = BigInteger(push.bytes)
+                            val address = BigInteger(push.value)
                             knownData[load.programStoreZone]?.let { knownDataMap ->
                                 knownDataMap[address]?.let { knownData: BigInteger ->
                                     pushGraphNode.instruction = NOOP()

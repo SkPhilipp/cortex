@@ -115,7 +115,7 @@ class ExpressionGenerator {
             is SAVE -> throw UnsupportedOperationException("SAVE is not supported by ExpressionGenerator")
             is LOAD -> stack.push(Reference(instruction.programStoreZone, pop()))
             is PUSH -> {
-                val value = BigInteger(instruction.bytes)
+                val value = BigInteger(instruction.value)
                 stack.push(Value(value.toLong()))
             }
             is DUPLICATE -> stack.duplicate(instruction.topOffset)

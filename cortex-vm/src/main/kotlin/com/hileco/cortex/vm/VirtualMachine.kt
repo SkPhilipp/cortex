@@ -3,20 +3,21 @@ package com.hileco.cortex.vm
 import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.collections.layer.LayeredVmMap
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
-import java.math.BigInteger
 
 class VirtualMachine : VmComponent<VirtualMachine> {
     val programs: MutableList<ProgramContext>
-    val atlas: MutableMap<BigInteger, Program>
-    val variables: VmMap<ExecutionVariable, BigInteger>
+    val atlas: MutableMap<BackedInteger, Program>
+    val variables: VmMap<ExecutionVariable, BackedInteger>
     var instructionsExecuted: Int
 
     constructor(vararg programContexts: ProgramContext, startTime: Long = System.currentTimeMillis()) {
         programs = ArrayList()
         atlas = HashMap()
         variables = LayeredVmMap()
-        variables[ExecutionVariable.START_TIME] = startTime.toBigInteger()
+        variables[ExecutionVariable.START_TIME] = startTime.asUInt256()
         instructionsExecuted = 0
         for (programContext in programContexts) {
             programs.add(programContext)
@@ -24,8 +25,8 @@ class VirtualMachine : VmComponent<VirtualMachine> {
     }
 
     private constructor(programs: MutableList<ProgramContext>,
-                        atlas: MutableMap<BigInteger, Program>,
-                        variables: VmMap<ExecutionVariable, BigInteger>,
+                        atlas: MutableMap<BackedInteger, Program>,
+                        variables: VmMap<ExecutionVariable, BackedInteger>,
                         instructionsExecuted: Int) {
         this.programs = programs
         this.atlas = atlas

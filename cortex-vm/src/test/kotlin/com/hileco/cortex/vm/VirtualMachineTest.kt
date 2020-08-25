@@ -2,12 +2,13 @@ package com.hileco.cortex.vm
 
 import com.hileco.cortex.vm.ProgramStoreZone.DISK
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
 import com.hileco.cortex.vm.instructions.io.LOAD
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class VirtualMachineTest {
     @Test
@@ -20,12 +21,12 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
-        Assert.assertEquals(BigInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.asUInt256())
+        Assert.assertEquals(BackedInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.asUInt256())
         Assert.assertEquals(programContext.stack.size(), 5)
-        Assert.assertEquals(BigInteger(programContext.stack.peek()), 1.toBigInteger())
+        Assert.assertEquals(programContext.stack.peek(), 1.asUInt256())
     }
 
     @Test
@@ -44,14 +45,14 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
-        Assert.assertEquals(BigInteger(programContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
-        Assert.assertEquals(BigInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
-        Assert.assertEquals(BigInteger(program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.asUInt256())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.asUInt256())
+        Assert.assertEquals(BackedInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.asUInt256())
+        Assert.assertEquals(BackedInteger(program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.asUInt256())
         Assert.assertEquals(programContext.stack.size(), 4)
-        Assert.assertEquals(BigInteger(programContext.stack.peek()), 4.toBigInteger())
+        Assert.assertEquals(programContext.stack.peek(), 4.asUInt256())
     }
 
     @Test
@@ -75,12 +76,12 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBigInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.asUInt256())
         Assert.assertEquals(branchProgramContext.stack.size(), 5)
-        Assert.assertEquals(BigInteger(branchProgramContext.stack.peek()), 1.toBigInteger())
+        Assert.assertEquals(branchProgramContext.stack.peek(), 1.asUInt256())
 
         try {
             branchProgramContext.instructionPosition++
@@ -88,35 +89,35 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBigInteger())
-        Assert.assertEquals(BigInteger(branchProgramContext.program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBigInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.asUInt256())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.asUInt256())
         Assert.assertEquals(branchProgramContext.stack.size(), 4)
-        Assert.assertEquals(BigInteger(branchProgramContext.stack.peek()), 4.toBigInteger())
+        Assert.assertEquals(branchProgramContext.stack.peek(), 4.asUInt256())
     }
 
     companion object {
         val SETUP_INSTRUCTIONS = with(InstructionsBuilder()) {
-            save(MEMORY, push(2000), push(200))
-            save(MEMORY, push(3000), push(300))
-            save(DISK, push(2000), push(200))
-            save(DISK, push(3000), push(300))
-            push(5)
-            push(4)
-            push(3)
-            push(2)
-            push(1)
+            save(MEMORY, push(2000.asUInt256()), push(200.asUInt256()))
+            save(MEMORY, push(3000.asUInt256()), push(300.asUInt256()))
+            save(DISK, push(2000.asUInt256()), push(200.asUInt256()))
+            save(DISK, push(3000.asUInt256()), push(300.asUInt256()))
+            push(5.asUInt256())
+            push(4.asUInt256())
+            push(3.asUInt256())
+            push(2.asUInt256())
+            push(1.asUInt256())
             halt(ProgramException.Reason.WINNER)
             build()
         }
         private val OVERWRITE_INSTRUCTIONS = with(InstructionsBuilder()) {
-            save(MEMORY, add(load(MEMORY, push(300)), push(999)), push(300))
-            save(MEMORY, push(999), push(400))
-            save(DISK, add(load(DISK, push(300)), push(999)), push(300))
-            save(DISK, push(999), push(400))
+            save(MEMORY, add(load(MEMORY, push(300.asUInt256())), push(999.asUInt256())), push(300.asUInt256()))
+            save(MEMORY, push(999.asUInt256()), push(400.asUInt256()))
+            save(DISK, add(load(DISK, push(300.asUInt256())), push(999.asUInt256())), push(300.asUInt256()))
+            save(DISK, push(999.asUInt256()), push(400.asUInt256()))
             swap(0, 4)
             swap(1, 3)
             pop()

@@ -5,19 +5,20 @@ import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.backed.BackedVmByteArray
 import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.instructions.Instruction
-import java.math.BigInteger
 
 class Program : VmComponent<Program> {
     val instructions: List<Instruction>
     val instructionsRelative: List<PositionedInstruction>
     val instructionsAbsolute: Map<Int, PositionedInstruction>
-    val address: BigInteger
+    val address: BackedInteger
     val storage: VmByteArray
-    val transfers: VmStack<Pair<BigInteger, BigInteger>>
+    val transfers: VmStack<Pair<BackedInteger, BackedInteger>>
 
     constructor(instructions: List<Instruction>,
-                address: BigInteger = BigInteger.ZERO) {
+                address: BackedInteger = ZERO_32) {
         this.instructions = instructions
         var absolutePosition = 0
         var relativePosition = 0
@@ -38,9 +39,9 @@ class Program : VmComponent<Program> {
     private constructor(instructions: List<Instruction>,
                         instructionsRelative: List<PositionedInstruction>,
                         instructionsAbsolute: Map<Int, PositionedInstruction>,
-                        address: BigInteger,
+                        address: BackedInteger,
                         storage: VmByteArray,
-                        transfers: VmStack<Pair<BigInteger, BigInteger>>) {
+                        transfers: VmStack<Pair<BackedInteger, BackedInteger>>) {
         this.instructions = instructions
         this.instructionsAbsolute = instructionsAbsolute
         this.instructionsRelative = instructionsRelative

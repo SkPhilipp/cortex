@@ -3,6 +3,9 @@ package com.hileco.cortex.vm.instructions
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.*
 import com.hileco.cortex.vm.instructions.bits.*
 import com.hileco.cortex.vm.instructions.calls.CALL
@@ -31,7 +34,7 @@ class InstructionsBuilderHandle
 class InstructionsBuilder {
     private val handle: InstructionsBuilderHandle = InstructionsBuilderHandle()
     private val instructions: MutableList<() -> Instruction> = ArrayList()
-    private val labelAddresses: MutableMap<String, Int> = HashMap()
+    private val labelAddresses: MutableMap<String, BackedInteger> = HashMap()
 
     fun bitwiseAnd(right: InstructionsBuilderHandle = handle,
                    left: InstructionsBuilderHandle = handle): InstructionsBuilderHandle {
@@ -137,7 +140,7 @@ class InstructionsBuilder {
         if (labelAddresses.containsKey(name)) {
             throw IllegalArgumentException("Name $name is already taken")
         }
-        labelAddresses[name] = instructions.size
+        labelAddresses[name] = instructions.size.asUInt256()
         instructions.add { JUMP_DESTINATION() }
     }
 
@@ -216,12 +219,7 @@ class InstructionsBuilder {
         instructions.add { DROP(values.size) }
     }
 
-    fun push(value: ByteArray): InstructionsBuilderHandle {
-        instructions.add { PUSH(value) }
-        return handle
-    }
-
-    fun push(value: Long): InstructionsBuilderHandle {
+    fun push(value: BackedInteger): InstructionsBuilderHandle {
         instructions.add { PUSH(value) }
         return handle
     }
@@ -237,7 +235,7 @@ class InstructionsBuilder {
             if (address == null) {
                 throw IllegalStateException("No label for name $label")
             } else {
-                PUSH(address.toBigInteger().toByteArray())
+                PUSH(address)
             }
         }
         return handle
@@ -328,13 +326,13 @@ class InstructionsBuilder {
         jumpDestination(endLabel)
     }
 
-    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Pair<Long, () -> Unit>>) {
+    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Pair<BackedInteger, () -> Unit>>) {
         blockSwitch(controlBody, cases.map { it.first }, { caseNumber -> cases.first { it.first == caseNumber } })
     }
 
-    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<Long>, caseBuilder: (Long) -> Unit) {
+    fun blockSwitch(controlBody: () -> Unit = {}, cases: List<BackedInteger>, caseBuilder: (BackedInteger) -> Unit) {
         controlBody()
-        val labels = HashMap<Long, String>()
+        val labels = HashMap<BackedInteger, String>()
         val endLabel = UUID.randomUUID().toString()
         for (case in cases) {
             val label = UUID.randomUUID().toString()
@@ -371,14 +369,14 @@ class InstructionsBuilder {
                 push(FUNCTION_CALL_INDEX)
                 load(MEMORY)
                 load(MEMORY)
-                save(MEMORY, subtract(push(1), load(MEMORY, push(FUNCTION_CALL_INDEX))), push(FUNCTION_CALL_INDEX))
+                save(MEMORY, subtract(push(ONE_32), load(MEMORY, push(FUNCTION_CALL_INDEX))), push(FUNCTION_CALL_INDEX))
             }
         }
         jump()
     }
 
     fun configureCallConvention() {
-        save(MEMORY, push(FUNCTION_CALL_INDEX + 1), push(FUNCTION_CALL_INDEX))
+        save(MEMORY, push(FUNCTION_CALL_INDEX + ONE_32), push(FUNCTION_CALL_INDEX))
     }
 
     fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN): InstructionsBuilderHandle {
@@ -391,7 +389,7 @@ class InstructionsBuilder {
                 push(returnLabel)
             }
             MEMORY_INDEX_AND_ADDRESS -> {
-                save(MEMORY, add(load(MEMORY, push(FUNCTION_CALL_INDEX)), push(1)), push(FUNCTION_CALL_INDEX))
+                save(MEMORY, add(load(MEMORY, push(FUNCTION_CALL_INDEX)), push(ONE_32)), push(FUNCTION_CALL_INDEX))
                 save(MEMORY, push(returnLabel), load(MEMORY, push(FUNCTION_CALL_INDEX)))
             }
         }
@@ -406,6 +404,6 @@ class InstructionsBuilder {
     }
 
     companion object {
-        const val FUNCTION_CALL_INDEX = 8005L
+        val FUNCTION_CALL_INDEX = 8005.asUInt256()
     }
 }

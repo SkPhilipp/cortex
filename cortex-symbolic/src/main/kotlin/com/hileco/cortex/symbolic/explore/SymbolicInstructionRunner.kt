@@ -295,7 +295,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.pop()
             }
             is PUSH -> {
-                programContext.stack.push(Value(BigInteger(instruction.bytes).toLong()))
+                programContext.stack.push(Value(BigInteger(instruction.value).toLong()))
                 if (programContext.stack.size() > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }

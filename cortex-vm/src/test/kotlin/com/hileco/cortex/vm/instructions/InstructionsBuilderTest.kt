@@ -4,6 +4,7 @@ import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
 import com.hileco.cortex.vm.instructions.debug.NOOP
@@ -19,10 +20,10 @@ class InstructionsBuilderTest {
     @Test
     fun testJump() {
         val program = Program(listOf(
-                PUSH(byteArrayOf(123)),
-                PUSH(byteArrayOf(123)),
+                PUSH(123.asUInt256()),
+                PUSH(123.asUInt256()),
                 EQUALS(),
-                PUSH(10),
+                PUSH(10.asUInt256()),
                 JUMP_IF(),
                 NOOP(),
                 NOOP(),
@@ -42,10 +43,10 @@ class InstructionsBuilderTest {
     @Test
     fun testNoJump() {
         val program = Program(listOf(
-                PUSH(byteArrayOf(123)),
-                PUSH(byteArrayOf(124)),
+                PUSH(123.asUInt256()),
+                PUSH(124.asUInt256()),
                 EQUALS(),
-                PUSH(10),
+                PUSH(10.asUInt256()),
                 JUMP_IF(),
                 NOOP(),
                 NOOP(),
@@ -65,15 +66,15 @@ class InstructionsBuilderTest {
     @Test
     fun testLoop() {
         val program = Program(listOf(
-                PUSH(byteArrayOf(0)),
+                PUSH(0.asUInt256()),
                 JUMP_DESTINATION(),
-                PUSH(byteArrayOf(1)),
+                PUSH(1.asUInt256()),
                 ADD(),
                 DUPLICATE(0),
-                PUSH(byteArrayOf(1, 0)),
+                PUSH(17.asUInt256()),
                 EQUALS(),
                 IS_ZERO(),
-                PUSH(1),
+                PUSH(1.asUInt256()),
                 JUMP_IF()
         ))
         val programContext = ProgramContext(program)

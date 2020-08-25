@@ -45,7 +45,7 @@ class FlowProcessor : Processor {
                 .forEach {
                     graph.edgeMapping.parameters(it).elementAt(0)?.let { parameterNode ->
                         val targetInstruction = parameterNode.instruction as PUSH
-                        val target = BigInteger(targetInstruction.bytes).toInt()
+                        val target = BigInteger(targetInstruction.value).toInt()
                         when (it.instruction) {
                             is JUMP -> {
                                 val flow = Flow(INSTRUCTION_JUMP, it.position, target)

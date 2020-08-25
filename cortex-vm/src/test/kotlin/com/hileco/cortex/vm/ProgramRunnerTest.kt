@@ -2,7 +2,8 @@ package com.hileco.cortex.vm
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.STACK_OVERFLOW
-import com.hileco.cortex.vm.ProgramRunner.Companion.OVERFLOW_LIMIT
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.LIMIT_32
+import com.hileco.cortex.vm.bytes.asUInt256
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
 import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
@@ -28,7 +29,6 @@ import com.hileco.cortex.vm.instructions.stack.*
 import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
 import org.junit.Assert
 import org.junit.Test
-import java.math.BigInteger
 
 class ProgramRunnerTest {
 
@@ -45,86 +45,86 @@ class ProgramRunnerTest {
     @Test
     fun runBitwiseAnd() {
         val instructions = listOf(
-                PUSH(byteArrayOf(5)),
-                PUSH(byteArrayOf(3)),
+                PUSH(5.asUInt256()),
+                PUSH(3.asUInt256()),
                 BITWISE_AND())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/bitwise-and")
                 .headingParagraph("BITWISE_AND").paragraph("The BITWISE_AND operation performs a bitwise AND operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runBitwiseNot() {
         val instructions = listOf(
-                PUSH(byteArrayOf(127)),
+                PUSH(127.asUInt256()),
                 BITWISE_NOT())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/bitwise-not")
                 .headingParagraph("BITWISE_NOT").paragraph("The BITWISE_NOT operation performs logical negation on each bit of the top element on the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(-128))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(LIMIT_32 - 128.asUInt256(), stack.pop())
     }
 
     @Test
     fun runBitwiseXor() {
         val instructions = listOf(
-                PUSH(byteArrayOf(5)),
-                PUSH(byteArrayOf(3)),
+                PUSH(5.asUInt256()),
+                PUSH(3.asUInt256()),
                 BITWISE_XOR())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/bitwise-xor")
                 .headingParagraph("BITWISE_XOR").paragraph("The BITWISE_XOR operation performs a bitwise XOR operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(6))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(6.asUInt256(), stack.pop())
     }
 
     @Test
     fun runBitwiseOr() {
         val instructions = listOf(
-                PUSH(byteArrayOf(5)),
-                PUSH(byteArrayOf(3)),
+                PUSH(5.asUInt256()),
+                PUSH(3.asUInt256()),
                 BITWISE_OR())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/bitwise-or")
                 .headingParagraph("BITWISE_OR").paragraph("The BITWISE_OR operation performs a bitwise OR operation on each bit of the top two elements on" + " the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(7))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(7.asUInt256(), stack.pop())
     }
 
     @Test
     fun runCallIntoWinner() {
         val callerInstructions = listOf(
-                PUSH(123),
-                PUSH(10),
+                PUSH(123.asUInt256()),
+                PUSH(10.asUInt256()),
                 SAVE(ProgramStoreZone.MEMORY),
-                PUSH(0),
-                PUSH(0),
-                PUSH(LOAD.SIZE.toLong()),
-                PUSH(10),
-                PUSH(0),
+                PUSH(0.asUInt256()),
+                PUSH(0.asUInt256()),
+                PUSH(LOAD.SIZE.asUInt256()),
+                PUSH(10.asUInt256()),
+                PUSH(0.asUInt256()),
                 PUSH(LIBRARY_ADDRESS),
-                PUSH(0),
+                PUSH(0.asUInt256()),
                 CALL()
         )
         val libraryInstructions = listOf(
-                PUSH(0),
+                PUSH(0.asUInt256()),
                 LOAD(ProgramStoreZone.CALL_DATA)
         )
         val callerProgram = Program(callerInstructions)
         val callerProgramContext = ProgramContext(callerProgram)
         val virtualMachine = VirtualMachine(callerProgramContext)
         val libraryProgram = Program(libraryInstructions)
-        virtualMachine.atlas[LIBRARY_ADDRESS.toBigInteger()] = libraryProgram
+        virtualMachine.atlas[LIBRARY_ADDRESS] = libraryProgram
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         val stack = virtualMachine.programs.last().stack
@@ -136,37 +136,37 @@ class ProgramRunnerTest {
                 .paragraph("Example calling program:").source(callerInstructions)
                 .paragraph("Example callee program at address ${LIBRARY_ADDRESS}:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), 123.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(123.asUInt256(), stack.pop())
     }
 
     @Test
     fun runCallAndReturn() {
         val callerInstructions = listOf(
-                PUSH(LOAD.SIZE.toLong()),
-                PUSH(0),
-                PUSH(0),
-                PUSH(0),
-                PUSH(0),
+                PUSH(LOAD.SIZE.asUInt256()),
+                PUSH(0.asUInt256()),
+                PUSH(0.asUInt256()),
+                PUSH(0.asUInt256()),
+                PUSH(0.asUInt256()),
                 PUSH(LIBRARY_ADDRESS),
-                PUSH(0),
+                PUSH(0.asUInt256()),
                 CALL(),
-                PUSH(0),
+                PUSH(0.asUInt256()),
                 LOAD(ProgramStoreZone.MEMORY)
         )
         val libraryInstructions = listOf(
-                PUSH(12345),
-                PUSH(0),
+                PUSH(12345.asUInt256()),
+                PUSH(0.asUInt256()),
                 SAVE(ProgramStoreZone.MEMORY),
-                PUSH(LOAD.SIZE.toLong()),
-                PUSH(0),
+                PUSH(LOAD.SIZE.asUInt256()),
+                PUSH(0.asUInt256()),
                 CALL_RETURN()
         )
         val callerProgram = Program(callerInstructions)
         val callerProgramContext = ProgramContext(callerProgram)
         val virtualMachine = VirtualMachine(callerProgramContext)
         val libraryProgram = Program(libraryInstructions)
-        virtualMachine.atlas[LIBRARY_ADDRESS.toBigInteger()] = libraryProgram
+        virtualMachine.atlas[LIBRARY_ADDRESS] = libraryProgram
         val programRunner = ProgramRunner(virtualMachine)
         programRunner.run()
         Documentation.of("instructions/call-return")
@@ -176,75 +176,75 @@ class ProgramRunnerTest {
                 .paragraph("Example calling program:").source(callerInstructions)
                 .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(callerProgramContext.stack)
-        Assert.assertEquals(callerProgramContext.stack.size(), 1)
-        Assert.assertEquals(BigInteger(callerProgramContext.stack.pop()), 12345.toBigInteger())
+        Assert.assertEquals(1, callerProgramContext.stack.size())
+        Assert.assertEquals(12345.asUInt256(), callerProgramContext.stack.pop())
     }
 
     @Test
     fun runEquals() {
         val instructions = listOf(
-                PUSH(byteArrayOf(100)),
-                PUSH(byteArrayOf(100)),
+                PUSH(100.asUInt256()),
+                PUSH(100.asUInt256()),
                 EQUALS())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/equals")
                 .headingParagraph("EQUALS").paragraph("The EQUALS operation removes two elements from the stack, then adds a 1 or 0 to the stack" + " depending on whether the top element was equal to the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runGreaterThan() {
         val instructions = listOf(
-                PUSH(byteArrayOf(10)),
-                PUSH(byteArrayOf(100)),
+                PUSH(10.asUInt256()),
+                PUSH(100.asUInt256()),
                 GREATER_THAN())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/greater-than")
                 .headingParagraph("GREATER_THAN").paragraph("The GREATER_THAN operation removes two elements from the stack, then adds a 1 or 0 to the stack" + " depending on whether the top element was greater than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runIsZero() {
         val instructions = listOf(
-                PUSH(byteArrayOf(0)),
+                PUSH(0.asUInt256()),
                 IS_ZERO())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/is-zero")
                 .headingParagraph("IS_ZERO").paragraph("The IS_ZERO operation removes the top element of the stack then adds a 1 or 0 to the stack" + " depending on whether the element was equal to 0.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runLessThan() {
         val instructions = listOf(
-                PUSH(byteArrayOf(100)),
-                PUSH(byteArrayOf(10)),
+                PUSH(100.asUInt256()),
+                PUSH(10.asUInt256()),
                 LESS_THAN())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/less-than")
                 .headingParagraph("LESS_THAN").paragraph("The LESS_THAN operation removes two elements from the stack, then adds a 1 or 0 to the stack" + " depending on whether the top element was less than the second element.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runDrop() {
         val instructions = listOf(
-                PUSH(byteArrayOf(1)),
-                PUSH(byteArrayOf(10)),
-                PUSH(byteArrayOf(100)),
+                PUSH(1.asUInt256()),
+                PUSH(10.asUInt256()),
+                PUSH(100.asUInt256()),
                 DROP(2))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/drop")
@@ -253,8 +253,8 @@ class ProgramRunnerTest {
                         " to replace NOOP-like instructions which remove elements from the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test(expected = ProgramException::class)
@@ -282,10 +282,10 @@ class ProgramRunnerTest {
     @Test
     fun runSaveLoad() {
         val instructions = listOf(
-                PUSH(10),
-                PUSH(1234),
+                PUSH(10.asUInt256()),
+                PUSH(1234.asUInt256()),
                 SAVE(ProgramStoreZone.MEMORY),
-                PUSH(1234),
+                PUSH(1234.asUInt256()),
                 LOAD(ProgramStoreZone.MEMORY)
         )
         val stack = this.run(instructions).stack
@@ -297,16 +297,16 @@ class ProgramRunnerTest {
                         " address to read from the area specified (${ProgramStoreZone.MEMORY}, ${ProgramStoreZone.DISK}, or ${ProgramStoreZone.CALL_DATA}).")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), 10.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(10.asUInt256(), stack.pop())
     }
 
     @Test
     fun runJump() {
         val instructions = listOf(
-                PUSH(byteArrayOf(3)),
+                PUSH(3.asUInt256()),
                 JUMP(),
-                PUSH(byteArrayOf(100)),
+                PUSH(100.asUInt256()),
                 JUMP_DESTINATION())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/jump")
@@ -320,9 +320,9 @@ class ProgramRunnerTest {
     @Test
     fun testJumpMultiWidth() {
         val instructions = listOf(
-                PUSH(byteArrayOf(6), width = 2),
+                PUSH(6.asUInt256(), width = 2),
                 JUMP(),
-                PUSH(byteArrayOf(100), width = 3),
+                PUSH(100.asUInt256(), width = 3),
                 JUMP_DESTINATION())
         val stack = this.run(instructions).stack
         Assert.assertEquals(stack.size(), 0)
@@ -330,10 +330,10 @@ class ProgramRunnerTest {
 
     @Test
     fun runJumpIf() {
-        val instructions = listOf(PUSH(byteArrayOf(1)),
-                PUSH(byteArrayOf(4)),
+        val instructions = listOf(PUSH(1.asUInt256()),
+                PUSH(4.asUInt256()),
                 JUMP_IF(),
-                PUSH(byteArrayOf(100)),
+                PUSH(100.asUInt256()),
                 JUMP_DESTINATION())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/jump-if")
@@ -349,9 +349,9 @@ class ProgramRunnerTest {
     @Test
     fun runJumpDestination() {
         val instructions = listOf(
-                PUSH(byteArrayOf(3)),
+                PUSH(3.asUInt256()),
                 JUMP(),
-                PUSH(byteArrayOf(100)),
+                PUSH(100.asUInt256()),
                 JUMP_DESTINATION())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/jump-destination")
@@ -362,185 +362,184 @@ class ProgramRunnerTest {
     @Test
     fun runExit() {
         val instructions = listOf(
-                PUSH(byteArrayOf(10)),
+                PUSH(10.asUInt256()),
                 EXIT(),
-                PUSH(byteArrayOf(100)))
+                PUSH(100.asUInt256()))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/exit")
                 .headingParagraph("EXIT").paragraph("The EXIT operation ends execution of the program.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size().toLong(), 1)
-        Assert.assertNotEquals(stack.pop(), byteArrayOf(10))
+        Assert.assertNotEquals(stack.pop(), 10.asUInt256())
     }
 
     @Test
     fun runAdd() {
         val instructions = listOf(
-                PUSH(byteArrayOf(100)),
-                PUSH(byteArrayOf(1)),
+                PUSH(100.asUInt256()),
+                PUSH(1.asUInt256()),
                 ADD())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/add")
                 .headingParagraph("ADD").paragraph("The ADD operation removes two elements from the stack, adds them together and puts the " +
-                        "result on the stack. (This result may overflow if it would have been larger than $OVERFLOW_LIMIT)")
+                        "result on the stack. (Results larger than $LIMIT_32 overflow without error)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(101))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(101.asUInt256(), stack.pop())
     }
 
     @Test
     fun runOverflowAdd() {
         val instructions = listOf(
-                PUSH(OVERFLOW_LIMIT.toByteArray()),
-                PUSH(10),
+                PUSH(LIMIT_32),
+                PUSH(10.asUInt256()),
                 ADD())
         val stack = this.run(instructions).stack
-        Assert.assertArrayEquals(9.toBigInteger().toByteArray(), stack.pop())
+        Assert.assertEquals(9.asUInt256(), stack.pop())
     }
 
     @Test
     fun runDivide() {
         val instructions = listOf(
-                PUSH(byteArrayOf(20)),
-                PUSH(byteArrayOf(100)),
+                PUSH(20.asUInt256()),
+                PUSH(100.asUInt256()),
                 DIVIDE())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/divide")
                 .headingParagraph("DIVIDE").paragraph("The DIVIDE operation removes two elements from the stack, divides them with the top " +
                         "element being the dividend and the second element being the divisor. It puts the" +
-                        "resulting quotient on the stack. (This result may overflow if it would have been larger than $OVERFLOW_LIMIT)")
+                        "resulting quotient on the stack. (Results larger than $LIMIT_32 overflow without error)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(5))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(5.asUInt256(), stack.pop())
     }
 
     @Test
     fun runHash() {
         val instructions = listOf(
-                PUSH(byteArrayOf(123)),
-                HASH("SHA-512"))
+                PUSH(123.asUInt256()),
+                HASH("SHA-256"))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/hash")
                 .headingParagraph("HASH").paragraph("The HASH operation removes one element from the stack, performs the desired hashing " + "method on it and adds the resulting hash to the stack")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
+        Assert.assertEquals(1, stack.size())
     }
 
     @Test
     fun runModulo() {
         val instructions = listOf(
-                PUSH(byteArrayOf(3)),
-                PUSH(byteArrayOf(10)),
+                PUSH(3.asUInt256()),
+                PUSH(10.asUInt256()),
                 MODULO())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/modulo")
                 .headingParagraph("MODULO").paragraph("The MODULO operation removes two elements from the stack, divides them with the top " +
                         "element being the dividend and the second element being the divisor. It puts the" +
-                        "resulting remainder on the stack. (This result may overflow if it would have been larger than $OVERFLOW_LIMIT)")
+                        "resulting remainder on the stack. (Results larger than $LIMIT_32 overflow without error)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(1))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runMultiply() {
         val instructions = listOf(
-                PUSH(byteArrayOf(10)),
-                PUSH(byteArrayOf(10)),
+                PUSH(10.asUInt256()),
+                PUSH(10.asUInt256()),
                 MULTIPLY())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/multiply")
                 .headingParagraph("MULTIPLY").paragraph("The MULTIPLY operation removes two elements from the stack, multiplies them and puts" +
-                        " the result on the stack. (This result may overflow if it would have been larger than $OVERFLOW_LIMIT)")
+                        " the result on the stack. (Results larger than $LIMIT_32 overflow without error)")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(100))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(100.asUInt256(), stack.pop())
     }
 
     @Test
     fun runMultiplyOverflow() {
         val instructions = listOf(
-                PUSH(OVERFLOW_LIMIT.toByteArray()),
-                PUSH(10),
+                PUSH(LIMIT_32),
+                PUSH(10.asUInt256()),
                 MULTIPLY())
         val stack = this.run(instructions).stack
-        val expected = OVERFLOW_LIMIT.multiply(BigInteger.TEN).mod(OVERFLOW_LIMIT.add(BigInteger.ONE))
-        Assert.assertArrayEquals(expected.toByteArray(), stack.pop())
+        Assert.assertEquals(LIMIT_32 * 10.asUInt256(), stack.pop())
     }
 
     @Test
     fun runSubtract() {
         val instructions = listOf(
-                PUSH(byteArrayOf(1)),
-                PUSH(byteArrayOf(100)),
+                PUSH(1.asUInt256()),
+                PUSH(100.asUInt256()),
                 SUBTRACT())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/subtract")
                 .headingParagraph("SUBTRACT").paragraph("The SUBTRACT operation removes two elements from the stack, subtracts the second element from the " + "top element and puts the result on the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), byteArrayOf(99))
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(99.asUInt256(), stack.pop())
     }
 
     @Test
     fun runDuplicate() {
         val instructions = listOf(
-                PUSH(byteArrayOf(100)),
+                PUSH(100.asUInt256()),
                 DUPLICATE(0))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/duplicate")
                 .headingParagraph("DUPLICATE").paragraph("The DUPLICATE operation adds a duplicate of an element on the stack, to the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 2)
-        Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
-        Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
+        Assert.assertEquals(2, stack.size())
+        Assert.assertEquals(100.asUInt256(), stack.pop())
+        Assert.assertEquals(100.asUInt256(), stack.pop())
     }
 
     @Test
     fun runPop() {
         val instructions = listOf(
-                PUSH(byteArrayOf(1)),
-                PUSH(byteArrayOf(100)),
+                PUSH(1.asUInt256()),
+                PUSH(100.asUInt256()),
                 POP())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/pop")
                 .headingParagraph("POP").paragraph("The POP operation removes the top element from the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(100.asUInt256(), stack.pop())
     }
 
     @Test
     fun runPush() {
         val instructions = listOf(
-                PUSH(byteArrayOf(1)),
-                PUSH(byteArrayOf(10)),
-                PUSH(byteArrayOf(100)))
+                PUSH(1.asUInt256()),
+                PUSH(10.asUInt256()),
+                PUSH(100.asUInt256()))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/push")
                 .headingParagraph("PUSH").paragraph("The PUSH operation adds one element to top of the stack.")
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 3)
-        Assert.assertArrayEquals(stack.pop(), instructions[2].bytes)
-        Assert.assertArrayEquals(stack.pop(), instructions[1].bytes)
-        Assert.assertArrayEquals(stack.pop(), instructions[0].bytes)
+        Assert.assertEquals(100.asUInt256(), stack.pop())
+        Assert.assertEquals(10.asUInt256(), stack.pop())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun runSwap() {
         val instructions = listOf(
-                PUSH(byteArrayOf(100)),
-                PUSH(byteArrayOf(1)),
+                PUSH(100.asUInt256()),
+                PUSH(1.asUInt256()),
                 SWAP(0, 1))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/swap")
@@ -548,13 +547,15 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(stack.size(), 2)
-        Assert.assertArrayEquals(stack.pop(), (instructions[0] as PUSH).bytes)
-        Assert.assertArrayEquals(stack.pop(), (instructions[1] as PUSH).bytes)
+        Assert.assertEquals(100.asUInt256(), stack.pop())
+        Assert.assertEquals(1.asUInt256(), stack.pop())
     }
 
     @Test
     fun documentVariable() {
-        val instructions = listOf(VARIABLE(ADDRESS_SELF))
+        val instructions = listOf(
+                VARIABLE(ADDRESS_SELF)
+        )
         val stack = this.run(instructions).stack
         Documentation.of("instructions/variable")
                 .headingParagraph("VARIABLE")
@@ -566,34 +567,42 @@ class ProgramRunnerTest {
 
     @Test
     fun testVariableAddressSelf() {
-        val instructions = listOf(VARIABLE(ADDRESS_SELF))
+        val instructions = listOf(
+                VARIABLE(ADDRESS_SELF)
+        )
         val stack = this.run(instructions).stack
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), 0.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(0.asUInt256(), stack.pop())
     }
 
     @Test
     fun testVariableInstructionPosition() {
-        val instructions = listOf(PUSH(1), POP(), VARIABLE(INSTRUCTION_POSITION))
+        val instructions = listOf(
+                PUSH(1.asUInt256()),
+                POP(),
+                VARIABLE(INSTRUCTION_POSITION)
+        )
         val stack = this.run(instructions).stack
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), 2.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(2.asUInt256(), stack.pop())
     }
 
     @Test
     fun testVariableAddressCaller() {
-        val instructions = listOf(VARIABLE(ADDRESS_CALLER))
+        val instructions = listOf(
+                VARIABLE(ADDRESS_CALLER)
+        )
         val stack = this.run(instructions).stack
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), 0.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(0.asUInt256(), stack.pop())
     }
 
     @Test
     fun testVariableAddressOrigin() {
         val instructions = listOf(VARIABLE(ADDRESS_ORIGIN))
         val stack = this.run(instructions).stack
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), 0.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(0.asUInt256(), stack.pop())
     }
 
     @Test
@@ -601,14 +610,14 @@ class ProgramRunnerTest {
         val startTime = System.currentTimeMillis()
         val instructions = listOf(VARIABLE(START_TIME))
         val stack = this.run(instructions) { virtualMachine, _ ->
-            virtualMachine.variables[START_TIME] = startTime.toBigInteger()
+            virtualMachine.variables[START_TIME] = startTime.asUInt256()
         }.stack
-        Assert.assertEquals(stack.size(), 1)
-        Assert.assertEquals(BigInteger(stack.pop()), startTime.toBigInteger())
+        Assert.assertEquals(1, stack.size())
+        Assert.assertEquals(startTime.asUInt256(), stack.pop())
     }
 
     companion object {
-        const val LIBRARY_ADDRESS = 0x123456789
+        val LIBRARY_ADDRESS = 0x123456789.asUInt256()
     }
 
 }
