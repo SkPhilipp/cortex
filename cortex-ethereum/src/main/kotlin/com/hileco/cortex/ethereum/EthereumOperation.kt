@@ -1,5 +1,7 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.deserializeByte
+
 enum class EthereumOperation(val code: Byte?, val inputBytes: Int = 0) {
     STOP("00".deserializeByte()),
     ADD("01".deserializeByte()),

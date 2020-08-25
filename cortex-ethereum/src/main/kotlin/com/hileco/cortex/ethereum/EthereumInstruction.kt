@@ -1,5 +1,6 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.serialize
 import java.util.*
 
 data class EthereumInstruction(val operation: EthereumOperation, val input: ByteArray) {

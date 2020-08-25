@@ -1,4 +1,4 @@
-package com.hileco.cortex.ethereum
+package com.hileco.cortex.collections
 
 /**
  * Converts a [String] to [ByteArray], inverse of [String.deserializeBytes].
@@ -30,11 +30,4 @@ fun ByteArray.serialize(): String {
     return this.asSequence()
             .map { String.format("%02x", it) }
             .joinToString(separator = "") { it }
-}
-
-/**
- * Converts a [Byte] to [String].
- */
-fun Byte.serialize(): String {
-    return String.format("%02x", this)
 }

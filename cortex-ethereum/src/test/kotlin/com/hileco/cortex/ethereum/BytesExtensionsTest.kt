@@ -1,5 +1,7 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.deserializeBytes
+import com.hileco.cortex.collections.serialize
 import org.junit.Assert
 import org.junit.Test
 

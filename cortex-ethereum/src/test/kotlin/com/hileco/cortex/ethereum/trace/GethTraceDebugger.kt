@@ -1,7 +1,7 @@
 package com.hileco.cortex.ethereum.trace
 
-import com.hileco.cortex.ethereum.deserializeBytes
-import com.hileco.cortex.ethereum.serialize
+import com.hileco.cortex.collections.deserializeBytes
+import com.hileco.cortex.collections.serialize
 import com.hileco.cortex.vm.PositionedInstruction
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner

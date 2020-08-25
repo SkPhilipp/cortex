@@ -2,7 +2,7 @@ package com.hileco.cortex.processing.processes
 
 import com.hileco.cortex.ethereum.EthereumParser
 import com.hileco.cortex.ethereum.EthereumTranspiler
-import com.hileco.cortex.ethereum.deserializeBytes
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.processing.database.AnalysisReportModel
 import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer

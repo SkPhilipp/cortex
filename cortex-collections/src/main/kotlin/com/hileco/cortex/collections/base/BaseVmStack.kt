@@ -1,7 +1,7 @@
 package com.hileco.cortex.collections.base
 
 import com.hileco.cortex.collections.VmStack
-import java.math.BigInteger
+import com.hileco.cortex.collections.serialize
 
 abstract class BaseVmStack<V> : VmStack<V> {
 
@@ -26,7 +26,7 @@ abstract class BaseVmStack<V> : VmStack<V> {
 
     override fun toString(): String {
         return this.asSequence().joinToString(prefix = "[", postfix = "]") { element ->
-            if (element is ByteArray) "${BigInteger(element)}" else "$element"
+            if (element is ByteArray) element.serialize() else "$element"
         }
     }
 

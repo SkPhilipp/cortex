@@ -1,5 +1,6 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.ethereum.process.ProcessRunner
 
 

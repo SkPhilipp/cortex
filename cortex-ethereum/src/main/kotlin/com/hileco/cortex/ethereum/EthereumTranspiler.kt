@@ -1,5 +1,6 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.serialize
 import com.hileco.cortex.vm.ProgramException.Reason.REVERT
 import com.hileco.cortex.vm.ProgramException.Reason.UNKNOWN_INSTRUCTION
 import com.hileco.cortex.vm.ProgramStoreZone.*

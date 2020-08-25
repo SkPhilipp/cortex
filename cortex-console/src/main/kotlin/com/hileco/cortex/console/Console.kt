@@ -13,7 +13,7 @@ import com.hileco.cortex.console.views.ProgramSelectionView
 import com.hileco.cortex.console.views.SymbolicProgramDebuggerView
 import com.hileco.cortex.ethereum.EthereumParser
 import com.hileco.cortex.ethereum.EthereumTranspiler
-import com.hileco.cortex.ethereum.deserializeBytes
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext

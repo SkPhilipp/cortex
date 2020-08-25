@@ -63,3 +63,16 @@ indicate stuff to be signed
 
 also during testing when compiling the signed versions of barrier contracts the
 ending hash or nonsense added by the compilation tool contained _multiple_ immediately visible 5b's or better known as JUMP_DESTINATION
+
+## REFACTOR
+
+- [x] module collections
+- [ ] module documentation
+- [ ] module vm
+- [ ] module symbolic
+- [ ] module fuzzing
+- [ ] module analysis
+- [ ] module ethereum
+- [ ] module processing
+- [ ] module console
+- [ ] general inspect issue resolution

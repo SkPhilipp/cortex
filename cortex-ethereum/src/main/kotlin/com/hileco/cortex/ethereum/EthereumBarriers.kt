@@ -1,5 +1,7 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.deserializeBytes
+
 class EthereumBarriers {
 
     fun byId(id: String): EthereumBarrier {

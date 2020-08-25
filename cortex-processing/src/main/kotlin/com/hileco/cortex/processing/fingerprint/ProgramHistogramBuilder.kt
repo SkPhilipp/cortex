@@ -2,8 +2,8 @@ package com.hileco.cortex.processing.fingerprint
 
 import com.hileco.cortex.ethereum.EthereumInstruction
 import com.hileco.cortex.ethereum.EthereumParser
-import com.hileco.cortex.ethereum.deserializeBytes
-import com.hileco.cortex.ethereum.serialize
+import com.hileco.cortex.collections.deserializeBytes
+import com.hileco.cortex.collections.serialize
 
 class ProgramHistogramBuilder {
     /**
