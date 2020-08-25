@@ -32,4 +32,3 @@ Read more about Cortex':
 - <<fuzzing.adoc#,Fuzzer>>
 - <<analysis.adoc#,Analysis Capabilities>>
 - <<ethereum.adoc#,Ethereum Integration>>
-- <<roadmap.adoc#,Roadmap>>
