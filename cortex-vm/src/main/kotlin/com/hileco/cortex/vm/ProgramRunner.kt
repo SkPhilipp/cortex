@@ -121,10 +121,9 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 }
                 val times = programContext.stack.pop()
                 val value = programContext.stack.pop()
-                if(times > 256.toBackedInteger()){
+                if (times > 256.toBackedInteger()) {
                     programContext.stack.push(ZERO_32)
-                }
-                else {
+                } else {
                     val timesInt = times.toInt()
                     val valueBigInt = BigInteger(1, value.getBackingArray()).shiftRight(timesInt)
                     programContext.stack.push(BackedInteger(valueBigInt.toByteArray()))
@@ -143,14 +142,20 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 val outSize = programContext.stack.pop()
                 programContext.returnDataOffset = outOffset
                 programContext.returnDataSize = outSize
-                val recipient = virtualMachine.atlas[recipientAddress] ?: throw ProgramException(CALL_RECIPIENT_MISSING)
-                val sourceAddress = programContext.program.address
-                recipient.transfers.push(sourceAddress to valueTransferred)
-                val newContext = ProgramContext(recipient)
-                val inputData = programContext.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
-                newContext.callData.clear()
-                newContext.callData.write(0, inputData)
-                virtualMachine.programs.add(newContext)
+                val program = virtualMachine.atlas[recipientAddress]
+                if (program != null) {
+                    val sourceAddress = programContext.program.address
+                    program.transfers.push(sourceAddress to valueTransferred)
+                    val newContext = ProgramContext(program)
+                    val inputData = programContext.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
+                    newContext.callData.clear()
+                    newContext.callData.write(0, inputData)
+                    virtualMachine.programs.add(newContext)
+                } else {
+                    val recipientBalance = virtualMachine.balances[recipientAddress] ?: ZERO_32
+                    virtualMachine.balances[recipientAddress] = recipientBalance + valueTransferred
+                    programContext.stack.push(ONE_32)
+                }
             }
             is CALL_RETURN -> {
                 if (programContext.stack.size() < 2) {
@@ -171,6 +176,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     nextContext.memory.write(wOffset.toInt(), dataExpanded, wSize.toInt())
                     // TODO: If `CALL` would have a width other than 1 this will not be enough
                     nextContext.instructionPosition++
+                    nextContext.stack.push(ZERO_32)
                 }
             }
             is EQUALS -> {

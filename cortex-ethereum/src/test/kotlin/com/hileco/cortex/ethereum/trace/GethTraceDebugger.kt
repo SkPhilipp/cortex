@@ -11,12 +11,11 @@ import org.junit.Assert
 
 class GethTraceDebugger(virtualMachine: VirtualMachine, private val gethTrace: GethTrace) {
 
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper = ObjectMapper()
     private val programRunner: ProgramRunner
     private var instructionsExecuted: Int
 
     init {
-        this.objectMapper = ObjectMapper()
         this.programRunner = ProgramRunner(virtualMachine, this::onInstruction)
         this.instructionsExecuted = 0
     }
@@ -43,9 +42,9 @@ class GethTraceDebugger(virtualMachine: VirtualMachine, private val gethTrace: G
         Assert.assertEquals(message(gethTraceLog, "Stack size"), gethTraceLog.stack.size, programContext.stack.size())
 
         for (i in 0 until programContext.stack.size()) {
-            val stackBytesExpected = gethTraceLog.stack[0]
-            val stackBytesActual = programContext.stack[0]
-            val stackValueExpected = BackedInteger(gethTraceLog.stack[0].deserializeBytes())
+            val stackBytesExpected = gethTraceLog.stack[i]
+            val stackBytesActual = programContext.stack[i]
+            val stackValueExpected = BackedInteger(gethTraceLog.stack[i].deserializeBytes())
             Assert.assertEquals(message(gethTraceLog, "Stack element $i ($stackBytesExpected vs $stackBytesActual)"), stackValueExpected, stackBytesActual)
         }
         instructionsExecuted++

@@ -10,12 +10,14 @@ import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
 class VirtualMachine : VmComponent<VirtualMachine> {
     val programs: MutableList<ProgramContext>
     val atlas: MutableMap<BackedInteger, Program>
+    val balances: VmMap<BackedInteger, BackedInteger>
     val variables: VmMap<ExecutionVariable, BackedInteger>
     var instructionsExecuted: Int
 
     constructor(vararg programContexts: ProgramContext, startTime: Long = System.currentTimeMillis()) {
         programs = ArrayList()
         atlas = HashMap()
+        balances = LayeredVmMap()
         variables = LayeredVmMap()
         variables[ExecutionVariable.START_TIME] = startTime.toBackedInteger()
         instructionsExecuted = 0
@@ -26,10 +28,12 @@ class VirtualMachine : VmComponent<VirtualMachine> {
 
     private constructor(programs: MutableList<ProgramContext>,
                         atlas: MutableMap<BackedInteger, Program>,
+                        recipients: VmMap<BackedInteger, BackedInteger>,
                         variables: VmMap<ExecutionVariable, BackedInteger>,
                         instructionsExecuted: Int) {
         this.programs = programs
         this.atlas = atlas
+        this.balances = recipients
         this.variables = variables
         this.instructionsExecuted = instructionsExecuted
     }
@@ -43,6 +47,6 @@ class VirtualMachine : VmComponent<VirtualMachine> {
     override fun copy(): VirtualMachine {
         val branchPrograms = programs.map { it.copy() }.toMutableList()
         val branchAtlas = atlas.mapValues { (_, program) -> program.copy() }.toMutableMap()
-        return VirtualMachine(branchPrograms, branchAtlas, variables.copy(), instructionsExecuted)
+        return VirtualMachine(branchPrograms, branchAtlas, balances.copy(), variables.copy(), instructionsExecuted)
     }
 }
