@@ -24,11 +24,3 @@
 Smart contracts open up new attack surfaces.
 Their machine-code, storage, and any interactions with them are public.
 Cortex takes smart contracts apart, analyses them & exploits all of their weaknesses.
-
-Read more about Cortex':
-
-- <<vm.adoc#,Virtual Machine>>
-- <<symbolic.adoc#,Symbolic Execution Engine>>
-- <<fuzzing.adoc#,Fuzzer>>
-- <<analysis.adoc#,Analysis Capabilities>>
-- <<ethereum.adoc#,Ethereum Integration>>

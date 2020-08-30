@@ -4,7 +4,6 @@ import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.*
 import com.hileco.cortex.vm.instructions.calls.CALL
@@ -249,14 +248,14 @@ class InstructionsBuilder {
                 push(FUNCTION_CALL_INDEX)
                 load(MEMORY)
                 load(MEMORY)
-                save(MEMORY, subtract(push(ONE_32), load(MEMORY, push(FUNCTION_CALL_INDEX))), push(FUNCTION_CALL_INDEX))
+                save(MEMORY, subtract(push(32.toBackedInteger()), load(MEMORY, push(FUNCTION_CALL_INDEX))), push(FUNCTION_CALL_INDEX))
             }
         }
         jump()
     }
 
     fun configureCallConvention() {
-        save(MEMORY, push(FUNCTION_CALL_INDEX + ONE_32), push(FUNCTION_CALL_INDEX))
+        save(MEMORY, push(FUNCTION_CALL_INDEX + 32.toBackedInteger()), push(FUNCTION_CALL_INDEX))
     }
 
     fun internalFunctionCall(label: String, body: () -> Unit = {}, callConvention: FunctionCallConvention = STACK_ADDRESS_WITH_RETURN): InstructionsBuilderHandle {
@@ -269,7 +268,7 @@ class InstructionsBuilder {
                 push(returnLabel)
             }
             MEMORY_INDEX_AND_ADDRESS -> {
-                save(MEMORY, add(load(MEMORY, push(FUNCTION_CALL_INDEX)), push(ONE_32)), push(FUNCTION_CALL_INDEX))
+                save(MEMORY, add(load(MEMORY, push(FUNCTION_CALL_INDEX)), push(32.toBackedInteger())), push(FUNCTION_CALL_INDEX))
                 save(MEMORY, push(returnLabel), load(MEMORY, push(FUNCTION_CALL_INDEX)))
             }
         }

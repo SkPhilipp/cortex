@@ -7,5 +7,7 @@ interface VmByteArray : VmComponent<VmByteArray> {
 
     fun clear()
 
+    fun limit(): Int
+
     fun size(): Int
 }

@@ -3,6 +3,7 @@ package com.hileco.cortex.symbolic
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.DROP
@@ -30,10 +31,10 @@ class ExpressionGeneratorTest {
     fun testPop() {
         val builder = ExpressionGenerator()
         builder.addInstruction(PUSH(123.toBackedInteger()))
-        builder.addInstruction(PUSH(1.toBackedInteger()))
+        builder.addInstruction(PUSH(ONE_32))
         builder.addInstruction(POP())
         builder.addInstruction(PUSH(321.toBackedInteger()))
-        builder.addInstruction(PUSH(1.toBackedInteger()))
+        builder.addInstruction(PUSH(ONE_32))
         builder.addInstruction(POP())
         builder.addInstruction(SUBTRACT())
         val result = builder.currentExpression
@@ -46,7 +47,7 @@ class ExpressionGeneratorTest {
         val builder = ExpressionGenerator()
         builder.addInstruction(PUSH(3.toBackedInteger()))
         builder.addInstruction(PUSH(2.toBackedInteger()))
-        builder.addInstruction(PUSH(1.toBackedInteger()))
+        builder.addInstruction(PUSH(ONE_32))
         builder.addInstruction(DROP(2))
         val result = builder.currentExpression
         Assert.assertTrue(result is Value)

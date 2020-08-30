@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer
 import com.hileco.cortex.analysis.edges.EdgeParameters
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
 import com.hileco.cortex.vm.instructions.stack.DUPLICATE
@@ -19,7 +20,7 @@ class ParameterProcessorTest : ProcessorFuzzTest() {
         processors.add(ParameterProcessor())
         val graphBuilder = GraphBuilder(processors)
         val graph = graphBuilder.build(listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(10.toBackedInteger()),
                 JUMP_IF()
         ))
@@ -40,7 +41,7 @@ class ParameterProcessorTest : ProcessorFuzzTest() {
         processors.add(ParameterProcessor())
         val graphBuilder = GraphBuilder(processors)
         val graph = graphBuilder.build(listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(2.toBackedInteger()),
                 PUSH(3.toBackedInteger()),
                 DUPLICATE(1)

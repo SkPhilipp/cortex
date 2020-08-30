@@ -32,7 +32,7 @@ data class BarrierProgram(val name: String,
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
-                        equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(1.toBackedInteger()))), push(12345.toBackedInteger()))
+                        equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, thenBody = {
                         halt(WINNER)
                     })
@@ -41,7 +41,7 @@ data class BarrierProgram(val name: String,
         val BARRIER_02 = BarrierProgram("Barrier 02",
                 "Basic math on multiple inputs.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
-                  |     IF(CALL_DATA[2] % 500 == 12) {
+                  |     IF(CALL_DATA[33] % 500 == 12) {
                   |         HALT(WINNER)
                   |     }
                   | }""".trimMargin(),
@@ -50,7 +50,7 @@ data class BarrierProgram(val name: String,
                         equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, thenBody = {
                         blockIf(conditionBody = {
-                            equals(modulo(push(500.toBackedInteger()), load(CALL_DATA, push(2.toBackedInteger()))), push(12.toBackedInteger()))
+                            equals(modulo(push(500.toBackedInteger()), load(CALL_DATA, push(33.toBackedInteger()))), push(12.toBackedInteger()))
                         }, thenBody = {
                             halt(WINNER)
                         })
@@ -132,20 +132,21 @@ data class BarrierProgram(val name: String,
         val BARRIER_06 = BarrierProgram("Barrier 06",
                 "Requires constraints on the stack to solve, as to `CALL` the proper address.",
                 """ IF(CALL_DATA[1] / 2 == 12345) {
-                  |     CALL(RECIPIENT_ADDRESS=CALL_DATA[2], VALUE_TRANSFERRED=1, 0, 0, 0, 0)
+                  |     CALL(RECIPIENT_ADDRESS=CALL_DATA[33], VALUE_TRANSFERRED=1, 0, 0, 0, 0)
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
                         equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, thenBody = {
-                        call(push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ONE_32), load(CALL_DATA, push(2.toBackedInteger())), push(ZERO_32))
+                        call(push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ZERO_32), push(ONE_32), load(CALL_DATA, push(33.toBackedInteger())), push
+                        (ZERO_32))
                     })
                     build()
                 })
         val BARRIER_07 = BarrierProgram("Barrier 07",
                 "Contains an infinite loop.",
                 """ WHILE(CALL_DATA[1] / 2 == 12345) {
-                  |     WHILE(CALL_DATA[2] % 500 == 12) {
+                  |     WHILE(CALL_DATA[33] % 500 == 12) {
                   |     }
                   |     HALT(WINNER)
                   | }""".trimMargin(),
@@ -154,7 +155,7 @@ data class BarrierProgram(val name: String,
                         equals(divide(push(2.toBackedInteger()), load(CALL_DATA, push(ONE_32))), push(12345.toBackedInteger()))
                     }, loopBody = { _, _ ->
                         blockWhile(conditionBody = {
-                            equals(modulo(push(500.toBackedInteger()), load(CALL_DATA, push(2.toBackedInteger()))), push(12.toBackedInteger()))
+                            equals(modulo(push(500.toBackedInteger()), load(CALL_DATA, push(33.toBackedInteger()))), push(12.toBackedInteger()))
                         }, loopBody = { _, _ ->
                         })
                         halt(WINNER)
@@ -198,8 +199,8 @@ data class BarrierProgram(val name: String,
                   |         HALT(WINNER)
                   |     }
                   | }
-                  | if (CALL_DATA[1] == 2) {
-                  |     DISK[1] = CALL_DATA[2]
+                  | if (CALL_DATA[1] == 33) {
+                  |     DISK[1] = CALL_DATA[33]
                   | }""".trimMargin(),
                 with(InstructionsBuilder()) {
                     blockIf(conditionBody = {
@@ -214,7 +215,7 @@ data class BarrierProgram(val name: String,
                     blockIf(conditionBody = {
                         equals(load(CALL_DATA, push(ONE_32)), push(2.toBackedInteger()))
                     }, thenBody = {
-                        save(DISK, load(CALL_DATA, push(2.toBackedInteger())), push(ONE_32))
+                        save(DISK, load(CALL_DATA, push(33.toBackedInteger())), push(ONE_32))
                     })
                     build()
                 })

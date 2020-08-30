@@ -15,6 +15,7 @@ import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_02
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_06
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import org.junit.Assert
@@ -49,7 +50,7 @@ class AttackerTest {
         val solution = attackBarrier(BARRIER_01)
         Assert.assertEquals(1, solution.values.size)
         val entry = solution.values.entries.first()
-        Assert.assertEquals(Reference(CALL_DATA, Value(1.toBackedInteger())), entry.key)
+        Assert.assertEquals(Reference(CALL_DATA, Value(ONE_32)), entry.key)
         Assert.assertEquals(24690.toBackedInteger(), entry.value)
     }
 
@@ -66,7 +67,7 @@ class AttackerTest {
     @Test
     fun testBarrier06() {
         val solution = attackBarrier(BARRIER_06, TARGET_IS_CALL, listOf(CONSTRAINT_CALL_ADDRESS(1234.toBackedInteger())), "TARGET_IS_CALL WITH CONSTRAINT_CALL_ADDRESS(1234)")
-        Assert.assertEquals(24690.toBackedInteger(), solution.values[Reference(CALL_DATA, Value(1.toBackedInteger()))])
-        Assert.assertEquals(1234.toBackedInteger(), solution.values[Reference(CALL_DATA, Value(2.toBackedInteger()))])
+        Assert.assertEquals(24690.toBackedInteger(), solution.values[Reference(CALL_DATA, Value(ONE_32))])
+        Assert.assertEquals(1234.toBackedInteger(), solution.values[Reference(CALL_DATA, Value(33.toBackedInteger()))])
     }
 }

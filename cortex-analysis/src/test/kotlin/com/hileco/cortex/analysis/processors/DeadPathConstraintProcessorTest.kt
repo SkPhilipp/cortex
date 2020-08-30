@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
@@ -24,9 +25,9 @@ class DeadPathConstraintProcessorTest : ProcessorFuzzTest() {
                 DeadPathConstraintProcessor()
         ))
         val original = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 LOAD(CALL_DATA),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 LOAD(CALL_DATA),
                 GREATER_THAN(),
                 IS_ZERO(),
@@ -44,7 +45,7 @@ class DeadPathConstraintProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program:").source(original)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(1.toBackedInteger())
+                PUSH(ONE_32)
         ))
     }
 

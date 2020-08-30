@@ -33,7 +33,9 @@ class GethTraceDebugger(virtualMachine: VirtualMachine, private val gethTrace: G
     }
 
     private fun message(gethTraceLog: GethTraceLog, element: String): String {
-        return "Equality issue on step $instructionsExecuted: $element\nExpected JSON: ${objectMapper.writeValueAsString(gethTraceLog)}"
+        return """$element
+                 |$instructionsExecuted instructions executed
+                 |${objectMapper.writeValueAsString(gethTraceLog)}""".trimMargin()
     }
 
     private fun onInstruction(positionedInstruction: PositionedInstruction, programContext: ProgramContext) {

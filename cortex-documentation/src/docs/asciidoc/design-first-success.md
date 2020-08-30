@@ -64,15 +64,10 @@ indicate stuff to be signed
 also during testing when compiling the signed versions of barrier contracts the
 ending hash or nonsense added by the compilation tool contained _multiple_ immediately visible 5b's or better known as JUMP_DESTINATION
 
-## REFACTOR
+d0679d340000000000000000000000008da2b876612931038a56f60010b3964b88f6be8a0000000000000000000000000000000000000000000000000de0b6b3a7640000
 
-- [x] module collections
-- [x] module documentation
-- [x] module vm
-- [x] module symbolic
-- [x] module fuzzing
-- [x] module analysis
-- [x] module ethereum
-- [ ] module processing
-- [ ] module console
-- [ ] general inspect issue resolution
+                // expected: 0000000000000000000000008da2b876612931038a56f60010b3964b88f6be8a
+                // actual:   0000000000000000000000000000000000000000000000000000000000000000
+address: 4
+
+    meaning loading call data [4] it should be bytes[4:4+32]

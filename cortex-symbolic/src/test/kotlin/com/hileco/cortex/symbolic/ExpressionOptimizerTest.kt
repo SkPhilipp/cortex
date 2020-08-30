@@ -2,6 +2,8 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import org.junit.Assert
 import org.junit.Test
@@ -12,28 +14,28 @@ class ExpressionOptimizerTest {
 
     @Test
     fun lessThanValueToValue() {
-        val expression = LessThan(Value(1.toBackedInteger()), Value(2.toBackedInteger()))
+        val expression = LessThan(Value(ONE_32), Value(2.toBackedInteger()))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(True, result)
     }
 
     @Test
     fun equalsValueToValue() {
-        val expression = Equals(Value(1.toBackedInteger()), Value(1.toBackedInteger()))
+        val expression = Equals(Value(ONE_32), Value(ONE_32))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(True, result)
     }
 
     @Test
     fun greaterThanValueToValue() {
-        val expression = GreaterThan(Value(2.toBackedInteger()), Value(1.toBackedInteger()))
+        val expression = GreaterThan(Value(2.toBackedInteger()), Value(ONE_32))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(True, result)
     }
 
     @Test
     fun isZeroValue() {
-        val expression = IsZero(Value(0.toBackedInteger()))
+        val expression = IsZero(Value(ZERO_32))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(True, result)
     }
@@ -47,21 +49,21 @@ class ExpressionOptimizerTest {
 
     @Test
     fun addValueToValue() {
-        val expression = Add(Value(1.toBackedInteger()), Value(1.toBackedInteger()))
+        val expression = Add(Value(ONE_32), Value(ONE_32))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Value(2.toBackedInteger()), result)
     }
 
     @Test
     fun addValueToAddVariableToValue() {
-        val expression = Add(Value(1.toBackedInteger()), Add(Stack(0), Value(1.toBackedInteger())))
+        val expression = Add(Value(ONE_32), Add(Stack(0), Value(ONE_32)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Add(Stack(0), Value(2.toBackedInteger())), result)
     }
 
     @Test
     fun addValueToAddValueToVariable() {
-        val expression = Add(Value(1.toBackedInteger()), Add(Value(1.toBackedInteger()), Stack(0)))
+        val expression = Add(Value(ONE_32), Add(Value(ONE_32), Stack(0)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Add(Stack(0), Value(2.toBackedInteger())), result)
     }
@@ -70,7 +72,7 @@ class ExpressionOptimizerTest {
     fun moduloValueToValue() {
         val expression = Modulo(Value(101.toBackedInteger()), Value(10.toBackedInteger()))
         val result = expressionOptimizer.optimize(expression)
-        Assert.assertEquals(Value(1.toBackedInteger()), result)
+        Assert.assertEquals(Value(ONE_32), result)
     }
 
     @Test
@@ -82,9 +84,9 @@ class ExpressionOptimizerTest {
 
     @Test
     fun subtractValueToValue() {
-        val expression = Subtract(Value(1.toBackedInteger()), Value(1.toBackedInteger()))
+        val expression = Subtract(Value(ONE_32), Value(ONE_32))
         val result = expressionOptimizer.optimize(expression)
-        Assert.assertEquals(Value(0.toBackedInteger()), result)
+        Assert.assertEquals(Value(ZERO_32), result)
     }
 
     /**
@@ -92,7 +94,7 @@ class ExpressionOptimizerTest {
      */
     @Test
     fun subtractVariableToZero() {
-        val expression = Subtract(Stack(0), Value(0.toBackedInteger()))
+        val expression = Subtract(Stack(0), Value(ZERO_32))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Stack(0), result)
     }
@@ -102,7 +104,7 @@ class ExpressionOptimizerTest {
      */
     @Test
     fun subtractValueToSubtractVariableToValue() {
-        val expression = Subtract(Value(2.toBackedInteger()), Subtract(Stack(0), Value(1.toBackedInteger())))
+        val expression = Subtract(Value(2.toBackedInteger()), Subtract(Stack(0), Value(ONE_32)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Subtract(Value(3.toBackedInteger()), Stack(0)), result)
     }
@@ -112,7 +114,7 @@ class ExpressionOptimizerTest {
      */
     @Test
     fun subtractValueToSubtractValueToVariable() {
-        val expression = Subtract(Value(2.toBackedInteger()), Subtract(Value(1.toBackedInteger()), Stack(0)))
+        val expression = Subtract(Value(2.toBackedInteger()), Subtract(Value(ONE_32), Stack(0)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Subtract(Stack(0), Value(BackedInteger.LIMIT_32)), result)
     }
@@ -122,7 +124,7 @@ class ExpressionOptimizerTest {
      */
     @Test
     fun subtractSubtractVariableToValueToValue() {
-        val expression = Subtract(Subtract(Stack(0), Value(2.toBackedInteger())), Value(1.toBackedInteger()))
+        val expression = Subtract(Subtract(Stack(0), Value(2.toBackedInteger())), Value(ONE_32))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(Subtract(Stack(0), Value(3.toBackedInteger())), result)
     }
@@ -132,9 +134,9 @@ class ExpressionOptimizerTest {
      */
     @Test
     fun subtractSubtractValueToVariableToValue() {
-        val expression = Subtract(Subtract(Value(2.toBackedInteger()), Stack(0)), Value(1.toBackedInteger()))
+        val expression = Subtract(Subtract(Value(2.toBackedInteger()), Stack(0)), Value(ONE_32))
         val result = expressionOptimizer.optimize(expression)
-        Assert.assertEquals(Subtract(Value(1.toBackedInteger()), Stack(0)), result)
+        Assert.assertEquals(Subtract(Value(ONE_32), Stack(0)), result)
     }
 
     @Test
@@ -195,14 +197,14 @@ class ExpressionOptimizerTest {
 
     @Test
     fun andEquivalentTrue() {
-        val expression = And(listOf(Value(1.toBackedInteger()), Value(2.toBackedInteger())))
+        val expression = And(listOf(Value(ONE_32), Value(2.toBackedInteger())))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(True, result)
     }
 
     @Test
     fun andEquivalentFalse() {
-        val expression = And(listOf(Value(1.toBackedInteger()), Value(0.toBackedInteger())))
+        val expression = And(listOf(Value(ONE_32), Value(ZERO_32)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(False, result)
     }
@@ -216,14 +218,14 @@ class ExpressionOptimizerTest {
 
     @Test
     fun orEquivalentTrue() {
-        val expression = Or(listOf(Value(1.toBackedInteger()), Value(0.toBackedInteger())))
+        val expression = Or(listOf(Value(ONE_32), Value(ZERO_32)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(True, result)
     }
 
     @Test
     fun orEquivalentFalse() {
-        val expression = Or(listOf(Value(0.toBackedInteger()), Value(0.toBackedInteger())))
+        val expression = Or(listOf(Value(ZERO_32), Value(ZERO_32)))
         val result = expressionOptimizer.optimize(expression)
         Assert.assertEquals(False, result)
     }

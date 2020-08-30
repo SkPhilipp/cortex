@@ -2,6 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.NOOP
 import com.hileco.cortex.vm.instructions.jumps.EXIT
@@ -19,10 +20,10 @@ class DeadEndProcessorTest : ProcessorFuzzTest() {
         val original = listOf(
                 EXIT(),
                 PUSH(10.toBackedInteger()),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 JUMP_DESTINATION(),
                 PUSH(10.toBackedInteger()),
-                PUSH(1.toBackedInteger())
+                PUSH(ONE_32)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -39,7 +40,7 @@ class DeadEndProcessorTest : ProcessorFuzzTest() {
                 NOOP(),
                 JUMP_DESTINATION(),
                 PUSH(10.toBackedInteger()),
-                PUSH(1.toBackedInteger())
+                PUSH(ONE_32)
         ))
     }
 

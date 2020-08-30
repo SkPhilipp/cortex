@@ -4,6 +4,7 @@ import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.INSTRUCTION_JUMP
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
 import com.hileco.cortex.vm.instructions.jumps.JUMP
@@ -20,7 +21,7 @@ class FlowProcessorTest : ProcessorFuzzTest() {
                 JUMP(),
                 PUSH(10.toBackedInteger()),
                 JUMP_DESTINATION(),
-                PUSH(1.toBackedInteger()))
+                PUSH(ONE_32))
         val graph = GraphBuilder.BASIC_GRAPH_BUILDER.build(instructions)
         Documentation.of(FlowProcessor::class.java.simpleName)
                 .headingParagraph(FlowProcessor::class.java.simpleName)

@@ -3,6 +3,7 @@ package com.hileco.cortex.vm
 import com.hileco.cortex.vm.ProgramStoreZone.DISK
 import com.hileco.cortex.vm.ProgramStoreZone.MEMORY
 import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.InstructionsBuilder
@@ -21,10 +22,10 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BackedInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(300, LOAD.SIZE)), 3000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(program.storage.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(program.storage.read(300, LOAD.SIZE)), 3000.toBackedInteger())
         Assert.assertEquals(programContext.stack.size(), 5)
         Assert.assertEquals(programContext.stack.peek(), 1.toBackedInteger())
     }
@@ -45,12 +46,12 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BackedInteger(programContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(programContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBackedInteger())
-        Assert.assertEquals(BackedInteger(programContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBackedInteger())
-        Assert.assertEquals(BackedInteger(program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBackedInteger())
-        Assert.assertEquals(BackedInteger(program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(300, LOAD.SIZE)), 3999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(programContext.memory.read(400, LOAD.SIZE)), 999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(program.storage.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(program.storage.read(300, LOAD.SIZE)), 3999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(program.storage.read(400, LOAD.SIZE)), 999.toBackedInteger())
         Assert.assertEquals(programContext.stack.size(), 4)
         Assert.assertEquals(programContext.stack.peek(), 4.toBackedInteger())
     }
@@ -76,10 +77,10 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(300, LOAD.SIZE)), 3000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(300, LOAD.SIZE)), 3000.toBackedInteger())
         Assert.assertEquals(branchProgramContext.stack.size(), 5)
         Assert.assertEquals(branchProgramContext.stack.peek(), 1.toBackedInteger())
 
@@ -89,12 +90,12 @@ class VirtualMachineTest {
             programRunner.run()
         } catch (e: ProgramException) {
         }
-        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(200 * LOAD.SIZE, LOAD.SIZE)), 2000.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(300 * LOAD.SIZE, LOAD.SIZE)), 3999.toBackedInteger())
-        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(400 * LOAD.SIZE, LOAD.SIZE)), 999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(300, LOAD.SIZE)), 3999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.memory.read(400, LOAD.SIZE)), 999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(200, LOAD.SIZE)), 2000.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(300, LOAD.SIZE)), 3999.toBackedInteger())
+        Assert.assertEquals(BackedInteger(branchProgramContext.program.storage.read(400, LOAD.SIZE)), 999.toBackedInteger())
         Assert.assertEquals(branchProgramContext.stack.size(), 4)
         Assert.assertEquals(branchProgramContext.stack.peek(), 4.toBackedInteger())
     }
@@ -109,7 +110,7 @@ class VirtualMachineTest {
             push(4.toBackedInteger())
             push(3.toBackedInteger())
             push(2.toBackedInteger())
-            push(1.toBackedInteger())
+            push(ONE_32)
             halt(ProgramException.Reason.WINNER)
             build()
         }

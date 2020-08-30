@@ -5,6 +5,7 @@ import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.io.LOAD
@@ -45,7 +46,7 @@ internal class SymbolicProgramDebuggerTest {
                 JUMP_DESTINATION(),
                 PUSH(10.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 JUMP_IF()
         ))
 
@@ -65,7 +66,7 @@ internal class SymbolicProgramDebuggerTest {
                 JUMP_DESTINATION(),
                 PUSH(10.toBackedInteger()),
                 LOAD(CALL_DATA),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 JUMP_IF()
         ))
 

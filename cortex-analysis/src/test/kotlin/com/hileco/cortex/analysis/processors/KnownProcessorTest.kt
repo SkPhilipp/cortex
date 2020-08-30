@@ -2,6 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
 import com.hileco.cortex.vm.instructions.debug.NOOP
@@ -21,7 +22,7 @@ class KnownProcessorTest : ProcessorFuzzTest() {
                 KnownProcessor()
         ))
         val original = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(10.toBackedInteger()),
                 ADD()
         )

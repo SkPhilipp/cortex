@@ -133,6 +133,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
+                @Suppress("UNUSED_VARIABLE")
                 val gas = programContext.stack.pop()
                 val recipientAddress = programContext.stack.pop()
                 val valueTransferred = programContext.stack.pop()
@@ -147,7 +148,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     val sourceAddress = programContext.program.address
                     program.transfers.push(sourceAddress to valueTransferred)
                     val newContext = ProgramContext(program)
-                    val inputData = programContext.memory.read(inOffset.toInt() * LOAD.SIZE, inSize.toInt())
+                    val inputData = programContext.memory.read(inOffset.toInt(), inSize.toInt())
                     newContext.callData.clear()
                     newContext.callData.write(0, inputData)
                     virtualMachine.programs.add(newContext)
@@ -233,12 +234,11 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
                 }
-                if (address.toInt() * LOAD.SIZE + LOAD.SIZE > storage.size()) {
+                if (address.toInt() + LOAD.SIZE > storage.limit()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
                 }
-                val bytes = storage.read(address.toInt() * LOAD.SIZE, LOAD.SIZE)
+                val bytes = storage.read(address.toInt(), LOAD.SIZE)
                 programContext.stack.push(BackedInteger(bytes))
-
             }
             is SAVE -> {
                 if (programContext.stack.size() < 2) {
@@ -251,10 +251,10 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $instruction.programStoreZone")
                 }
                 val value = programContext.stack.pop()
-                if (address.toInt() * LOAD.SIZE + 32 > storage.size()) {
+                if (address.toInt() + LOAD.SIZE > storage.limit()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
                 }
-                storage.write(address.toInt() * LOAD.SIZE, value.getBackingArray())
+                storage.write(address.toInt(), value.getBackingArray())
             }
             is EXIT -> {
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
@@ -375,7 +375,6 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                         programContext.stack.push(address)
                     }
                     CALL_DATA_SIZE -> {
-                        // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
                         val size = programContext.callData.size()
                         programContext.stack.push(size.toBackedInteger())
                     }

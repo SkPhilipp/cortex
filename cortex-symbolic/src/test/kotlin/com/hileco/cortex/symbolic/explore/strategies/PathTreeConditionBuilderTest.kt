@@ -5,6 +5,7 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.Value
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import org.hamcrest.CoreMatchers.anyOf
 import org.hamcrest.CoreMatchers.equalTo
@@ -22,10 +23,10 @@ class PathTreeConditionBuilderTest {
     @Test
     fun testRootWithBranches() {
         val stack = LayeredVmStack<SymbolicPathEntry>()
-        stack.push(SymbolicPathEntry(0, Value(0.toBackedInteger()), true, testExpression(0)))
+        stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(0)))
         val branch = stack.copy()
-        stack.push(SymbolicPathEntry(0, Value(0.toBackedInteger()), true, testExpression(1)))
-        branch.push(SymbolicPathEntry(0, Value(0.toBackedInteger()), true, testExpression(2)))
+        stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(1)))
+        branch.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(2)))
         val treeExpression = exploreConditionBuilder.build(listOf(stack.edge, branch.edge))
         val expectedExpression = Expression.And(listOf(testExpression(0), Expression.Or(listOf(testExpression(1), testExpression(2)))))
         val expectedExpressionReordered = Expression.And(listOf(testExpression(0), Expression.Or(listOf(testExpression(2), testExpression(1)))))
@@ -47,9 +48,9 @@ class PathTreeConditionBuilderTest {
     @Test
     fun testRootWithAnEmptyBranch() {
         val stack = LayeredVmStack<SymbolicPathEntry>()
-        stack.push(SymbolicPathEntry(0, Value(0.toBackedInteger()), true, testExpression(0)))
+        stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(0)))
         val emptyBranch = stack.copy()
-        stack.push(SymbolicPathEntry(0, Value(0.toBackedInteger()), true, testExpression(1)))
+        stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(1)))
         val treeExpression = exploreConditionBuilder.build(listOf(stack.edge, emptyBranch.edge))
         val expectedExpression = testExpression(0)
         Assert.assertEquals("$expectedExpression", "$treeExpression")

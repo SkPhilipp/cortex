@@ -6,13 +6,11 @@ import com.hileco.cortex.vm.Program
 import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.VirtualMachine
 import org.junit.Assert
-import org.junit.Ignore
 import org.junit.Test
 
 
 class GethTraceDebuggerTest {
 
-    @Ignore
     @Test
     fun traceBarrier000() {
         val gethTraceLoader = GethTraceLoader()
@@ -27,7 +25,6 @@ class GethTraceDebuggerTest {
 
         val exception = gethTraceDebugger.run()
 
-        println(virtualMachine.balances)
         Assert.assertNull(exception)
     }
 }

@@ -2,6 +2,7 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
@@ -18,7 +19,7 @@ class SolverTest {
     fun testSolveBasic() {
         val instructions = listOf(
                 PUSH(10.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 LOAD(CALL_DATA),
                 LESS_THAN()
         )
@@ -37,7 +38,7 @@ class SolverTest {
                 PUSH(10.toBackedInteger()),
                 PUSH(0x100000.toBackedInteger()),
                 PUSH(10.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 LOAD(CALL_DATA),
                 ADD(),
                 MODULO(),
@@ -60,7 +61,7 @@ class SolverTest {
     @Test
     fun testSolveUninterpretedFunction() {
         val instructions = listOf(
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 LOAD(CALL_DATA),
                 HASH("SHA-256"),
                 PUSH(10.toBackedInteger()),

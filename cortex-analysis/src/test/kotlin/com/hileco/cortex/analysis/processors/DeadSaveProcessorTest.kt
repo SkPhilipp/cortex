@@ -2,7 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.vm.bytes.toBackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore
@@ -22,7 +22,7 @@ class DeadSaveProcessorTest : ProcessorFuzzTest() {
                 DeadSaveProcessor()
         ))
         val original = listOf(
-                PUSH(1.toBackedInteger())
+                PUSH(ONE_32)
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
@@ -34,7 +34,7 @@ class DeadSaveProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
-                PUSH(1.toBackedInteger())
+                PUSH(ONE_32)
         ))
     }
 

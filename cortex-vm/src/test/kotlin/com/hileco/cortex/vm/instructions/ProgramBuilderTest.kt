@@ -5,6 +5,7 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.VirtualMachine
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.InstructionsBuilder.FunctionCallConvention.MEMORY_INDEX_AND_ADDRESS
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
@@ -21,15 +22,15 @@ class ProgramBuilderTest {
         val programBuilder = InstructionsBuilder()
         with(programBuilder) {
             jumpDestination("repeat")
-            jumpIf(equals(load(CALL_DATA, push(0.toBackedInteger())), push(123.toBackedInteger())), "repeat")
+            jumpIf(equals(load(CALL_DATA, push(ZERO_32)), push(123.toBackedInteger())), "repeat")
         }
         Assert.assertEquals(listOf(
                 JUMP_DESTINATION(),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 LOAD(CALL_DATA),
                 PUSH(123.toBackedInteger()),
                 EQUALS(),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 JUMP_IF()
         ), programBuilder.build())
     }

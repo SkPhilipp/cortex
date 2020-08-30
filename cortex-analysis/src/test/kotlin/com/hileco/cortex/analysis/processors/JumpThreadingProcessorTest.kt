@@ -3,6 +3,8 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.vm.ProgramException.Reason.WINNER
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.debug.HALT
 import com.hileco.cortex.vm.instructions.debug.NOOP
@@ -51,7 +53,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
         ))
         val original = listOf(
                 JUMP_DESTINATION(),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 JUMP()
         )
 
@@ -136,7 +138,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 JumpThreadingProcessor()
         ))
         val original = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(3.toBackedInteger()),
                 JUMP_IF(),
                 JUMP_DESTINATION(),
@@ -157,7 +159,7 @@ class JumpThreadingProcessorTest : ProcessorFuzzTest() {
                 .paragraph("Program after:").source(instructions)
 
         assertEquals(instructions, listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(6.toBackedInteger()),
                 JUMP_IF(),
                 JUMP_DESTINATION(),

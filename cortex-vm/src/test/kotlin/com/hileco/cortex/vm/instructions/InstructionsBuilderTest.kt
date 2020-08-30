@@ -6,6 +6,8 @@ import com.hileco.cortex.vm.ProgramContext
 import com.hileco.cortex.vm.ProgramRunner
 import com.hileco.cortex.vm.VirtualMachine
 import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
@@ -68,15 +70,15 @@ class InstructionsBuilderTest {
     @Test
     fun testLoop() {
         val program = Program(listOf(
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 JUMP_DESTINATION(),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 ADD(),
                 DUPLICATE(0),
                 PUSH(BackedInteger("0x0100".deserializeBytes())),
                 EQUALS(),
                 IS_ZERO(),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 JUMP_IF()
         ))
         val programContext = ProgramContext(program)

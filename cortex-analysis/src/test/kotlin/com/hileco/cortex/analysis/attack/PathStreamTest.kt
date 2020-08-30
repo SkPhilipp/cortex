@@ -5,6 +5,7 @@ import com.hileco.cortex.analysis.edges.FlowType
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramStoreZone
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
@@ -26,7 +27,7 @@ class PathStreamTest {
         val instructions = pathStream.asSequence().map { it.instruction }.toList()
         val expectedInstructions = listOf(
                 PUSH(2.toBackedInteger()),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 LOAD(ProgramStoreZone.CALL_DATA),
                 DIVIDE(),
                 PUSH(12345.toBackedInteger()),

@@ -28,7 +28,7 @@ class ExpressionBuilderTest {
         val expressionGenerator = ExpressionGenerator()
         listOf(
                 PUSH(2.toBackedInteger()),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 LOAD(CALL_DATA),
                 DIVIDE(),
                 PUSH(12345.toBackedInteger()),
@@ -48,7 +48,7 @@ class ExpressionBuilderTest {
                 { loadAddressPosition -> GreaterThan(Reference(CALL_DATA, loadAddressPosition), Value(5.toBackedInteger())) },
                 LOAD.ADDRESS.position)
         val instructions = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 LOAD(CALL_DATA),
                 PUSH(2.toBackedInteger()),
                 LOAD(CALL_DATA),

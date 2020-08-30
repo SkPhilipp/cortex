@@ -124,17 +124,17 @@ class ProgramRunnerTest {
                 PUSH(123.toBackedInteger()),
                 PUSH(10.toBackedInteger()),
                 SAVE(ProgramStoreZone.MEMORY),
-                PUSH(0.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
+                PUSH(ZERO_32),
                 PUSH(LOAD.SIZE.toBackedInteger()),
                 PUSH(10.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 PUSH(LIBRARY_ADDRESS),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 CALL()
         )
         val libraryInstructions = listOf(
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 LOAD(ProgramStoreZone.CALL_DATA)
         )
         val callerProgram = Program(callerInstructions)
@@ -161,22 +161,22 @@ class ProgramRunnerTest {
     fun runCallAndReturn() {
         val callerInstructions = listOf(
                 PUSH(LOAD.SIZE.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
+                PUSH(ZERO_32),
+                PUSH(ZERO_32),
+                PUSH(ZERO_32),
                 PUSH(LIBRARY_ADDRESS),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 CALL(),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 LOAD(ProgramStoreZone.MEMORY)
         )
         val libraryInstructions = listOf(
                 PUSH(12345.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 SAVE(ProgramStoreZone.MEMORY),
                 PUSH(LOAD.SIZE.toBackedInteger()),
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 CALL_RETURN()
         )
         val callerProgram = Program(callerInstructions)
@@ -193,7 +193,7 @@ class ProgramRunnerTest {
                 .paragraph("Example calling program:").source(callerInstructions)
                 .paragraph("Example callee program at address $LIBRARY_ADDRESS:").source(libraryInstructions)
                 .paragraph("Resulting stack:").source(callerProgramContext.stack)
-        Assert.assertEquals(1, callerProgramContext.stack.size())
+        Assert.assertEquals(2, callerProgramContext.stack.size())
         Assert.assertEquals(12345.toBackedInteger(), callerProgramContext.stack.pop())
     }
 
@@ -230,7 +230,7 @@ class ProgramRunnerTest {
     @Test
     fun runIsZero() {
         val instructions = listOf(
-                PUSH(0.toBackedInteger()),
+                PUSH(ZERO_32),
                 IS_ZERO())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/is-zero")
@@ -259,7 +259,7 @@ class ProgramRunnerTest {
     @Test
     fun runDrop() {
         val instructions = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(10.toBackedInteger()),
                 PUSH(100.toBackedInteger()),
                 DROP(2))
@@ -347,7 +347,7 @@ class ProgramRunnerTest {
 
     @Test
     fun runJumpIf() {
-        val instructions = listOf(PUSH(1.toBackedInteger()),
+        val instructions = listOf(PUSH(ONE_32),
                 PUSH(4.toBackedInteger()),
                 JUMP_IF(),
                 PUSH(100.toBackedInteger()),
@@ -395,7 +395,7 @@ class ProgramRunnerTest {
     fun runAdd() {
         val instructions = listOf(
                 PUSH(100.toBackedInteger()),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 ADD())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/add")
@@ -493,7 +493,7 @@ class ProgramRunnerTest {
     @Test
     fun runSubtract() {
         val instructions = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(100.toBackedInteger()),
                 SUBTRACT())
         val stack = this.run(instructions).stack
@@ -523,7 +523,7 @@ class ProgramRunnerTest {
     @Test
     fun runPop() {
         val instructions = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(100.toBackedInteger()),
                 POP())
         val stack = this.run(instructions).stack
@@ -538,7 +538,7 @@ class ProgramRunnerTest {
     @Test
     fun runPush() {
         val instructions = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 PUSH(10.toBackedInteger()),
                 PUSH(100.toBackedInteger()))
         val stack = this.run(instructions).stack
@@ -556,7 +556,7 @@ class ProgramRunnerTest {
     fun runSwap() {
         val instructions = listOf(
                 PUSH(100.toBackedInteger()),
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 SWAP(0, 1))
         val stack = this.run(instructions).stack
         Documentation.of("instructions/swap")
@@ -595,7 +595,7 @@ class ProgramRunnerTest {
     @Test
     fun testVariableInstructionPosition() {
         val instructions = listOf(
-                PUSH(1.toBackedInteger()),
+                PUSH(ONE_32),
                 POP(),
                 VARIABLE(INSTRUCTION_POSITION)
         )
