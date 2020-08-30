@@ -2,6 +2,7 @@ package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmMap
+import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
@@ -17,6 +18,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     val atlas: MutableMap<BackedInteger, SymbolicProgram>
     val variables: VmMap<ExecutionVariable, Expression>
     val path: LayeredVmStack<SymbolicPathEntry>
+    val transfers: VmStack<SymbolicTransfer>
     var instructionsExecuted: Int
     var exited: Boolean = false
     var exitedReason: ProgramException.Reason? = null
@@ -33,18 +35,21 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         for (programContext in programContexts) {
             programs.add(programContext)
         }
+        this.transfers = LayeredVmStack()
     }
 
     private constructor(programs: MutableList<SymbolicProgramContext>,
                         atlas: MutableMap<BackedInteger, SymbolicProgram>,
                         path: LayeredVmStack<SymbolicPathEntry>,
                         variables: VmMap<ExecutionVariable, Expression>,
+                        transfers: VmStack<SymbolicTransfer>,
                         instructionsExecuted: Int) {
         this.id = nextId.getAndIncrement()
         this.programs = programs
         this.atlas = atlas
         this.path = path
         this.variables = variables
+        this.transfers = transfers
         this.instructionsExecuted = instructionsExecuted
     }
 
@@ -65,12 +70,13 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         atlas.values.forEach { it.close() }
         variables.close()
         path.close()
+        transfers.close()
     }
 
     override fun copy(): SymbolicVirtualMachine {
         val branchPrograms = programs.map { program -> program.copy() }.toMutableList()
         val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.copy() }.toMutableMap()
-        return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.copy(), variables.copy(), instructionsExecuted)
+        return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.copy(), variables.copy(), transfers.copy(), instructionsExecuted)
     }
 
     companion object {

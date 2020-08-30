@@ -2,9 +2,7 @@ package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmMap
-import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
-import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.vm.PositionedInstruction
 import com.hileco.cortex.vm.bytes.BackedInteger
@@ -18,7 +16,6 @@ class SymbolicProgram : VmComponent<SymbolicProgram> {
     val instructionsLastPosition: Int
     val address: BackedInteger
     val storage: VmMap<BackedInteger, Expression>
-    val transfers: VmStack<Pair<Expression, Expression>>
 
     constructor(instructions: List<Instruction>,
                 address: BackedInteger = ZERO_32) {
@@ -37,7 +34,6 @@ class SymbolicProgram : VmComponent<SymbolicProgram> {
         this.instructionsLastPosition = absolutePosition
         this.address = address
         this.storage = LayeredVmMap()
-        this.transfers = LayeredVmStack()
     }
 
     private constructor(instructions: List<Instruction>,
@@ -45,23 +41,20 @@ class SymbolicProgram : VmComponent<SymbolicProgram> {
                         instructionsAbsolute: Map<Int, PositionedInstruction>,
                         instructionsLastPosition: Int,
                         address: BackedInteger,
-                        storage: VmMap<BackedInteger, Expression>,
-                        transfers: VmStack<Pair<Expression, Expression>>) {
+                        storage: VmMap<BackedInteger, Expression>) {
         this.instructions = instructions
         this.instructionsRelative = instructionsRelative
         this.instructionsAbsolute = instructionsAbsolute
         this.instructionsLastPosition = instructionsLastPosition
         this.address = address
         this.storage = storage
-        this.transfers = transfers
     }
 
     override fun close() {
         storage.close()
-        transfers.close()
     }
 
     override fun copy(): SymbolicProgram {
-        return SymbolicProgram(instructions, instructionsRelative, instructionsAbsolute, instructionsLastPosition, address, storage.copy(), transfers.copy())
+        return SymbolicProgram(instructions, instructionsRelative, instructionsAbsolute, instructionsLastPosition, address, storage.copy())
     }
 }

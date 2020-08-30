@@ -8,19 +8,23 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
+import com.hileco.cortex.symbolic.vm.SymbolicTransfer
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.ProgramException
 import com.hileco.cortex.vm.ProgramException.Reason.*
 import com.hileco.cortex.vm.ProgramRunner.Companion.STACK_LIMIT
 import com.hileco.cortex.vm.ProgramStoreZone.*
 import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
+import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
 import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
 import com.hileco.cortex.vm.instructions.bits.SHIFT_RIGHT
 import com.hileco.cortex.vm.instructions.calls.CALL
+import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
 import com.hileco.cortex.vm.instructions.conditions.EQUALS
 import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
 import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
@@ -69,6 +73,13 @@ class SymbolicInstructionRunner {
                 val right = programContext.stack.pop()
                 programContext.stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
             }
+            is BITWISE_NOT -> {
+                if (programContext.stack.size() < 1) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                val element = programContext.stack.pop()
+                programContext.stack.push(expressionOptimizer.optimize(BitwiseNot(element)))
+            }
             is SHIFT_RIGHT -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
@@ -81,31 +92,35 @@ class SymbolicInstructionRunner {
                 if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                programContext.stack.pop() // gas
+                @Suppress("UNUSED_VARIABLE") val gas = programContext.stack.pop()
                 val recipientAddress = programContext.stack.pop()
                 val valueTransferred = programContext.stack.pop()
-                val inOffset = programContext.stack.pop()
-                val inSize = programContext.stack.pop()
-                val outOffset = programContext.stack.pop()
-                val outSize = programContext.stack.pop()
-                // TODO: Support non-concrete memory transfer through CALL
-                // if (inOffset != Value(0)
-                //         || inSize != Value(0)
-                //         || outOffset != Value(0)
-                //         || outSize != Value(0)) {
-                //     throw UnsupportedOperationException("Memory transfer is not supported for symbolic execution")
-                // }
+                @Suppress("UNUSED_VARIABLE") val inOffset = programContext.stack.pop()
+                @Suppress("UNUSED_VARIABLE") val inSize = programContext.stack.pop()
+                @Suppress("UNUSED_VARIABLE") val outOffset = programContext.stack.pop()
+                @Suppress("UNUSED_VARIABLE") val outSize = programContext.stack.pop()
+                // TODO: Support non-concrete memory transfer & non-concrete targets through CALL
+                val sourceAddress = programContext.program.address
+                virtualMachine.transfers.push(SymbolicTransfer(Value(sourceAddress), recipientAddress, valueTransferred))
                 if (recipientAddress is Value) {
-                    val recipient = virtualMachine.atlas[recipientAddress.constant]
-                            ?: throw ProgramException(CALL_RECIPIENT_MISSING)
-                    val sourceAddress = programContext.program.address
-                    recipient.transfers.push(Value(sourceAddress) to valueTransferred)
+                    val recipient = virtualMachine.atlas[recipientAddress.constant] ?: throw ProgramException(CALL_RECIPIENT_MISSING)
+                    // TODO: Both transfers and symbolic path entries reference fields which are program-context specific
                     val newContext = SymbolicProgramContext(recipient)
                     virtualMachine.programs.add(newContext)
+                    throw UnsupportedOperationException("CALL between programs is not supported")
                 } else {
-                    // TODO: Support non-concrete targets
-                    println("Would have transferred to: $recipientAddress")
-                    // throw UnsupportedOperationException("Non-concrete address calling is not supported for symbolic execution")
+                    programContext.stack.push(Value(ONE_32))
+                }
+            }
+            is CALL_RETURN -> {
+                if (programContext.stack.size() < 2) {
+                    throw ProgramException(STACK_UNDERFLOW)
+                }
+                @Suppress("UNUSED_VARIABLE") val offset = programContext.stack.pop()
+                @Suppress("UNUSED_VARIABLE") val size = programContext.stack.pop()
+                virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
+                if (virtualMachine.programs.isNotEmpty()) {
+                    throw UnsupportedOperationException("CALL_RETURN between programs is not supported")
                 }
             }
             is EQUALS -> {
@@ -156,30 +171,32 @@ class SymbolicInstructionRunner {
                 if (programContext.stack.size() < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
-                val address = addressExpression.constant
+                val addressExpression = programContext.stack.pop()
+                val addressValue = addressExpression as? Value
+                        ?: throw UnsupportedOperationException("Loading non-concrete address such as $addressExpression is not supported for symbolic execution")
+                val address = addressValue.constant
                 val storage: VmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
                 }
-                val expression = storage[address] ?: Reference(instruction.programStoreZone, addressExpression)
+                val expression = storage[address] ?: Reference(instruction.programStoreZone, addressValue)
                 programContext.stack.push(expression)
             }
             is SAVE -> {
                 if (programContext.stack.size() < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                val addressExpression = programContext.stack.pop() as? Value
-                        ?: throw UnsupportedOperationException("Non-concrete address loading is not supported for symbolic execution")
+                val addressExpression = programContext.stack.pop()
+                val addressValue = addressExpression as? Value
+                        ?: throw UnsupportedOperationException("Loading non-concrete address such as $addressExpression is not supported for symbolic execution")
                 val storage: VmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")
                 }
                 val valueExpression = programContext.stack.pop()
-                storage[addressExpression.constant] = valueExpression
+                storage[addressValue.constant] = valueExpression
             }
             is EXIT -> {
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
@@ -211,7 +228,7 @@ class SymbolicInstructionRunner {
                 val conditionExpression = programContext.stack.pop()
                 if (conditionExpression !is Value) {
                     if (stepMode == NON_CONCRETE_JUMP_THROW) {
-                        throw UnsupportedOperationException("Jumps with a non-concrete conditions are not allowed")
+                        throw UnsupportedOperationException("Jumps with a non-concrete conditions are not allowed in step mode $stepMode")
                     }
                     virtualMachine.path.push(SymbolicPathEntry(programContext.instructionPosition, addressValue, stepMode == NON_CONCRETE_JUMP_TAKE, conditionExpression))
                 }
@@ -332,8 +349,13 @@ class SymbolicInstructionRunner {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.first().program.address else ZERO_32
                         programContext.stack.push(Value(address))
                     }
+                    START_TIME -> {
+                        val expression = virtualMachine.variables[START_TIME]
+                                ?: throw UnsupportedOperationException("VARIABLE START_TIME is not available")
+                        programContext.stack.push(expression)
+                    }
                     else -> {
-                        virtualMachine.variables[instruction.executionVariable]
+                        throw UnsupportedOperationException("$instruction is not available")
                     }
                 }
                 if (programContext.stack.size() > STACK_LIMIT) {
@@ -341,7 +363,7 @@ class SymbolicInstructionRunner {
                 }
             }
             else -> {
-                throw UnsupportedOperationException()
+                throw UnsupportedOperationException("$instruction is not supported")
             }
         }
     }

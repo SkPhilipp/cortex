@@ -133,8 +133,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 if (programContext.stack.size() < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
-                @Suppress("UNUSED_VARIABLE")
-                val gas = programContext.stack.pop()
+                @Suppress("UNUSED_VARIABLE") val gas = programContext.stack.pop()
                 val recipientAddress = programContext.stack.pop()
                 val valueTransferred = programContext.stack.pop()
                 val inOffset = programContext.stack.pop()

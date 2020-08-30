@@ -2,8 +2,14 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.LIMIT_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.vm.bytes.toBackedInteger
+import java.math.BigInteger
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 class ExpressionOptimizer {
     private fun optimizeAdd(unoptimizedExpression: Add): Expression {
@@ -275,6 +281,61 @@ class ExpressionOptimizer {
         }
     }
 
+    // TODO: Test
+    private fun optimizeBitwiseAnd(unoptimizedExpression: BitwiseAnd): Expression {
+        val left = optimize(unoptimizedExpression.left)
+        val right = optimize(unoptimizedExpression.right)
+        if (left is Value && right is Value) {
+            val leftArray = left.constant.getBackingArray()
+            val rightArray = right.constant.getBackingArray()
+            val result = ByteArray(32)
+            for (i in result.indices) {
+                result[i] = leftArray[i] and rightArray[i]
+            }
+            return Value(BackedInteger(result))
+        }
+        if ((left is Value && left.constant == ZERO_32) && (right is Value && right.constant == ZERO_32)) {
+            return Value(ZERO_32)
+        }
+        return BitwiseAnd(left, right)
+    }
+
+    // TODO: Test
+    private fun optimizeBitwiseOr(unoptimizedExpression: BitwiseOr): Expression {
+        val left = optimize(unoptimizedExpression.left)
+        val right = optimize(unoptimizedExpression.right)
+        if (left is Value && right is Value) {
+            val leftArray = left.constant.getBackingArray()
+            val rightArray = right.constant.getBackingArray()
+            val result = ByteArray(32)
+            for (i in result.indices) {
+                result[i] = leftArray[i] or rightArray[i]
+            }
+            return Value(BackedInteger(result))
+        }
+        if ((left is Value && left.constant == LIMIT_32) && (right is Value && right.constant == LIMIT_32)) {
+            return Value(LIMIT_32)
+        }
+        return BitwiseAnd(left, right)
+    }
+
+    // TODO: Test
+    private fun optimizeShiftRight(unoptimizedExpression: ShiftRight): Expression {
+        val left = optimize(unoptimizedExpression.left)
+        val right = optimize(unoptimizedExpression.right)
+        if (left is Value && right is Value) {
+            val times = left.constant
+            val value = right.constant
+            if (times > 256.toBackedInteger()) {
+                return Value(ZERO_32)
+            }
+            val timesInt = BigInteger(1, times.getBackingArray()).toInt()
+            val valueBigInt = BigInteger(1, value.getBackingArray()).shiftRight(timesInt)
+            return Value(BackedInteger(valueBigInt.toByteArray()))
+        }
+        return ShiftRight(left, right)
+    }
+
     fun optimize(expression: Expression): Expression {
         return when (expression) {
             is Add -> optimizeAdd(expression)
@@ -289,6 +350,9 @@ class ExpressionOptimizer {
             is IsZero -> optimizeIsZero(expression)
             is Or -> optimizeOr(expression)
             is And -> optimizeAnd(expression)
+            is BitwiseAnd -> optimizeBitwiseAnd(expression)
+            is BitwiseOr -> optimizeBitwiseOr(expression)
+            is ShiftRight -> optimizeShiftRight(expression)
             else -> expression
         }
     }

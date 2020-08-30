@@ -274,6 +274,21 @@ interface Expression {
         }
     }
 
+    data class BitwiseNot(val element: Expression) : Expression {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val elementExpr = element.asZ3Expr(context, referenceMapping)
+            return context.mkBVNot(elementExpr as BitVecExpr)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(element)
+        }
+
+        override fun toString(): String {
+            return "B!($element)"
+        }
+    }
+
     data class BitwiseAnd(val left: Expression, val right: Expression) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
@@ -324,8 +339,8 @@ interface Expression {
 
     data class Exponent(val left: Expression, val right: Expression) : Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            val leftExpr = left.asZ3Expr(context, referenceMapping)
-            val rightExpr = right.asZ3Expr(context, referenceMapping)
+            @Suppress("UNUSED_VARIABLE") val leftExpr = left.asZ3Expr(context, referenceMapping)
+            @Suppress("UNUSED_VARIABLE") val rightExpr = right.asZ3Expr(context, referenceMapping)
             // TODO: Implement
             throw IllegalStateException("Not yet available for bit-vectors")
         }

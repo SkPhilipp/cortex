@@ -85,7 +85,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
             virtualMachine.exitedReason = e.reason
             strategy.handleComplete(virtualMachine)
         } catch (e: Exception) {
-            System.err.println("Process erred: ${e.message}")
+            e.printStackTrace()
             throw e
         } finally {
             tasks.decrementAndGet()

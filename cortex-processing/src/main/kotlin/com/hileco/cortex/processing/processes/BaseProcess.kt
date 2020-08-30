@@ -13,6 +13,7 @@ abstract class BaseProcess : Runnable {
     }
 
     private fun stopThread() {
+        @Suppress("DEPRECATION")
         thread.stop()
     }
 
