@@ -262,7 +262,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkOr(leftExpr as BoolExpr, rightExpr as BoolExpr)
+            return context.mkBVOR(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -270,7 +270,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return "($left || $right)"
+            return "($left B|| $right)"
         }
     }
 
@@ -293,7 +293,7 @@ interface Expression {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val leftExpr = left.asZ3Expr(context, referenceMapping)
             val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkAnd(leftExpr as BoolExpr, rightExpr as BoolExpr)
+            return context.mkBVAND(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
@@ -301,7 +301,7 @@ interface Expression {
         }
 
         override fun toString(): String {
-            return "($left && $right)"
+            return "($left B&& $right)"
         }
     }
 

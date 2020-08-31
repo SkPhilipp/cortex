@@ -270,6 +270,7 @@ class ExpressionOptimizer {
         }
     }
 
+    // TODO: Move Or's within the Or expression out of the child Or and into the parent, before distinct mapping
     private fun optimizeOr(expression: Or): Expression {
         val distinctInputs = expression.inputs.distinct().map { optimize(it) }.filterNot(IS_EQUIVALENT_FALSE)
         val trueInputs = distinctInputs.count(IS_EQUIVALENT_TRUE)

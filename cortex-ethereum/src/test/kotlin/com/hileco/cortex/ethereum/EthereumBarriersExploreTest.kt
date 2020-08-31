@@ -1,11 +1,15 @@
 package com.hileco.cortex.ethereum
 
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
-import com.hileco.cortex.symbolic.explore.strategies.PathTreeExploreStrategy
+import com.hileco.cortex.symbolic.explore.strategies.CustomExploreStrategy
+import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
+import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import org.junit.Test
 
 class EthereumBarriersExploreTest {
@@ -16,7 +20,18 @@ class EthereumBarriersExploreTest {
         val program = SymbolicProgram(ethereumBarrier.cortexInstructions)
         val programContext = SymbolicProgramContext(program)
         val virtualMachine = SymbolicVirtualMachine(programContext)
-        val strategy = PathTreeExploreStrategy()
+        val strategy = CustomExploreStrategy()
+        strategy.withCompleteFilter { symbolicVirtualMachine -> !symbolicVirtualMachine.transfers.isEmpty() }
+        strategy.withCondition { symbolicVirtualMachine ->
+            val valueTransferConditions = symbolicVirtualMachine.transfers.asSequence()
+                    .map { symbolicTransfer ->
+                        val targetIsExplorer = Expression.Equals(symbolicTransfer.target, Expression.Value(EXPLORER_ADDRESS))
+                        val valueIsPositive = Expression.GreaterThan(symbolicTransfer.value, Expression.Value(ZERO_32))
+                        Expression.constructAnd(listOf(targetIsExplorer, valueIsPositive))
+                    }
+                    .toList()
+            Expression.constructOr(valueTransferConditions)
+        }
         val symbolicProgramExplorer = SymbolicProgramExplorer(strategy)
         symbolicProgramExplorer.explore(virtualMachine)
         val solution = strategy.solve()
@@ -108,5 +123,9 @@ class EthereumBarriersExploreTest {
     @Test
     fun testBarrierExplore016() {
         barrierExplore(ethereumBarriers.byId("016"))
+    }
+
+    companion object {
+        val EXPLORER_ADDRESS = BackedInteger("0xdeadd00d".deserializeBytes())
     }
 }

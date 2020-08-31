@@ -18,6 +18,9 @@ class PathTreeExploreStrategy : ExploreStrategy() {
     }
 
     override fun solve(): Solution {
+        if (paths.isEmpty()) {
+            return Solution()
+        }
         val pathTreeConditionBuilder = PathTreeConditionBuilder()
         val condition = pathTreeConditionBuilder.build(paths)
         val solver = Solver()
