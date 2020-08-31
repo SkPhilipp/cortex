@@ -5,6 +5,7 @@ import com.hileco.cortex.symbolic.ExpressionOptimizer
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.symbolic.expressions.Expression.False
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
@@ -22,7 +23,7 @@ class CustomExploreStrategy : ExploreStrategy() {
         if (passes) {
             val conditions = conditions.map { it(symbolicVirtualMachine) }
             val condition = Expression.constructAnd(conditions)
-            if (condition == Expression.False) {
+            if (condition == False) {
                 return
             }
             if (condition != Expression.True) {
@@ -45,7 +46,7 @@ class CustomExploreStrategy : ExploreStrategy() {
 
     override fun solve(): Solution {
         if (paths.isEmpty()) {
-            return Solution()
+            return Solution(condition = False)
         }
         val pathTreeConditionBuilder = PathTreeConditionBuilder()
         val condition = pathTreeConditionBuilder.build(paths)

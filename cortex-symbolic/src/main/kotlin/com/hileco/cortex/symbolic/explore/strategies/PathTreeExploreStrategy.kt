@@ -3,6 +3,7 @@ package com.hileco.cortex.symbolic.explore.strategies
 import com.hileco.cortex.collections.layer.StackLayer
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
+import com.hileco.cortex.symbolic.expressions.Expression.False
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.ProgramException
@@ -19,7 +20,7 @@ class PathTreeExploreStrategy : ExploreStrategy() {
 
     override fun solve(): Solution {
         if (paths.isEmpty()) {
-            return Solution()
+            return Solution(condition = False)
         }
         val pathTreeConditionBuilder = PathTreeConditionBuilder()
         val condition = pathTreeConditionBuilder.build(paths)

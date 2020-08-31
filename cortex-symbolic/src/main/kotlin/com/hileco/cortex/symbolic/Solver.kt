@@ -22,9 +22,11 @@ class Solver : ReferenceMapping {
                     { referencesBackward[it.name.toString()]!! },
                     { BackedInteger((model.getConstInterp(it) as BitVecNum).bigInteger.toByteArray()) }
             )
-            Solution(constants, status == Status.SATISFIABLE)
+            Solution(values = constants, solvable = status == Status.SATISFIABLE, condition = expression)
         } catch (e: Z3Exception) {
-            Solution(HashMap(), false)
+            // TODO: Handle Z3 exceptions
+            e.printStackTrace()
+            Solution(condition = expression)
         }
     }
 }
