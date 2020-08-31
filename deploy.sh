@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Build Documentation
-./gradlew build asciidoctor
+./gradlew clean build asciidoctor
 
 # Deploy Documentation
 ssh root@cortex-production "rm -rf /var/www/html/*"
