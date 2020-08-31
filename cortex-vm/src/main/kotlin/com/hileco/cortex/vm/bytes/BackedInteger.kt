@@ -153,14 +153,18 @@ class BackedInteger : Comparable<BackedInteger> {
     }
 
     companion object {
-        val ONE_32 = BackedInteger("0x0000000000000000000000000000000000000000000000000000000000000001".deserializeBytes())
-        val ZERO_32 = BackedInteger("0x0000000000000000000000000000000000000000000000000000000000000000".deserializeBytes())
-        val LIMIT_32 = BackedInteger("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".deserializeBytes())
+        val ONE_32 = "0x0000000000000000000000000000000000000000000000000000000000000001".toBackedInteger()
+        val ZERO_32 = "0x0000000000000000000000000000000000000000000000000000000000000000".toBackedInteger()
+        val LIMIT_32 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toBackedInteger()
 
         fun max(left: BackedInteger, right: BackedInteger): BackedInteger {
             return if (left >= right) left else right
         }
     }
+}
+
+fun String.toBackedInteger(): BackedInteger {
+    return BackedInteger(this.deserializeBytes())
 }
 
 fun Long.toBackedInteger(): BackedInteger {

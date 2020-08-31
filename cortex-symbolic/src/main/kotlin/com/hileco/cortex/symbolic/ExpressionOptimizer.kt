@@ -347,11 +347,11 @@ class ExpressionOptimizer {
 
     // TODO: Test
     private fun optimizeShiftRight(unoptimizedExpression: ShiftRight): Expression {
-        val left = optimize(unoptimizedExpression.left)
-        val right = optimize(unoptimizedExpression.right)
-        if (left is Value && right is Value) {
-            val times = left.constant
-            val value = right.constant
+        val timesExpression = optimize(unoptimizedExpression.times)
+        val valueExpression = optimize(unoptimizedExpression.value)
+        if (timesExpression is Value && valueExpression is Value) {
+            val times = timesExpression.constant
+            val value = valueExpression.constant
             if (times > 256.toBackedInteger()) {
                 return Value(ZERO_32)
             }
@@ -359,7 +359,7 @@ class ExpressionOptimizer {
             val valueBigInt = BigInteger(1, value.getBackingArray()).shiftRight(timesInt)
             return Value(BackedInteger(valueBigInt.toByteArray()))
         }
-        return ShiftRight(left, right)
+        return ShiftRight(timesExpression, valueExpression)
     }
 
     fun optimize(expression: Expression): Expression {

@@ -1,6 +1,5 @@
 package com.hileco.cortex.ethereum
 
-import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
 import com.hileco.cortex.symbolic.explore.strategies.CustomExploreStrategy
@@ -8,8 +7,8 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.vm.bytes.toBackedInteger
 import org.junit.Test
 
 class EthereumBarriersExploreTest {
@@ -126,6 +125,6 @@ class EthereumBarriersExploreTest {
     }
 
     companion object {
-        val EXPLORER_ADDRESS = BackedInteger("0xdeadd00d".deserializeBytes())
+        val EXPLORER_ADDRESS = "0xdeadd00d".toBackedInteger()
     }
 }

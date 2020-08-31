@@ -15,14 +15,14 @@ internal class BackedIntegerTest {
     fun testIntAsUInt256() {
         val result = 0xffffff.toBackedInteger()
 
-        Assert.assertEquals(BackedInteger("0xffffff".deserializeBytes()), result)
+        Assert.assertEquals("0xffffff".toBackedInteger(), result)
     }
 
     @Test
     fun testLongAsUInt256() {
         val result = 0xffffffffffff.toBackedInteger()
 
-        Assert.assertEquals(BackedInteger("0xffffffffffff".deserializeBytes()), result)
+        Assert.assertEquals("0xffffffffffff".toBackedInteger(), result)
     }
 
     @Test
@@ -34,21 +34,21 @@ internal class BackedIntegerTest {
 
     @Test
     fun testConstructorRegularValue() {
-        val backedInteger = BackedInteger("0xabcd".deserializeBytes())
+        val backedInteger = "0xabcd".toBackedInteger()
 
         Assert.assertEquals(43981, backedInteger.toInt())
     }
 
     @Test
     fun testConstructorFull() {
-        val backedInteger = BackedInteger("0x0000000000000000000000000000000000000000000000000000000000000005".deserializeBytes())
+        val backedInteger = "0x0000000000000000000000000000000000000000000000000000000000000005".toBackedInteger()
 
         Assert.assertEquals(5, backedInteger.toInt())
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun testConstructorPastLimit() {
-        BackedInteger("0xff0000000000000000000000000000000000000000000000000000000000000001".deserializeBytes())
+        "0xff0000000000000000000000000000000000000000000000000000000000000001".toBackedInteger()
     }
 
     @Test
@@ -77,7 +77,7 @@ internal class BackedIntegerTest {
 
     @Test
     fun testGet() {
-        val value = BackedInteger("0x000f111e222d333c444b555a6669777888879996aaa5bbb4ccc3ddd2eee1fff0".deserializeBytes())
+        val value = "0x000f111e222d333c444b555a6669777888879996aaa5bbb4ccc3ddd2eee1fff0".toBackedInteger()
 
         Assert.assertEquals("0x00".deserializeByte(), value[0])
         Assert.assertEquals("0xf0".deserializeByte(), value[31])
@@ -85,12 +85,12 @@ internal class BackedIntegerTest {
 
     @Test
     fun testPlusRegularValue() {
-        val valueLeft = BackedInteger("0x8888".deserializeBytes())
-        val valueRight = BackedInteger("0x7777".deserializeBytes())
+        val valueLeft = "0x8888".toBackedInteger()
+        val valueRight = "0x7777".toBackedInteger()
 
         val result = valueLeft + valueRight
 
-        Assert.assertEquals(BackedInteger("0xffff".deserializeBytes()), result)
+        Assert.assertEquals("0xffff".toBackedInteger(), result)
     }
 
     @Test
@@ -102,22 +102,22 @@ internal class BackedIntegerTest {
 
     @Test
     fun testMinusRegularValue() {
-        val valueLeft = BackedInteger("0x8888".deserializeBytes())
-        val valueRight = BackedInteger("0x7777".deserializeBytes())
+        val valueLeft = "0x8888".toBackedInteger()
+        val valueRight = "0x7777".toBackedInteger()
 
         val result = valueLeft - valueRight
 
-        Assert.assertEquals(BackedInteger("0x1111".deserializeBytes()), result)
+        Assert.assertEquals("0x1111".toBackedInteger(), result)
     }
 
     @Test
     fun testMinusSameValue() {
-        val valueLeft = BackedInteger("0x8888".deserializeBytes())
-        val valueRight = BackedInteger("0x8888".deserializeBytes())
+        val valueLeft = "0x8888".toBackedInteger()
+        val valueRight = "0x8888".toBackedInteger()
 
         val result = valueLeft - valueRight
 
-        Assert.assertEquals(BackedInteger("0x00".deserializeBytes()), result)
+        Assert.assertEquals("0x00".toBackedInteger(), result)
     }
 
     @Test
@@ -129,12 +129,12 @@ internal class BackedIntegerTest {
 
     @Test
     fun testTimesRegularValue() {
-        val leftValue = BackedInteger("0x1010".deserializeBytes())
-        val rightValue = BackedInteger("0x0f".deserializeBytes())
+        val leftValue = "0x1010".toBackedInteger()
+        val rightValue = "0x0f".toBackedInteger()
 
         val result = leftValue * rightValue
 
-        Assert.assertEquals(BackedInteger("0xf0f0".deserializeBytes()), result)
+        Assert.assertEquals("0xf0f0".toBackedInteger(), result)
     }
 
     /**
@@ -143,7 +143,7 @@ internal class BackedIntegerTest {
     @Test
     fun testTimesOverflow() {
         val leftValue = LIMIT_32
-        val rightValue = BackedInteger("0x02".deserializeBytes())
+        val rightValue = "0x02".toBackedInteger()
 
         val result = leftValue * rightValue
 
@@ -152,42 +152,42 @@ internal class BackedIntegerTest {
 
     @Test
     fun testPowRegularValue() {
-        val leftValue = BackedInteger("0x1000".deserializeBytes())
-        val rightValue = BackedInteger("0x03".deserializeBytes())
+        val leftValue = "0x1000".toBackedInteger()
+        val rightValue = "0x03".toBackedInteger()
 
         val result = leftValue.pow(rightValue)
 
-        Assert.assertEquals(BackedInteger("0x1000000000".deserializeBytes()), result)
+        Assert.assertEquals("0x1000000000".toBackedInteger(), result)
     }
 
     @Test
     fun testDivRegularValue() {
-        val leftValue = BackedInteger("0x1000".deserializeBytes())
-        val rightValue = BackedInteger("0x10".deserializeBytes())
+        val leftValue = "0x1000".toBackedInteger()
+        val rightValue = "0x10".toBackedInteger()
 
         val result = leftValue / rightValue
 
-        Assert.assertEquals(BackedInteger("0x0100".deserializeBytes()), result)
+        Assert.assertEquals("0x0100".toBackedInteger(), result)
     }
 
     @Test
     fun testDivRounding() {
-        val leftValue = BackedInteger("0x1001".deserializeBytes())
-        val rightValue = BackedInteger("0x10".deserializeBytes())
+        val leftValue = "0x1001".toBackedInteger()
+        val rightValue = "0x10".toBackedInteger()
 
         val result = leftValue / rightValue
 
-        Assert.assertEquals(BackedInteger("0x0100".deserializeBytes()), result)
+        Assert.assertEquals("0x0100".toBackedInteger(), result)
     }
 
     @Test
     fun testRemRegularValue() {
-        val leftValue = BackedInteger("0x100f".deserializeBytes())
-        val rightValue = BackedInteger("0x10".deserializeBytes())
+        val leftValue = "0x100f".toBackedInteger()
+        val rightValue = "0x10".toBackedInteger()
 
         val result = leftValue % rightValue
 
-        Assert.assertEquals(BackedInteger("0x0f".deserializeBytes()), result)
+        Assert.assertEquals("0x0f".toBackedInteger(), result)
     }
 
     @Test

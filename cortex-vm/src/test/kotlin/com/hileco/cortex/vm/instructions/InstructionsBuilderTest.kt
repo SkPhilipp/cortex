@@ -75,7 +75,7 @@ class InstructionsBuilderTest {
                 PUSH(ONE_32),
                 ADD(),
                 DUPLICATE(0),
-                PUSH(BackedInteger("0x0100".deserializeBytes())),
+                PUSH("0x0100".toBackedInteger()),
                 EQUALS(),
                 IS_ZERO(),
                 PUSH(ONE_32),

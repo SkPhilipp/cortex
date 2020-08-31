@@ -105,8 +105,8 @@ class ProgramRunnerTest {
     @Test
     fun runShiftRight() {
         val instructions = listOf(
-                PUSH(BackedInteger("d0679d340000000000000000000000008da2b876612931038a56f60010b3964b".deserializeBytes())),
-                PUSH(BackedInteger("00000000000000000000000000000000000000000000000000000000000000e0".deserializeBytes())),
+                PUSH("d0679d340000000000000000000000008da2b876612931038a56f60010b3964b".toBackedInteger()),
+                PUSH("00000000000000000000000000000000000000000000000000000000000000e0".toBackedInteger()),
                 SHIFT_RIGHT())
         val stack = this.run(instructions).stack
         Documentation.of("instructions/shift-right")
@@ -115,7 +115,7 @@ class ProgramRunnerTest {
                 .paragraph("Example program:").source(instructions)
                 .paragraph("Resulting stack:").source(stack)
         Assert.assertEquals(1, stack.size())
-        Assert.assertEquals(BackedInteger("00000000000000000000000000000000000000000000000000000000d0679d34".deserializeBytes()), stack.pop())
+        Assert.assertEquals("00000000000000000000000000000000000000000000000000000000d0679d34".toBackedInteger(), stack.pop())
     }
 
     @Test

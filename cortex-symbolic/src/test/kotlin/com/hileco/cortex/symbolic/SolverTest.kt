@@ -1,6 +1,7 @@
 package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.vm.bytes.toBackedInteger
@@ -73,5 +74,22 @@ class SolverTest {
         val solver = Solver()
         val solution = solver.solve(expressionGenerator.currentExpression)
         Assert.assertTrue(solution.solvable)
+    }
+
+    // TODO: Move this to a shift-right test case
+    @Test
+    fun testSolveGeneratedCondition() {
+        val mask = "ffffffffffffffffffffffffffffffffffffffff".toBackedInteger()
+        val generatedCondition = And(listOf(
+                Not(LessThan(Reference(CALL_DATA, Value("03e7".toBackedInteger())), Value("04".toBackedInteger()))),
+                Not(Equals(Value("ba0bba40".toBackedInteger()), ShiftRight(Value("e0".toBackedInteger()), Reference(CALL_DATA, Value(ZERO_32))))),
+                Equals(Value("d0679d34".toBackedInteger()), ShiftRight(Value("e0".toBackedInteger()), Reference(CALL_DATA, Value(ZERO_32)))),
+                IsZero(LessThan(Subtract(Reference(CALL_DATA, Value("03e7".toBackedInteger())), Value("4".toBackedInteger())), Value("40".toBackedInteger()))),
+                Equals(BitwiseAnd(Value(mask), BitwiseAnd(Value(mask), Reference(CALL_DATA, Value("04".toBackedInteger())))), Value("deadd00d".toBackedInteger())),
+                GreaterThan(Reference(CALL_DATA, Value("24".toBackedInteger())), Value(ZERO_32))
+        ))
+        val solver = Solver()
+        val solution = solver.solve(generatedCondition)
+        Assert.assertTrue("$generatedCondition must be solvable", solution.solvable)
     }
 }

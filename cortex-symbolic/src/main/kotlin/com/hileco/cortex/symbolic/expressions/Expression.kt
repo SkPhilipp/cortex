@@ -306,19 +306,19 @@ abstract class Expression {
         }
     }
 
-    data class ShiftRight(val left: Expression, val right: Expression) : Expression() {
+    data class ShiftRight(val times: Expression, val value: Expression) : Expression() {
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            val leftExpr = left.asZ3Expr(context, referenceMapping)
-            val rightExpr = right.asZ3Expr(context, referenceMapping)
-            return context.mkBVASHR(leftExpr as BitVecExpr, rightExpr as BitVecExpr)
+            val leftExpr = times.asZ3Expr(context, referenceMapping)
+            val rightExpr = value.asZ3Expr(context, referenceMapping)
+            return context.mkBVLSHR(rightExpr as BitVecExpr, leftExpr as BitVecExpr)
         }
 
         override fun subexpressions(): List<Expression> {
-            return listOf(left, right)
+            return listOf(times, value)
         }
 
         override fun toString(): String {
-            return "ShiftRight($left, $right)"
+            return "ShiftRight($times, $value)"
         }
     }
 
