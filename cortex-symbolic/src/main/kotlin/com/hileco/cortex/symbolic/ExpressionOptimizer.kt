@@ -259,8 +259,21 @@ class ExpressionOptimizer {
         }
     }
 
+    // TODO: Test
+    private fun flattenAndInputs(expression: And): List<Expression> {
+        val inputs = mutableListOf<Expression>()
+        expression.inputs.forEach {
+            if (it is And) {
+                inputs.addAll(flattenAndInputs(it))
+            } else {
+                inputs.add(it)
+            }
+        }
+        return inputs
+    }
+
     private fun optimizeAnd(expression: And): Expression {
-        val distinctInputs = expression.inputs.distinct().map { optimize(it) }.filterNot(IS_EQUIVALENT_TRUE)
+        val distinctInputs = flattenAndInputs(expression).distinct().map { optimize(it) }.filterNot(IS_EQUIVALENT_TRUE)
         val falseInputs = distinctInputs.count(IS_EQUIVALENT_FALSE)
         return when {
             falseInputs > 0 -> False
@@ -270,9 +283,21 @@ class ExpressionOptimizer {
         }
     }
 
-    // TODO: Move Or's within the Or expression out of the child Or and into the parent, before distinct mapping
+    // TODO: Test
+    private fun flattenOrInputs(expression: Or): List<Expression> {
+        val inputs = mutableListOf<Expression>()
+        expression.inputs.forEach {
+            if (it is Or) {
+                inputs.addAll(flattenOrInputs(it))
+            } else {
+                inputs.add(it)
+            }
+        }
+        return inputs
+    }
+
     private fun optimizeOr(expression: Or): Expression {
-        val distinctInputs = expression.inputs.distinct().map { optimize(it) }.filterNot(IS_EQUIVALENT_FALSE)
+        val distinctInputs = flattenOrInputs(expression).distinct().map { optimize(it) }.filterNot(IS_EQUIVALENT_FALSE)
         val trueInputs = distinctInputs.count(IS_EQUIVALENT_TRUE)
         return when {
             trueInputs > 0 -> True

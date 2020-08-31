@@ -1,6 +1,7 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
 import com.hileco.cortex.collections.layer.StackLayer
+import com.hileco.cortex.symbolic.ExpressionOptimizer
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression
@@ -14,6 +15,7 @@ class CustomExploreStrategy : ExploreStrategy() {
     private val paths = Collections.synchronizedList(arrayListOf<StackLayer<SymbolicPathEntry>>())
     private val filterCompleted: MutableList<(SymbolicVirtualMachine) -> Boolean> = mutableListOf()
     private val conditions: MutableList<(SymbolicVirtualMachine) -> Expression> = mutableListOf()
+    private val expressionOptimizer = ExpressionOptimizer()
 
     override fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine) {
         val passes = filterCompleted.any { it(symbolicVirtualMachine) }
@@ -47,7 +49,8 @@ class CustomExploreStrategy : ExploreStrategy() {
         }
         val pathTreeConditionBuilder = PathTreeConditionBuilder()
         val condition = pathTreeConditionBuilder.build(paths)
+        val optimizedCondition = expressionOptimizer.optimize(condition)
         val solver = Solver()
-        return solver.solve(condition)
+        return solver.solve(optimizedCondition)
     }
 }
