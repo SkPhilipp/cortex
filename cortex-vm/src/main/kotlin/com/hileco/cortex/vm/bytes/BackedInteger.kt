@@ -140,7 +140,9 @@ class BackedInteger : Comparable<BackedInteger> {
     }
 
     override fun equals(other: Any?): Boolean {
-        other as BackedInteger
+        if (other !is BackedInteger) {
+            return false
+        }
         return this.backingArray.contentEquals(other.backingArray)
     }
 

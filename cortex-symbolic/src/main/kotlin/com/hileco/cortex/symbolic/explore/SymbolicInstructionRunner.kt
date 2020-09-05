@@ -180,7 +180,7 @@ class SymbolicInstructionRunner {
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
                 }
-                val expression = storage[address] ?: Reference(instruction.programStoreZone, addressValue)
+                val expression = storage[address] ?: VariableExtract(instruction.programStoreZone, addressValue)
                 programContext.stack.push(expression)
             }
             is SAVE -> {
@@ -339,7 +339,7 @@ class SymbolicInstructionRunner {
                     }
                     CALL_DATA_SIZE -> {
                         // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
-                        programContext.stack.push(Reference(CALL_DATA, Value(999.toBackedInteger())))
+                        programContext.stack.push(Variable("CALL_DATA_SIZE", 256))
                     }
                     TRANSACTION_FUNDS -> {
                         // TODO: This is a quick workaround to get TRANSACTION_FUNDS to work

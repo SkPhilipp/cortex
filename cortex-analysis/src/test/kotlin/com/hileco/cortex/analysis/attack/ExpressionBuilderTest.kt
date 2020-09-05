@@ -44,8 +44,15 @@ class ExpressionBuilderTest {
     fun testStackConstraint() {
         val expressionBuilder = ExpressionBuilder()
         val constraintUsedCallDataGreaterThan5 = StackConstraint(
-                { _, _, instruction -> instruction is LOAD && instruction.programStoreZone == CALL_DATA },
-                { loadAddressPosition -> GreaterThan(Reference(CALL_DATA, loadAddressPosition), Value(5.toBackedInteger())) },
+                { _, _, instruction ->
+                    instruction is LOAD && instruction.programStoreZone == CALL_DATA
+                },
+                { loadAddressPosition ->
+                    if (loadAddressPosition is Value)
+                        GreaterThan(VariableExtract(CALL_DATA, loadAddressPosition), Value(5.toBackedInteger()))
+                    else
+                        False
+                },
                 LOAD.ADDRESS.position)
         val instructions = listOf(
                 PUSH(ONE_32),
@@ -59,8 +66,8 @@ class ExpressionBuilderTest {
                 Flow(FlowType.PROGRAM_END, 3, null)
         ), listOf(constraintUsedCallDataGreaterThan5))
         val expectedExpression = And(listOf(
-                GreaterThan(Reference(CALL_DATA, Value(ONE_32)), Value(5.toBackedInteger())),
-                GreaterThan(Reference(CALL_DATA, Value(2.toBackedInteger())), Value(5.toBackedInteger())))
+                GreaterThan(VariableExtract(CALL_DATA, Value(ONE_32)), Value(5.toBackedInteger())),
+                GreaterThan(VariableExtract(CALL_DATA, Value(2.toBackedInteger())), Value(5.toBackedInteger())))
         )
         Assert.assertEquals(expectedExpression, expression)
     }

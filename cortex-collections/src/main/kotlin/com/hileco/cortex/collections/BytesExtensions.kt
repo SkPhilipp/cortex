@@ -4,6 +4,9 @@ package com.hileco.cortex.collections
  * Converts a [String] to [ByteArray], inverse of [String.deserializeBytes].
  */
 fun String.deserializeBytes(): ByteArray {
+    if (this.length % 2 != 0) {
+        return ("0$this").deserializeBytes()
+    }
     if (this.length >= 2 && this.substring(0, 2) == "0x") {
         return this.substring(2).deserializeBytes()
     }

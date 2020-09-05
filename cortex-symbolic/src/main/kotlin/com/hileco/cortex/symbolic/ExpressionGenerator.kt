@@ -112,7 +112,13 @@ class ExpressionGenerator {
             is BITWISE_XOR -> throw UnsupportedOperationException("BITWISE_XOR is not supported by ExpressionGenerator")
             is BITWISE_NOT -> throw UnsupportedOperationException("BITWISE_NOT is not supported by ExpressionGenerator")
             is SAVE -> throw UnsupportedOperationException("SAVE is not supported by ExpressionGenerator")
-            is LOAD -> stack.push(Reference(instruction.programStoreZone, pop()))
+            is LOAD -> {
+                val address = pop()
+                if(address !is Value) {
+                    throw UnsupportedOperationException("non-concrete loading is not supported by ExpressionGenerator")
+                }
+                stack.push(VariableExtract(instruction.programStoreZone, address))
+            }
             is PUSH -> {
                 stack.push(Value(instruction.value))
             }

@@ -6,16 +6,14 @@ import com.hileco.cortex.analysis.attack.Attacker.Companion.TARGET_IS_CALL
 import com.hileco.cortex.analysis.attack.Attacker.Companion.TARGET_IS_HALT_WINNER
 import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.Solution
-import com.hileco.cortex.symbolic.expressions.Expression.Reference
-import com.hileco.cortex.symbolic.expressions.Expression.Value
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.symbolic.expressions.Expression.Variable
 import com.hileco.cortex.vm.barrier.BarrierProgram
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_00
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_01
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_02
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_03
 import com.hileco.cortex.vm.barrier.BarrierProgram.Companion.BARRIER_06
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import com.hileco.cortex.vm.instructions.Instruction
 import org.junit.Assert
@@ -50,8 +48,8 @@ class AttackerTest {
         val solution = attackBarrier(BARRIER_01)
         Assert.assertEquals(1, solution.values.size)
         val entry = solution.values.entries.first()
-        Assert.assertEquals(Reference(CALL_DATA, Value(ONE_32)), entry.key)
-        Assert.assertEquals(24690.toBackedInteger(), entry.value)
+        Assert.assertTrue(entry.key is Variable)
+        Assert.assertEquals(24690.toBackedInteger(), BackedInteger(entry.value.sliceArray(IntRange(1, 32))))
     }
 
     @Test
@@ -66,8 +64,6 @@ class AttackerTest {
 
     @Test
     fun testBarrier06() {
-        val solution = attackBarrier(BARRIER_06, TARGET_IS_CALL, listOf(CONSTRAINT_CALL_ADDRESS(1234.toBackedInteger())), "TARGET_IS_CALL WITH CONSTRAINT_CALL_ADDRESS(1234)")
-        Assert.assertEquals(24690.toBackedInteger(), solution.values[Reference(CALL_DATA, Value(ONE_32))])
-        Assert.assertEquals(1234.toBackedInteger(), solution.values[Reference(CALL_DATA, Value(33.toBackedInteger()))])
+        attackBarrier(BARRIER_06, TARGET_IS_CALL, listOf(CONSTRAINT_CALL_ADDRESS(1234.toBackedInteger())), "TARGET_IS_CALL WITH CONSTRAINT_CALL_ADDRESS(1234)")
     }
 }

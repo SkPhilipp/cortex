@@ -59,7 +59,7 @@ class ExpressionGeneratorTest {
         val builder = ExpressionGenerator()
         builder.addInstruction(PUSH(10.toBackedInteger()))
         builder.addInstruction(LOAD(CALL_DATA))
-        Assert.assertEquals(Reference(CALL_DATA, Value(10.toBackedInteger())), builder.currentExpression)
+        Assert.assertEquals(VariableExtract(CALL_DATA, Value(10.toBackedInteger())), builder.currentExpression)
     }
 
     @Test

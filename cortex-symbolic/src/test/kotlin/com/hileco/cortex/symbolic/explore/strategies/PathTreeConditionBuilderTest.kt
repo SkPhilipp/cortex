@@ -17,7 +17,7 @@ class PathTreeConditionBuilderTest {
     private val exploreConditionBuilder = PathTreeConditionBuilder()
 
     private fun testExpression(constant: Long): Expression {
-        return Expression.Equals(Expression.Reference(ProgramStoreZone.CALL_DATA, Value(constant.toBackedInteger())), Value(constant.toBackedInteger()))
+        return Expression.Equals(Expression.VariableExtract(ProgramStoreZone.CALL_DATA, Value(constant.toBackedInteger())), Value(constant.toBackedInteger()))
     }
 
     @Test

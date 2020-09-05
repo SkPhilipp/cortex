@@ -25,24 +25,56 @@ abstract class Expression {
 
     abstract fun subexpressions(): List<Expression>
 
-    data class Reference(val type: ProgramStoreZone,
-                         val address: Expression) : Expression() {
-        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
-            val reference = referenceMapping.referencesForward.computeIfAbsent(this@Reference) { unmappedReference ->
-                val key = referenceMapping.referencesForward.size.toString()
-                referenceMapping.referencesBackward[key] = unmappedReference
-                key
+    data class Variable(val name: String, val sizeBits: Int) : Expression() {
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): BitVecExpr {
+            return referenceMapping.variables.getOrPut(name) {
+                val referenceSymbol = context.mkSymbol(name)
+                referenceMapping.referencesForward[this] = name
+                referenceMapping.referencesBackward[name] = this
+                context.mkBVConst(referenceSymbol, sizeBits)
             }
-            val referenceSymbol = context.mkSymbol(reference)
-            return context.mkBVConst(referenceSymbol, BIT_VECTOR_SIZE)
         }
 
         override fun subexpressions(): List<Expression> {
-            return listOf(address)
+            return listOf()
         }
 
         override fun toString(): String {
-            return "Reference($type, $address)"
+            return "Variable($name, $sizeBits)"
+        }
+    }
+
+    /*
+        Note that Z3 bit vector extract treats indexes as such;
+
+            (declare-fun x () (_ BitVec 32))
+            (assert (= ((_ extract 31 24) x) #x12))
+            (assert (= ((_ extract 23 16) x) #x34))
+            (assert (= ((_ extract 15  8) x) #x56))
+            (assert (= ((_ extract  7  0) x) #x78))
+            (check-sat)
+            (get-model)
+
+        (model (define-fun x () (_ BitVec 32) #x12345678))
+     */
+
+    data class VariableExtract(val type: ProgramStoreZone,
+                               val offset: Value) : Expression() {
+        private val variable = Variable(type.name, BIT_VECTOR_SIZE * 10)
+        override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
+            val bitVector = variable.asZ3Expr(context, referenceMapping)
+            val offset = offset.constant.toInt() * 8
+            val start = BIT_VECTOR_SIZE * 10 - offset - 256
+            val endInclusive = BIT_VECTOR_SIZE * 10 - offset - 1
+            return context.mkExtract(endInclusive, start, bitVector)
+        }
+
+        override fun subexpressions(): List<Expression> {
+            return listOf(offset)
+        }
+
+        override fun toString(): String {
+            return "VariableExtract($type, $offset)"
         }
     }
 
