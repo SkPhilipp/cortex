@@ -8,7 +8,6 @@ contract Barrier000 {
     receiver.send(amount);
   }
 
-  function setup() public payable returns (string memory thanks) {
-    return "thanks";
+  function() external payable {
   }
 }

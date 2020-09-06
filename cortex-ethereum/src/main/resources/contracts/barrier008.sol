@@ -13,7 +13,6 @@ contract Barrier008 {
    }
   }
 
-  function setup() public payable returns (string memory thanks) {
-    return "thanks";
+  function() external payable {
   }
 }

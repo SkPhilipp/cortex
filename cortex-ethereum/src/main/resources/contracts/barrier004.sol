@@ -14,7 +14,6 @@ contract Barrier004 {
     }
   }
 
-  function setup() public payable returns (string memory thanks) {
-    return "thanks";
+  function() external payable {
   }
 }

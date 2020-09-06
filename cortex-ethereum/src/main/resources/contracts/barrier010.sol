@@ -16,7 +16,6 @@ contract Barrier010 {
     data = input;
   }
 
-  function setup() public payable returns (string memory thanks) {
-    return "thanks";
+  function() external payable {
   }
 }
