@@ -23,3 +23,6 @@ RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-b
  && rm gradle-${GRADLE_VERSION}-bin.zip
 ENV GRADLE_HOME="/opt/gradle-${GRADLE_VERSION}"
 ENV PATH=$PATH:$GRADLE_HOME/bin
+
+# Git
+RUN apk add git
