@@ -60,12 +60,12 @@ abstract class Expression {
 
     data class VariableExtract(val type: ProgramStoreZone,
                                val offset: Value) : Expression() {
-        private val variable = Variable(type.name, BIT_VECTOR_SIZE * 10)
+        private val variable = Variable(type.name, BIT_VECTOR_SIZE * 5)
         override fun asZ3Expr(context: Context, referenceMapping: ReferenceMapping): Expr {
             val bitVector = variable.asZ3Expr(context, referenceMapping)
             val offset = offset.constant.toInt() * 8
-            val start = BIT_VECTOR_SIZE * 10 - offset - 256
-            val endInclusive = BIT_VECTOR_SIZE * 10 - offset - 1
+            val start = BIT_VECTOR_SIZE * 5 - offset - 256
+            val endInclusive = BIT_VECTOR_SIZE * 5 - offset - 1
             return context.mkExtract(endInclusive, start, bitVector)
         }
 
