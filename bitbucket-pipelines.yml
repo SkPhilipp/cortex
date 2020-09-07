@@ -1,0 +1,13 @@
+image:
+  name: minesec/cortex-build:latest
+  username: $DOCKER_HUB_USERNAME
+  password: $DOCKER_HUB_PASSWORD
+  email: $DOCKER_HUB_EMAIL
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - gradle
+        script:
+          - gradle --version
