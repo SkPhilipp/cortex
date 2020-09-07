@@ -16,8 +16,8 @@ class EthereumTranspilerTest {
 
     @Test
     fun test() {
-        val bytecode = SolidityCompilerTest.TEST_COMPILER.compile("barrier000.sol")
-        val ethereumInstructions = ethereumParser.parse(bytecode)
+        val bytecode = ethereumBarriers.byId("000").contractCode
+        val ethereumInstructions = ethereumParser.parse(bytecode.deserializeBytes())
         val instructions = ethereumTranspiler.transpile(ethereumInstructions)
 
         Documentation.of(EthereumTranspiler::class.java.simpleName)

@@ -2,16 +2,18 @@ package com.hileco.cortex.ethereum
 
 import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.ethereum.SolidityCompilerTest.Companion.TEST_COMPILER
 import org.junit.Assert
 import org.junit.Test
 
 class EthereumParserTest {
+
+    private val ethereumBarriers = EthereumBarriers()
+
     @Test
     fun parse() {
-        val bytecode = TEST_COMPILER.compile("barrier000.sol")
+        val bytecode = ethereumBarriers.byId("000").contractCode
         val ethereumParser = EthereumParser()
-        val instructions = ethereumParser.parse(bytecode)
+        val instructions = ethereumParser.parse(bytecode.deserializeBytes())
 
         Documentation.of(EthereumParser::class.java.simpleName)
                 .headingParagraph(EthereumParser::class.java.simpleName)

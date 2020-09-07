@@ -10,4 +10,4 @@ pipelines:
         caches:
           - gradle
         script:
-          - gradle --version
+          - gradle clean build
