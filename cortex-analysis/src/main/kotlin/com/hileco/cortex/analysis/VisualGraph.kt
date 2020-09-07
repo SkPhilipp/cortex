@@ -1,57 +1,35 @@
 package com.hileco.cortex.analysis
 
 import com.hileco.cortex.analysis.edges.FlowMapping
-import guru.nidi.graphviz.attribute.Color
-import guru.nidi.graphviz.attribute.RankDir
-import guru.nidi.graphviz.attribute.Records
-import guru.nidi.graphviz.attribute.Records.rec
-import guru.nidi.graphviz.engine.Format
-import guru.nidi.graphviz.engine.Graphviz
-import guru.nidi.graphviz.model.Compass
-import guru.nidi.graphviz.model.Factory.*
-import guru.nidi.graphviz.model.Link
-import guru.nidi.graphviz.model.Link.between
-import guru.nidi.graphviz.model.Node
-import java.io.FilterOutputStream
-import java.io.IOException
 import java.io.OutputStream
 import java.util.*
 
 class VisualGraph {
-    private val vizNodeMapping: MutableMap<Int, Node> = HashMap()
-    private var vizGraph: guru.nidi.graphviz.model.Graph = graph().directed().graphAttr().with(RankDir.LEFT_TO_RIGHT)
+    private val blocks: MutableMap<Int, String> = HashMap()
+    private val jumpMapping: MutableMap<Int, MutableList<Int>> = HashMap()
 
     private fun map(graphBlock: GraphBlock) {
         val records = ArrayList<String>()
         val positions = ArrayList<Int>()
         for (graphNode in graphBlock.graphNodes) {
             positions.add(graphNode.position)
-            records.add(rec(graphNode.position.toString(), "${graphNode.position}: ${graphNode.instruction}"))
+            records.add("${graphNode.position}: ${graphNode.instruction}")
         }
-        val node = node("${positions.first()}")
-                .with(Records.of(*records.toTypedArray()))
-                .with(Color.WHITE.fill())
-        positions.forEach { position -> vizNodeMapping[position] = node }
-        vizGraph = vizGraph.with(node)
+        val first = positions.first()
+        blocks[first] = records.joinToString(separator = "\n")
     }
 
     private fun map(flowMapping: FlowMapping) {
-        val nodeMapping = HashMap<Node, ArrayList<Link>>()
         flowMapping.flowsFromSource.forEach { (source, flows) ->
             if (source != null) {
-                val sourceVizNode = vizNodeMapping[source]!!
                 flows.forEach { flow ->
                     if (flow.target != null && flow.type.jumps) {
-                        val vizLinkSources = nodeMapping.computeIfAbsent(sourceVizNode) { ArrayList() }
-                        val targetVizNode = vizNodeMapping[flow.target]
-                        if (targetVizNode != null) {
-                            vizLinkSources.add(between(port("$source"), targetVizNode.port(flow.target.toString(), Compass.WEST)))
-                        }
+                        val list = jumpMapping.getOrPut(source) { mutableListOf() }
+                        list.add(flow.target)
                     }
                 }
             }
         }
-        nodeMapping.forEach { (node, links) -> vizGraph = vizGraph.with(node.link(*links.toTypedArray())) }
     }
 
     fun map(graph: Graph) {
@@ -62,12 +40,13 @@ class VisualGraph {
     }
 
     fun render(outputStream: OutputStream) {
-        val graphViz = Graphviz.fromGraph(vizGraph)
-        val closeProtectedStream = object : FilterOutputStream(outputStream) {
-            @Throws(IOException::class)
-            override fun close() {
-            }
+        val writer = outputStream.writer()
+        blocks.entries.sortedBy { it.key }.forEach { (address, block) ->
+            writer.write("@$address\n$block\n\n")
         }
-        graphViz.render(Format.SVG).toOutputStream(closeProtectedStream)
+        jumpMapping.entries.sortedBy { it.key }.forEach { (source, targets) ->
+            val targetsText = targets.sorted().joinToString { "@$it" }
+            writer.write("@$source --> $targetsText\n")
+        }
     }
 }
