@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 apt update
-apt -y install unzip gcc nginx
+apt -y install nginx
 
 # User Management
 useradd -m --shell /bin/bash cortex
