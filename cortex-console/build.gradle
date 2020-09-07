@@ -3,6 +3,9 @@ plugins {
 }
 
 repositories {
+    flatDir {
+        dirs '../cortex-symbolic/lib'
+    }
     mavenLocal()
     mavenCentral()
 }

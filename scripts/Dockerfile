@@ -1,7 +1,7 @@
 FROM openjdk:13-jdk-alpine
 
 # Z3
-ENV Z3_VERSION "4.7.1"
+ENV Z3_VERSION "4.8.8"
 RUN apk add g++ make apache-ant binutils python \
  && Z3_DIR="$(mktemp -d)" \
  && cd "$Z3_DIR" \

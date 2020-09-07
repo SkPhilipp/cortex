@@ -4,6 +4,9 @@ plugins {
 }
 
 repositories {
+    flatDir {
+        dirs './lib'
+    }
     mavenLocal()
     mavenCentral()
 }
@@ -12,7 +15,7 @@ dependencies {
     compile project(':cortex-collections')
     compile project(':cortex-vm')
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.50'
-    compile 'com.microsoft.z3:z3:4.8.8'
+    compile ':z3-4.8.8'
     testCompile project(':cortex-documentation')
     testCompile 'junit:junit:4.12'
 }
