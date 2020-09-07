@@ -24,4 +24,4 @@ Install Microsoft Z3 on your machine:
 
 ## Production Setup
 
-See [install.sh](./install.sh).
+See [install.sh](scripts/install.sh).
