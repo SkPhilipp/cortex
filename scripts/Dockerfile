@@ -14,6 +14,8 @@ RUN apk add g++ make apache-ant binutils python \
  && rm -rf "$Z3_DIR" \
  && apk del python binutils apache-ant make g++
 
+RUN apk add libstdc++
+
 # Gradle
 ENV GRADLE_VERSION "6.5.1"
 RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -O gradle-${GRADLE_VERSION}-bin.zip \
