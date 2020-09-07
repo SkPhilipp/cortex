@@ -26,3 +26,6 @@ ENV PATH=$PATH:$GRADLE_HOME/bin
 
 # Git
 RUN apk add git
+
+# SSH, SCP
+RUN apk add openssh-client
