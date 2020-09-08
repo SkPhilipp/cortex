@@ -1,0 +1,14 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: minesec/cortex-build:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          gradle clean build asciidoctor
