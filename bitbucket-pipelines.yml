@@ -1,14 +1,30 @@
-image:
-  name: minesec/cortex-build:latest
-  username: $DOCKER_HUB_USERNAME
-  password: $DOCKER_HUB_PASSWORD
-  email: $DOCKER_HUB_EMAIL
-
 pipelines:
   default:
     - step:
+        image:
+          name: minesec/cortex-build:latest
+          username: $DOCKER_HUB_USERNAME
+          password: $DOCKER_HUB_PASSWORD
+          email: $DOCKER_HUB_EMAIL
         caches:
           - gradle
         script:
           - gradle clean build asciidoctor
-          - ./scripts/deploy.sh
+          - ssh root@$CORTEX_DOCUMENTATION "rm -rf /var/www/html/*"
+          - scp -r cortex-vm/build/asciidoc/html5/* root@$CORTEX_DOCUMENTATION:/var/www/html
+          - scp -r cortex-fuzzing/build/asciidoc/html5/* root@$CORTEX_DOCUMENTATION:/var/www/html
+          - scp -r cortex-symbolic/build/asciidoc/html5/* root@$CORTEX_DOCUMENTATION:/var/www/html
+          - scp -r cortex-analysis/build/asciidoc/html5/* root@$CORTEX_DOCUMENTATION:/var/www/html
+          - scp -r cortex-ethereum/build/asciidoc/html5/* root@$CORTEX_DOCUMENTATION:/var/www/html
+          - scp -r cortex-documentation/build/asciidoc/html5/* root@$CORTEX_DOCUMENTATION:/var/www/html
+  custom:
+    build-image:
+      - step:
+          caches:
+            - docker
+          script:
+            - docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+            - docker build . -t minesec/cortex-build:latest
+            - docker push minesec/cortex-build:latest
+          services:
+            - docker

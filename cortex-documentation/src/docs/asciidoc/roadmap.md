@@ -1,6 +1,5 @@
 :doctype: book
 :icons: font
-:source-highlighter: highlightjs
 :snippets: ../../../build/generated-snippets
 :nofooter:
 

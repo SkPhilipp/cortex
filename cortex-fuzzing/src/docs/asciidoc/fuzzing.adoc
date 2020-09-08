@@ -1,6 +1,5 @@
 :doctype: book
 :icons: font
-:source-highlighter: highlightjs
 :sectnums:
 :toc: left
 :toclevels: 4
