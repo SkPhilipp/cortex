@@ -29,3 +29,6 @@ RUN apk add git
 
 # SSH, SCP
 RUN apk add openssh-client
+
+# Tar
+RUN apk --update add tar
