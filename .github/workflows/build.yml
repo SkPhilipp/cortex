@@ -6,7 +6,9 @@ on:
 
 jobs:
   build:
-    runs-on: minesec/cortex-build:latest
+    runs-on: ubuntu-latest
+    container:
+      image: minesec/cortex-build:latest
     steps:
       - uses: actions/checkout@v2
       - name: Build
