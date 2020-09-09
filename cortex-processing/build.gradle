@@ -7,7 +7,6 @@ repositories {
     flatDir {
         dirs '../cortex-symbolic/lib'
     }
-    maven { url "https://kotlin.bintray.com/kotlinx" }
     mavenLocal()
     mavenCentral()
 }
@@ -21,10 +20,6 @@ dependencies {
     compile 'com.github.ajalt.clikt:clikt:3.0.1'
     testCompile project(':cortex-documentation')
     testCompile 'junit:junit:4.12'
-}
-
-asciidoctor {
-    dependsOn test
 }
 
 tasks.withType(Test) {
