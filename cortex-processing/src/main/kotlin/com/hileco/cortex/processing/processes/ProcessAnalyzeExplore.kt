@@ -1,8 +1,8 @@
 package com.hileco.cortex.processing.processes
 
+import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.ethereum.EthereumParser
 import com.hileco.cortex.ethereum.EthereumTranspiler
-import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.processing.database.AnalysisReportModel
 import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
@@ -11,7 +11,7 @@ import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 
-class ProgramAnalysisProcess : BaseProcess() {
+class ProcessAnalyzeExplore {
     private val modelClient = ModelClient()
     private val ethereumParser = EthereumParser()
     private val ethereumTranspiler = EthereumTranspiler()
@@ -22,8 +22,7 @@ class ProgramAnalysisProcess : BaseProcess() {
         SOLVED
     }
 
-    @Suppress("UNUSED_VALUE")
-    override fun run() {
+    fun run() {
         val networkModel = modelClient.networkProcessing() ?: return
         val programModel = modelClient.programLeastRecentUnanalyzed(networkModel) ?: return
         var stage = AnalysisStage.EXPLORING
@@ -54,6 +53,7 @@ class ProgramAnalysisProcess : BaseProcess() {
                     errorCause = e.message
             )
         }
+        Logger.logger.log(programModel, "Analysis complete: $report")
         programModel.analyses.add(report)
         modelClient.programUpdate(programModel)
     }

@@ -74,6 +74,16 @@ class ModelClient {
         )
     }
 
+    fun program(network: NetworkModel, programAddress: String): ProgramModel? {
+        return databaseClient.programs().find(
+                Document(mapOf(
+                        "location.blockchainName" to network.name,
+                        "location.blockchainNetwork" to network.network,
+                        "location.programAddress" to programAddress
+                )))
+                .firstOrNull()
+    }
+
     fun programLeastRecentUnanalyzed(model: NetworkModel): ProgramModel? {
         return databaseClient.programs().find(
                 Document(mapOf(

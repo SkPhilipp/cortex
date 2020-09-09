@@ -5,15 +5,15 @@ import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.processing.geth.GethLoader
+import com.hileco.cortex.processing.processes.Logger.Companion.logger
 import java.math.BigDecimal
 
-class BarrierSetupProcess : BaseProcess() {
+class ProcessDeployBarriers {
     private val modelClient = ModelClient()
     private val gethLoader = GethLoader()
     private val ethereumBarriers = EthereumBarriers()
-    private var allocated = false
 
-    override fun run() {
+    fun run() {
         val networkModel = modelClient.networkProcessing() ?: return
         if (networkModel.name != LOCAL_NETWORK_NAME && networkModel.network != LOCAL_NETWORK) {
             return
@@ -29,25 +29,23 @@ class BarrierSetupProcess : BaseProcess() {
         }
         ethereumBarriers.all().forEach { ethereumBarrier ->
             val result = gethLoader.executeGeth("setup-barrier-deploy.js", networkModel.networkAddress, ethereumBarrier.contractSetupCode)
-            println("Barrier Program Deploy ${ethereumBarrier.id}: $result")
+            logger.log(networkModel, "Deployment of ${ethereumBarrier.id}: $result")
         }
     }
 
     private fun barriersAllocateBalance(networkModel: NetworkModel) {
-        if (!allocated) {
-            val ethereumBarrierPrograms = ethereumBarriers.all()
-            var programs = listOf<ProgramModel>()
-            while (programs.size < ethereumBarrierPrograms.size) {
-                programs = modelClient.programs(0, ethereumBarrierPrograms.size).toList()
-                Thread.sleep(1000)
+        val ethereumBarrierPrograms = ethereumBarriers.all()
+        var programs = listOf<ProgramModel>()
+        while (programs.size < ethereumBarrierPrograms.size) {
+            programs = modelClient.programs(0, ethereumBarrierPrograms.size).toList()
+            logger.log(networkModel, "Not allocating until barriers are loaded")
+            Thread.sleep(1000)
+        }
+        programs.forEach { programModel ->
+            if (programModel.balance == BigDecimal.ZERO) {
+                val result = gethLoader.executeGeth("setup-barrier-balance.js", networkModel.networkAddress, programModel.location.programAddress)
+                logger.log(programModel, "Allocated balance: $result")
             }
-            programs.forEach { programModel ->
-                if (programModel.balance == BigDecimal.ZERO) {
-                    val result = gethLoader.executeGeth("setup-barrier-balance.js", networkModel.networkAddress, programModel.location.programAddress)
-                    println("Program Allocate ${programModel.location.programAddress}: $result")
-                }
-            }
-            allocated = true
         }
     }
 
