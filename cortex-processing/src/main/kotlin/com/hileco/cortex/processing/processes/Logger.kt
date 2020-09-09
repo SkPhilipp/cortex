@@ -4,6 +4,10 @@ import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.processing.database.ProgramModel
 
 class Logger {
+    fun log(text: String) {
+        println("[---:---] $text")
+    }
+
     fun log(networkModel: NetworkModel, text: String) {
         println("[${networkModel.name}:${networkModel.network}] $text")
     }

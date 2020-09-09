@@ -34,8 +34,10 @@ class ProcessAnalyzeExplore {
             val symbolicVirtualMachine = SymbolicVirtualMachine(symbolicProgramContext)
             val exploreStrategy = PathTreeExploreStrategy()
             val symbolicProgramExplorer = SymbolicProgramExplorer(exploreStrategy)
+            @Suppress("UNUSED_VALUE")
             stage = AnalysisStage.EXPLORING
             symbolicProgramExplorer.explore(symbolicVirtualMachine)
+            @Suppress("UNUSED_VALUE")
             stage = AnalysisStage.SOLVING
             val solution = exploreStrategy.solve()
             stage = AnalysisStage.SOLVED

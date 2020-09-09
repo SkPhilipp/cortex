@@ -1,5 +1,6 @@
 package com.hileco.cortex.processing.database
 
+import com.hileco.cortex.processing.processes.Logger
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClients
@@ -37,31 +38,6 @@ class DatabaseClient {
                 .build()
         val client = MongoClients.create(settings)
         database = client.getDatabase(DATABASE_NAME)
-        listOf("network", "program", "transaction").minus(database.listCollectionNames()).forEach {
-            database.createCollection(it)
-        }
-        networks().createIndex(Document(mapOf(
-                "name" to 1,
-                "network" to 1
-        )))
-        networks().createIndex(Document(mapOf(
-                "processing" to 1
-        )))
-        programs().createIndex(Document(mapOf(
-                "location.blockchainName" to 1,
-                "location.blockchainNetwork" to 1,
-                "location.blockNumber" to 1,
-                "location.transactionHash" to 1
-        )))
-        programs().createIndex(Document(mapOf(
-                "location.blockchainName" to 1,
-                "location.blockchainNetwork" to 1,
-                "location.blockNumber" to 1,
-                "analyses" to 1
-        )))
-        programs().createIndex(Document(mapOf(
-                "histogram" to 1
-        )))
     }
 
     fun networks(): MongoCollection<NetworkModel> {
@@ -80,9 +56,44 @@ class DatabaseClient {
         return BsonDocumentWrapper.asBsonDocument(any, database.codecRegistry)
     }
 
+    fun setup() {
+        Logger.logger.log("Creating collections")
+        listOf("network", "program", "transaction").minus(database.listCollectionNames()).forEach {
+            Logger.logger.log("Creating collection $it")
+            database.createCollection(it)
+        }
+        Logger.logger.log("Creating network index")
+        networks().createIndex(Document(mapOf(
+                "name" to 1,
+                "network" to 1
+        )))
+        Logger.logger.log("Creating network index")
+        networks().createIndex(Document(mapOf(
+                "processing" to 1
+        )))
+        Logger.logger.log("Creating programs index")
+        programs().createIndex(Document(mapOf(
+                "location.blockchainName" to 1,
+                "location.blockchainNetwork" to 1,
+                "location.blockNumber" to 1,
+                "location.transactionHash" to 1
+        )))
+        Logger.logger.log("Creating programs index")
+        programs().createIndex(Document(mapOf(
+                "location.blockchainName" to 1,
+                "location.blockchainNetwork" to 1,
+                "location.blockNumber" to 1,
+                "analyses" to 1
+        )))
+        Logger.logger.log("Creating programs index")
+        programs().createIndex(Document(mapOf(
+                "histogram" to 1
+        )))
+    }
+
     companion object {
         private val USERNAME = System.getProperty("CORTEX_DB_USERNAME", "pepe")
-        private val PASSWORD = System.getProperty("CORTEX_DB_PASSWORD", "VZFtAMMIY7hKOfro")
+        private val PASSWORD = System.getProperty("CORTEX_DB_PASSWORD", "pZKUxMw7QoBSomCpppePeTheFroggo")
         private val HOST = System.getProperty("CORTEX_DB_HOST", "cortex-000.zules.mongodb.net")
         private val DATABASE_NAME = System.getProperty("CORTEX_DB_NAME", "cortex")
     }

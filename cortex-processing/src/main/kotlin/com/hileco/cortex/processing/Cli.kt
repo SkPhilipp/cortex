@@ -6,13 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
-import com.hileco.cortex.processing.database.ModelClient
-import com.hileco.cortex.processing.database.NetworkModel
-import com.hileco.cortex.processing.processes.ProcessAnalyzeExplore
-import com.hileco.cortex.processing.processes.ProcessDeployBarriers
-import com.hileco.cortex.processing.processes.ProcessReport
-import com.hileco.cortex.processing.processes.ProcessSearch
-import java.math.BigDecimal
+import com.hileco.cortex.processing.processes.*
 
 class MainCommand : CliktCommand(help = "CORTEX MAIN CONSOLE") {
     override fun run() {
@@ -49,20 +43,18 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
     }
 }
 
+class SetupCommand : CliktCommand(name = "setup", help = "Initializes the local network") {
+    override fun run() {
+        ProcessSetup().run()
+    }
+}
+
 fun main(argv: Array<String>) {
-    val modelClient = ModelClient()
-    modelClient.networkEnsure(NetworkModel(
-            name = ProcessDeployBarriers.LOCAL_NETWORK_NAME,
-            network = ProcessDeployBarriers.LOCAL_NETWORK,
-            networkAddress = "localhost",
-            latestBlock = BigDecimal(0),
-            scanningBlock = BigDecimal(0),
-            processing = true
-    ))
     MainCommand().subcommands(
             SearchCommand(),
             AnalyzeExploreCommand(),
             ReportCommand(),
-            DeployBarriersCommand()
+            DeployBarriersCommand(),
+            SetupCommand()
     ).main(argv)
 }
