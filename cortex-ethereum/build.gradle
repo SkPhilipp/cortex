@@ -14,11 +14,11 @@ repositories {
 dependencies {
     compile project(':cortex-collections')
     compile project(':cortex-vm')
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.72'
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1'
-    testCompile project(':cortex-analysis')
-    testCompile project(':cortex-documentation')
-    testCompile 'junit:junit:4.12'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.3.72'
+    testImplementation project(':cortex-analysis')
+    testImplementation project(':cortex-documentation')
+    testImplementation 'junit:junit:4.12'
 }
 
 asciidoctor {

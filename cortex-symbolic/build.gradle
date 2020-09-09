@@ -14,10 +14,10 @@ repositories {
 dependencies {
     compile project(':cortex-collections')
     compile project(':cortex-vm')
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.72'
     compile ':z3-4.8.8'
-    testCompile project(':cortex-documentation')
-    testCompile 'junit:junit:4.12'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.3.72'
+    testImplementation project(':cortex-documentation')
+    testImplementation 'junit:junit:4.12'
 }
 
 asciidoctor {

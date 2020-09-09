@@ -16,10 +16,9 @@ dependencies {
     compile project(':cortex-vm')
     compile project(':cortex-symbolic')
     compile project(':cortex-fuzzing')
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.72'
-    compile 'org.slf4j:slf4j-simple:1.7.25'
-    testCompile project(':cortex-documentation')
-    testCompile 'junit:junit:4.12'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.3.72'
+    testImplementation project(':cortex-documentation')
+    testImplementation 'junit:junit:4.12'
 }
 
 tasks.withType(Test) {

@@ -19,9 +19,15 @@ class AnalyzeExploreCommand : CliktCommand(name = "analyze", help = "Analyze the
     }
 }
 
-class DeployBarriersCommand : CliktCommand(name = "deploy-barriers", help = "Deploys barrier programs") {
+class BarriersAllocateCommand : CliktCommand(name = "barriers-allocate", help = "Assigns a balance to barrier programs") {
     override fun run() {
-        ProcessDeployBarriers().run()
+        ProcessBarriersAllocate().run()
+    }
+}
+
+class BarriersDeployCommand : CliktCommand(name = "barriers-deploy", help = "Deploys barrier programs") {
+    override fun run() {
+        ProcessBarriersDeploy().run()
     }
 }
 
@@ -33,10 +39,17 @@ class ReportCommand : CliktCommand(name = "report", help = "Print the analysis r
     }
 }
 
+class ResetCommand : CliktCommand(name = "reset", help = "Removes all database state & performs database setup") {
+    override fun run() {
+        ProcessReset().run()
+        ProcessSetup().run()
+    }
+}
+
 class SearchCommand : CliktCommand(name = "search", help = "Searches the active blockchain for programs") {
-    private val start: Int by option(help = "Starting block").int().default(0)
-    private val limit: Int by option(help = "Limit of blocks to inspect forwards (positive) or backwards (negative) from the starting block").int().default(-1000)
-    private val margin: Int by option(help = "Distance to keep from the most recent block").int().default(20)
+    private val start: Int by argument(help = "Starting block").int()
+    private val limit: Int by option(help = "Limit of blocks to inspect forwards (positive) or backwards (negative) from the starting block").int().default(100)
+    private val margin: Int by option(help = "Distance to keep from the most recent block").int().default(10)
 
     override fun run() {
         ProcessSearch().run(start, limit, margin)
@@ -54,7 +67,9 @@ fun main(argv: Array<String>) {
             SearchCommand(),
             AnalyzeExploreCommand(),
             ReportCommand(),
-            DeployBarriersCommand(),
-            SetupCommand()
+            BarriersDeployCommand(),
+            BarriersAllocateCommand(),
+            SetupCommand(),
+            ResetCommand()
     ).main(argv)
 }

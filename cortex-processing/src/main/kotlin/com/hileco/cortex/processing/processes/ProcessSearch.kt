@@ -21,11 +21,12 @@ class ProcessSearch {
             blockNumberMargin: Int) {
         val networkModel = modelClient.networkProcessing() ?: return
         val gethBlockchainState = gethBlockchainLoader.load(networkModel)
-        logger.log(networkModel, "latest block is $gethBlockchainState.latestBlock")
+        logger.log(networkModel, "latest block is ${gethBlockchainState.latestBlock}")
         modelClient.networkUpdateLatestBlock(networkModel, gethBlockchainState.latestBlock)
         val latestBlock = gethBlockchainState.latestBlock
         val effectiveStart = blockNumberStart.coerceAtMost(latestBlock.toInt() - blockNumberMargin)
         val effectiveEnd = (blockNumberStart + blockNumberLimit).coerceAtMost(latestBlock.toInt() - blockNumberMargin)
+        logger.log(networkModel, "searching $effectiveStart through $effectiveEnd")
         val contracts = gethContractLoader.load(networkModel, effectiveStart, effectiveEnd)
         contracts.forEach { contract ->
             val histogram = programHistogramBuilder.histogram(contract.bytecode)

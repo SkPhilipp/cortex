@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+java -jar ./cortex-processing/build/libs/cortex-processing.jar $@

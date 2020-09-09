@@ -10,8 +10,8 @@ class ProcessSetup {
         ModelClient.databaseClient.setup()
         val modelClient = ModelClient()
         val networkModel = NetworkModel(
-                name = ProcessDeployBarriers.LOCAL_NETWORK_NAME,
-                network = ProcessDeployBarriers.LOCAL_NETWORK,
+                name = ProcessBarriersDeploy.LOCAL_NETWORK_NAME,
+                network = ProcessBarriersDeploy.LOCAL_NETWORK,
                 networkAddress = "localhost",
                 latestBlock = BigDecimal(0),
                 scanningBlock = BigDecimal(0),

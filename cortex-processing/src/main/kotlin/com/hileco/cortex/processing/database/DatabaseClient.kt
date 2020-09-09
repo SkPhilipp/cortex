@@ -14,14 +14,13 @@ import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
 import org.bson.codecs.configuration.CodecRegistry
 import org.bson.codecs.pojo.PojoCodecProvider
-import org.slf4j.impl.SimpleLogger
 
 
 class DatabaseClient {
     private val database: MongoDatabase
 
     init {
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "WARN")
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "WARN")
         val codecRegistry: CodecRegistry = CodecRegistries.fromRegistries(
                 CodecRegistries.fromCodecs(BigDecimalCodec()),
                 MongoClientSettings.getDefaultCodecRegistry(),
@@ -56,6 +55,16 @@ class DatabaseClient {
         return BsonDocumentWrapper.asBsonDocument(any, database.codecRegistry)
     }
 
+    fun reset() {
+        Logger.logger.log("Clearing all collections in 5 seconds")
+        Thread.sleep(5000)
+        Logger.logger.log("Clearing all networks")
+        networks().deleteMany(Document())
+        Logger.logger.log("Clearing all programs")
+        programs().deleteMany(Document())
+        Logger.logger.log("Clearing all transactions")
+        transactions().deleteMany(Document())
+    }
     fun setup() {
         Logger.logger.log("Creating collections")
         listOf("network", "program", "transaction").minus(database.listCollectionNames()).forEach {
