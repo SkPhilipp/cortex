@@ -10,7 +10,6 @@ import com.hileco.cortex.vm.instructions.stack.DUPLICATE
 import com.hileco.cortex.vm.instructions.stack.SWAP
 import java.util.*
 
-
 class ParameterProcessor : Processor {
     override fun process(graph: Graph) {
         graph.edgeMapping.removeAll(EdgeParameterConsumer::class.java)
@@ -52,6 +51,7 @@ class ParameterProcessor : Processor {
                             stack.pop()
                         }
                     }
+                    // TODO: Verify that this is correct for SWAP
                     if (instruction.stackAdds.isNotEmpty()) {
                         stack.push(graphNode)
                     }

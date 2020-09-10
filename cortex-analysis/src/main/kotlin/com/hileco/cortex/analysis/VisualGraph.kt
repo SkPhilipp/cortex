@@ -5,18 +5,14 @@ import java.io.OutputStream
 import java.util.*
 
 class VisualGraph {
+    private val visualGraphPrettifier = VisualGraphPrettifier()
     private val blocks: MutableMap<Int, String> = HashMap()
     private val jumpMapping: MutableMap<Int, MutableList<Int>> = HashMap()
 
     private fun map(graphBlock: GraphBlock) {
-        val records = ArrayList<String>()
-        val positions = ArrayList<Int>()
-        for (graphNode in graphBlock.graphNodes) {
-            positions.add(graphNode.position)
-            records.add("${graphNode.position}: ${graphNode.instruction}")
-        }
-        val first = positions.first()
-        blocks[first] = records.joinToString(separator = "\n")
+        val first = graphBlock.graphNodes.first().position
+        val instructions = graphBlock.graphNodes.map { it.instruction }
+        blocks[first] = visualGraphPrettifier.prettify(instructions).joinToString(separator = "\n")
     }
 
     private fun map(flowMapping: FlowMapping) {
