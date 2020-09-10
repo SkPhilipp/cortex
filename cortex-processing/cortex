@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export JAR=$(echo "$(dirname $0)/build/libs/cortex-processing.jar" | sed -e "s/^\/c//")
+java -jar $JAR $@

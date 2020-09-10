@@ -48,5 +48,6 @@ class VisualGraph {
             val targetsText = targets.sorted().joinToString { "@$it" }
             writer.write("@$source --> $targetsText\n")
         }
+        writer.flush()
     }
 }

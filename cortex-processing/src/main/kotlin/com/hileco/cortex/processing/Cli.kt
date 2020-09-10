@@ -31,6 +31,14 @@ class BarriersDeployCommand : CliktCommand(name = "barriers-deploy", help = "Dep
     }
 }
 
+class GraphCommand : CliktCommand(name = "graph", help = "Print the analysis graph for a program") {
+    private val programAddress: String by argument(help = "Address of the program to report on")
+
+    override fun run() {
+        ProcessGraph().run(programAddress)
+    }
+}
+
 class ReportCommand : CliktCommand(name = "report", help = "Print the analysis reports for a program") {
     private val programAddress: String by argument(help = "Address of the program to report on")
 
@@ -64,12 +72,13 @@ class SetupCommand : CliktCommand(name = "setup", help = "Initializes the local 
 
 fun main(argv: Array<String>) {
     MainCommand().subcommands(
-            SearchCommand(),
             AnalyzeExploreCommand(),
-            ReportCommand(),
-            BarriersDeployCommand(),
             BarriersAllocateCommand(),
-            SetupCommand(),
-            ResetCommand()
+            BarriersDeployCommand(),
+            GraphCommand(),
+            ReportCommand(),
+            ResetCommand(),
+            SearchCommand(),
+            SetupCommand()
     ).main(argv)
 }

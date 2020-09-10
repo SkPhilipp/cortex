@@ -6,6 +6,6 @@ function run(networkAddress, bytecode) {
 		data: bytecode,
 		gas: 0x400000
 	});
-	console.log(JSON.stringify(output));
+	console.log(JSON.stringify(output.transactionHash));
 	console.log("___END___");
 }

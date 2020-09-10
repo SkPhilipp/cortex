@@ -47,7 +47,7 @@ class ProcessSearch {
                     analyses = mutableListOf()
             )
             modelClient.programEnsure(programModel)
-            logger.log(programModel, "found")
+            logger.log(programModel, "found (identified as '${programModel.identifiedAs}')")
         }
     }
 }

@@ -16,8 +16,8 @@ class ProcessBarriersDeploy {
             return
         }
         ethereumBarriers.all().forEach { ethereumBarrier ->
-            val result = gethLoader.executeGeth("setup-barrier-deploy.js", networkModel.networkAddress, ethereumBarrier.contractSetupCode)
-            logger.log(networkModel, "Deployment of ${ethereumBarrier.id}: $result")
+            val transaction = gethLoader.executeGeth("setup-barrier-deploy.js", networkModel.networkAddress, ethereumBarrier.contractSetupCode)
+            logger.log(networkModel, "${ethereumBarrier.id} is created by transaction $transaction")
         }
     }
 
