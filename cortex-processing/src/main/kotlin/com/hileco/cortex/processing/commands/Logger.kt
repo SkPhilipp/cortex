@@ -1,4 +1,4 @@
-package com.hileco.cortex.processing.processes
+package com.hileco.cortex.processing.commands
 
 import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.processing.database.ProgramModel

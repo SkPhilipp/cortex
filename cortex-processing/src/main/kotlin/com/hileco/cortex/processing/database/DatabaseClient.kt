@@ -1,6 +1,6 @@
 package com.hileco.cortex.processing.database
 
-import com.hileco.cortex.processing.processes.Logger
+import com.hileco.cortex.processing.commands.Logger
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClients
@@ -65,6 +65,7 @@ class DatabaseClient {
         Logger.logger.log("Clearing all transactions")
         transactions().deleteMany(Document())
     }
+
     fun setup() {
         Logger.logger.log("Creating collections")
         listOf("network", "program", "transaction").minus(database.listCollectionNames()).forEach {

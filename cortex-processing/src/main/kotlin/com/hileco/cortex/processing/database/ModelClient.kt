@@ -25,6 +25,13 @@ class ModelClient {
     }
 
     /**
+     * Retrieves a [NetworkModel] by network.
+     */
+    fun networkByNetwork(network: String): NetworkModel? {
+        return databaseClient.networks().find(Document("network", network)).firstOrNull()
+    }
+
+    /**
      * Updates a given [NetworkModel].
      */
     fun networkUpdateLatestBlock(model: NetworkModel, latestBlock: BigDecimal) {
@@ -103,7 +110,21 @@ class ModelClient {
                 .limit(limit)
     }
 
+    fun setup() {
+        databaseClient.setup()
+        val networkModel = NetworkModel(
+                name = "Ethereum",
+                network = LOCAL_NETWORK,
+                networkAddress = "localhost",
+                latestBlock = BigDecimal(0),
+                scanningBlock = BigDecimal(0),
+                processing = true
+        )
+        networkEnsure(networkModel)
+    }
+
     companion object {
+        const val LOCAL_NETWORK = "local"
         val databaseClient: DatabaseClient by lazy { DatabaseClient() }
     }
 }

@@ -1,20 +1,22 @@
-package com.hileco.cortex.processing.processes
+package com.hileco.cortex.processing.commands
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.required
 import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.ethereum.EthereumParser
 import com.hileco.cortex.ethereum.EthereumTranspiler
 import com.hileco.cortex.processing.database.AnalysisReportModel
 import com.hileco.cortex.processing.database.ModelClient
+import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
 import com.hileco.cortex.symbolic.explore.strategies.PathTreeExploreStrategy
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 
-class ProcessAnalyzeExplore {
-    private val modelClient = ModelClient()
-    private val ethereumParser = EthereumParser()
-    private val ethereumTranspiler = EthereumTranspiler()
+class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next available program") {
+    private val network: NetworkModel by optionNetwork()
+    private val programAddress: String by optionAddress().required()
 
     private enum class AnalysisStage {
         EXPLORING,
@@ -22,12 +24,14 @@ class ProcessAnalyzeExplore {
         SOLVED
     }
 
-    fun run() {
-        val networkModel = modelClient.networkProcessing() ?: return
-        val programModel = modelClient.programLeastRecentUnanalyzed(networkModel) ?: return
+    override fun run() {
+        val modelClient = ModelClient()
+        val ethereumParser = EthereumParser()
+        val ethereumTranspiler = EthereumTranspiler()
+        val program = program(network, programAddress)
         var stage = AnalysisStage.EXPLORING
         val report = try {
-            val ethereumInstructions = ethereumParser.parse(programModel.bytecode.deserializeBytes())
+            val ethereumInstructions = ethereumParser.parse(program.bytecode.deserializeBytes())
             val instructions = ethereumTranspiler.transpile(ethereumInstructions)
             val symbolicProgram = SymbolicProgram(instructions)
             val symbolicProgramContext = SymbolicProgramContext(symbolicProgram)
@@ -55,9 +59,9 @@ class ProcessAnalyzeExplore {
                     errorCause = e.message
             )
         }
-        Logger.logger.log(programModel, "Analysis complete: $report")
-        programModel.analyses.add(report)
-        modelClient.programUpdate(programModel)
+        Logger.logger.log(program, "Analysis complete: $report")
+        program.analyses.add(report)
+        modelClient.programUpdate(program)
     }
 
     companion object {
