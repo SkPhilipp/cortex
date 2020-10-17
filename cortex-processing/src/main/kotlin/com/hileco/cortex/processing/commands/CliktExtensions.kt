@@ -6,10 +6,15 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.processing.database.ProgramModel
+import com.hileco.cortex.vm.bytes.toBackedInteger
 
 fun RawOption.network() = convert {
     val modelClient = ModelClient()
     return@convert modelClient.networkByNetwork(it) ?: throw BadParameterValue("No network '$it'")
+}
+
+fun RawOption.backedInteger() = convert {
+    return@convert it.toBackedInteger()
 }
 
 fun CliktCommand.optionNetwork(): OptionWithValues<NetworkModel, NetworkModel, NetworkModel> {
