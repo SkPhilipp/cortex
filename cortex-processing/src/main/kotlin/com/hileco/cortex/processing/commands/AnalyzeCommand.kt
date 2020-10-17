@@ -56,6 +56,10 @@ class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next a
                         .toList()
                 Expression.constructOr(valueTransferConditions)
             }
+            exploreStrategy.withCondition {
+                val callDataSize = Expression.Variable("CALL_DATA_SIZE", 256)
+                Expression.LessThan(callDataSize, Expression.Value(5000.toBackedInteger()))
+            }
             val symbolicProgramExplorer = SymbolicProgramExplorer(exploreStrategy)
 
             @Suppress("UNUSED_VALUE")
