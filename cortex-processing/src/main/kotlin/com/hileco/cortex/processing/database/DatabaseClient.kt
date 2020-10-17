@@ -30,7 +30,7 @@ class DatabaseClient {
                                 .build()
                 )
         )
-        val connectionString = ConnectionString("mongodb+srv://$USERNAME:$PASSWORD@$HOST/$DATABASE_NAME?retryWrites=true&w=majority")
+        val connectionString = ConnectionString("mongodb://localhost/$DATABASE_NAME?retryWrites=true&w=majority")
         val settings: MongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .codecRegistry(codecRegistry)
@@ -102,9 +102,6 @@ class DatabaseClient {
     }
 
     companion object {
-        private val USERNAME = System.getProperty("CORTEX_DB_USERNAME", "pepe")
-        private val PASSWORD = System.getProperty("CORTEX_DB_PASSWORD", "pZKUxMw7QoBSomCpppePeTheFroggo")
-        private val HOST = System.getProperty("CORTEX_DB_HOST", "cortex-000.zules.mongodb.net")
         private val DATABASE_NAME = System.getProperty("CORTEX_DB_NAME", "cortex")
     }
 }
