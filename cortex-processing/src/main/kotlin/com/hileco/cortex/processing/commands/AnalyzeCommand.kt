@@ -23,7 +23,6 @@ import com.hileco.cortex.vm.bytes.toBackedInteger
 import java.io.PrintWriter
 import java.io.StringWriter
 
-
 class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next available program") {
     private val selection by option()
             .groupChoice("address" to AddressSelectionContext(), "blocks" to BlocksSelectionContext())
@@ -44,6 +43,18 @@ class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next a
             program.analyses.add(report)
             modelClient.programUpdate(program)
         }
+    }
+
+    private fun reportException(exceptions: List<Exception>): AnalysisReportModel {
+        val stringWriter = StringWriter()
+        exceptions.forEach { exception ->
+            exception.printStackTrace(PrintWriter(stringWriter))
+        }
+        return AnalysisReportModel(
+                type = REPORT_TYPE_EXPLORE,
+                completed = false,
+                errorCause = stringWriter.toString()
+        )
     }
 
     private fun analyze(program: ProgramModel): AnalysisReportModel {
@@ -72,9 +83,11 @@ class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next a
                 Expression.LessThan(callDataSize, Expression.Value(5000.toBackedInteger()))
             }
             val symbolicProgramExplorer = SymbolicProgramExplorer(exploreStrategy)
-
             symbolicProgramExplorer.explore(symbolicVirtualMachine)
             val solution = exploreStrategy.solve()
+            if (!solution.solvable && exploreStrategy.exceptions().isNotEmpty()) {
+                return reportException(exploreStrategy.exceptions())
+            }
             return AnalysisReportModel(
                     type = REPORT_TYPE_EXPLORE,
                     completed = true,
@@ -82,13 +95,7 @@ class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next a
                     solvable = solution.solvable
             )
         } catch (e: Exception) {
-            val stringWriter = StringWriter()
-            e.printStackTrace(PrintWriter(stringWriter))
-            return AnalysisReportModel(
-                    type = REPORT_TYPE_EXPLORE,
-                    completed = false,
-                    errorCause = stringWriter.toString()
-            )
+            return reportException(listOf(e))
         }
     }
 

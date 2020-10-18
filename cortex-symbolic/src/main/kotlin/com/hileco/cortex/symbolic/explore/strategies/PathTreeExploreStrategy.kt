@@ -18,6 +18,10 @@ class PathTreeExploreStrategy : ExploreStrategy() {
         }
     }
 
+    override fun handleException(virtualMachine: SymbolicVirtualMachine, exception: Exception) {
+        exception.printStackTrace()
+    }
+
     override fun solve(): Solution {
         if (paths.isEmpty()) {
             return Solution(condition = False)

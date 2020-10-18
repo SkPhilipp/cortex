@@ -32,6 +32,11 @@ abstract class ExploreStrategy {
     abstract fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine)
 
     /**
+     * To be invoked when a [SymbolicVirtualMachine] analysis fails due to an exception.
+     */
+    abstract fun handleException(virtualMachine: SymbolicVirtualMachine, exception: Exception)
+
+    /**
      * To be invoked when a [SymbolicVirtualMachine] completes execution of an instruction.
      */
     open fun handleInstruction(symbolicVirtualMachine: SymbolicVirtualMachine, instruction: Instruction) {

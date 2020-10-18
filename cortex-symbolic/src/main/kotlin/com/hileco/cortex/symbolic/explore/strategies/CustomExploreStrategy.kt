@@ -17,6 +17,7 @@ class CustomExploreStrategy : ExploreStrategy() {
     private val filterCompleted: MutableList<(SymbolicVirtualMachine) -> Boolean> = mutableListOf()
     private val conditions: MutableList<(SymbolicVirtualMachine) -> Expression> = mutableListOf()
     private val expressionOptimizer = ExpressionOptimizer()
+    private val exceptions: MutableList<Exception> = mutableListOf()
 
     override fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine) {
         val passes = filterCompleted.any { it(symbolicVirtualMachine) }
@@ -36,12 +37,20 @@ class CustomExploreStrategy : ExploreStrategy() {
         }
     }
 
+    override fun handleException(virtualMachine: SymbolicVirtualMachine, exception: Exception) {
+        exceptions.add(exception)
+    }
+
     fun withCompleteFilter(entry: (SymbolicVirtualMachine) -> Boolean) {
         this.filterCompleted.add(entry)
     }
 
     fun withCondition(entry: (SymbolicVirtualMachine) -> Expression) {
         this.conditions.add(entry)
+    }
+
+    fun exceptions(): List<Exception> {
+        return exceptions
     }
 
     override fun solve(): Solution {
