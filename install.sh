@@ -18,3 +18,22 @@ systemctl start mongod
 add-apt-repository -y ppa:ethereum/ethereum
 apt update
 apt install -y ethereum
+useradd -m --shell /bin/bash geth
+cat <<EOF > /etc/systemd/system/geth.service
+[Unit]
+Description=Geth RPC Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=geth
+ExecStart=/usr/bin/env geth --datadir /home/geth/datadir --syncmode "light" --rpcapi personal,eth,net,web3 --rpc
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl start geth
+systemctl enable geth
