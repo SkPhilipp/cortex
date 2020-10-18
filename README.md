@@ -13,6 +13,7 @@ See [install.sh](install.sh) for analysis host setup.
 - Add `cortex/cortex-processing/cortex` to your PATH.
 - Create your own MongoDB instance or tunnel an environment using `ssh cortex-001 -L 27017:127.0.0.1:27017 -N`
 - Use your own Ethereum blockchain or spin up a local instance using `docker-compose up`
+- Alternatively, tunnel an environment using `ssh cortex-001 -L 8545:127.0.0.1:8545 -N`
 
 When these steps are completed, the `cortex` command can run against your blockchain and MongoDB of choice as such;
 
