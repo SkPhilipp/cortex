@@ -13,3 +13,8 @@ apt update
 apt install -y mongodb-org
 systemctl enable mongod
 systemctl start mongod
+
+# Geth
+add-apt-repository -y ppa:ethereum/ethereum
+apt update
+apt install -y ethereum
