@@ -1,16 +1,17 @@
 package com.hileco.cortex.processing.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.groups.defaultByName
+import com.github.ajalt.clikt.parameters.groups.groupChoice
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
 import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.collections.serialize
 import com.hileco.cortex.ethereum.EthereumParser
 import com.hileco.cortex.ethereum.EthereumTranspiler
 import com.hileco.cortex.processing.database.AnalysisReportModel
 import com.hileco.cortex.processing.database.ModelClient
-import com.hileco.cortex.processing.database.NetworkModel
+import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
 import com.hileco.cortex.symbolic.explore.strategies.CustomExploreStrategy
 import com.hileco.cortex.symbolic.expressions.Expression
@@ -19,27 +20,37 @@ import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.vm.bytes.BackedInteger
 import com.hileco.cortex.vm.bytes.toBackedInteger
+import java.io.PrintWriter
+import java.io.StringWriter
+
 
 class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next available program") {
-    private val network: NetworkModel by optionNetwork()
-    private val programAddress: String by optionAddress().required()
-    private val beneficiaryAddress: BackedInteger by option(help = "Address which is to receive the digital asset").backedInteger()
+    private val selection by option()
+            .groupChoice("address" to AddressSelectionContext(), "blocks" to BlocksSelectionContext())
+            .defaultByName("address")
+    private val beneficiaryAddress: BackedInteger by option(help = "Address which is to receive the digital asset")
+            .backedInteger()
             .default("0xdeadd00d".toBackedInteger())
 
-    private enum class AnalysisStage {
-        EXPLORING,
-        SOLVING,
-        SOLVED
-    }
+    // TODO: Analysis timeout
 
     override fun run() {
         val modelClient = ModelClient()
-        val ethereumParser = EthereumParser()
-        val ethereumTranspiler = EthereumTranspiler()
-        val program = program(network, programAddress)
-        var stage = AnalysisStage.EXPLORING
-        val report = try {
+        val programSelection = selection.selectPrograms(modelClient)
+        programSelection.forEachRemaining { program ->
+            Logger.logger.log(program, "Analyzing")
+            val report = analyze(program)
+            Logger.logger.log(program, "Analysis complete: $report")
+            program.analyses.add(report)
+            modelClient.programUpdate(program)
+        }
+    }
+
+    private fun analyze(program: ProgramModel): AnalysisReportModel {
+        try {
+            val ethereumParser = EthereumParser()
             val ethereumInstructions = ethereumParser.parse(program.bytecode.deserializeBytes())
+            val ethereumTranspiler = EthereumTranspiler()
             val instructions = ethereumTranspiler.transpile(ethereumInstructions)
             val symbolicProgram = SymbolicProgram(instructions)
             val symbolicProgramContext = SymbolicProgramContext(symbolicProgram)
@@ -62,33 +73,26 @@ class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next a
             }
             val symbolicProgramExplorer = SymbolicProgramExplorer(exploreStrategy)
 
-            @Suppress("UNUSED_VALUE")
-            stage = AnalysisStage.EXPLORING
             symbolicProgramExplorer.explore(symbolicVirtualMachine)
-            @Suppress("UNUSED_VALUE")
-            stage = AnalysisStage.SOLVING
             val solution = exploreStrategy.solve()
-            stage = AnalysisStage.SOLVED
-            AnalysisReportModel(
-                    type = ANALYSIS_REPORT_TYPE,
+            return AnalysisReportModel(
+                    type = REPORT_TYPE_EXPLORE,
                     completed = true,
                     solution = solution.values.mapValues { entry -> entry.value.serialize() }.toString(),
                     solvable = solution.solvable
             )
         } catch (e: Exception) {
-            AnalysisReportModel(
-                    type = ANALYSIS_REPORT_TYPE,
+            val stringWriter = StringWriter()
+            e.printStackTrace(PrintWriter(stringWriter))
+            return AnalysisReportModel(
+                    type = REPORT_TYPE_EXPLORE,
                     completed = false,
-                    errorStage = stage.name,
-                    errorCause = e.message
+                    errorCause = stringWriter.toString()
             )
         }
-        Logger.logger.log(program, "Analysis complete: $report")
-        program.analyses.add(report)
-        modelClient.programUpdate(program)
     }
 
     companion object {
-        private const val ANALYSIS_REPORT_TYPE = "EXPLORE"
+        private const val REPORT_TYPE_EXPLORE = "EXPLORE"
     }
 }

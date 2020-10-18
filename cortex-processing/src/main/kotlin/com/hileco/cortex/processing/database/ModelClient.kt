@@ -91,6 +91,17 @@ class ModelClient {
                 .firstOrNull()
     }
 
+    fun programs(network: NetworkModel, blockStart: BigDecimal, blockEnd: BigDecimal): Iterator<ProgramModel> {
+        return databaseClient.programs().find(
+                Document(mapOf(
+                        "location.blockchainName" to network.name,
+                        "location.blockchainNetwork" to network.network,
+                        "location.blockNumber" to Document("\$gte", blockStart),
+                        "location.blockNumber" to Document("\$lte", blockEnd)
+                )))
+                .iterator()
+    }
+
     fun programLeastRecentUnanalyzed(model: NetworkModel): ProgramModel? {
         return databaseClient.programs().find(
                 Document(mapOf(

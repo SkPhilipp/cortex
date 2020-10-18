@@ -15,10 +15,8 @@ class BarriersAllocateCommand : CliktCommand(name = "barriers-allocate", help = 
         val modelClient = ModelClient()
         val ethereumBarriers = EthereumBarriers()
         val web3Client = Web3Client()
-        val networkModel = modelClient.networkByNetwork(LOCAL_NETWORK)
-                ?: throw IllegalStateException("Barrier allocation requires local network")
         val ethereumBarrierPrograms = ethereumBarriers.all()
-        logger.log(networkModel, "Allocating balance to up to ${ethereumBarrierPrograms.size} programs")
+        logger.log("Allocating balance to up to ${ethereumBarrierPrograms.size} programs")
         modelClient.programs(0, ethereumBarrierPrograms.size)
                 .filter { it.location.blockchainNetwork == LOCAL_NETWORK }
                 .forEach { programModel ->

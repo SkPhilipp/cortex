@@ -31,7 +31,6 @@ data class AnalysisReportModel @BsonCreator constructor(
         @BsonProperty("completed") val completed: Boolean,
         @BsonProperty("solution") val solution: String? = null,
         @BsonProperty("solvable") val solvable: Boolean? = null,
-        @BsonProperty("errorStage") val errorStage: String? = null,
         @BsonProperty("errorCause") val errorCause: String? = null
 )
 
