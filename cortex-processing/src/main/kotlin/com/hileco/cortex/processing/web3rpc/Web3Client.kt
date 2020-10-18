@@ -100,11 +100,3 @@ class Web3Client {
         const val GAS_CONTRACT_CREATE = 32000
     }
 }
-
-fun main() {
-    val web3ContractLoader = Web3Client()
-    web3ContractLoader.loadBlockNumber()
-    web3ContractLoader.createContract("6080604052348015600f57600080fd5b5060cf8061001e6000396000f3fe608060405260043610601c5760003560e01c8063d0679d3414601e575b005b606760048036036040811015603257600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506069565b005b8173ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f1935050505050505056fea165627a7a72305820718d58054961ff1078cc59a06e5c86f0f68a02b3e3320c8b1c6bd665caf06c1b0029")
-    val loadContracts = web3ContractLoader.loadContracts(0, web3ContractLoader.loadBlockNumber().toLong())
-    loadContracts.forEach { println(it) }
-}

@@ -30,7 +30,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=geth
-ExecStart=/usr/bin/env geth --datadir /home/geth/datadir --syncmode "light" --rpcapi personal,eth,net,web3 --rpc
+ExecStart=/usr/bin/env geth --datadir /home/geth/datadir --rpcapi personal,eth,net,web3 --rpc
 
 [Install]
 WantedBy=multi-user.target
