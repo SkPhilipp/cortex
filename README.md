@@ -19,7 +19,8 @@ When these steps are completed, the `cortex` command can run against your blockc
 
     # cortex reset
     cortex barriers-deploy
-    cortex search --blocks 100000
-    cortex analyze --selection blocks --blocks 100000
-    cortex report --selection blocks --blocks 100000
+    cortex search --blocks 1000000
+    cortex barriers-allocate --blocks 1000000
+    cortex analyze --selection blocks --blocks 1000000
+    cortex report --selection blocks --blocks 1000000
     cortex graph --selection address --program-address 0xe9d4e465a7d3c04e7b13b45a0c484f7d073e8674

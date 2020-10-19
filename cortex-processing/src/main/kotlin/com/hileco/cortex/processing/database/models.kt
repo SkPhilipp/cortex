@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 data class NetworkModel @BsonCreator constructor(
         @BsonProperty("name") val name: String,
         @BsonProperty("network") val network: String,
-        @BsonProperty("networkAddress") val networkAddress: String,
+        @BsonProperty("networkIdentifier") val networkIdentifier: String,
         @BsonProperty("latestBlock") var latestBlock: BigDecimal,
         @BsonProperty("scanningBlock") var scanningBlock: BigDecimal,
         @BsonProperty("processing") var processing: Boolean,

@@ -25,10 +25,22 @@ class ModelClient {
     }
 
     /**
-     * Retrieves a [NetworkModel] by network.
+     * Retrieves a [NetworkModel] by network and networkIdentifier.
      */
-    fun networkByNetwork(network: String): NetworkModel? {
-        return databaseClient.networks().find(Document("network", network)).firstOrNull()
+    fun networkByNetworkAndNetworkIdentifier(network: String, networkIdentifier: String): NetworkModel? {
+        return databaseClient.networks().find(Document(mapOf(
+                "network" to network,
+                "networkIdentifier" to networkIdentifier
+        ))).firstOrNull()
+    }
+
+    /**
+     * Retrieves a [NetworkModel] by name.
+     */
+    fun networkByName(name: String): NetworkModel? {
+        return databaseClient.networks().find(Document(mapOf(
+                "name" to name
+        ))).firstOrNull()
     }
 
     /**
@@ -102,18 +114,6 @@ class ModelClient {
                 .iterator()
     }
 
-    fun programLeastRecentUnanalyzed(model: NetworkModel): ProgramModel? {
-        return databaseClient.programs().find(
-                Document(mapOf(
-                        "location.blockchainName" to model.name,
-                        "location.blockchainNetwork" to model.network,
-                        "analyses" to listOf<AnalysisReportModel>()
-                )))
-                .sort(Document("location.blockNumber", 1))
-                .limit(1)
-                .firstOrNull()
-    }
-
     fun programs(skip: Int, limit: Int): Iterable<ProgramModel> {
         return databaseClient.programs().find()
                 .sort(Document("location.blockNumber", 1))
@@ -121,21 +121,32 @@ class ModelClient {
                 .limit(limit)
     }
 
-    fun setup() {
-        databaseClient.setup()
-        val networkModel = NetworkModel(
-                name = "Ethereum",
-                network = LOCAL_NETWORK,
-                networkAddress = "localhost",
+    private fun setupNetwork(name: String, network: String, networkAddress: String, processing: Boolean = false) {
+        networkEnsure(NetworkModel(
+                name = name,
+                network = network,
+                networkIdentifier = networkAddress,
                 latestBlock = BigDecimal(0),
                 scanningBlock = BigDecimal(0),
-                processing = true
-        )
-        networkEnsure(networkModel)
+                processing = processing
+        ))
+    }
+
+    fun setup() {
+        databaseClient.setup()
+        setupNetwork("mainnet", ETHEREUM, "1")
+        setupNetwork("morden", ETHEREUM, "2")
+        setupNetwork("ropsten", ETHEREUM, "3")
+        setupNetwork("rinkeby", ETHEREUM, "4")
+        setupNetwork("goerli", ETHEREUM, "5")
+        setupNetwork("morden", ETHEREUM, "42")
+        setupNetwork("classic", ETHEREUM, "61")
+        setupNetwork(ETHEREUM_PRIVATE_NETWORK, ETHEREUM, "1337", processing = true)
     }
 
     companion object {
-        const val LOCAL_NETWORK = "local"
+        const val ETHEREUM = "Ethereum"
+        const val ETHEREUM_PRIVATE_NETWORK = "private"
         val databaseClient: DatabaseClient by lazy { DatabaseClient() }
     }
 }

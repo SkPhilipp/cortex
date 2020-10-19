@@ -5,13 +5,14 @@ import com.github.ajalt.clikt.parameters.groups.OptionGroup
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.long
 import com.hileco.cortex.processing.database.ModelClient
+import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.vm.bytes.toBackedInteger
 import java.math.BigDecimal
 
 fun RawOption.network() = convert {
     val modelClient = ModelClient()
-    return@convert modelClient.networkByNetwork(it) ?: throw BadParameterValue("No network '$it'")
+    return@convert modelClient.networkByName(it) ?: throw BadParameterValue("No network with name '$it'")
 }.defaultLazy {
     val modelClient = ModelClient()
     modelClient.networkProcessing() ?: throw BadParameterValue("No default network")
@@ -23,6 +24,8 @@ fun RawOption.backedInteger() = convert {
 
 sealed class SelectionContext(name: String) : OptionGroup(name) {
     abstract fun selectPrograms(modelClient: ModelClient): Iterator<ProgramModel>
+
+    abstract fun selectNetwork(): NetworkModel
 }
 
 class AddressSelectionContext : SelectionContext("Options for selecting by a single program's address") {
@@ -32,6 +35,10 @@ class AddressSelectionContext : SelectionContext("Options for selecting by a sin
     override fun selectPrograms(modelClient: ModelClient): Iterator<ProgramModel> {
         val program = modelClient.program(programNetwork, programAddress) ?: throw BadParameterValue("No program '${programAddress}'")
         return listOf(program).iterator()
+    }
+
+    override fun selectNetwork(): NetworkModel {
+        return programNetwork
     }
 }
 
@@ -44,5 +51,9 @@ class BlocksSelectionContext : SelectionContext("Options for selecting within a 
         val start = BigDecimal.valueOf(blockStart)
         val end = BigDecimal.valueOf(blockStart + blocks)
         return modelClient.programs(blocksNetwork, start, end)
+    }
+
+    override fun selectNetwork(): NetworkModel {
+        return blocksNetwork
     }
 }
