@@ -7,11 +7,10 @@ import java.time.LocalDateTime
 
 data class NetworkModel @BsonCreator constructor(
         @BsonProperty("name") val name: String,
-        @BsonProperty("network") val network: String,
-        @BsonProperty("networkIdentifier") val networkIdentifier: String,
+        @BsonProperty("blockchain") val blockchain: String,
+        @BsonProperty("blockchainId") val blockchainId: String,
         @BsonProperty("latestBlock") var latestBlock: BigDecimal,
         @BsonProperty("scanningBlock") var scanningBlock: BigDecimal,
-        @BsonProperty("processing") var processing: Boolean,
         @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
 )
 
@@ -40,8 +39,7 @@ data class TransactionModel @BsonCreator constructor(
 )
 
 data class TransactionLocationModel @BsonCreator constructor(
-        @BsonProperty("blockchainName") val blockchainName: String,
-        @BsonProperty("blockchainNetwork") val blockchainNetwork: String,
+        @BsonProperty("networkName") val networkName: String,
         @BsonProperty("blockNumber") val blockNumber: BigDecimal,
         @BsonProperty("transactionHash") val transactionHash: String,
         @BsonProperty("programAddress") val programAddress: String

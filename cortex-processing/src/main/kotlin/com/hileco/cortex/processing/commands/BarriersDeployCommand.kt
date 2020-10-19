@@ -4,20 +4,20 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.hileco.cortex.ethereum.EthereumBarriers
 import com.hileco.cortex.processing.commands.Logger.Companion.logger
-import com.hileco.cortex.processing.database.ModelClient.Companion.ETHEREUM_PRIVATE_NETWORK
+import com.hileco.cortex.processing.database.Network
 import com.hileco.cortex.processing.web3rpc.Web3Client
 
-class BarriersDeployCommand : CliktCommand(name = "barriers-deploy", help = "Deploys barrier programs") {
-    val network by option(help = "Network within which to operate").network()
+class BarriersDeployCommand : CliktCommand(name = "barriers-deploy", help = "Deploys barrier programs on the on the ${Network.ETHEREUM_PRIVATE} network") {
+    private val network by option(help = "Network within which to operate").network()
 
     override fun run() {
-        if (network.name != ETHEREUM_PRIVATE_NETWORK) {
-            throw IllegalStateException("This action is only allowed on programs on the $ETHEREUM_PRIVATE_NETWORK network")
+        if (network.name != Network.ETHEREUM_PRIVATE.internalName) {
+            throw IllegalStateException("This action is only allowed on programs on the ${Network.ETHEREUM_PRIVATE} network")
         }
         val web3Client = Web3Client()
         val web3ActiveNetworkId = web3Client.loadNetworkId()
-        if (web3ActiveNetworkId != network.networkIdentifier) {
-            throw IllegalStateException("Web3 client is not running against the $ETHEREUM_PRIVATE_NETWORK network, instead has network id of $web3ActiveNetworkId")
+        if (web3ActiveNetworkId != Network.ETHEREUM_PRIVATE.blockchainId) {
+            throw IllegalStateException("Web3 client is not running against the ${Network.ETHEREUM_PRIVATE} network, instead has network id of $web3ActiveNetworkId")
         }
         val ethereumBarriers = EthereumBarriers()
         ethereumBarriers.all().forEach { ethereumBarrier ->

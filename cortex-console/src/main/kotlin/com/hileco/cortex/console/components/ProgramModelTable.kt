@@ -18,7 +18,6 @@ class ProgramModelTable(screen: TerminalScreen,
                 position,
                 height,
                 listOf(
-                        TableColumn("type", 12),
                         TableColumn("network", 12),
                         TableColumn("address", 48),
                         TableColumn("histogram", 42),
@@ -28,8 +27,7 @@ class ProgramModelTable(screen: TerminalScreen,
                     if (index < values.size) {
                         val entry = values[index]
                         listOf(
-                                TableCell(entry.location.blockchainName),
-                                TableCell(entry.location.blockchainNetwork),
+                                TableCell(entry.location.networkName),
                                 TableCell(entry.location.programAddress),
                                 TableCell(entry.histogram),
                                 TableCell(entry.identifiedAs)

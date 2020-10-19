@@ -10,8 +10,7 @@ class ModelClient {
      */
     fun networkEnsure(model: NetworkModel) {
         databaseClient.networks().updateOne(Document(mapOf(
-                "name" to model.name,
-                "network" to model.network
+                "name" to model.name
         )),
                 Document("\$setOnInsert", databaseClient.asDocument(model)),
                 UpdateOptions().upsert(true))
@@ -49,8 +48,7 @@ class ModelClient {
     fun networkUpdateLatestBlock(model: NetworkModel, latestBlock: BigDecimal) {
         databaseClient.networks().updateMany(
                 Document(mapOf(
-                        "name" to model.name,
-                        "network" to model.network
+                        "name" to model.name
                 )),
                 Document("\$set", Document("latestBlock", latestBlock))
         )
@@ -59,11 +57,10 @@ class ModelClient {
     /**
      * Updates a given [NetworkModel].
      */
-    fun networkUpdateScannedBlock(model: NetworkModel, scanningBlock: BigDecimal) {
+    fun networkUpdateScanningBlock(model: NetworkModel, scanningBlock: BigDecimal) {
         databaseClient.networks().updateMany(
                 Document(mapOf(
-                        "name" to model.name,
-                        "network" to model.network
+                        "name" to model.name
                 )),
                 Document("\$set", Document("scanningBlock", scanningBlock))
         )
@@ -71,8 +68,7 @@ class ModelClient {
 
     fun programEnsure(model: ProgramModel) {
         databaseClient.programs().updateOne(Document(mapOf(
-                "location.blockchainName" to model.location.blockchainName,
-                "location.blockchainNetwork" to model.location.blockchainNetwork,
+                "location.networkName" to model.location.networkName,
                 "location.blockNumber" to model.location.blockNumber,
                 "location.transactionHash" to model.location.transactionHash
         )),
@@ -83,8 +79,7 @@ class ModelClient {
     fun programUpdate(model: ProgramModel) {
         databaseClient.programs().updateMany(
                 Document(mapOf(
-                        "location.blockchainName" to model.location.blockchainName,
-                        "location.blockchainNetwork" to model.location.blockchainNetwork,
+                        "location.networkName" to model.location.networkName,
                         "location.blockNumber" to model.location.blockNumber,
                         "location.transactionHash" to model.location.transactionHash
 
@@ -96,8 +91,7 @@ class ModelClient {
     fun program(network: NetworkModel, programAddress: String): ProgramModel? {
         return databaseClient.programs().find(
                 Document(mapOf(
-                        "location.blockchainName" to network.name,
-                        "location.blockchainNetwork" to network.network,
+                        "location.networkName" to network.name,
                         "location.programAddress" to programAddress
                 )))
                 .firstOrNull()
@@ -107,7 +101,6 @@ class ModelClient {
         return databaseClient.programs().find(
                 Document(mapOf(
                         "location.blockchainName" to network.name,
-                        "location.blockchainNetwork" to network.network,
                         "location.blockNumber" to Document("\$gte", blockStart),
                         "location.blockNumber" to Document("\$lte", blockEnd)
                 )))
@@ -121,32 +114,24 @@ class ModelClient {
                 .limit(limit)
     }
 
-    private fun setupNetwork(name: String, network: String, networkAddress: String, processing: Boolean = false) {
-        networkEnsure(NetworkModel(
-                name = name,
-                network = network,
-                networkIdentifier = networkAddress,
-                latestBlock = BigDecimal(0),
-                scanningBlock = BigDecimal(0),
-                processing = processing
-        ))
+    private fun setupNetwork(name: String, blockchain: String, blockchainId: String) {
+
     }
 
     fun setup() {
         databaseClient.setup()
-        setupNetwork("mainnet", ETHEREUM, "1")
-        setupNetwork("morden", ETHEREUM, "2")
-        setupNetwork("ropsten", ETHEREUM, "3")
-        setupNetwork("rinkeby", ETHEREUM, "4")
-        setupNetwork("goerli", ETHEREUM, "5")
-        setupNetwork("morden", ETHEREUM, "42")
-        setupNetwork("classic", ETHEREUM, "61")
-        setupNetwork(ETHEREUM_PRIVATE_NETWORK, ETHEREUM, "1337", processing = true)
+        Network.values().forEach {
+            networkEnsure(NetworkModel(
+                    name = it.internalName,
+                    blockchain = it.blockchain,
+                    blockchainId = it.blockchainId,
+                    latestBlock = BigDecimal(0),
+                    scanningBlock = BigDecimal(0)
+            ))
+        }
     }
 
     companion object {
-        const val ETHEREUM = "Ethereum"
-        const val ETHEREUM_PRIVATE_NETWORK = "private"
         val databaseClient: DatabaseClient by lazy { DatabaseClient() }
     }
 }

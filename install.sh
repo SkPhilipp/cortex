@@ -37,3 +37,7 @@ WantedBy=multi-user.target
 EOF
 systemctl start geth
 systemctl enable geth
+
+# Parity
+apt install -y snapd
+snap install parity

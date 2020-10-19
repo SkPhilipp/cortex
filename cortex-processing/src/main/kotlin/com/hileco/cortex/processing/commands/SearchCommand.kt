@@ -34,8 +34,7 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
             val programIdentity = programIdentifier.identify(programHistogram)
             val programModel = ProgramModel(
                     location = TransactionLocationModel(
-                            blockchainName = selection.blocksNetwork.name,
-                            blockchainNetwork = selection.blocksNetwork.network,
+                            networkName = selection.blocksNetwork.name,
                             blockNumber = contract.blockNumberCreated.toBigDecimal(),
                             transactionHash = contract.transactionHash,
                             programAddress = contract.address
