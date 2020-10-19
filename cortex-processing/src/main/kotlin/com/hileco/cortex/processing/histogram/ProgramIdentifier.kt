@@ -1,4 +1,4 @@
-package com.hileco.cortex.processing.fingerprint
+package com.hileco.cortex.processing.histogram
 
 import com.hileco.cortex.ethereum.EthereumBarrier
 import com.hileco.cortex.ethereum.EthereumBarriers

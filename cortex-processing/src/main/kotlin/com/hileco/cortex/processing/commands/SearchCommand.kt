@@ -9,8 +9,8 @@ import com.hileco.cortex.processing.commands.Logger.Companion.logger
 import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.processing.database.TransactionLocationModel
-import com.hileco.cortex.processing.fingerprint.ProgramHistogramBuilder
-import com.hileco.cortex.processing.fingerprint.ProgramIdentifier
+import com.hileco.cortex.processing.histogram.ProgramHistogramBuilder
+import com.hileco.cortex.processing.histogram.ProgramIdentifier
 import com.hileco.cortex.processing.web3rpc.Web3Client
 
 class SearchCommand : CliktCommand(name = "search", help = "Searches the active blockchain for programs") {
