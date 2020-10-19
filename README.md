@@ -21,4 +21,5 @@ When these steps are completed, the `cortex` command can run against your blockc
     cortex barriers-allocate --blocks 1000000
     cortex analyze --selection blocks --blocks 1000000
     cortex report --selection blocks --blocks 1000000
-    cortex graph --selection address --program-address 0xe9d4e465a7d3c04e7b13b45a0c484f7d073e8674
+    cortex search --block-network mainnet --block-start 10809030
+    cortex graph --block-network mainnet --selection address --program-address 0x41088ccccc467a384645794c54752e3f9d4a26fa

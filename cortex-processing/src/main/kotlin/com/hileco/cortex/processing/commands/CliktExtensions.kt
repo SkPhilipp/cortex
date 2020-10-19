@@ -25,8 +25,8 @@ sealed class SelectionContext(name: String) : OptionGroup(name) {
 }
 
 class AddressSelectionContext : SelectionContext("Options for selecting by a single program's address") {
-    val programNetwork by option(help = "Network within which to operate").network()
-    val programAddress by option(help = "Address of the program on which to operate").required()
+    private val programNetwork by option(help = "Network within which to operate").network()
+    private val programAddress by option(help = "Address of the program on which to operate").required()
 
     override fun programs(modelClient: ModelClient): Iterator<ProgramModel> {
         val program = modelClient.program(programNetwork, programAddress) ?: throw BadParameterValue("No program '${programAddress}'")
@@ -39,17 +39,17 @@ class AddressSelectionContext : SelectionContext("Options for selecting by a sin
 }
 
 class BlocksSelectionContext : SelectionContext("Options for selecting within a range of blocks") {
-    val blocksNetwork by option(help = "Network within which to operate").network()
+    private val blockNetwork by option(help = "Network within which to operate").network()
     val blockStart by option(help = "Blocks within which to operate").long().default(0)
     val blocks by option(help = "Amount of blocks to operate in forwards (positive) or backwards (negative) from the block start").long().default(1)
 
     override fun programs(modelClient: ModelClient): Iterator<ProgramModel> {
         val start = BigDecimal.valueOf(blockStart)
         val end = BigDecimal.valueOf(blockStart + blocks)
-        return modelClient.programs(blocksNetwork, start, end)
+        return modelClient.programs(blockNetwork, start, end)
     }
 
     override fun network(): Network {
-        return blocksNetwork
+        return blockNetwork
     }
 }

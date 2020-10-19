@@ -60,7 +60,8 @@ class Web3Client(endpoint: String) {
             ethBlock.block.transactions.asSequence().forEach { ethTransaction: TransactionResult<*> ->
                 if (ethTransaction is EthBlock.TransactionHash) {
                     val ethTransactionReceipt = transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.get())
-                    if (ethTransactionReceipt.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE) {
+                    if (ethTransactionReceipt.contractAddress != null
+                            && ethTransactionReceipt.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE) {
                         val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockNumberLatest)
                         val ethCode = web3j.ethGetCode(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
                         val ethGetBalance = web3j.ethGetBalance(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
