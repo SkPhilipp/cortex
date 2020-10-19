@@ -52,40 +52,30 @@ class Web3Client(endpoint: String) {
         return transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.transactionHash).transactionHash
     }
 
-    private fun loadContract(blockContent: BigInteger, blockCreated: BigInteger, transactionHash: String): Web3Contract? {
-        val ethTransactionReceipt = transactionReceiptProcessor.waitForTransactionReceipt(transactionHash)
-        if (ethTransactionReceipt.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE) {
-            val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockContent)
-            val ethCode = web3j.ethGetCode(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
-            val ethGetBalance = web3j.ethGetBalance(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
-            return Web3Contract(
-                    transactionHash,
-                    ethCode.code,
-                    ethTransactionReceipt.contractAddress,
-                    ethGetBalance.balance,
-                    blockCreated,
-                    blockContent
-            )
-        }
-        return null
-    }
-
-    fun loadContracts(blockStart: Long, blockEnd: Long): List<Web3Contract> {
-        val contracts = mutableListOf<Web3Contract>()
+    fun loadContracts(blockStart: Long, blockEnd: Long) = sequence {
         val blockNumberLatest = loadBlockNumber()
         for (blockNumber in blockStart..blockEnd) {
             val ethBlockNumber = DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber))
             val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, false).send()
             ethBlock.block.transactions.asSequence().forEach { ethTransaction: TransactionResult<*> ->
                 if (ethTransaction is EthBlock.TransactionHash) {
-                    val contract = loadContract(blockNumberLatest, BigInteger.valueOf(blockNumber), ethTransaction.get())
-                    if (contract != null) {
-                        contracts.add(contract)
+                    val ethTransactionReceipt = transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.get())
+                    if (ethTransactionReceipt.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE) {
+                        val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockNumberLatest)
+                        val ethCode = web3j.ethGetCode(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
+                        val ethGetBalance = web3j.ethGetBalance(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
+                        yield(Web3Contract(
+                                ethTransaction.get(),
+                                ethCode.code,
+                                ethTransactionReceipt.contractAddress,
+                                ethGetBalance.balance,
+                                BigInteger.valueOf(blockNumber),
+                                blockNumberLatest
+                        ))
                     }
                 }
             }
         }
-        return contracts
     }
 
     companion object {

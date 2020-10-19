@@ -27,8 +27,7 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
         val effectiveStart = selection.blockStart.coerceAtMost(latestBlockNumber.toLong() - margin)
         val effectiveEnd = (selection.blockStart + selection.blocks).coerceAtMost(latestBlockNumber.toLong() - margin)
         logger.log(network, "searching $effectiveStart through $effectiveEnd")
-        val contracts = web3Client.loadContracts(effectiveStart, effectiveEnd)
-        contracts.forEach { contract ->
+        web3Client.loadContracts(effectiveStart, effectiveEnd).forEach { contract ->
             val programHistogramBuilder = ProgramHistogramBuilder()
             val programHistogram = programHistogramBuilder.histogram(contract.bytecode)
             val programIdentifier = ProgramIdentifier()
