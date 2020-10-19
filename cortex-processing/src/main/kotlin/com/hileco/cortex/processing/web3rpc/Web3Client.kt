@@ -10,8 +10,8 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import java.math.BigInteger
 
-class Web3Client {
-    private val web3j: Web3j = Web3j.build(HttpService())
+class Web3Client(endpoint: String) {
+    private val web3j: Web3j = Web3j.build(HttpService(endpoint))
     private val transactionReceiptProcessor = PollingTransactionReceiptProcessor(web3j, 100, 100)
 
     fun loadNetworkId(): String {

@@ -14,7 +14,7 @@ class ReportCommand : CliktCommand(name = "report", help = "Print the analysis r
 
     override fun run() {
         val modelClient = ModelClient()
-        val programSelection = selection.selectPrograms(modelClient)
+        val programSelection = selection.programs(modelClient)
         programSelection.forEachRemaining { program ->
             if (program.analyses.isEmpty()) {
                 logger.log(program, "Has no analysis reports")

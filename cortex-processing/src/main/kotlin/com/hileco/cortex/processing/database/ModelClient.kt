@@ -17,21 +17,21 @@ class ModelClient {
     }
 
     /**
-     * Retrieves a [NetworkModel] by name.
+     * Retrieves a [NetworkModel] representation of the given [Network].
      */
-    fun networkByName(name: String): NetworkModel? {
+    fun network(network: Network): NetworkModel? {
         return databaseClient.networks().find(Document(mapOf(
-                "name" to name
+                "name" to network.internalName
         ))).firstOrNull()
     }
 
     /**
      * Updates a given [NetworkModel].
      */
-    fun networkUpdateLatestBlock(model: NetworkModel, latestBlock: BigDecimal) {
+    fun networkUpdateLatestBlock(network: Network, latestBlock: BigDecimal) {
         databaseClient.networks().updateMany(
                 Document(mapOf(
-                        "name" to model.name
+                        "name" to network.internalName
                 )),
                 Document("\$set", Document("latestBlock", latestBlock))
         )
@@ -40,10 +40,10 @@ class ModelClient {
     /**
      * Updates a given [NetworkModel].
      */
-    fun networkUpdateScanningBlock(model: NetworkModel, scanningBlock: BigDecimal) {
+    fun networkUpdateScanningBlock(network: Network, scanningBlock: BigDecimal) {
         databaseClient.networks().updateMany(
                 Document(mapOf(
-                        "name" to model.name
+                        "name" to network.internalName
                 )),
                 Document("\$set", Document("scanningBlock", scanningBlock))
         )
@@ -71,19 +71,19 @@ class ModelClient {
         )
     }
 
-    fun program(network: NetworkModel, programAddress: String): ProgramModel? {
+    fun program(network: Network, programAddress: String): ProgramModel? {
         return databaseClient.programs().find(
                 Document(mapOf(
-                        "location.networkName" to network.name,
+                        "location.networkName" to network.internalName,
                         "location.programAddress" to programAddress
                 )))
                 .firstOrNull()
     }
 
-    fun programs(network: NetworkModel, blockStart: BigDecimal, blockEnd: BigDecimal): Iterator<ProgramModel> {
+    fun programs(network: Network, blockStart: BigDecimal, blockEnd: BigDecimal): Iterator<ProgramModel> {
         return databaseClient.programs().find(
                 Document(mapOf(
-                        "location.networkName" to network.name,
+                        "location.networkName" to network.internalName,
                         "location.blockNumber" to Document("\$gte", blockStart),
                         "location.blockNumber" to Document("\$lte", blockEnd)
                 )))

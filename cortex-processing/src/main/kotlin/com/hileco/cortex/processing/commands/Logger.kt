@@ -1,15 +1,15 @@
 package com.hileco.cortex.processing.commands
 
-import com.hileco.cortex.processing.database.NetworkModel
+import com.hileco.cortex.processing.database.Network
 import com.hileco.cortex.processing.database.ProgramModel
 
 class Logger {
     fun log(text: String) {
-        println("[---:---] $text")
+        println("[---] [---] $text")
     }
 
-    fun log(networkModel: NetworkModel, text: String) {
-        println("[${networkModel.name}] $text")
+    fun log(network: Network, text: String) {
+        println("[${network.internalName}] [---] $text")
     }
 
     fun log(programModel: ProgramModel, text: String) {

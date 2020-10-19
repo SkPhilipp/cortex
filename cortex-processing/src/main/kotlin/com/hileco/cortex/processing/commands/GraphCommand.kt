@@ -19,7 +19,7 @@ class GraphCommand : CliktCommand(name = "graph", help = "Print the analysis gra
 
     override fun run() {
         val modelClient = ModelClient()
-        val programSelection = selection.selectPrograms(modelClient)
+        val programSelection = selection.programs(modelClient)
         programSelection.forEachRemaining { program ->
             val ethereumParser = EthereumParser()
             val ethereumInstructions = ethereumParser.parse(program.bytecode.deserializeBytes())

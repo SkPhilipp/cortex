@@ -35,7 +35,7 @@ class AnalyzeCommand : CliktCommand(name = "analyze", help = "Analyze the next a
 
     override fun run() {
         val modelClient = ModelClient()
-        val programSelection = selection.selectPrograms(modelClient)
+        val programSelection = selection.programs(modelClient)
         programSelection.forEachRemaining { program ->
             Logger.logger.log(program, "Analyzing")
             val report = analyze(program)

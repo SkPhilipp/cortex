@@ -11,10 +11,10 @@ class BarriersDeployCommand : CliktCommand(name = "barriers-deploy", help = "Dep
     private val network by option(help = "Network within which to operate").network()
 
     override fun run() {
-        if (network.name != Network.ETHEREUM_PRIVATE.internalName) {
+        if (network != Network.ETHEREUM_PRIVATE) {
             throw IllegalStateException("This action is only allowed on programs on the ${Network.ETHEREUM_PRIVATE} network")
         }
-        val web3Client = Web3Client()
+        val web3Client = Web3Client(network.defaultEndpoint)
         val web3ActiveNetworkId = web3Client.loadNetworkId()
         if (web3ActiveNetworkId != Network.ETHEREUM_PRIVATE.blockchainId) {
             throw IllegalStateException("Web3 client is not running against the ${Network.ETHEREUM_PRIVATE} network, instead has network id of $web3ActiveNetworkId")

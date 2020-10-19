@@ -16,19 +16,19 @@ class BarriersAllocateCommand : CliktCommand(name = "barriers-allocate", help = 
             .defaultByName("blocks")
 
     override fun run() {
-        val selectedNetwork = selection.selectNetwork()
-        if (selectedNetwork.name != Network.ETHEREUM_PRIVATE.internalName) {
+        val network = selection.network()
+        if (network != Network.ETHEREUM_PRIVATE) {
             throw IllegalStateException("This action is only allowed on programs on the ${Network.ETHEREUM_PRIVATE} network")
         }
-        val web3Client = Web3Client()
+        val web3Client = Web3Client(network.defaultEndpoint)
         val web3ActiveNetworkId = web3Client.loadNetworkId()
-        if (web3ActiveNetworkId != selectedNetwork.blockchainId) {
+        if (web3ActiveNetworkId != network.blockchainId) {
             throw IllegalStateException("Web3 client is not running against the ${Network.ETHEREUM_PRIVATE} network, instead has network id of $web3ActiveNetworkId")
         }
         val modelClient = ModelClient()
-        val programSelection = selection.selectPrograms(modelClient)
+        val programSelection = selection.programs(modelClient)
         programSelection.forEach { program ->
-            logger.log(selectedNetwork, "Sending wei to ${program.location.programAddress}")
+            logger.log(network, "Sending wei to ${program.location.programAddress}")
             web3Client.sendWei(program.location.programAddress, BigInteger.valueOf(1000))
         }
     }

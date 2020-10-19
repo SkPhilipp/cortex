@@ -18,14 +18,15 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
     private val margin by option(help = "Distance to keep from the most recent block").long().default(10)
 
     override fun run() {
-        val web3Client = Web3Client()
+        val network = selection.network()
+        val web3Client = Web3Client(network.defaultEndpoint)
         val latestBlockNumber = web3Client.loadBlockNumber()
         val modelClient = ModelClient()
-        modelClient.networkUpdateLatestBlock(selection.blocksNetwork, latestBlockNumber.toBigDecimal())
-        logger.log(selection.blocksNetwork, "latest block is $latestBlockNumber")
+        modelClient.networkUpdateLatestBlock(network, latestBlockNumber.toBigDecimal())
+        logger.log(network, "latest block is $latestBlockNumber")
         val effectiveStart = selection.blockStart.coerceAtMost(latestBlockNumber.toLong() - margin)
         val effectiveEnd = (selection.blockStart + selection.blocks).coerceAtMost(latestBlockNumber.toLong() - margin)
-        logger.log(selection.blocksNetwork, "searching $effectiveStart through $effectiveEnd")
+        logger.log(network, "searching $effectiveStart through $effectiveEnd")
         val contracts = web3Client.loadContracts(effectiveStart, effectiveEnd)
         contracts.forEach { contract ->
             val programHistogramBuilder = ProgramHistogramBuilder()
@@ -34,7 +35,7 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
             val programIdentity = programIdentifier.identify(programHistogram)
             val programModel = ProgramModel(
                     location = TransactionLocationModel(
-                            networkName = selection.blocksNetwork.name,
+                            networkName = network.internalName,
                             blockNumber = contract.blockNumberCreated.toBigDecimal(),
                             transactionHash = contract.transactionHash,
                             programAddress = contract.address
