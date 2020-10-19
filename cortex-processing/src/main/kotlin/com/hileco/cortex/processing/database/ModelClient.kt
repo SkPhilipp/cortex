@@ -17,23 +17,6 @@ class ModelClient {
     }
 
     /**
-     * Retrieves a [NetworkModel] where processing is true.
-     */
-    fun networkProcessing(): NetworkModel? {
-        return databaseClient.networks().find(Document("processing", true)).firstOrNull()
-    }
-
-    /**
-     * Retrieves a [NetworkModel] by network and networkIdentifier.
-     */
-    fun networkByNetworkAndNetworkIdentifier(network: String, networkIdentifier: String): NetworkModel? {
-        return databaseClient.networks().find(Document(mapOf(
-                "network" to network,
-                "networkIdentifier" to networkIdentifier
-        ))).firstOrNull()
-    }
-
-    /**
      * Retrieves a [NetworkModel] by name.
      */
     fun networkByName(name: String): NetworkModel? {
@@ -100,7 +83,7 @@ class ModelClient {
     fun programs(network: NetworkModel, blockStart: BigDecimal, blockEnd: BigDecimal): Iterator<ProgramModel> {
         return databaseClient.programs().find(
                 Document(mapOf(
-                        "location.blockchainName" to network.name,
+                        "location.networkName" to network.name,
                         "location.blockNumber" to Document("\$gte", blockStart),
                         "location.blockNumber" to Document("\$lte", blockEnd)
                 )))
@@ -112,10 +95,6 @@ class ModelClient {
                 .sort(Document("location.blockNumber", 1))
                 .skip(skip)
                 .limit(limit)
-    }
-
-    private fun setupNetwork(name: String, blockchain: String, blockchainId: String) {
-
     }
 
     fun setup() {

@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.groups.OptionGroup
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.long
 import com.hileco.cortex.processing.database.ModelClient
+import com.hileco.cortex.processing.database.Network
 import com.hileco.cortex.processing.database.NetworkModel
 import com.hileco.cortex.processing.database.ProgramModel
 import com.hileco.cortex.vm.bytes.toBackedInteger
@@ -15,7 +16,7 @@ fun RawOption.network() = convert {
     return@convert modelClient.networkByName(it) ?: throw BadParameterValue("No network with name '$it'")
 }.defaultLazy {
     val modelClient = ModelClient()
-    modelClient.networkProcessing() ?: throw BadParameterValue("No default network")
+    modelClient.networkByName(Network.ETHEREUM_PRIVATE.internalName) ?: throw BadParameterValue("No ${Network.ETHEREUM_PRIVATE} network to default to")
 }
 
 fun RawOption.backedInteger() = convert {

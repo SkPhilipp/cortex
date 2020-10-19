@@ -3,6 +3,14 @@ services:
   miner:
     container_name: "miner"
     image: ethereum/client-go:alltools-v1.9.16
-    command: "geth --datadir ./volume/datadir --dev --dev.period 1 --rpcapi personal,db,eth,net,web3 --rpc --rpcaddr 0.0.0.0"
+    command: "geth --datadir ./volume/datadir --dev --dev.period 1 --http --http.api personal,eth,net,web3 --http.addr 0.0.0.0"
     ports:
       - "8545:8545"
+  mongo:
+    container_name: "mongo"
+    image: kroniak/ssh-client:3.9
+    command: "bash -c 'cp -R /root/mount/.ssh ~/ && chmod -R 600 ~/.ssh && ssh -4 cortex-001 -L *:27017:127.0.0.1:27017 -N'"
+    volumes:
+      - ~/.ssh:/root/mount/.ssh:ro
+    ports:
+      - "27017:27017"
