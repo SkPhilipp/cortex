@@ -10,7 +10,7 @@ internal class ParallelTaskTest {
     @Test
     fun test() {
         val counter = AtomicInteger(20)
-        val parallelTask = ParallelTask(0, 5, 3) {
+        val parallelTask = ParallelTask(0, 4, 3) {
             counter.incrementAndGet()
         }
 

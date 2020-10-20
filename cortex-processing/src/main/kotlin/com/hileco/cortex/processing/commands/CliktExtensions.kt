@@ -41,7 +41,7 @@ class AddressSelectionContext : SelectionContext("Options for selecting by a sin
 class BlocksSelectionContext : SelectionContext("Options for selecting within a range of blocks") {
     private val blockNetwork by option(help = "Network within which to operate").network()
     val blockStart by option(help = "Blocks within which to operate").long().default(0)
-    val blocks by option(help = "Amount of blocks to operate in forwards (positive) or backwards (negative) from the block start").long().default(1)
+    val blocks by option(help = "Amount of additional blocks to operate on, from the block start").long().default(0)
 
     override fun programs(modelClient: ModelClient): Iterator<ProgramModel> {
         val start = BigDecimal.valueOf(blockStart)

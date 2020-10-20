@@ -67,8 +67,9 @@ class Web3Client(endpoint: String) {
 
     private fun loadContracts(ethBlock: EthBlock): Sequence<Web3Contract> {
         return ethBlock.block.transactions.asSequence()
-                .filterIsInstance(EthBlock.TransactionHash::class.java)
-                .map { transactionReceiptProcessor.waitForTransactionReceipt(it.get()) }
+                .filterIsInstance(EthBlock.TransactionObject::class.java)
+                .filter { it.gas.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE }
+                .map { transactionReceiptProcessor.waitForTransactionReceipt(it.hash) }
                 .filter { it.contractAddress != null && it.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE }
                 .map { loadContract(it) }
     }
@@ -81,7 +82,7 @@ class Web3Client(endpoint: String) {
             it.printStackTrace()
         }) { blockNumber ->
             val ethBlockNumber = DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber))
-            val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, false).send()
+            val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, true).send()
             loadContracts(ethBlock).forEach {
                 onContractLoaded(it)
             }
