@@ -7,6 +7,5 @@ data class Web3Contract(
         val bytecode: String,
         val address: String,
         val balance: BigInteger,
-        val blockNumberCreated: BigInteger,
-        val blockNumberLoaded: BigInteger
+        val blockNumberCreated: BigInteger
 )

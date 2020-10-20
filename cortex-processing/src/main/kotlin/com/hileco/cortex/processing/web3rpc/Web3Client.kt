@@ -3,7 +3,7 @@ package com.hileco.cortex.processing.web3rpc
 import com.hileco.cortex.processing.web3rpc.parallelism.ParallelTask
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
-import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.DefaultBlockParameterName.LATEST
 import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthBlock
 import org.web3j.protocol.core.methods.response.TransactionReceipt
@@ -26,7 +26,7 @@ class Web3Client(endpoint: String) {
     }
 
     private fun loadNOnce(account: String): BigInteger? {
-        val ethGetTransactionCount = web3j.ethGetTransactionCount(account, DefaultBlockParameterName.LATEST).send()
+        val ethGetTransactionCount = web3j.ethGetTransactionCount(account, LATEST).send()
         return ethGetTransactionCount.transactionCount
     }
 
@@ -53,40 +53,36 @@ class Web3Client(endpoint: String) {
         return transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.transactionHash).transactionHash
     }
 
-    private fun loadContract(transactionReceipt: TransactionReceipt, blockNumberLatest: BigInteger): Web3Contract {
-        val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockNumberLatest)
-        val ethCode = web3j.ethGetCode(transactionReceipt.contractAddress, blockNumberContentParameter).send()
-        val ethGetBalance = web3j.ethGetBalance(transactionReceipt.contractAddress, blockNumberContentParameter).send()
+    private fun loadContract(transactionReceipt: TransactionReceipt): Web3Contract {
+        val ethCode = web3j.ethGetCode(transactionReceipt.contractAddress, LATEST).send()
+        val ethGetBalance = web3j.ethGetBalance(transactionReceipt.contractAddress, LATEST).send()
         return Web3Contract(
                 transactionReceipt.transactionHash,
                 ethCode.code,
                 transactionReceipt.contractAddress,
                 ethGetBalance.balance,
-                transactionReceipt.blockNumber,
-                blockNumberLatest
+                transactionReceipt.blockNumber
         )
     }
 
-    private fun loadContracts(ethBlock: EthBlock,
-                              blockNumberLatest: BigInteger): Sequence<Web3Contract> {
+    private fun loadContracts(ethBlock: EthBlock): Sequence<Web3Contract> {
         return ethBlock.block.transactions.asSequence()
                 .filterIsInstance(EthBlock.TransactionHash::class.java)
                 .map { transactionReceiptProcessor.waitForTransactionReceipt(it.get()) }
                 .filter { it.contractAddress != null && it.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE }
-                .map { loadContract(it, blockNumberLatest) }
+                .map { loadContract(it) }
     }
 
     fun loadContracts(blockStart: Long,
                       blockEnd: Long,
                       threads: Int,
                       onContractLoaded: (Web3Contract) -> Unit): ParallelTask {
-        val blockNumberLatest = loadBlockNumber()
         val parallelTask = ParallelTask(blockStart, blockEnd, threads, onError = {
             it.printStackTrace()
         }) { blockNumber ->
             val ethBlockNumber = DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber))
             val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, false).send()
-            loadContracts(ethBlock, blockNumberLatest).forEach {
+            loadContracts(ethBlock).forEach {
                 onContractLoaded(it)
             }
         }
