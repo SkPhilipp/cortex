@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong
 class ParallelTask(fromInclusive: Long,
                    private val untilExclusive: Long,
                    private val threads: Int,
+                   private val onError: (e: Exception) -> Unit = {},
                    private val task: (index: Long) -> Unit) {
     private val nextIndex = AtomicLong(fromInclusive)
     private val resumeCounter = ResumeCounter(fromInclusive)
@@ -29,15 +30,17 @@ class ParallelTask(fromInclusive: Long,
         for (i in 0 until threads) {
             executorService.submit {
                 var index: Long = nextIndex.getAndIncrement()
-                while (index < untilExclusive) {
-                    try {
+                try {
+                    while (index < untilExclusive) {
                         task(index)
-                    } finally {
                         resumeCounter.complete(index)
+                        index = nextIndex.getAndIncrement()
                     }
-                    index = nextIndex.getAndIncrement()
+                } catch (e: Exception) {
+                    onError(e)
+                } finally {
+                    countDownLatch.countDown()
                 }
-                countDownLatch.countDown()
             }
         }
     }

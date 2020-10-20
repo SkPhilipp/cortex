@@ -6,7 +6,7 @@ import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthBlock
-import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult
+import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import java.math.BigInteger
@@ -53,32 +53,41 @@ class Web3Client(endpoint: String) {
         return transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.transactionHash).transactionHash
     }
 
+    private fun loadContract(transactionReceipt: TransactionReceipt, blockNumberLatest: BigInteger): Web3Contract {
+        val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockNumberLatest)
+        val ethCode = web3j.ethGetCode(transactionReceipt.contractAddress, blockNumberContentParameter).send()
+        val ethGetBalance = web3j.ethGetBalance(transactionReceipt.contractAddress, blockNumberContentParameter).send()
+        return Web3Contract(
+                transactionReceipt.transactionHash,
+                ethCode.code,
+                transactionReceipt.contractAddress,
+                ethGetBalance.balance,
+                transactionReceipt.blockNumber,
+                blockNumberLatest
+        )
+    }
+
+    private fun loadContracts(ethBlock: EthBlock,
+                              blockNumberLatest: BigInteger): Sequence<Web3Contract> {
+        return ethBlock.block.transactions.asSequence()
+                .filterIsInstance(EthBlock.TransactionHash::class.java)
+                .map { transactionReceiptProcessor.waitForTransactionReceipt(it.get()) }
+                .filter { it.contractAddress != null && it.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE }
+                .map { loadContract(it, blockNumberLatest) }
+    }
+
     fun loadContracts(blockStart: Long,
                       blockEnd: Long,
                       threads: Int,
                       onContractLoaded: (Web3Contract) -> Unit): ParallelTask {
         val blockNumberLatest = loadBlockNumber()
-        val parallelTask = ParallelTask(blockStart, blockEnd, threads) { blockNumber ->
+        val parallelTask = ParallelTask(blockStart, blockEnd, threads, onError = {
+            it.printStackTrace()
+        }) { blockNumber ->
             val ethBlockNumber = DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber))
             val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, false).send()
-            ethBlock.block.transactions.asSequence().forEach { ethTransaction: TransactionResult<*> ->
-                if (ethTransaction is EthBlock.TransactionHash) {
-                    val ethTransactionReceipt = transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.get())
-                    if (ethTransactionReceipt.contractAddress != null
-                            && ethTransactionReceipt.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE) {
-                        val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockNumberLatest)
-                        val ethCode = web3j.ethGetCode(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
-                        val ethGetBalance = web3j.ethGetBalance(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
-                        onContractLoaded(Web3Contract(
-                                ethTransaction.get(),
-                                ethCode.code,
-                                ethTransactionReceipt.contractAddress,
-                                ethGetBalance.balance,
-                                BigInteger.valueOf(blockNumber),
-                                blockNumberLatest
-                        ))
-                    }
-                }
+            loadContracts(ethBlock, blockNumberLatest).forEach {
+                onContractLoaded(it)
             }
         }
         parallelTask.start()
