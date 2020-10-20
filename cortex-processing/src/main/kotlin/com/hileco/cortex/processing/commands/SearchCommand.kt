@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.groups.provideDelegate
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import com.hileco.cortex.processing.commands.Logger.Companion.logger
 import com.hileco.cortex.processing.database.ModelClient
@@ -16,6 +17,7 @@ import com.hileco.cortex.processing.web3rpc.Web3Client
 class SearchCommand : CliktCommand(name = "search", help = "Searches the active blockchain for programs") {
     private val selection by BlocksSelectionContext()
     private val margin by option(help = "Distance to keep from the most recent block").long().default(10)
+    private val threads by option(help = "Amount of search threads").int().default(8)
 
     override fun run() {
         val network = selection.network()
@@ -27,7 +29,7 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
         val effectiveStart = selection.blockStart.coerceAtMost(latestBlockNumber.toLong() - margin)
         val effectiveEnd = (selection.blockStart + selection.blocks).coerceAtMost(latestBlockNumber.toLong() - margin)
         logger.log(network, "searching $effectiveStart through $effectiveEnd")
-        web3Client.loadContracts(effectiveStart, effectiveEnd).forEach { contract ->
+        val parallelTask = web3Client.loadContracts(effectiveStart, effectiveEnd, threads) { contract ->
             val programHistogramBuilder = ProgramHistogramBuilder()
             val programHistogram = programHistogramBuilder.histogram(contract.bytecode)
             val programIdentifier = ProgramIdentifier()
@@ -47,7 +49,11 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
                     analyses = mutableListOf()
             )
             modelClient.programEnsure(programModel)
-            logger.log(programModel, "found (identified as '${programModel.identifiedAs}')")
+            logger.log(programModel, "found a program (identified as '${programModel.identifiedAs}')")
+        }
+        while (!parallelTask.isComplete()) {
+            logger.log(network, "highest searched block is ${parallelTask.resumeFrom()}")
+            Thread.sleep(1000)
         }
     }
 }

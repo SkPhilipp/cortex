@@ -1,5 +1,6 @@
 package com.hileco.cortex.processing.web3rpc
 
+import com.hileco.cortex.processing.web3rpc.parallelism.ParallelTask
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
@@ -52,9 +53,12 @@ class Web3Client(endpoint: String) {
         return transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.transactionHash).transactionHash
     }
 
-    fun loadContracts(blockStart: Long, blockEnd: Long) = sequence {
+    fun loadContracts(blockStart: Long,
+                      blockEnd: Long,
+                      threads: Int,
+                      onContractLoaded: (Web3Contract) -> Unit): ParallelTask {
         val blockNumberLatest = loadBlockNumber()
-        for (blockNumber in blockStart..blockEnd) {
+        val parallelTask = ParallelTask(blockStart, blockEnd, threads) { blockNumber ->
             val ethBlockNumber = DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber))
             val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, false).send()
             ethBlock.block.transactions.asSequence().forEach { ethTransaction: TransactionResult<*> ->
@@ -65,7 +69,7 @@ class Web3Client(endpoint: String) {
                         val blockNumberContentParameter = DefaultBlockParameter.valueOf(blockNumberLatest)
                         val ethCode = web3j.ethGetCode(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
                         val ethGetBalance = web3j.ethGetBalance(ethTransactionReceipt.contractAddress, blockNumberContentParameter).send()
-                        yield(Web3Contract(
+                        onContractLoaded(Web3Contract(
                                 ethTransaction.get(),
                                 ethCode.code,
                                 ethTransactionReceipt.contractAddress,
@@ -77,6 +81,8 @@ class Web3Client(endpoint: String) {
                 }
             }
         }
+        parallelTask.start()
+        return parallelTask
     }
 
     companion object {

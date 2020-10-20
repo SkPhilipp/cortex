@@ -10,11 +10,12 @@ internal class ParallelTaskTest {
     @Test
     fun test() {
         val counter = AtomicInteger(20)
-        val parallelTask = ParallelTask(0, 5) {
+        val parallelTask = ParallelTask(0, 5, 3) {
             counter.incrementAndGet()
         }
 
-        parallelTask.run(3)
+        parallelTask.start()
+        parallelTask.await()
 
         Assert.assertEquals(25, counter.get())
         Assert.assertEquals(5, parallelTask.resumeFrom())
