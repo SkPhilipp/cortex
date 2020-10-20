@@ -9,7 +9,7 @@ services:
   mongo:
     container_name: "mongo"
     image: kroniak/ssh-client:3.9
-    command: "bash -c 'cp -R /root/mount/.ssh ~/ && chmod -R 600 ~/.ssh && ssh -4 cortex-001 -L *:27017:127.0.0.1:27017 -N'"
+    command: "bash -c 'cp -R /root/mount/.ssh ~/ && chmod -R 600 ~/.ssh && ssh -o ServerAliveInterval=60 -4 cortex-001 -L *:27017:127.0.0.1:27017 -N'"
     volumes:
       - ~/.ssh:/root/mount/.ssh:ro
     ports:
