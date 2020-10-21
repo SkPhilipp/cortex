@@ -26,7 +26,7 @@ When these steps are completed, the `cortex` command can run against your blockc
     cortex report --selection blocks --blocks 1000000
 
     # analyze the mainnet
-    cortex search --block-network mainnet --block-start 80000 --blocks 100000
+    cortex search --block-network mainnet --block-start 135383 --blocks 100000
     cortex analyze --selection blocks --block-network mainnet --block-start 0 --blocks 100000
     
     # analyze a mainnet barrier barrier program
