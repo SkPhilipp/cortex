@@ -33,11 +33,6 @@ data class AnalysisReportModel @BsonCreator constructor(
         @BsonProperty("errorCause") val errorCause: String? = null
 )
 
-data class TransactionModel @BsonCreator constructor(
-        @BsonProperty("location") val location: TransactionLocationModel,
-        @BsonProperty("createdTime") val createdTime: LocalDateTime = LocalDateTime.now()
-)
-
 data class TransactionLocationModel @BsonCreator constructor(
         @BsonProperty("networkName") val networkName: String,
         @BsonProperty("blockNumber") val blockNumber: BigDecimal,

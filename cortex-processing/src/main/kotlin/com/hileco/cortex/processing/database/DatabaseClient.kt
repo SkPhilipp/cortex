@@ -47,10 +47,6 @@ class DatabaseClient {
         return database.getCollection("program", ProgramModel::class.java)
     }
 
-    fun transactions(): MongoCollection<TransactionModel> {
-        return database.getCollection("transaction", TransactionModel::class.java)
-    }
-
     fun asDocument(any: Any): BsonDocument {
         return BsonDocumentWrapper.asBsonDocument(any, database.codecRegistry)
     }
@@ -62,8 +58,6 @@ class DatabaseClient {
         networks().deleteMany(Document())
         Logger.logger.log("Clearing all programs")
         programs().deleteMany(Document())
-        Logger.logger.log("Clearing all transactions")
-        transactions().deleteMany(Document())
     }
 
     fun setup() {
