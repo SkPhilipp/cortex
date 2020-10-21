@@ -53,8 +53,11 @@ class Web3Client(endpoint: String) {
         return transactionReceiptProcessor.waitForTransactionReceipt(ethTransaction.transactionHash).transactionHash
     }
 
-    private fun loadContract(transactionReceipt: TransactionReceipt): Web3Contract {
+    private fun loadContract(transactionReceipt: TransactionReceipt): Web3Contract? {
         val ethCode = web3j.ethGetCode(transactionReceipt.contractAddress, LATEST).send()
+        if (ethCode.code == EMPTY_CONTRACT) {
+            return null
+        }
         val ethGetBalance = web3j.ethGetBalance(transactionReceipt.contractAddress, LATEST).send()
         return Web3Contract(
                 transactionReceipt.transactionHash,
@@ -65,13 +68,17 @@ class Web3Client(endpoint: String) {
         )
     }
 
+    private fun couldCreateContract(transactionObject: EthBlock.TransactionObject): Boolean {
+        return transactionObject.gas.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE
+    }
+
     private fun loadContracts(ethBlock: EthBlock): Sequence<Web3Contract> {
         return ethBlock.block.transactions.asSequence()
                 .filterIsInstance(EthBlock.TransactionObject::class.java)
-                .filter { it.gas.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE }
+                .filter { couldCreateContract(it) }
                 .map { transactionReceiptProcessor.waitForTransactionReceipt(it.hash) }
-                .filter { it.contractAddress != null && it.gasUsed.toLong() > GAS_CONTRACT_CREATE + GAS_TRANSACTION_CREATE }
-                .map { loadContract(it) }
+                .filter { it.contractAddress != null }
+                .mapNotNull { loadContract(it) }
     }
 
     fun loadContracts(blockStart: Long,
@@ -92,6 +99,7 @@ class Web3Client(endpoint: String) {
     }
 
     companion object {
+        const val EMPTY_CONTRACT = "0x"
         const val GAS_TRANSACTION_CREATE = 21000
         const val GAS_CONTRACT_CREATE = 32000
     }
