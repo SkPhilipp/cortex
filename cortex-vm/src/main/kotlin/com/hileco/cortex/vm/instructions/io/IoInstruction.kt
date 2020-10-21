@@ -12,6 +12,7 @@ abstract class IoInstruction(val programStoreZone: ProgramStoreZone) : Instructi
             ProgramStoreZone.MEMORY -> listOf(STACK, MEMORY)
             ProgramStoreZone.DISK -> listOf(STACK, DISK)
             ProgramStoreZone.CALL_DATA -> listOf(STACK, CALL_DATA)
+            ProgramStoreZone.CODE -> listOf(STACK, CODE)
         }
 
     override fun toString(): String {

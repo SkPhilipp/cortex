@@ -1,7 +1,7 @@
 version: '2'
 services:
   miner:
-    container_name: "miner"
+    container_name: "geth"
     image: ethereum/client-go:alltools-v1.9.16
     command: "geth --datadir ./volume/datadir --dev --dev.period 1 --http --http.api personal,eth,net,web3 --http.addr 0.0.0.0"
     ports:

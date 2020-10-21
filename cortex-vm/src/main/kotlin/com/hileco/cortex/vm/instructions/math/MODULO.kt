@@ -1,3 +1,3 @@
 package com.hileco.cortex.vm.instructions.math
 
-class MODULO : MathInstruction()
+class MODULO(signed: Boolean = false) : MathInstruction()

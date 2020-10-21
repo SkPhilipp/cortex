@@ -6,5 +6,6 @@ enum class InstructionModifier {
     DISK,
     INSTRUCTION_POSITION,
     PROGRAM_CONTEXT,
-    CALL_DATA
+    CALL_DATA,
+    CODE
 }

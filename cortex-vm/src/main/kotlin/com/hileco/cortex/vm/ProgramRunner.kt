@@ -232,6 +232,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
+                    CODE -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $instruction.programStoreZone")
                 }
                 if (address.toInt() + LOAD.SIZE > storage.limit()) {
                     throw ProgramException(STORAGE_ACCESS_OUT_OF_BOUNDS)
@@ -247,7 +248,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                 val storage: VmByteArray = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
-                    CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $instruction.programStoreZone")
+                    else -> throw IllegalArgumentException("Unsupported ProgramStoreZone: $instruction.programStoreZone")
                 }
                 val value = programContext.stack.pop()
                 if (address.toInt() + LOAD.SIZE > storage.limit()) {
@@ -373,7 +374,7 @@ class ProgramRunner(private val virtualMachine: VirtualMachine,
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else ZERO_32
                         programContext.stack.push(address)
                     }
-                    CALL_DATA_SIZE -> {
+                    TRANSACTION_CALL_DATA_SIZE -> {
                         val size = programContext.callData.size()
                         programContext.stack.push(size.toBackedInteger())
                     }

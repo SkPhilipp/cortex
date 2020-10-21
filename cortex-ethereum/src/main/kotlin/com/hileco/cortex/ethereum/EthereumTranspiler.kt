@@ -61,7 +61,7 @@ class EthereumTranspiler {
             EthereumOperation.CALLER -> VARIABLE(ADDRESS_CALLER)
             EthereumOperation.CALLVALUE -> VARIABLE(TRANSACTION_FUNDS)
             EthereumOperation.CALLDATALOAD -> LOAD(CALL_DATA)
-            EthereumOperation.CALLDATASIZE -> VARIABLE(CALL_DATA_SIZE)
+            EthereumOperation.CALLDATASIZE -> VARIABLE(TRANSACTION_CALL_DATA_SIZE)
             EthereumOperation.CALLDATACOPY -> HALT(UNKNOWN_INSTRUCTION, "CALLDATACOPY")
             EthereumOperation.CODESIZE -> HALT(UNKNOWN_INSTRUCTION, "CODESIZE")
             EthereumOperation.CODECOPY -> HALT(UNKNOWN_INSTRUCTION, "CODECOPY")

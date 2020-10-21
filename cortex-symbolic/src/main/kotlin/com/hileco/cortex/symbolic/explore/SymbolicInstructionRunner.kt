@@ -179,6 +179,7 @@ class SymbolicInstructionRunner {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
+                    CODE -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")
                 }
                 val expression = storage[address] ?: VariableExtract(instruction.programStoreZone, addressValue)
                 programContext.stack.push(expression)
@@ -194,6 +195,7 @@ class SymbolicInstructionRunner {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")
+                    CODE -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")
                 }
                 val valueExpression = programContext.stack.pop()
                 storage[addressValue.constant] = valueExpression
@@ -337,7 +339,7 @@ class SymbolicInstructionRunner {
                         val address = if (virtualMachine.programs.size > 1) virtualMachine.programs.last().program.address else ZERO_32
                         programContext.stack.push(Value(address))
                     }
-                    CALL_DATA_SIZE -> {
+                    TRANSACTION_CALL_DATA_SIZE -> {
                         // TODO: This is a quick workaround to get CALL_DATA_SIZE to work
                         programContext.stack.push(Variable("CALL_DATA_SIZE", 256))
                     }
