@@ -4,11 +4,13 @@ Smart contracts open up new attack surfaces. Their machine-code, storage, and an
 
 For examples, see https://cortex.minesec.net/.
 
-## Server
+## Hosting
+
+### Server
 
 See [install.sh](install.sh) for analysis host setup.
 
-## CLI
+### CLI Interaction
 
 - Add `cortex/cortex-processing/cortex` to your PATH.
 - Start a local Geth instance & tunnel to the development MongoDB using `docker-compose up`
@@ -31,3 +33,36 @@ When these steps are completed, the `cortex` command can run against your blockc
     cortex search --block-network mainnet --block-start 10809030
     cortex graph --selection address --program-network mainnet --program-address 0x41088ccccc467a384645794c54752e3f9d4a26fa
     cortex analyze --program-network mainnet --program-address 0x41088ccccc467a384645794c54752e3f9d4a26fa
+
+    # analyze a mainnet program which could not be decompiled
+    cortex graph --selection address --program-network mainnet --program-address 0xe28e72fcf78647adce1f1252f240bbfaebd63bcc
+    cortex analyze --program-network mainnet --program-address 0xe28e72fcf78647adce1f1252f240bbfaebd63bcc
+
+## Development
+
+### New Instructions
+
+Implementing an instruction is a fairly straightforward task.
+To ensure an instruction is implemented as such that it can be used with;
+- Concrete execution
+- Symbolic execution
+- Transpilers
+- Barrier programs
+Then refer to this guide.
+
+First, ensure you have the correct specification for the instruction you would like to add.
+Both https://ethereum.github.io/yellowpaper/paper.pdf and https://ethervm.io/ contain clear specifications.
+
+To implement the instruction, follow these steps:
+- Configure an instruction class in com.hileco.cortex.vm.instructions
+- Implement the concrete instruction in com.hileco.cortex.vm.ProgramRunner
+- Implement the concrete instruction tests in com.hileco.cortex.vm.ProgramRunnerTest
+- Implement the SMT solver translation as an com.hileco.cortex.symbolic.expressions.Expression
+- Implement the mapping to an Expression in com.hileco.cortex.symbolic.ExpressionGenerator
+- Implement the mapping to an Expression in com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner
+- Implement expression optimization in com.hileco.cortex.symbolic.ExpressionOptimizer (if possible)
+- If it opens a new solving case with added complexity, implement it as a com.hileco.cortex.vm.barrier.BarrierProgram
+- If it can be implemented in fast as part of the build test the BarrierProgram using com.hileco.cortex.vm.barrier.BarrierProgramTest
+- Create a matching Solidity implementation of the barrier program & compile it. (next to `barrier000.sol`), simply follow the name pattern
+- If the barrier program can be solved with symbolic explore, implement the solving in com.hileco.cortex.symbolic.explore.SymbolicProgramExplorerTest
+- Register the instruction in com.hileco.cortex.ethereum.EthereumTranspiler

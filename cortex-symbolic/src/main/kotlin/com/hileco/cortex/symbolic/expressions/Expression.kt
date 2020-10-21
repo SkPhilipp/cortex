@@ -11,11 +11,11 @@ import com.microsoft.z3.Expr
 abstract class Expression {
 
     /*
-        A comment on Z3's convention, as this class interfaces with Z3. Z3's interface may not be immediately
-        obvious; Z3 likes to abbreviate antyhing and everything possible to abbreviate.
+        A comment on Z3's convention, as this class interfaces with Z3.
 
+        Z3 likes to abbreviate antyhing and everything possible to abbreviate;
         Methods (for creating expressions) often follow the convention `make ($type)? (signed|unsigned)? $operation`.
-        This means to create a less-than on two bit vectors "make bit-vector unsigned less-than" would be needed.
+        This means to create a less-than operation on two bit vectors "make bit-vector unsigned less-than" would be needed.
 
         This is abbreviated as `mk BV U LT`; `mkBVULT`.
         Keep this convention in mind when reading or modifying this class.
