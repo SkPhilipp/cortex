@@ -66,3 +66,9 @@ To implement the instruction, follow these steps:
 - Create a matching Solidity implementation of the barrier program & compile it. (next to `barrier000.sol`), simply follow the name pattern
 - If the barrier program can be solved with symbolic explore, implement the solving in com.hileco.cortex.symbolic.explore.SymbolicProgramExplorerTest
 - Register the instruction in com.hileco.cortex.ethereum.EthereumTranspiler
+
+If needed you may locate unimplemented instructions which are used in the wild through the following command;
+
+    cortex graph --selection blocks --block-network mainnet --block-start 0 --blocks 1000000000 | grep UNKNOWN_INSTRUCTION | grep -v '(UNKNOWN:' | sort -u
+
+Note however that many contracts contain nonsense signatures at the end, these are currently graphed as instructions, as they may be JUMPable.
