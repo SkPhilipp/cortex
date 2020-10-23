@@ -35,9 +35,24 @@ ExecStart=/usr/bin/env geth --syncmode=fast --cache=2048 --rpcapi personal,eth,n
 [Install]
 WantedBy=multi-user.target
 EOF
-systemctl start geth
-systemctl enable geth
 
 # Parity
 apt install -y snapd
 snap install parity
+cat <<EOF > /etc/systemd/system/parity.service
+[Unit]
+Description=Parity RPC Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=owner
+ExecStart=/usr/bin/env parity --jsonrpc-apis 'web3,eth,net,rpc,secretstore' --jsonrpc-interface='127.0.0.1' --jsonrpc-hosts=all --db-compaction=ssd --cache-size=4096 --tracing=off --pruning=fast
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl enable --now parity
