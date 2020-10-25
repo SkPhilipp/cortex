@@ -6,7 +6,7 @@ enum class Network(
         val blockchainId: String,
         val defaultEndpoint: String
 ) {
-    ETHEREUM_MAINNET("mainnet", "Ethereum", "1", "https://mainnet.infura.io/v3/03bd45a1617a4748adc45da65ac9bc1f"),
+    ETHEREUM_MAINNET("mainnet", "Ethereum", "1", "http://localhost:8546"),
     ETHEREUM_ROPSTEN("ropsten", "Ethereum", "3", "https://ropsten.infura.io/v3/03bd45a1617a4748adc45da65ac9bc1f"),
     ETHEREUM_RINKEBY("rinkeby", "Ethereum", "4", "https://rinkeby.infura.io/v3/03bd45a1617a4748adc45da65ac9bc1f"),
     ETHEREUM_GOERLI("goerli", "Ethereum", "5", "https://goerli.infura.io/v3/03bd45a1617a4748adc45da65ac9bc1f"),
@@ -16,6 +16,6 @@ enum class Network(
     ETHEREUM_PRIVATE("private", "Ethereum", "1337", "http://localhost:8545");
 
     override fun toString(): String {
-        return "$internalName"
+        return internalName
     }
 }

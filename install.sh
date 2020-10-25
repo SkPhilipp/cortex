@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-# User Management
-useradd -m --shell /bin/bash cortex
-mkdir /home/cortex/.ssh
-cp ~/.ssh/authorized_keys /home/cortex/.ssh/authorized_keys
-chown -R cortex:cortex /home/cortex/.ssh
+apt install -y curl
 
 # MongoDB
 wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
@@ -14,29 +10,8 @@ apt install -y mongodb-org
 systemctl enable mongod
 systemctl start mongod
 
-# Geth
-add-apt-repository -y ppa:ethereum/ethereum
-apt update
-apt install -y ethereum
-useradd -m --shell /bin/bash geth
-cat <<EOF > /etc/systemd/system/geth.service
-[Unit]
-Description=Geth RPC Service
-After=network.target
-StartLimitIntervalSec=0
-
-[Service]
-Type=simple
-Restart=always
-RestartSec=1
-User=geth
-ExecStart=/usr/bin/env geth --syncmode=fast --cache=2048 --rpcapi personal,eth,net,web3 --rpc
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
 # Parity
+useradd -m --shell /bin/bash owner
 apt install -y snapd
 snap install parity
 cat <<EOF > /etc/systemd/system/parity.service
@@ -50,7 +25,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=owner
-ExecStart=/usr/bin/env parity --jsonrpc-apis 'web3,eth,net,rpc,secretstore' --jsonrpc-interface='127.0.0.1' --jsonrpc-hosts=all --db-compaction=ssd --cache-size=4096 --tracing=off --pruning=fast
+ExecStart=/usr/bin/env parity --jsonrpc-apis=all --jsonrpc-interface='127.0.0.1' --jsonrpc-hosts=all --db-compaction=ssd --cache-size=4096 --warp-barrier=11000000 --no-serve-light --min-peers=100 --max-peers=250 --snapshot-peers=100
 
 [Install]
 WantedBy=multi-user.target

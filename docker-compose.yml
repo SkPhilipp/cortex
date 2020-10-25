@@ -17,8 +17,8 @@ services:
   parity:
     container_name: "parity"
     image: kroniak/ssh-client:3.9
-    command: "bash -c 'cp -R /root/mount/.ssh ~/ && chmod -R 600 ~/.ssh && ssh -o ServerAliveInterval=60 -4 cortex-002 -L *:8545:127.0.0.1:8545 -N'"
+    command: "bash -c 'cp -R /root/mount/.ssh ~/ && chmod -R 600 ~/.ssh && ssh -o ServerAliveInterval=60 -4 cortex-home-001 -L *:8546:127.0.0.1:8545 -N'"
     volumes:
       - ~/.ssh:/root/mount/.ssh:ro
     ports:
-      - "8545:8545"
+      - "8546:8546"
