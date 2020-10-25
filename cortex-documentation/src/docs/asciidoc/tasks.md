@@ -7,6 +7,19 @@
 - Add assertions to verify that currently solved barrier programs stay as such
 - Verify that Symbolic Explore Barriers that remain unsolved are also unsolved in other Barrier tests
 
+### Performance
+
+- Check if there are potential Z3 strategies we can add https://www.cs.tau.ac.il/~msagiv/courses/asv/z3py/strategies-examples.htm
+- Verify whether soft assertions can help Z3 find better solutions
+
+### Visualization
+
+- Design and implement a new visualization scheme
+
+### Cases
+
+- Analyze & manually inspect `0xe28e72fcf78647adce1f1252f240bbfaebd63bcc`
+
 ### Processing
 
 - Split up Cortex Processing
@@ -51,14 +64,48 @@ Currently Explore continues until certain limits are reached. Alternative explor
 ### Solver Tactics & Strategies
 
 - Test variations of solver tactics and strategies and implement them to find effective strategies
+- Implement a custom strategy for SELFDESTRUCT
 
 ### Tracking Expression Optimizer
 
 - The expression optimizer can track variable constraints, simple inference may be possible for variables which are
   set to a fixed value. This allows for optimizations replacing any occurrence of the variable with the fixe value.
   Through these optimizations, we may optimize and evaluate constraints on JUMP_IF to verify whether a path is possible.
+- The expression optimize should skip re-optimizing expression subtrees which have already been optimized.
+
+### Stager Program
+
+Implement fully a customizable Stager program, which should perform a call to a target smart contract, verifying afterwards that
+the interactions was a success. An initial implementation can be found in stager.sol and stager-snippet.bin.
+
+### Barrier Programs
+
+Implement https://swcregistry.io/ as barrier programs.
 
 ### Ethereum Integration
+
+* Complete the implementation of the following instructions and variables;
+    - BALANCE
+    - BLOCK_HASH
+    - BYTE
+    - CALL_CODE
+    - COPY
+    - EXTERNAL_COPY
+    - SHIFT_LEFT
+    - SIGN_EXTEND
+    - signed GREATER_THAN
+    - signed DIVIDE
+    - signed LESS_THAN
+    - signed MODULO
+    - PROGRAM_MEMORY_SIZE
+    - PROGRAM_CODE_SIZE
+    - TRANSACTION_GAS_REMAINING
+    - TRANSACTION_GAS_PRICE
+    - BLOCK_COINBASE
+    - BLOCK_TIMESTAMP
+    - BLOCK_NUMBER
+    - BLOCK_DIFFICULTY
+    - BLOCK_GAS_LIMIT
 
 * Implement options for DIVIDE and MODULO to allow for signed and unsigned operation.
     Configure these new instructions in EthereumTranspiler for `SDIV` and `SMOD`.
