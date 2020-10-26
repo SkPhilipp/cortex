@@ -21,7 +21,7 @@ class SearchCommand : CliktCommand(name = "search", help = "Searches the active 
 
     override fun run() {
         val network = selection.network()
-        val web3Client = Web3Client(network.defaultEndpoint)
+        val web3Client = Web3Client(network)
         val latestBlockNumber = web3Client.loadBlockNumber()
         val modelClient = ModelClient()
         modelClient.networkUpdateLatestBlock(network, latestBlockNumber.toBigDecimal())

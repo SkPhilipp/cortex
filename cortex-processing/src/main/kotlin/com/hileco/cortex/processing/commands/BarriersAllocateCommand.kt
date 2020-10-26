@@ -20,7 +20,7 @@ class BarriersAllocateCommand : CliktCommand(name = "barriers-allocate", help = 
         if (network != Network.ETHEREUM_PRIVATE) {
             throw IllegalStateException("This action is only allowed on programs on the ${Network.ETHEREUM_PRIVATE} network")
         }
-        val web3Client = Web3Client(network.defaultEndpoint)
+        val web3Client = Web3Client(network)
         val web3ActiveNetworkId = web3Client.loadNetworkId()
         if (web3ActiveNetworkId != network.blockchainId) {
             throw IllegalStateException("Web3 client is not running against the ${Network.ETHEREUM_PRIVATE} network, instead has network id of $web3ActiveNetworkId")

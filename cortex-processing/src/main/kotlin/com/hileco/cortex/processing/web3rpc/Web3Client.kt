@@ -1,6 +1,8 @@
 package com.hileco.cortex.processing.web3rpc
 
+import com.hileco.cortex.processing.database.Network
 import com.hileco.cortex.processing.web3rpc.parallelism.ParallelTask
+import okhttp3.*
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName.LATEST
@@ -11,9 +13,27 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import java.math.BigInteger
 
-class Web3Client(endpoint: String) {
-    private val web3j: Web3j = Web3j.build(HttpService(endpoint))
-    private val transactionReceiptProcessor = PollingTransactionReceiptProcessor(web3j, 100, 100)
+
+class Web3Client(network: Network) {
+    private val web3j: Web3j
+    private val transactionReceiptProcessor: PollingTransactionReceiptProcessor
+
+    init {
+        val clientBuilder = OkHttpClient.Builder()
+
+        if (network.credentials != null) {
+            clientBuilder.authenticator(object : Authenticator {
+                override fun authenticate(route: Route?, response: Response): Request? {
+                    val credential: String = Credentials.basic(network.credentials.first, network.credentials.second)
+                    return response.request.newBuilder().header("Authorization", credential).build()
+                }
+            })
+        }
+        val service = HttpService(network.endpoint, clientBuilder.build(), false)
+        this.web3j = Web3j.build(service)
+        this.transactionReceiptProcessor = PollingTransactionReceiptProcessor(web3j, 100, 100)
+    }
+
 
     fun loadNetworkId(): String {
         val ethNetVersion = web3j.netVersion().send()
