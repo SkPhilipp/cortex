@@ -12,6 +12,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import java.math.BigInteger
+import java.util.concurrent.atomic.AtomicInteger
 
 
 class Web3Client(network: Network) {
@@ -105,14 +106,18 @@ class Web3Client(network: Network) {
                       blockEnd: Long,
                       threads: Int,
                       onContractLoaded: (Web3Contract) -> Unit): ParallelTask {
+        val totalErrors = AtomicInteger(0)
         val parallelTask = ParallelTask(blockStart, blockEnd, threads, onError = {
+            val currentTotalErrors = totalErrors.incrementAndGet()
             it.printStackTrace()
+            currentTotalErrors < 100
         }) { blockNumber ->
             val ethBlockNumber = DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber))
             val ethBlock = web3j.ethGetBlockByNumber(ethBlockNumber, true).send()
             loadContracts(ethBlock).forEach {
                 onContractLoaded(it)
             }
+            totalErrors.getAndUpdate { operand -> (operand - 1).coerceAtLeast(0) }
         }
         parallelTask.start()
         return parallelTask
