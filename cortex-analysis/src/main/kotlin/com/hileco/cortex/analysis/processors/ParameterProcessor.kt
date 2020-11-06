@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer
 import com.hileco.cortex.analysis.edges.EdgeParameters
-import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.collections.LayeredVmStack
 import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
 import com.hileco.cortex.symbolic.instructions.stack.SWAP

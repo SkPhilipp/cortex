@@ -1,4 +1,4 @@
-package com.hileco.cortex.collections.test
+package com.hileco.cortex.collections
 
 import java.util.*
 

@@ -5,8 +5,8 @@ import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.io.LOAD
 import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION

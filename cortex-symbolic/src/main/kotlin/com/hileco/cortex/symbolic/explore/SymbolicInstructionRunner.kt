@@ -1,6 +1,5 @@
 package com.hileco.cortex.symbolic.explore
 
-import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.symbolic.ExpressionOptimizer
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_TAKE
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_THROW
@@ -13,10 +12,11 @@ import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.symbolic.ProgramException
 import com.hileco.cortex.symbolic.ProgramException.Reason.*
 import com.hileco.cortex.symbolic.ProgramStoreZone.*
-import com.hileco.cortex.collections.backed.BackedInteger
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.LayeredVmMap
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.bits.BITWISE_AND
 import com.hileco.cortex.symbolic.instructions.bits.BITWISE_NOT
@@ -174,7 +174,7 @@ class SymbolicInstructionRunner {
                 val addressValue = addressExpression as? Value
                         ?: throw UnsupportedOperationException("Loading non-concrete address such as $addressExpression is not supported for symbolic execution")
                 val address = addressValue.constant
-                val storage: VmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
+                val storage: LayeredVmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
@@ -190,7 +190,7 @@ class SymbolicInstructionRunner {
                 val addressExpression = programContext.stack.pop()
                 val addressValue = addressExpression as? Value
                         ?: throw UnsupportedOperationException("Loading non-concrete address such as $addressExpression is not supported for symbolic execution")
-                val storage: VmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
+                val storage: LayeredVmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")

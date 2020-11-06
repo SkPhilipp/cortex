@@ -1,7 +1,7 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
 import com.hileco.cortex.symbolic.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore

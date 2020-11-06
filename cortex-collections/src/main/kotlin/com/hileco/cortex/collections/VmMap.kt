@@ -7,7 +7,9 @@ interface VmMap<K, V> : VmComponent<VmMap<K, V>> {
 
     fun remove(key: K)
 
-    fun size(): Int
+    fun size(): Int {
+        return keySet().size
+    }
 
     fun keySet(): Set<K>
 }

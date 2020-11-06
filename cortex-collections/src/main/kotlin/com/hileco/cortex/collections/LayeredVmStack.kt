@@ -1,9 +1,7 @@
-package com.hileco.cortex.collections.layer
+package com.hileco.cortex.collections
 
 
-import com.hileco.cortex.collections.base.BaseVmStack
-
-class LayeredVmStack<V> : BaseVmStack<V> {
+class LayeredVmStack<V> : VmStack<V> {
     var edge: StackLayer<V>
 
     private constructor(edge: StackLayer<V>) {
@@ -70,5 +68,37 @@ class LayeredVmStack<V> : BaseVmStack<V> {
         val child2 = StackLayer(edge)
         this.edge = child1
         return LayeredVmStack(child2)
+    }
+
+    override fun toString(): String {
+        return this.asSequence().joinToString(prefix = "[", postfix = "]") { element ->
+            if (element is ByteArray) element.serialize() else "$element"
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is VmStack<*>) {
+            if (other.size() == this.size()) {
+                val ownIterator = asSequence().iterator()
+                val otherIterator = other.asSequence().iterator()
+                while (ownIterator.hasNext()) {
+                    if (ownIterator.next() != otherIterator.next()) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return size().hashCode()
+    }
+
+    override fun asSequence() = sequence {
+        val size = size()
+        for (i in 0 until size) {
+            yield(peek(i))
+        }
     }
 }

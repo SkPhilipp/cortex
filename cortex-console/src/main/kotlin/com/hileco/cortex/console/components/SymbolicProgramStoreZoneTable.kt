@@ -2,20 +2,19 @@ package com.hileco.cortex.console.components
 
 import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.screen.TerminalScreen
-import com.hileco.cortex.collections.VmMap
-import com.hileco.cortex.collections.layer.LayeredVmMap
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.LayeredVmMap
 import com.hileco.cortex.console.graphics.Table
 import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn
-import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.ProgramStoreZone
-import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.symbolic.expressions.Expression
 
 class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
                                     screen: TerminalScreen,
                                     override val position: TerminalPosition,
                                     height: Int) : Component {
-    private var values: VmMap<BackedInteger, Expression> = LayeredVmMap()
+    private var values: LayeredVmMap<BackedInteger, Expression> = LayeredVmMap()
     private val delegate: Table
 
     init {
@@ -42,7 +41,7 @@ class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
         )
     }
 
-    fun content(values: VmMap<BackedInteger, Expression> = this.values,
+    fun content(values: LayeredVmMap<BackedInteger, Expression> = this.values,
                 focusLine: Int = delegate.focusLine) {
         this.values = values
         delegate.focusLine = focusLine

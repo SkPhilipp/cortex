@@ -1,18 +1,14 @@
 package com.hileco.cortex.collections
 
-import com.hileco.cortex.collections.layer.LayeredVmMap
-import com.hileco.cortex.collections.test.Variation
 import org.junit.Assert
 import org.junit.Test
 
-abstract class VmMapTest {
-
-    abstract fun <K, V> implementation(): VmMap<K, V>
+class VmMapTest {
 
     @Test
     fun fuzz() {
         Variation.fuzzed(100) { variation ->
-            val vmMap = implementation<Int, String>()
+            val vmMap = LayeredVmMap<Int, String>()
             variation.maybe { vmMap.copy() }
             vmMap[1] = "1"
             variation.maybe { vmMap.copy() }
@@ -38,7 +34,7 @@ abstract class VmMapTest {
 
     @Test
     fun testOperations() {
-        val map = implementation<Int, Int>()
+        val map = LayeredVmMap<Int, Int>()
         map[10] = 100
         map[20] = 200
         Assert.assertEquals(100, map[10])
@@ -48,7 +44,7 @@ abstract class VmMapTest {
 
     @Test
     fun testInheritance() {
-        val root = implementation<Int, Int>()
+        val root = LayeredVmMap<Int, Int>()
         root[10] = 100
         root[20] = 200
         root[30] = 300
@@ -63,7 +59,7 @@ abstract class VmMapTest {
 
     @Test
     fun testKeySet() {
-        val map = implementation<Int, Int>()
+        val map = LayeredVmMap<Int, Int>()
         map[10] = 100
         map[20] = 200
         val keySet = map.keySet()
@@ -74,7 +70,7 @@ abstract class VmMapTest {
 
     @Test
     fun testEquals() {
-        val root = implementation<Int, Int>()
+        val root = LayeredVmMap<Int, Int>()
         root[10] = 100
         root[20] = 200
         root[30] = 300

@@ -2,9 +2,9 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.debug.DROP
 import com.hileco.cortex.symbolic.instructions.io.LOAD
 import com.hileco.cortex.symbolic.instructions.math.ADD

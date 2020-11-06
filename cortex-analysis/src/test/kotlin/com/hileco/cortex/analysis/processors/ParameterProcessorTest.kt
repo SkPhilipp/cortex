@@ -3,8 +3,8 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer
 import com.hileco.cortex.analysis.edges.EdgeParameters
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
 import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
 import com.hileco.cortex.symbolic.instructions.stack.PUSH

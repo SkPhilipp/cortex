@@ -3,7 +3,7 @@ package com.hileco.cortex.console.components
 import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.collections.LayeredVmStack
 import com.hileco.cortex.console.graphics.Table
 import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn

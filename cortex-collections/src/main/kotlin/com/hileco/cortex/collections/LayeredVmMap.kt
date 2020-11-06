@@ -1,8 +1,6 @@
-package com.hileco.cortex.collections.layer
+package com.hileco.cortex.collections
 
-import com.hileco.cortex.collections.base.BaseVmMap
-
-class LayeredVmMap<K, V> : BaseVmMap<K, V> {
+class LayeredVmMap<K, V> : VmMap<K, V> {
     var edge: MapLayer<K, V>
 
     private constructor(edge: MapLayer<K, V>) {
@@ -60,5 +58,26 @@ class LayeredVmMap<K, V> : BaseVmMap<K, V> {
 
     override fun close() {
         edge.close()
+    }
+
+    override fun toString(): String {
+        return keySet().joinToString(separator = ", ", prefix = "{", postfix = "}") { "[${it}] = ${this[it]},\n" }
+    }
+
+    override fun hashCode(): Int {
+        return keySet().hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is VmMap<*, *> && let {
+            other as VmMap<K, *>
+            val keySet = keySet()
+            keySet.all { key ->
+                val thisValue = this[key]
+                val otherValue = other[key]
+                return (thisValue == null && otherValue == null)
+                        || (thisValue != null && thisValue == otherValue)
+            }
+        }
     }
 }

@@ -1,23 +1,22 @@
 package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.VmComponent
-import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.layer.LayeredVmMap
-import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.collections.LayeredVmMap
+import com.hileco.cortex.collections.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
-import com.hileco.cortex.collections.backed.BackedInteger
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
 
 class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
     val program: SymbolicProgram
     var instructionsExecuted: Int
     var instructionPosition: Int
     val stack: VmStack<Expression>
-    val memory: VmMap<BackedInteger, Expression>
+    val memory: LayeredVmMap<BackedInteger, Expression>
     var returnDataOffset: BackedInteger
     var returnDataSize: BackedInteger
-    val callData: VmMap<BackedInteger, Expression>
+    val callData: LayeredVmMap<BackedInteger, Expression>
 
     constructor(program: SymbolicProgram) {
         this.program = program
@@ -34,10 +33,10 @@ class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
                         instructionsExecuted: Int,
                         instructionPosition: Int,
                         stack: VmStack<Expression>,
-                        memory: VmMap<BackedInteger, Expression>,
+                        memory: LayeredVmMap<BackedInteger, Expression>,
                         returnDataOffset: BackedInteger,
                         returnDataSize: BackedInteger,
-                        callData: VmMap<BackedInteger, Expression>) {
+                        callData: LayeredVmMap<BackedInteger, Expression>) {
         this.program = program
         this.instructionsExecuted = instructionsExecuted
         this.instructionPosition = instructionPosition

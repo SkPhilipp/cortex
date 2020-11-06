@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.collections.LayeredVmStack
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
 import com.hileco.cortex.symbolic.instructions.stack.PUSH

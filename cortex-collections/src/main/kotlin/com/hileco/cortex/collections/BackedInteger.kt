@@ -1,7 +1,5 @@
-package com.hileco.cortex.collections.backed
+package com.hileco.cortex.collections
 
-import com.hileco.cortex.collections.deserializeBytes
-import com.hileco.cortex.collections.serialize
 import java.lang.Byte.compareUnsigned
 import java.lang.Byte.parseByte
 import java.math.BigInteger

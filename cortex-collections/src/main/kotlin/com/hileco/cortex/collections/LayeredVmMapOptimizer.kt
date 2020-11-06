@@ -1,6 +1,4 @@
-package com.hileco.cortex.collections.layer.optimize
-
-import com.hileco.cortex.collections.layer.MapLayer
+package com.hileco.cortex.collections
 
 /**
  * Optimizers are not thread-safe.

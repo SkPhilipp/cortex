@@ -1,7 +1,7 @@
 package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.collections.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
 import com.hileco.cortex.symbolic.instructions.Instruction

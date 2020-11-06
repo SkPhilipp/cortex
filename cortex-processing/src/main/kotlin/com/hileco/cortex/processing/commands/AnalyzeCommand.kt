@@ -18,8 +18,8 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.collections.backed.BackedInteger
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.toBackedInteger
 import java.io.PrintWriter
 import java.io.StringWriter
 

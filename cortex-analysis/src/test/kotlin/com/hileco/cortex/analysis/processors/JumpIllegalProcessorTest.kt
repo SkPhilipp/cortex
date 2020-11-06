@@ -1,9 +1,9 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
 import com.hileco.cortex.symbolic.ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS
 import com.hileco.cortex.symbolic.instructions.debug.HALT

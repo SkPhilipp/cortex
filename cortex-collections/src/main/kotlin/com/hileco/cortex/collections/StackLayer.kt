@@ -1,4 +1,4 @@
-package com.hileco.cortex.collections.layer
+package com.hileco.cortex.collections
 
 class StackLayer<T>(parent: StackLayer<T>?) : Layer<StackLayer<T>>(parent) {
     val entries: MutableMap<Int, T> = HashMap()

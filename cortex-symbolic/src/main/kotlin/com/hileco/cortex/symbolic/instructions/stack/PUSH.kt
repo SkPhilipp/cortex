@@ -1,7 +1,7 @@
 package com.hileco.cortex.symbolic.instructions.stack
 
 
-import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.BackedInteger
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.InstructionModifier
 import com.hileco.cortex.symbolic.instructions.InstructionModifier.STACK

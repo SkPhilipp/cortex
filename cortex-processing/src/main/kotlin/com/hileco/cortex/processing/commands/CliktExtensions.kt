@@ -7,7 +7,7 @@ import com.github.ajalt.clikt.parameters.types.long
 import com.hileco.cortex.processing.database.ModelClient
 import com.hileco.cortex.processing.database.Network
 import com.hileco.cortex.processing.database.ProgramModel
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.toBackedInteger
 import java.math.BigDecimal
 
 fun RawOption.network() = convert {

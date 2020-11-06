@@ -1,10 +1,8 @@
-package com.hileco.cortex.collections.backed
+package com.hileco.cortex.collections
 
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.LIMIT_32
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.deserializeByte
-import com.hileco.cortex.collections.deserializeBytes
+import com.hileco.cortex.collections.BackedInteger.Companion.LIMIT_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
 import org.junit.Assert
 import org.junit.Test
 

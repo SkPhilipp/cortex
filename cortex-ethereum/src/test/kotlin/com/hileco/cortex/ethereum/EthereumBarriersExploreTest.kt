@@ -1,7 +1,7 @@
 package com.hileco.cortex.ethereum
 
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.explore.SymbolicProgramExplorer
 import com.hileco.cortex.symbolic.explore.strategies.CustomExploreStrategy
 import com.hileco.cortex.symbolic.expressions.Expression

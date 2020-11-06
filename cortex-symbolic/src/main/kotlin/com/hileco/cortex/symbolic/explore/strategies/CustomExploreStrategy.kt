@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
-import com.hileco.cortex.collections.layer.StackLayer
+import com.hileco.cortex.collections.StackLayer
 import com.hileco.cortex.symbolic.ExpressionOptimizer
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
@@ -8,7 +8,7 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.False
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
 import java.util.*
 
 // TODO: Tests for PathTreeExploreStrategy & CustomExploreStrategy

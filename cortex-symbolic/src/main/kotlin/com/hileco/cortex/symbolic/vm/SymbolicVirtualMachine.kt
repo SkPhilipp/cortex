@@ -1,14 +1,13 @@
 package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.VmComponent
-import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.layer.LayeredVmMap
-import com.hileco.cortex.collections.layer.LayeredVmStack
+import com.hileco.cortex.collections.LayeredVmMap
+import com.hileco.cortex.collections.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.ProgramException
-import com.hileco.cortex.collections.backed.BackedInteger
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.stack.ExecutionVariable
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -16,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
     val atlas: MutableMap<BackedInteger, SymbolicProgram>
-    val variables: VmMap<ExecutionVariable, Expression>
+    val variables: LayeredVmMap<ExecutionVariable, Expression>
     val path: LayeredVmStack<SymbolicPathEntry>
     val transfers: VmStack<SymbolicTransfer>
     var instructionsExecuted: Int
@@ -41,7 +40,7 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
     private constructor(programs: MutableList<SymbolicProgramContext>,
                         atlas: MutableMap<BackedInteger, SymbolicProgram>,
                         path: LayeredVmStack<SymbolicPathEntry>,
-                        variables: VmMap<ExecutionVariable, Expression>,
+                        variables: LayeredVmMap<ExecutionVariable, Expression>,
                         transfers: VmStack<SymbolicTransfer>,
                         instructionsExecuted: Int) {
         this.id = nextId.getAndIncrement()

@@ -1,8 +1,8 @@
 package com.hileco.cortex.symbolic
 
-import com.hileco.cortex.collections.backed.BackedInteger
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.collections.deserializeBytes
 import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.symbolic.expressions.Expression.*

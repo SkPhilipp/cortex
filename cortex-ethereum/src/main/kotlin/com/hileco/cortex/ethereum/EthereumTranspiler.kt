@@ -4,7 +4,7 @@ import com.hileco.cortex.collections.serialize
 import com.hileco.cortex.symbolic.ProgramException.Reason.REVERT
 import com.hileco.cortex.symbolic.ProgramException.Reason.UNKNOWN_INSTRUCTION
 import com.hileco.cortex.symbolic.ProgramStoreZone.*
-import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.BackedInteger
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.bits.*
 import com.hileco.cortex.symbolic.instructions.calls.CALL

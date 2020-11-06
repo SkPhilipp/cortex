@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
-import com.hileco.cortex.collections.layer.StackLayer
+import com.hileco.cortex.collections.StackLayer
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression.False

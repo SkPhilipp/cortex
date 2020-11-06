@@ -3,8 +3,8 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.GraphBuilder
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.INSTRUCTION_JUMP
-import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.jumps.JUMP
 import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.symbolic.instructions.stack.PUSH
