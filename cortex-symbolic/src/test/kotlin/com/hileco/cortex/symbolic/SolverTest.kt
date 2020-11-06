@@ -2,75 +2,59 @@ package com.hileco.cortex.symbolic
 
 import com.hileco.cortex.collections.BackedInteger
 import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.collections.deserializeBytes
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.symbolic.expressions.Expression.*
-import com.hileco.cortex.symbolic.instructions.conditions.EQUALS
-import com.hileco.cortex.symbolic.instructions.conditions.LESS_THAN
-import com.hileco.cortex.symbolic.instructions.io.LOAD
-import com.hileco.cortex.symbolic.instructions.math.ADD
-import com.hileco.cortex.symbolic.instructions.math.HASH
-import com.hileco.cortex.symbolic.instructions.math.MODULO
-import com.hileco.cortex.symbolic.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
 class SolverTest {
     @Test
     fun testSolveBasic() {
-        val instructions = listOf(
-                PUSH(10.toBackedInteger()),
-                PUSH(ZERO_32),
-                LOAD(CALL_DATA),
-                LESS_THAN()
-        )
-        val expressionGenerator = ExpressionGenerator()
-        instructions.forEach { expressionGenerator.addInstruction(it) }
         val solver = Solver()
-        val solution = solver.solve(expressionGenerator.currentExpression)
+        val expression = LessThan(
+                VariableExtract(CALL_DATA, Value(ZERO_32)),
+                Value(B_10)
+        )
+
+        val solution = solver.solve(expression)
         val onlyValue = solution.values.values.first()
+
         Assert.assertTrue(solution.solvable)
-        Assert.assertTrue(BackedInteger(onlyValue.sliceArray(IntRange(0, 0))) < 10.toBackedInteger())
+        Assert.assertTrue(BackedInteger(onlyValue.sliceArray(IntRange(0, 31))) < 10.toBackedInteger())
     }
 
     @Test
     fun testSolve() {
-        val instructions = listOf(
-                PUSH(10.toBackedInteger()),
-                PUSH(0x100000.toBackedInteger()),
-                PUSH(10.toBackedInteger()),
-                PUSH(ZERO_32),
-                LOAD(CALL_DATA),
-                ADD(),
-                MODULO(),
-                LESS_THAN()
-        )
-        val expressionGenerator = ExpressionGenerator()
-        instructions.forEach { expressionGenerator.addInstruction(it) }
         val solver = Solver()
-        val solution = solver.solve(expressionGenerator.currentExpression)
+        val expression = LessThan(
+                Modulo(Add(VariableExtract(CALL_DATA, Value(ZERO_32)), Value(B_10)), Value(B_0x100000)),
+                Value(B_10)
+        )
+
+        val solution = solver.solve(expression)
         val onlyValue = solution.values.values.first()
 
         Assert.assertTrue(solution.solvable)
-        Assert.assertTrue(BackedInteger(onlyValue.sliceArray(IntRange(0, 2))) < 0xffffff.toBackedInteger())
+        Assert.assertTrue(BackedInteger(onlyValue.sliceArray(IntRange(0, 31))) < 0xffffff.toBackedInteger())
     }
 
     @Test
     fun testSolveUninterpretedFunction() {
-        val instructions = listOf(
-                PUSH(ZERO_32),
-                LOAD(CALL_DATA),
-                HASH("SHA-256"),
-                PUSH(10.toBackedInteger()),
-                HASH("SHA-256"),
-                EQUALS()
-        )
-        val expressionGenerator = ExpressionGenerator()
-        instructions.forEach { expressionGenerator.addInstruction(it) }
         val solver = Solver()
-        val solution = solver.solve(expressionGenerator.currentExpression)
+        val expression = Equals(
+                Hash(Value(B_10), "SHA-256"),
+                Hash(VariableExtract(CALL_DATA, Value(ZERO_32)), "SHA-256")
+        )
+        val expressionOptimizer = ExpressionOptimizer()
+
+        val expressionOptimized = expressionOptimizer.optimize(expression)
+        val solution = solver.solve(expressionOptimized)
+        val onlyValue = solution.values.values.first()
+
         Assert.assertTrue(solution.solvable)
+        Assert.assertTrue(BackedInteger(onlyValue.sliceArray(IntRange(0, 31))) == 10.toBackedInteger())
     }
 
     // TODO: Move this to a shift-right test case
@@ -104,5 +88,10 @@ class SolverTest {
                 .map { it.value.sliceArray(IntRange(0, 7)) }
                 .first()
         Assert.assertArrayEquals("0123456789abcdef".deserializeBytes(), value)
+    }
+
+    companion object {
+        private val B_10 = 10.toBackedInteger()
+        private val B_0x100000 = 0x100000.toBackedInteger()
     }
 }

@@ -72,7 +72,6 @@ Both https://ethereum.github.io/yellowpaper/paper.pdf and https://ethervm.io/ co
 To implement the instruction, follow these steps:
 - Configure an instruction class in com.hileco.cortex.vm.instructions
 - Implement the SMT solver translation as an com.hileco.cortex.symbolic.expressions.Expression
-- Implement the mapping to an Expression in com.hileco.cortex.symbolic.ExpressionGenerator
 - Implement the mapping to an Expression in com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner
 - Implement expression optimization in com.hileco.cortex.symbolic.ExpressionOptimizer (if possible)
 - If it opens a new solving case with added complexity, implement it as a barrier program in Solidity. (See `barrier000.sol`)

@@ -13,8 +13,8 @@ import org.junit.Assert
 import org.junit.Test
 
 
-class PathTreeConditionBuilderTest {
-    private val exploreConditionBuilder = PathTreeConditionBuilder()
+class BranchedConditionBuilderTest {
+    private val exploreConditionBuilder = BranchedConditionBuilder()
 
     private fun testExpression(constant: Long): Expression {
         return Expression.Equals(Expression.VariableExtract(ProgramStoreZone.CALL_DATA, Value(constant.toBackedInteger())), Value(constant.toBackedInteger()))

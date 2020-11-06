@@ -6,7 +6,7 @@ import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 
 typealias Path = BranchedStack<SymbolicPathEntry>
 
-class PathTreeConditionBuilder {
+class BranchedConditionBuilder {
 
     private fun groupTree(paths: List<Path>): MutableMap<Path?, MutableSet<Path>> {
         val mapping = mutableMapOf<Path?, MutableSet<Path>>()

@@ -57,8 +57,8 @@ class CustomExploreStrategy : ExploreStrategy() {
         if (paths.isEmpty()) {
             return Solution(condition = False)
         }
-        val pathTreeConditionBuilder = PathTreeConditionBuilder()
-        val condition = pathTreeConditionBuilder.build(paths)
+        val branchedConditionBuilder = BranchedConditionBuilder()
+        val condition = branchedConditionBuilder.build(paths)
         val optimizedCondition = expressionOptimizer.optimize(condition)
         val solver = Solver()
         return solver.solve(optimizedCondition)
