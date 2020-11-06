@@ -23,7 +23,7 @@ class SymbolicStackTable(screen: TerminalScreen,
                         TableColumn("value", 25)
                 ),
                 { index ->
-                    if (index < values.size()) {
+                    if (index < values.size) {
                         val entry = values[index]
                         listOf(
                                 TableCell("$index"),

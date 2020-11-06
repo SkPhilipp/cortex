@@ -1,15 +1,15 @@
 package com.hileco.cortex.symbolic.explore
 
+import com.hileco.cortex.symbolic.ProgramException
+import com.hileco.cortex.symbolic.ProgramException.Reason.*
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.Companion.INSTRUCTION_LIMIT
 import com.hileco.cortex.symbolic.explore.strategies.ExploreStrategy
 import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.symbolic.ProgramException
-import com.hileco.cortex.symbolic.ProgramException.Reason.*
-import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -45,7 +45,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
                             ?: throw ProgramException(JUMP_TO_OUT_OF_BOUNDS)
                     val instruction = positionedInstruction.instruction
                     if (instruction is JUMP_IF
-                            && programContext.stack.size() >= JUMP_IF.CONDITION.position + 1
+                            && programContext.stack.size >= JUMP_IF.CONDITION.position + 1
                             && programContext.stack.peek(JUMP_IF.CONDITION.position) !is Expression.Value) {
                         val branchedVirtualMachine = virtualMachine.copy()
                         chooseJumpIf(branchedVirtualMachine, currentInstructionPosition, false)
@@ -93,7 +93,7 @@ class SymbolicProgramExplorer(private val strategy: ExploreStrategy) {
 
     private fun chooseJumpIf(virtualMachine: SymbolicVirtualMachine, currentInstructionPosition: Int, take: Boolean) {
         val programContext = virtualMachine.programs.last()
-        if (programContext.stack.size() < 2) {
+        if (programContext.stack.size < 2) {
             throw ProgramException(STACK_UNDERFLOW)
         }
         val address = programContext.stack.pop()

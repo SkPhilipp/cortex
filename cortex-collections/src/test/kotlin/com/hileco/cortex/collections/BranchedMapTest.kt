@@ -3,7 +3,7 @@ package com.hileco.cortex.collections
 import org.junit.Assert
 import org.junit.Test
 
-class VmMapTest {
+class BranchedMapTest {
 
     @Test
     fun fuzz() {
@@ -39,7 +39,7 @@ class VmMapTest {
         map[20] = 200
         Assert.assertEquals(100, map[10])
         Assert.assertEquals(200, map[20])
-        Assert.assertEquals(2, map.size())
+        Assert.assertEquals(2, map.size)
     }
 
     @Test
@@ -54,7 +54,7 @@ class VmMapTest {
         Assert.assertEquals(1000, child[10])
         Assert.assertNull(child[20])
         Assert.assertEquals(300, child[30])
-        Assert.assertEquals(2, child.size())
+        Assert.assertEquals(2, child.size)
     }
 
     @Test
@@ -62,7 +62,7 @@ class VmMapTest {
         val map = BranchedMap<Int, Int>()
         map[10] = 100
         map[20] = 200
-        val keySet = map.keySet()
+        val keySet = map.keys
         Assert.assertEquals(2, keySet.size)
         Assert.assertTrue(keySet.contains(10))
         Assert.assertTrue(keySet.contains(20))
@@ -70,15 +70,10 @@ class VmMapTest {
 
     @Test
     fun testEquals() {
-        val root = BranchedMap<Int, Int>()
-        root[10] = 100
-        root[20] = 200
-        root[30] = 300
-        val childA = root.copy()
-        childA.remove(30)
+        val mapA = BranchedMap<Int, Int>()
+        mapA[10] = 100
         val mapB = BranchedMap<Int, Int>()
         mapB[10] = 100
-        mapB[20] = 200
-        Assert.assertEquals(mapB, childA)
+        Assert.assertNotEquals(mapA, mapB)
     }
 }

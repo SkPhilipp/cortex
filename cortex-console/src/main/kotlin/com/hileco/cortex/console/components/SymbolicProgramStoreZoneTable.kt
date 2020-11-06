@@ -26,7 +26,7 @@ class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
                         TableColumn("value", 25)
                 ),
                 { index ->
-                    val keys = values.keySet().sorted()
+                    val keys = values.keys.sorted()
                     if (index < keys.size) {
                         val key = keys[index]
                         val expression = values[key]

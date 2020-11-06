@@ -26,7 +26,7 @@ class SymbolicPathEntryTable(screen: TerminalScreen,
                         TableColumn("condition", 55)
                 ),
                 { index ->
-                    if (index < values.size()) {
+                    if (index < values.size) {
                         val entry = values[index]
                         val cellIndex = TableCell("$index")
                         val cellSource = TableCell("${entry.source}")

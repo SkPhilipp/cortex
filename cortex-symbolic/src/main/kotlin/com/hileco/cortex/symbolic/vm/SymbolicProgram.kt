@@ -2,13 +2,13 @@ package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.BackedInteger
 import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.BranchedComposite
 import com.hileco.cortex.collections.BranchedMap
-import com.hileco.cortex.collections.Branched
 import com.hileco.cortex.symbolic.PositionedInstruction
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.instructions.Instruction
 
-class SymbolicProgram : Branched<SymbolicProgram> {
+class SymbolicProgram : BranchedComposite<SymbolicProgram> {
     val instructions: List<Instruction>
     private val instructionsRelative: List<PositionedInstruction>
     val instructionsAbsolute: Map<Int, PositionedInstruction>

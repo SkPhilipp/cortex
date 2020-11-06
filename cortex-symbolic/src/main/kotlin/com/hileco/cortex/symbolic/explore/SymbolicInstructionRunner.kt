@@ -57,7 +57,7 @@ class SymbolicInstructionRunner {
                 stepMode: StepMode = NON_CONCRETE_JUMP_THROW) {
         when (instruction) {
             is BITWISE_AND -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -65,7 +65,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(BitwiseAnd(left, right)))
             }
             is BITWISE_OR -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -73,14 +73,14 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(BitwiseOr(left, right)))
             }
             is BITWISE_NOT -> {
-                if (programContext.stack.size() < 1) {
+                if (programContext.stack.size < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val element = programContext.stack.pop()
                 programContext.stack.push(expressionOptimizer.optimize(BitwiseNot(element)))
             }
             is SHIFT_RIGHT -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -88,7 +88,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(ShiftRight(left, right)))
             }
             is CALL -> {
-                if (programContext.stack.size() < 7) {
+                if (programContext.stack.size < 7) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 @Suppress("UNUSED_VARIABLE") val gas = programContext.stack.pop()
@@ -112,7 +112,7 @@ class SymbolicInstructionRunner {
                 }
             }
             is CALL_RETURN -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 @Suppress("UNUSED_VARIABLE") val offset = programContext.stack.pop()
@@ -123,7 +123,7 @@ class SymbolicInstructionRunner {
                 }
             }
             is EQUALS -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -131,7 +131,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Equals(left, right)))
             }
             is GREATER_THAN -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -139,14 +139,14 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(GreaterThan(left, right)))
             }
             is IS_ZERO -> {
-                if (programContext.stack.size() < 1) {
+                if (programContext.stack.size < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
                 programContext.stack.push(expressionOptimizer.optimize(IsZero(left)))
             }
             is LESS_THAN -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -154,7 +154,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(LessThan(left, right)))
             }
             is DROP -> {
-                if (programContext.stack.size() < instruction.elements) {
+                if (programContext.stack.size < instruction.elements) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 repeat(instruction.elements) {
@@ -167,7 +167,7 @@ class SymbolicInstructionRunner {
             is NOOP -> {
             }
             is LOAD -> {
-                if (programContext.stack.size() < 1) {
+                if (programContext.stack.size < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop()
@@ -184,7 +184,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expression)
             }
             is SAVE -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop()
@@ -203,7 +203,7 @@ class SymbolicInstructionRunner {
                 virtualMachine.programs.removeAt(virtualMachine.programs.size - 1)
             }
             is JUMP -> {
-                if (programContext.stack.size() < 1) {
+                if (programContext.stack.size < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop()
@@ -220,7 +220,7 @@ class SymbolicInstructionRunner {
             is JUMP_DESTINATION -> {
             }
             is JUMP_IF -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val addressExpression = programContext.stack.pop()
@@ -245,7 +245,7 @@ class SymbolicInstructionRunner {
                 }
             }
             is ADD -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -253,7 +253,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Add(left, right)))
             }
             is DIVIDE -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -261,14 +261,14 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Divide(left, right)))
             }
             is HASH -> {
-                if (programContext.stack.size() < 1) {
+                if (programContext.stack.size < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
                 programContext.stack.push(expressionOptimizer.optimize(Hash(left, instruction.method)))
             }
             is MODULO -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -276,7 +276,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Modulo(left, right)))
             }
             is EXPONENT -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -284,7 +284,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Exponent(left, right)))
             }
             is MULTIPLY -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -292,7 +292,7 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Multiply(left, right)))
             }
             is SUBTRACT -> {
-                if (programContext.stack.size() < 2) {
+                if (programContext.stack.size < 2) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 val left = programContext.stack.pop()
@@ -300,28 +300,28 @@ class SymbolicInstructionRunner {
                 programContext.stack.push(expressionOptimizer.optimize(Subtract(left, right)))
             }
             is DUPLICATE -> {
-                if (programContext.stack.size() <= instruction.topOffset) {
+                if (programContext.stack.size <= instruction.topOffset) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 programContext.stack.duplicate(instruction.topOffset)
-                if (programContext.stack.size() > STACK_LIMIT) {
+                if (programContext.stack.size > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
             }
             is POP -> {
-                if (programContext.stack.size() < 1) {
+                if (programContext.stack.size < 1) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 programContext.stack.pop()
             }
             is PUSH -> {
                 programContext.stack.push(Value(instruction.value))
-                if (programContext.stack.size() > STACK_LIMIT) {
+                if (programContext.stack.size > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
             }
             is SWAP -> {
-                if (programContext.stack.size() <= instruction.topOffsetLeft || programContext.stack.size() <= instruction.topOffsetRight) {
+                if (programContext.stack.size <= instruction.topOffsetLeft || programContext.stack.size <= instruction.topOffsetRight) {
                     throw ProgramException(STACK_UNDERFLOW)
                 }
                 programContext.stack.swap(instruction.topOffsetLeft, instruction.topOffsetRight)
@@ -359,7 +359,7 @@ class SymbolicInstructionRunner {
                         throw UnsupportedOperationException("$instruction is not available")
                     }
                 }
-                if (programContext.stack.size() > STACK_LIMIT) {
+                if (programContext.stack.size > STACK_LIMIT) {
                     throw ProgramException(STACK_OVERFLOW)
                 }
             }

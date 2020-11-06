@@ -1,6 +1,7 @@
 package com.hileco.cortex.collections
 
 import java.util.*
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * [Layer] structures' internal layering must be thread-safe.
@@ -9,36 +10,37 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 abstract class Layer<T : Layer<T>>(parent: T?) {
-    val children: MutableList<T>
-    var parent: T? = null
+    val id by lazy { ATOMIC_ID.incrementAndGet() }
+    private val layerChildren: MutableList<T>
+    var layerParent: T? = null
         private set
 
-    internal abstract val isEmpty: Boolean
+    internal abstract val isLayerEmpty: Boolean
 
     init {
-        this.children = ArrayList()
+        this.layerChildren = ArrayList()
         var currentParent = parent
-        while (currentParent != null && currentParent.isEmpty) {
-            currentParent = currentParent.parent
+        while (currentParent != null && currentParent.isLayerEmpty) {
+            currentParent = currentParent.layerParent
         }
-        this.parent = currentParent
+        this.layerParent = currentParent
         currentParent?.addChild(this as T)
     }
 
     @Synchronized
     private fun addChild(child: T) {
-        this.children.add(child)
+        this.layerChildren.add(child)
     }
 
     @Synchronized
     private fun removeChild(child: T): Boolean {
-        this.children.remove(child)
-        return this.children.isEmpty()
+        this.layerChildren.remove(child)
+        return this.layerChildren.isEmpty()
     }
 
     @Synchronized
     fun changeParent(newParent: T?) {
-        val currentParent = parent
+        val currentParent = layerParent
         if (newParent == currentParent) {
             return
         }
@@ -48,20 +50,32 @@ abstract class Layer<T : Layer<T>>(parent: T?) {
                 currentParent.close()
             }
         }
-        parent = newParent
-        parent?.addChild(this as T)
+        layerParent = newParent
+        layerParent?.addChild(this as T)
     }
 
     fun close() {
-        var currentParent = this.parent
+        var currentParent = this.layerParent
         while (currentParent != null) {
             val removedLastChild = currentParent.removeChild(this as T)
             if (removedLastChild) {
-                currentParent = currentParent.parent
+                currentParent = currentParent.layerParent
             } else {
                 break
             }
         }
-        this.parent = null
+        this.layerParent = null
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is Layer<*> && id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    companion object {
+        private val ATOMIC_ID = AtomicLong(0)
     }
 }

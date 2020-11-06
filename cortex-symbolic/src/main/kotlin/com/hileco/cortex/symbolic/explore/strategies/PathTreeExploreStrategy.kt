@@ -1,20 +1,20 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
-import com.hileco.cortex.collections.StackLayer
+import com.hileco.cortex.collections.BranchedStack
+import com.hileco.cortex.symbolic.ProgramException
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression.False
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.symbolic.ProgramException
 import java.util.*
 
 class PathTreeExploreStrategy : ExploreStrategy() {
-    private val paths = Collections.synchronizedList(arrayListOf<StackLayer<SymbolicPathEntry>>())
+    private val paths = Collections.synchronizedList(arrayListOf<BranchedStack<SymbolicPathEntry>>())
 
     override fun handleComplete(symbolicVirtualMachine: SymbolicVirtualMachine) {
         if (symbolicVirtualMachine.exitedReason == ProgramException.Reason.WINNER) {
-            paths.add(symbolicVirtualMachine.path.edge)
+            paths.add(symbolicVirtualMachine.path)
         }
     }
 

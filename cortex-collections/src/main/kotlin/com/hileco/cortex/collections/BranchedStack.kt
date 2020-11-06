@@ -1,10 +1,79 @@
 package com.hileco.cortex.collections
 
+import java.util.*
 
-class BranchedStack<V> : Branched<BranchedStack<V>> {
-    var edge: StackLayer<V>
+private class StackLayer<T>(parent: StackLayer<T>?) : Layer<StackLayer<T>>(parent) {
+    val entries: MutableMap<Int, T> = HashMap()
+    var length: Int = 0
 
-    private constructor(edge: StackLayer<V>) {
+    override val isLayerEmpty: Boolean
+        get() {
+            return entries.isEmpty() && layerParent?.length == length
+        }
+
+    init {
+        this.length = parent?.length ?: 0
+    }
+
+    fun push(value: T) {
+        entries[length] = value
+        length++
+    }
+
+    fun pop(): T {
+        val value = peek()
+        entries.remove(length - 1)
+        length--
+        return value
+    }
+
+    fun peek(offset: Int = 0): T {
+        return this[length - offset - 1]
+    }
+
+    operator fun get(index: Int): T {
+        var layer: StackLayer<T>? = this
+        while (layer != null && layer.length > index) {
+            val value = layer.entries[index]
+            if (value != null) {
+                return value
+            }
+            layer = layer.layerParent
+        }
+        throw IndexOutOfBoundsException("size $length <= index $index")
+    }
+
+    operator fun set(index: Int, value: T) {
+        if (length < index) {
+            throw IndexOutOfBoundsException("size $length <= index $index")
+        }
+        this.entries[index] = value
+    }
+
+    fun asSequence(): Sequence<T> {
+        return IntRange(0, length - 1)
+                .asSequence()
+                .map { this[it] }
+    }
+}
+
+/**
+ * Implements [Collection] and [Branched] using a backing [StackLayer] tree.
+ *
+ * Note that [Branched] implementations are explicitly not thread unsafe.
+ *
+ * Please avoid the following methods when performance is vital for your use case;
+ * - [contains]
+ * - [containsAll]
+ * - [iterator]
+ *
+ * [BranchedStack] diverges from regular collections:
+ * - [equals] and [hashCode] use only [Layer.id], they do not represent or compare the content of the structure itself
+ */
+class BranchedStack<T> : Collection<T>, Branched<BranchedStack<T>> {
+    private var edge: StackLayer<T>
+
+    private constructor(edge: StackLayer<T>) {
         this.edge = edge
     }
 
@@ -12,68 +81,48 @@ class BranchedStack<V> : Branched<BranchedStack<V>> {
         this.edge = StackLayer(null)
     }
 
-    fun push(value: V) {
-        this.edge.entries[this.edge.length] = value
-        this.edge.length++
+    override val size: Int
+        get() = edge.length
+
+    override fun contains(element: T): Boolean {
+        return edge.asSequence().any { it == element }
     }
 
-    fun pop(): V {
-        val value = peek()
-        this.edge.entries.remove(this.edge.length - 1)
-        this.edge.length--
-        return value
+    override fun containsAll(elements: Collection<T>): Boolean {
+        return edge.asSequence().all { elements.contains(it) }
     }
 
-    fun peek(offset: Int = 0): V {
-        return this[this.edge.length - offset - 1]
+    override fun isEmpty(): Boolean {
+        return edge.length == 0
     }
 
-    operator fun get(index: Int): V {
-        var chosen: StackLayer<V>? = this.edge
-        while (chosen != null && chosen.length > index) {
-            val value = chosen.entries[index]
-            if (value != null) {
-                return value
-            }
-            chosen = chosen.parent
-        }
-        throw IndexOutOfBoundsException("size ${this.edge.length} <= index $index")
+    override fun iterator(): Iterator<T> {
+        return edge.asSequence().iterator()
     }
 
-    operator fun set(index: Int, value: V) {
-        if (this.edge.length < index) {
-            throw IndexOutOfBoundsException("size ${this.edge.length} <= index $index")
-        }
-        this.edge.entries[index] = value
+    fun push(value: T) {
+        this.edge.push(value)
     }
 
-    fun size(): Int {
-        return this.edge.length
+    fun pop(): T {
+        return this.edge.pop()
     }
 
-    fun clear() {
-        this.edge.entries.clear()
-        this.edge.length = 0
+    fun peek(offset: Int = 0): T {
+        return this.edge.peek(offset)
     }
 
-    override fun close() {
-        this.edge.close()
+    operator fun get(index: Int): T {
+        return this.edge[index]
     }
 
-    override fun copy(): BranchedStack<V> {
-        while (edge.isEmpty) {
-            this.edge = edge.parent ?: return BranchedStack()
-        }
-        val child1 = StackLayer(edge)
-        val child2 = StackLayer(edge)
-        this.edge = child1
-        return BranchedStack(child2)
+    operator fun set(index: Int, value: T) {
+        this.edge[index] = value
     }
 
     fun swap(topOffsetLeft: Int, topOffsetRight: Int) {
-        val size = size()
-        val indexLeft = size - topOffsetLeft - 1
-        val indexRight = size - topOffsetRight - 1
+        val indexLeft = edge.length - topOffsetLeft - 1
+        val indexRight = edge.length - topOffsetRight - 1
         val left = get(indexLeft)
         val right = get(indexRight)
         set(indexLeft, right)
@@ -85,39 +134,43 @@ class BranchedStack<V> : Branched<BranchedStack<V>> {
         push(value)
     }
 
-    fun isEmpty(): Boolean {
-        return size() == 0
+    fun clear() {
+        this.edge.close()
+        this.edge = StackLayer(null)
     }
 
-    override fun toString(): String {
-        return this.asSequence().joinToString(prefix = "[", postfix = "]") { element ->
-            if (element is ByteArray) element.serialize() else "$element"
+    override fun close() {
+        this.edge.close()
+    }
+
+    override fun copy(): BranchedStack<T> {
+        while (edge.isLayerEmpty) {
+            this.edge = edge.layerParent ?: return BranchedStack()
+        }
+        val child1 = StackLayer(edge)
+        val child2 = StackLayer(edge)
+        this.edge = child1
+        return BranchedStack(child2)
+    }
+
+    override fun parent(): BranchedStack<T>? {
+        val edgeLayerParent = edge.layerParent
+        if (edgeLayerParent == null) {
+            return null
+        } else {
+            return BranchedStack(edgeLayerParent)
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (other is BranchedStack<*>) {
-            if (other.size() == this.size()) {
-                val ownIterator = asSequence().iterator()
-                val otherIterator = other.asSequence().iterator()
-                while (ownIterator.hasNext()) {
-                    if (ownIterator.next() != otherIterator.next()) {
-                        return false
-                    }
-                }
-            }
-        }
-        return true
+    override fun id(): Long {
+        return edge.id
     }
 
     override fun hashCode(): Int {
-        return size().hashCode()
+        return edge.hashCode()
     }
 
-    fun asSequence() = sequence {
-        val size = size()
-        for (i in 0 until size) {
-            yield(peek(i))
-        }
+    override fun equals(other: Any?): Boolean {
+        return other is BranchedStack<*> && other.edge == edge
     }
 }

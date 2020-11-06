@@ -5,9 +5,8 @@ import com.hileco.cortex.symbolic.ProgramException
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.instructions.stack.ExecutionVariable
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 
-class SymbolicVirtualMachine : Branched<SymbolicVirtualMachine> {
+class SymbolicVirtualMachine : BranchedComposite<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
     val atlas: MutableMap<BackedInteger, SymbolicProgram>
     val variables: BranchedMap<ExecutionVariable, Expression>
@@ -16,10 +15,8 @@ class SymbolicVirtualMachine : Branched<SymbolicVirtualMachine> {
     var instructionsExecuted: Int
     var exited: Boolean = false
     var exitedReason: ProgramException.Reason? = null
-    var id: Int
 
     constructor(vararg programContexts: SymbolicProgramContext, startTime: Long = System.currentTimeMillis()) {
-        id = nextId.getAndIncrement()
         programs = Stack()
         atlas = HashMap()
         path = BranchedStack()
@@ -38,7 +35,6 @@ class SymbolicVirtualMachine : Branched<SymbolicVirtualMachine> {
                         variables: BranchedMap<ExecutionVariable, Expression>,
                         transfers: BranchedStack<SymbolicTransfer>,
                         instructionsExecuted: Int) {
-        this.id = nextId.getAndIncrement()
         this.programs = programs
         this.atlas = atlas
         this.path = path
@@ -71,9 +67,5 @@ class SymbolicVirtualMachine : Branched<SymbolicVirtualMachine> {
         val branchPrograms = programs.map { program -> program.copy() }.toMutableList()
         val branchAtlas = atlas.mapValues { (_, symbolicProgram) -> symbolicProgram.copy() }.toMutableMap()
         return SymbolicVirtualMachine(branchPrograms, branchAtlas, path.copy(), variables.copy(), transfers.copy(), instructionsExecuted)
-    }
-
-    companion object {
-        private val nextId = AtomicInteger(0)
     }
 }

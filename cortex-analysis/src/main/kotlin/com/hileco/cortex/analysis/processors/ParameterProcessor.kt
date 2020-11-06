@@ -22,7 +22,7 @@ class ParameterProcessor : Processor {
                 if (instruction is JUMP_DESTINATION || instruction is SWAP) {
                     stack.clear()
                 } else if (instruction is DUPLICATE) {
-                    if (stack.size() <= instruction.topOffset) {
+                    if (stack.size <= instruction.topOffset) {
                         stack.clear()
                         stack.push(graphNode)
                     } else {
@@ -35,7 +35,7 @@ class ParameterProcessor : Processor {
                     val stackParametersSize = instruction.stackParameters.size
                     if (stackParametersSize > 0) {
                         val parameters = ArrayList<GraphNode?>()
-                        val stackSize = stack.size()
+                        val stackSize = stack.size
                         val totalMissing = stackParametersSize - stackSize
                         for (i in 0 until totalMissing) {
                             parameters.add(null)

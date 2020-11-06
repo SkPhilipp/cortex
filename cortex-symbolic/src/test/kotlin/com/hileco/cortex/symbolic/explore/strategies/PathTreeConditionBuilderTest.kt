@@ -1,12 +1,12 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
 import com.hileco.cortex.collections.BranchedStack
+import com.hileco.cortex.collections.toBackedInteger
+import com.hileco.cortex.symbolic.ProgramStoreZone
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.Value
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
-import com.hileco.cortex.symbolic.ProgramStoreZone
-import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.toBackedInteger
 import org.hamcrest.CoreMatchers.anyOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert
@@ -27,7 +27,7 @@ class PathTreeConditionBuilderTest {
         val branch = stack.copy()
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(1)))
         branch.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(2)))
-        val treeExpression = exploreConditionBuilder.build(listOf(stack.edge, branch.edge))
+        val treeExpression = exploreConditionBuilder.build(listOf(stack, branch))
         val expectedExpression = Expression.And(listOf(testExpression(0), Expression.Or(listOf(testExpression(1), testExpression(2)))))
         val expectedExpressionReordered = Expression.And(listOf(testExpression(0), Expression.Or(listOf(testExpression(2), testExpression(1)))))
         Assert.assertThat("$treeExpression", anyOf(equalTo("$expectedExpression"), equalTo("$expectedExpressionReordered")))
@@ -51,7 +51,7 @@ class PathTreeConditionBuilderTest {
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(0)))
         val emptyBranch = stack.copy()
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(1)))
-        val treeExpression = exploreConditionBuilder.build(listOf(stack.edge, emptyBranch.edge))
+        val treeExpression = exploreConditionBuilder.build(listOf(stack, emptyBranch))
         val expectedExpression = testExpression(0)
         Assert.assertEquals("$expectedExpression", "$treeExpression")
     }

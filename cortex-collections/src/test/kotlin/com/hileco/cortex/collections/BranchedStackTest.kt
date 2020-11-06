@@ -3,7 +3,7 @@ package com.hileco.cortex.collections
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class VmStackTest {
+class BranchedStackTest {
 
     @Test
     fun fuzz() {

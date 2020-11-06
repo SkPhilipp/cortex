@@ -2,12 +2,12 @@ package com.hileco.cortex.symbolic.vm
 
 import com.hileco.cortex.collections.BackedInteger
 import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.Branched
+import com.hileco.cortex.collections.BranchedComposite
 import com.hileco.cortex.collections.BranchedMap
 import com.hileco.cortex.collections.BranchedStack
 import com.hileco.cortex.symbolic.expressions.Expression
 
-class SymbolicProgramContext : Branched<SymbolicProgramContext> {
+class SymbolicProgramContext : BranchedComposite<SymbolicProgramContext> {
     val program: SymbolicProgram
     var instructionsExecuted: Int
     var instructionPosition: Int

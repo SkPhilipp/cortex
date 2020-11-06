@@ -1,37 +1,26 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
-import com.hileco.cortex.symbolic.explore.StrongReference
-import com.hileco.cortex.collections.StackLayer
+import com.hileco.cortex.collections.BranchedStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 
-typealias Path = StackLayer<SymbolicPathEntry>
+typealias Path = BranchedStack<SymbolicPathEntry>
 
 class PathTreeConditionBuilder {
-    /**
-     * Maps out given paths by mapping each [paths]' relation to its parent, to its respective parent, and so on.
-     */
-    private fun map(paths: List<Path>): MutableMap<StrongReference<Path>, MutableSet<StrongReference<Path>>> {
-        val mapping: MutableMap<StrongReference<Path>, MutableSet<StrongReference<Path>>> = hashMapOf()
 
-        /**
-         * Merges new parent-child path relations into the mapping.
-         */
-        fun merge(parent: StrongReference<Path>, children: List<Path>) {
-            mapping.compute(parent) { _, existingPaths ->
-                val set = existingPaths ?: HashSet()
-                set.addAll(children.map { StrongReference(it) })
-                set
+    private fun groupTree(paths: List<Path>): MutableMap<Path?, MutableSet<Path>> {
+        val mapping = mutableMapOf<Path?, MutableSet<Path>>()
+        var current = paths
+        while (current.isNotEmpty()) {
+            val pathsByParent = current.groupBy { it.parent() }.mapValues { it.value.toSet() }
+            pathsByParent.forEach { (parent, pathsOfParent) ->
+                mapping.compute(parent) { _, existingPaths ->
+                    val set = existingPaths ?: HashSet()
+                    set.addAll(pathsOfParent)
+                    set
+                }
             }
-        }
-
-        var pathsBySource: Map<StrongReference<Path>, List<Path>> = paths.groupBy { StrongReference(it.parent) }
-        while (pathsBySource.isNotEmpty()) {
-            pathsBySource.forEach { (parent, child) -> merge(parent, child) }
-            pathsBySource = pathsBySource.keys.asSequence()
-                    .map { it.referent }
-                    .filterNotNull()
-                    .groupBy { StrongReference(it.parent) }
+            current = pathsByParent.keys.filterNotNull()
         }
         return mapping
     }
@@ -40,26 +29,26 @@ class PathTreeConditionBuilder {
      * Constructs a subcondition out of the difference in new entries between the parent and the child path.
      */
     private fun buildSubcondition(parent: Path?, child: Path): Expression {
-        val start = parent?.length ?: 0
-        val end = child.length
+        val start = parent?.size ?: 0
+        val end = child.size
         val subconditions = arrayListOf<Expression>()
         for (i in start until end) {
-            val pathEntry = child.entries[i] ?: throw NullPointerException()
+            val pathEntry = child[i]
             subconditions.add(if (pathEntry.taken) pathEntry.condition else Expression.Not(pathEntry.condition))
         }
         return Expression.constructAnd(subconditions)
     }
 
-    private fun buildCondition(mappedPaths: MutableMap<StrongReference<Path>, MutableSet<StrongReference<Path>>>, path: Path?): Expression {
-        val pathChildren = mappedPaths[StrongReference(path)] ?: return Expression.True
+    private fun buildCondition(mappedPaths: MutableMap<Path?, MutableSet<Path>>, path: Path?): Expression {
+        val pathChildren = mappedPaths[path] ?: return Expression.True
         val pathConditions = pathChildren.map { childPath ->
-            Expression.constructAnd(listOf(buildSubcondition(path, childPath.referent!!), buildCondition(mappedPaths, childPath.referent)))
+            Expression.constructAnd(listOf(buildSubcondition(path, childPath), buildCondition(mappedPaths, childPath)))
         }.toList()
         return Expression.constructOr(pathConditions)
     }
 
     fun build(paths: List<Path>): Expression {
-        val mappedPaths = map(paths)
+        val mappedPaths = groupTree(paths)
         return buildCondition(mappedPaths, null)
     }
 }

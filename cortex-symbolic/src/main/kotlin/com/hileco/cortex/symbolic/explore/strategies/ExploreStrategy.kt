@@ -1,15 +1,15 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
 import com.hileco.cortex.symbolic.Solution
-import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 
 abstract class ExploreStrategy {
     /**
      * Whether to drop the given [symbolicVirtualMachine], halting further exploration.
      */
     open fun checkDrop(symbolicVirtualMachine: SymbolicVirtualMachine): Boolean {
-        return symbolicVirtualMachine.path.size() >= DEFAULT_DROP_PREDICATE_PATH_LIMIT
+        return symbolicVirtualMachine.path.size >= DEFAULT_DROP_PREDICATE_PATH_LIMIT
     }
 
     /**
