@@ -22,11 +22,9 @@ Smart contracts open up new attack surfaces. Their machine-code, storage, and an
 
 ## Hosting
 
-### Server
-
 See [install.sh](install.sh) for analysis host setup.
 
-### CLI Interaction
+## CLI Interaction
 
 - Add `cortex/cortex-processing/cortex` to your PATH.
 - Start a local Geth instance & tunnel to the development MongoDB using `docker-compose up`
