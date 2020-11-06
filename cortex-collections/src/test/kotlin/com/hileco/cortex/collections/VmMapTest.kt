@@ -8,7 +8,7 @@ class VmMapTest {
     @Test
     fun fuzz() {
         Variation.fuzzed(100) { variation ->
-            val vmMap = LayeredVmMap<Int, String>()
+            val vmMap = BranchedMap<Int, String>()
             variation.maybe { vmMap.copy() }
             vmMap[1] = "1"
             variation.maybe { vmMap.copy() }
@@ -34,7 +34,7 @@ class VmMapTest {
 
     @Test
     fun testOperations() {
-        val map = LayeredVmMap<Int, Int>()
+        val map = BranchedMap<Int, Int>()
         map[10] = 100
         map[20] = 200
         Assert.assertEquals(100, map[10])
@@ -44,7 +44,7 @@ class VmMapTest {
 
     @Test
     fun testInheritance() {
-        val root = LayeredVmMap<Int, Int>()
+        val root = BranchedMap<Int, Int>()
         root[10] = 100
         root[20] = 200
         root[30] = 300
@@ -59,7 +59,7 @@ class VmMapTest {
 
     @Test
     fun testKeySet() {
-        val map = LayeredVmMap<Int, Int>()
+        val map = BranchedMap<Int, Int>()
         map[10] = 100
         map[20] = 200
         val keySet = map.keySet()
@@ -70,13 +70,13 @@ class VmMapTest {
 
     @Test
     fun testEquals() {
-        val root = LayeredVmMap<Int, Int>()
+        val root = BranchedMap<Int, Int>()
         root[10] = 100
         root[20] = 200
         root[30] = 300
         val childA = root.copy()
         childA.remove(30)
-        val mapB = LayeredVmMap<Int, Int>()
+        val mapB = BranchedMap<Int, Int>()
         mapB[10] = 100
         mapB[20] = 200
         Assert.assertEquals(mapB, childA)

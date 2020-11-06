@@ -8,7 +8,7 @@ class VmStackTest {
     @Test
     fun fuzz() {
         Variation.fuzzed(100) { variation ->
-            val vmStack = LayeredVmStack<Int>()
+            val vmStack = BranchedStack<Int>()
             variation.maybe { vmStack.copy() }
             vmStack.push(1)
             variation.maybe { vmStack.copy() }

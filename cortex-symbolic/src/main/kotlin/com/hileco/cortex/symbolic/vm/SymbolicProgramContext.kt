@@ -1,42 +1,41 @@
 package com.hileco.cortex.symbolic.vm
 
-import com.hileco.cortex.collections.VmComponent
-import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.LayeredVmMap
-import com.hileco.cortex.collections.LayeredVmStack
-import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.collections.BackedInteger
 import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.Branched
+import com.hileco.cortex.collections.BranchedMap
+import com.hileco.cortex.collections.BranchedStack
+import com.hileco.cortex.symbolic.expressions.Expression
 
-class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
+class SymbolicProgramContext : Branched<SymbolicProgramContext> {
     val program: SymbolicProgram
     var instructionsExecuted: Int
     var instructionPosition: Int
-    val stack: VmStack<Expression>
-    val memory: LayeredVmMap<BackedInteger, Expression>
+    val stack: BranchedStack<Expression>
+    val memory: BranchedMap<BackedInteger, Expression>
     var returnDataOffset: BackedInteger
     var returnDataSize: BackedInteger
-    val callData: LayeredVmMap<BackedInteger, Expression>
+    val callData: BranchedMap<BackedInteger, Expression>
 
     constructor(program: SymbolicProgram) {
         this.program = program
         instructionsExecuted = 0
         instructionPosition = 0
-        stack = LayeredVmStack()
-        memory = LayeredVmMap()
+        stack = BranchedStack()
+        memory = BranchedMap()
         returnDataOffset = ZERO_32
         returnDataSize = ZERO_32
-        callData = LayeredVmMap()
+        callData = BranchedMap()
     }
 
     private constructor(program: SymbolicProgram,
                         instructionsExecuted: Int,
                         instructionPosition: Int,
-                        stack: VmStack<Expression>,
-                        memory: LayeredVmMap<BackedInteger, Expression>,
+                        stack: BranchedStack<Expression>,
+                        memory: BranchedMap<BackedInteger, Expression>,
                         returnDataOffset: BackedInteger,
                         returnDataSize: BackedInteger,
-                        callData: LayeredVmMap<BackedInteger, Expression>) {
+                        callData: BranchedMap<BackedInteger, Expression>) {
         this.program = program
         this.instructionsExecuted = instructionsExecuted
         this.instructionPosition = instructionPosition

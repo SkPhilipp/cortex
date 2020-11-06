@@ -4,7 +4,7 @@ import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer
 import com.hileco.cortex.analysis.edges.EdgeParameters
-import com.hileco.cortex.collections.LayeredVmStack
+import com.hileco.cortex.collections.BranchedStack
 import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
 import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
 import com.hileco.cortex.symbolic.instructions.stack.SWAP
@@ -15,7 +15,7 @@ class ParameterProcessor : Processor {
         graph.edgeMapping.removeAll(EdgeParameterConsumer::class.java)
         graph.edgeMapping.removeAll(EdgeParameters::class.java)
         graph.graphBlocks.forEach { graphBlock ->
-            val stack = LayeredVmStack<GraphNode>()
+            val stack = BranchedStack<GraphNode>()
             val graphNodes = graphBlock.graphNodes
             for (graphNode in graphNodes) {
                 val instruction = graphNode.instruction

@@ -1,23 +1,18 @@
 package com.hileco.cortex.symbolic.vm
 
-import com.hileco.cortex.collections.VmComponent
-import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.LayeredVmMap
-import com.hileco.cortex.collections.LayeredVmStack
-import com.hileco.cortex.symbolic.expressions.Expression
+import com.hileco.cortex.collections.*
 import com.hileco.cortex.symbolic.ProgramException
-import com.hileco.cortex.collections.BackedInteger
-import com.hileco.cortex.collections.toBackedInteger
+import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.instructions.stack.ExecutionVariable
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
-class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
+class SymbolicVirtualMachine : Branched<SymbolicVirtualMachine> {
     val programs: MutableList<SymbolicProgramContext>
     val atlas: MutableMap<BackedInteger, SymbolicProgram>
-    val variables: LayeredVmMap<ExecutionVariable, Expression>
-    val path: LayeredVmStack<SymbolicPathEntry>
-    val transfers: VmStack<SymbolicTransfer>
+    val variables: BranchedMap<ExecutionVariable, Expression>
+    val path: BranchedStack<SymbolicPathEntry>
+    val transfers: BranchedStack<SymbolicTransfer>
     var instructionsExecuted: Int
     var exited: Boolean = false
     var exitedReason: ProgramException.Reason? = null
@@ -27,21 +22,21 @@ class SymbolicVirtualMachine : VmComponent<SymbolicVirtualMachine> {
         id = nextId.getAndIncrement()
         programs = Stack()
         atlas = HashMap()
-        path = LayeredVmStack()
-        variables = LayeredVmMap()
+        path = BranchedStack()
+        variables = BranchedMap()
         variables[ExecutionVariable.START_TIME] = Expression.Value(startTime.toBackedInteger())
         instructionsExecuted = 0
         for (programContext in programContexts) {
             programs.add(programContext)
         }
-        this.transfers = LayeredVmStack()
+        this.transfers = BranchedStack()
     }
 
     private constructor(programs: MutableList<SymbolicProgramContext>,
                         atlas: MutableMap<BackedInteger, SymbolicProgram>,
-                        path: LayeredVmStack<SymbolicPathEntry>,
-                        variables: LayeredVmMap<ExecutionVariable, Expression>,
-                        transfers: VmStack<SymbolicTransfer>,
+                        path: BranchedStack<SymbolicPathEntry>,
+                        variables: BranchedMap<ExecutionVariable, Expression>,
+                        transfers: BranchedStack<SymbolicTransfer>,
                         instructionsExecuted: Int) {
         this.id = nextId.getAndIncrement()
         this.programs = programs

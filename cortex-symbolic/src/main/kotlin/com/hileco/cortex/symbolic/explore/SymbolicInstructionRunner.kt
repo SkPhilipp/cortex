@@ -1,22 +1,18 @@
 package com.hileco.cortex.symbolic.explore
 
+import com.hileco.cortex.collections.BackedInteger
+import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.BranchedMap
+import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.ExpressionOptimizer
+import com.hileco.cortex.symbolic.ProgramException
+import com.hileco.cortex.symbolic.ProgramException.Reason.*
+import com.hileco.cortex.symbolic.ProgramStoreZone.*
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_TAKE
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_THROW
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
-import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
-import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
-import com.hileco.cortex.symbolic.vm.SymbolicTransfer
-import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.symbolic.ProgramException
-import com.hileco.cortex.symbolic.ProgramException.Reason.*
-import com.hileco.cortex.symbolic.ProgramStoreZone.*
-import com.hileco.cortex.collections.BackedInteger
-import com.hileco.cortex.collections.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.collections.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.collections.LayeredVmMap
-import com.hileco.cortex.collections.toBackedInteger
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.bits.BITWISE_AND
 import com.hileco.cortex.symbolic.instructions.bits.BITWISE_NOT
@@ -40,6 +36,10 @@ import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
 import com.hileco.cortex.symbolic.instructions.math.*
 import com.hileco.cortex.symbolic.instructions.stack.*
 import com.hileco.cortex.symbolic.instructions.stack.ExecutionVariable.*
+import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
+import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
+import com.hileco.cortex.symbolic.vm.SymbolicTransfer
+import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
 
 class SymbolicInstructionRunner {
 
@@ -174,7 +174,7 @@ class SymbolicInstructionRunner {
                 val addressValue = addressExpression as? Value
                         ?: throw UnsupportedOperationException("Loading non-concrete address such as $addressExpression is not supported for symbolic execution")
                 val address = addressValue.constant
-                val storage: LayeredVmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
+                val storage: BranchedMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> programContext.callData
@@ -190,7 +190,7 @@ class SymbolicInstructionRunner {
                 val addressExpression = programContext.stack.pop()
                 val addressValue = addressExpression as? Value
                         ?: throw UnsupportedOperationException("Loading non-concrete address such as $addressExpression is not supported for symbolic execution")
-                val storage: LayeredVmMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
+                val storage: BranchedMap<BackedInteger, Expression> = when (instruction.programStoreZone) {
                     MEMORY -> programContext.memory
                     DISK -> programContext.program.storage
                     CALL_DATA -> throw IllegalArgumentException("Unsupported ProgramStoreZone: ${instruction.programStoreZone}")

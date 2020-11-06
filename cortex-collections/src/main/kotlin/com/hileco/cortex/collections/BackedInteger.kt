@@ -156,29 +156,5 @@ class BackedInteger : Comparable<BackedInteger> {
         val ONE_32 = "0x0000000000000000000000000000000000000000000000000000000000000001".toBackedInteger()
         val ZERO_32 = "0x0000000000000000000000000000000000000000000000000000000000000000".toBackedInteger()
         val LIMIT_32 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toBackedInteger()
-
-        fun max(left: BackedInteger, right: BackedInteger): BackedInteger {
-            return if (left >= right) left else right
-        }
     }
-}
-
-fun String.toBackedInteger(): BackedInteger {
-    return BackedInteger(this.deserializeBytes())
-}
-
-fun Long.toBackedInteger(): BackedInteger {
-    if (this < 0) {
-        throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
-    }
-    val toByteArray = BigInteger.valueOf(this).toByteArray()
-    return BackedInteger(toByteArray)
-}
-
-fun Int.toBackedInteger(): BackedInteger {
-    if (this < 0) {
-        throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
-    }
-    val toByteArray = BigInteger.valueOf(this.toLong()).toByteArray()
-    return BackedInteger(toByteArray)
 }

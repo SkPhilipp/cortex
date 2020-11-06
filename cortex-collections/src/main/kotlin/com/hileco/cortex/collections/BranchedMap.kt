@@ -1,6 +1,6 @@
 package com.hileco.cortex.collections
 
-class LayeredVmMap<K, V> : VmMap<K, V> {
+class BranchedMap<K, V> : Branched<BranchedMap<K, V>> {
     var edge: MapLayer<K, V>
 
     private constructor(edge: MapLayer<K, V>) {
@@ -9,7 +9,7 @@ class LayeredVmMap<K, V> : VmMap<K, V> {
 
     constructor() : this(MapLayer<K, V>(null))
 
-    override fun get(key: K): V? {
+    operator fun get(key: K): V? {
         return get(edge, key)
     }
 
@@ -24,7 +24,7 @@ class LayeredVmMap<K, V> : VmMap<K, V> {
         return get(parent, key)
     }
 
-    override fun keySet(): Set<K> {
+    fun keySet(): Set<K> {
         val entries = HashSet<K>()
         val deletions = HashSet<K>()
         var currentEdge: MapLayer<K, V>? = this.edge
@@ -36,24 +36,28 @@ class LayeredVmMap<K, V> : VmMap<K, V> {
         return entries
     }
 
-    override fun set(key: K, value: V) {
+    operator fun set(key: K, value: V) {
         edge.deletions.remove(key)
         edge.entries[key] = value
     }
 
-    override fun remove(key: K) {
+    fun remove(key: K) {
         edge.deletions.add(key)
         edge.entries.remove(key)
     }
 
-    override fun copy(): LayeredVmMap<K, V> {
+    fun size(): Int {
+        return keySet().size
+    }
+
+    override fun copy(): BranchedMap<K, V> {
         while (edge.isEmpty) {
-            this.edge = edge.parent ?: return LayeredVmMap()
+            this.edge = edge.parent ?: return BranchedMap()
         }
         val child1 = MapLayer(edge)
         val child2 = MapLayer(edge)
         this.edge = child1
-        return LayeredVmMap(child2)
+        return BranchedMap(child2)
     }
 
     override fun close() {
@@ -69,8 +73,8 @@ class LayeredVmMap<K, V> : VmMap<K, V> {
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is VmMap<*, *> && let {
-            other as VmMap<K, *>
+        return other is BranchedMap<*, *> && let {
+            other as BranchedMap<K, *>
             val keySet = keySet()
             keySet.all { key ->
                 val thisValue = this[key]

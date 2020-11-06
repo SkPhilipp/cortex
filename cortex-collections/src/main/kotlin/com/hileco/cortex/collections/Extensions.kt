@@ -1,5 +1,7 @@
 package com.hileco.cortex.collections
 
+import java.math.BigInteger
+
 /**
  * Converts a [String] to [ByteArray], inverse of [String.deserializeBytes].
  */
@@ -33,4 +35,24 @@ fun ByteArray.serialize(): String {
     return this.asSequence()
             .map { String.format("%02x", it) }
             .joinToString(separator = "") { it }
+}
+
+fun String.toBackedInteger(): BackedInteger {
+    return BackedInteger(this.deserializeBytes())
+}
+
+fun Long.toBackedInteger(): BackedInteger {
+    if (this < 0) {
+        throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
+    }
+    val toByteArray = BigInteger.valueOf(this).toByteArray()
+    return BackedInteger(toByteArray)
+}
+
+fun Int.toBackedInteger(): BackedInteger {
+    if (this < 0) {
+        throw IllegalArgumentException("Cannot cast negative values to BackedInteger")
+    }
+    val toByteArray = BigInteger.valueOf(this.toLong()).toByteArray()
+    return BackedInteger(toByteArray)
 }

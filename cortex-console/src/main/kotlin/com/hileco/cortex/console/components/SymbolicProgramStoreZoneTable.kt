@@ -3,7 +3,7 @@ package com.hileco.cortex.console.components
 import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.hileco.cortex.collections.BackedInteger
-import com.hileco.cortex.collections.LayeredVmMap
+import com.hileco.cortex.collections.BranchedMap
 import com.hileco.cortex.console.graphics.Table
 import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn
@@ -14,7 +14,7 @@ class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
                                     screen: TerminalScreen,
                                     override val position: TerminalPosition,
                                     height: Int) : Component {
-    private var values: LayeredVmMap<BackedInteger, Expression> = LayeredVmMap()
+    private var values: BranchedMap<BackedInteger, Expression> = BranchedMap()
     private val delegate: Table
 
     init {
@@ -41,7 +41,7 @@ class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
         )
     }
 
-    fun content(values: LayeredVmMap<BackedInteger, Expression> = this.values,
+    fun content(values: BranchedMap<BackedInteger, Expression> = this.values,
                 focusLine: Int = delegate.focusLine) {
         this.values = values
         delegate.focusLine = focusLine

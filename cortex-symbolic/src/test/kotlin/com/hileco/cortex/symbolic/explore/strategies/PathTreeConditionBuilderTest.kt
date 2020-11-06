@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.explore.strategies
 
-import com.hileco.cortex.collections.LayeredVmStack
+import com.hileco.cortex.collections.BranchedStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.Value
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
@@ -22,7 +22,7 @@ class PathTreeConditionBuilderTest {
 
     @Test
     fun testRootWithBranches() {
-        val stack = LayeredVmStack<SymbolicPathEntry>()
+        val stack = BranchedStack<SymbolicPathEntry>()
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(0)))
         val branch = stack.copy()
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(1)))
@@ -47,7 +47,7 @@ class PathTreeConditionBuilderTest {
      */
     @Test
     fun testRootWithAnEmptyBranch() {
-        val stack = LayeredVmStack<SymbolicPathEntry>()
+        val stack = BranchedStack<SymbolicPathEntry>()
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(0)))
         val emptyBranch = stack.copy()
         stack.push(SymbolicPathEntry(0, Value(ZERO_32), true, testExpression(1)))

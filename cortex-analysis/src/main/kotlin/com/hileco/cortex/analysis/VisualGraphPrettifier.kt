@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.collections.LayeredVmStack
+import com.hileco.cortex.collections.BranchedStack
 import com.hileco.cortex.symbolic.instructions.Instruction
 import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
 import com.hileco.cortex.symbolic.instructions.stack.PUSH
@@ -43,7 +43,7 @@ class VisualGraphPrettifier {
         val mappings = instructions.map {
             ConsumeMapping(it, mutableListOf(), false)
         }
-        val stack = LayeredVmStack<ConsumeMapping>()
+        val stack = BranchedStack<ConsumeMapping>()
         instructions.forEach { instruction ->
             val furthestParameter = instruction.stackParameters.maxBy { parameter -> parameter.position }
             val furthestParameterPosition = if (furthestParameter != null) furthestParameter.position + 1 else 0

@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.explore
 
-import com.hileco.cortex.collections.VmStack
+import com.hileco.cortex.collections.BranchedStack
 
 
 class StrongReference<T>(val referent: T?) {
@@ -13,10 +13,9 @@ class StrongReference<T>(val referent: T?) {
     }
 
     override fun toString(): String {
-        if (referent is VmStack<*>) {
+        if (referent is BranchedStack<*>) {
             return referent.size().toString()
         }
         return "StrongReference(referent=$referent)"
     }
-
 }

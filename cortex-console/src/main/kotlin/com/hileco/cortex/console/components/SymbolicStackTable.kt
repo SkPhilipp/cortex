@@ -2,8 +2,7 @@ package com.hileco.cortex.console.components
 
 import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.screen.TerminalScreen
-import com.hileco.cortex.collections.VmStack
-import com.hileco.cortex.collections.LayeredVmStack
+import com.hileco.cortex.collections.BranchedStack
 import com.hileco.cortex.console.graphics.Table
 import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn
@@ -12,7 +11,7 @@ import com.hileco.cortex.symbolic.expressions.Expression
 class SymbolicStackTable(screen: TerminalScreen,
                          override val position: TerminalPosition,
                          height: Int) : Component {
-    private var values: VmStack<Expression> = LayeredVmStack()
+    private var values: BranchedStack<Expression> = BranchedStack()
     private val delegate: Table
 
     init {
@@ -37,7 +36,7 @@ class SymbolicStackTable(screen: TerminalScreen,
         )
     }
 
-    fun content(values: VmStack<Expression> = this.values,
+    fun content(values: BranchedStack<Expression> = this.values,
                 focusLine: Int = delegate.focusLine) {
         this.values = values
         delegate.focusLine = focusLine

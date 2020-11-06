@@ -1,7 +1,7 @@
 package com.hileco.cortex.collections
 
 
-class LayeredVmStack<V> : VmStack<V> {
+class BranchedStack<V> : Branched<BranchedStack<V>> {
     var edge: StackLayer<V>
 
     private constructor(edge: StackLayer<V>) {
@@ -12,23 +12,23 @@ class LayeredVmStack<V> : VmStack<V> {
         this.edge = StackLayer(null)
     }
 
-    override fun push(value: V) {
+    fun push(value: V) {
         this.edge.entries[this.edge.length] = value
         this.edge.length++
     }
 
-    override fun pop(): V {
+    fun pop(): V {
         val value = peek()
         this.edge.entries.remove(this.edge.length - 1)
         this.edge.length--
         return value
     }
 
-    override fun peek(offset: Int): V {
+    fun peek(offset: Int = 0): V {
         return this[this.edge.length - offset - 1]
     }
 
-    override operator fun get(index: Int): V {
+    operator fun get(index: Int): V {
         var chosen: StackLayer<V>? = this.edge
         while (chosen != null && chosen.length > index) {
             val value = chosen.entries[index]
@@ -40,18 +40,18 @@ class LayeredVmStack<V> : VmStack<V> {
         throw IndexOutOfBoundsException("size ${this.edge.length} <= index $index")
     }
 
-    override operator fun set(index: Int, value: V) {
+    operator fun set(index: Int, value: V) {
         if (this.edge.length < index) {
             throw IndexOutOfBoundsException("size ${this.edge.length} <= index $index")
         }
         this.edge.entries[index] = value
     }
 
-    override fun size(): Int {
+    fun size(): Int {
         return this.edge.length
     }
 
-    override fun clear() {
+    fun clear() {
         this.edge.entries.clear()
         this.edge.length = 0
     }
@@ -60,14 +60,33 @@ class LayeredVmStack<V> : VmStack<V> {
         this.edge.close()
     }
 
-    override fun copy(): LayeredVmStack<V> {
+    override fun copy(): BranchedStack<V> {
         while (edge.isEmpty) {
-            this.edge = edge.parent ?: return LayeredVmStack()
+            this.edge = edge.parent ?: return BranchedStack()
         }
         val child1 = StackLayer(edge)
         val child2 = StackLayer(edge)
         this.edge = child1
-        return LayeredVmStack(child2)
+        return BranchedStack(child2)
+    }
+
+    fun swap(topOffsetLeft: Int, topOffsetRight: Int) {
+        val size = size()
+        val indexLeft = size - topOffsetLeft - 1
+        val indexRight = size - topOffsetRight - 1
+        val left = get(indexLeft)
+        val right = get(indexRight)
+        set(indexLeft, right)
+        set(indexRight, left)
+    }
+
+    fun duplicate(offset: Int) {
+        val value = peek(offset)
+        push(value)
+    }
+
+    fun isEmpty(): Boolean {
+        return size() == 0
     }
 
     override fun toString(): String {
@@ -77,7 +96,7 @@ class LayeredVmStack<V> : VmStack<V> {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other is VmStack<*>) {
+        if (other is BranchedStack<*>) {
             if (other.size() == this.size()) {
                 val ownIterator = asSequence().iterator()
                 val otherIterator = other.asSequence().iterator()
@@ -95,7 +114,7 @@ class LayeredVmStack<V> : VmStack<V> {
         return size().hashCode()
     }
 
-    override fun asSequence() = sequence {
+    fun asSequence() = sequence {
         val size = size()
         for (i in 0 until size) {
             yield(peek(i))
