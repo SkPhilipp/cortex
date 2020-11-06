@@ -1,15 +1,14 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.vm.ProgramException.Reason.WINNER
-import com.hileco.cortex.vm.ProgramStoreZone.DISK
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.debug.HALT
-import com.hileco.cortex.vm.instructions.debug.NOOP
-import com.hileco.cortex.vm.instructions.io.SAVE
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.symbolic.ProgramException.Reason.WINNER
+import com.hileco.cortex.symbolic.ProgramStoreZone.DISK
+import com.hileco.cortex.symbolic.instructions.debug.HALT
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.io.SAVE
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
@@ -26,12 +25,6 @@ class DeadStartProcessorTest : ProcessorFuzzTest() {
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
-
-        Documentation.of(DeadStartProcessor::class.java.simpleName)
-                .headingParagraph(DeadStartProcessor::class.java.simpleName)
-                .paragraph("Removes instructions before a HALT or EXIT in the same block, which do not perform any kind of permanent modification.")
-                .paragraph("Program before:").source(original)
-                .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(NOOP(), NOOP(), HALT(WINNER)))
     }

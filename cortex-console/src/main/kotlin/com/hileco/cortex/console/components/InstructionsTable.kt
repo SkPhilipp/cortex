@@ -5,7 +5,7 @@ import com.googlecode.lanterna.screen.TerminalScreen
 import com.hileco.cortex.console.graphics.Table
 import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn
-import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.Instruction
 
 class InstructionsTable(screen: TerminalScreen,
                         override val position: TerminalPosition,

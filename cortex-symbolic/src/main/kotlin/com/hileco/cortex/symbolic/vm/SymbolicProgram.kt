@@ -4,10 +4,10 @@ import com.hileco.cortex.collections.VmComponent
 import com.hileco.cortex.collections.VmMap
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.symbolic.expressions.Expression
-import com.hileco.cortex.vm.PositionedInstruction
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.symbolic.PositionedInstruction
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.symbolic.instructions.Instruction
 
 class SymbolicProgram : VmComponent<SymbolicProgram> {
     val instructions: List<Instruction>

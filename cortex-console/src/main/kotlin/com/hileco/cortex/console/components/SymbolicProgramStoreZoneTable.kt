@@ -8,8 +8,8 @@ import com.hileco.cortex.console.graphics.Table
 import com.hileco.cortex.console.graphics.TableCell
 import com.hileco.cortex.console.graphics.TableColumn
 import com.hileco.cortex.symbolic.expressions.Expression
-import com.hileco.cortex.vm.ProgramStoreZone
-import com.hileco.cortex.vm.bytes.BackedInteger
+import com.hileco.cortex.symbolic.ProgramStoreZone
+import com.hileco.cortex.collections.backed.BackedInteger
 
 class SymbolicProgramStoreZoneTable(programStoreZone: ProgramStoreZone,
                                     screen: TerminalScreen,

@@ -1,8 +1,24 @@
 # Cortex
 
-Smart contracts open up new attack surfaces. Their machine-code, storage, and any interactions with them are public. Cortex takes smart contracts apart, analyses them & tries to extract value from them.
+```
+                         cortex      ,
+              ,-.       _,---._ __  / \
+             /  )    .-'       `./ /   \
+            (  (   ,'            `/    /|
+             \  `-"             \'\   / |
+              `.              ,  \ \ /  |
+               /`.          ,'-`----Y   |
+              (            ;        |   '
+              |  ,-.    ,-'         |  /
+              |  | (   |     eth    | /
+              )  |  \  `.___________|/
+```
 
-For examples, see https://cortex.minesec.net/.
+Smart contracts open up new attack surfaces.
+Their machine-code, storage, and any interactions with them are public.
+Cortex takes smart contracts apart, analyses them & exploits all of their weaknesses.
+
+Smart contracts open up new attack surfaces. Their machine-code, storage, and any interactions with them are public. Cortex takes smart contracts apart, analyses them & tries to extract value from them.
 
 ## Hosting
 

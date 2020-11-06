@@ -1,11 +1,11 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
-import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
-import com.hileco.cortex.vm.instructions.debug.HALT
-import com.hileco.cortex.vm.instructions.debug.NOOP
-import com.hileco.cortex.vm.instructions.jumps.EXIT
-import com.hileco.cortex.vm.instructions.jumps.JUMP
+import com.hileco.cortex.symbolic.instructions.calls.CALL_RETURN
+import com.hileco.cortex.symbolic.instructions.debug.HALT
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.jumps.EXIT
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP
 
 class DeadEndProcessor : Processor {
     override fun process(graph: Graph) {

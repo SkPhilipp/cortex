@@ -1,19 +1,18 @@
 package com.hileco.cortex.symbolic
 
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.toBackedInteger
 import com.hileco.cortex.collections.deserializeBytes
-import com.hileco.cortex.documentation.Documentation
+import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
 import com.hileco.cortex.symbolic.expressions.Expression.*
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.conditions.EQUALS
-import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
-import com.hileco.cortex.vm.instructions.io.LOAD
-import com.hileco.cortex.vm.instructions.math.ADD
-import com.hileco.cortex.vm.instructions.math.HASH
-import com.hileco.cortex.vm.instructions.math.MODULO
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.conditions.EQUALS
+import com.hileco.cortex.symbolic.instructions.conditions.LESS_THAN
+import com.hileco.cortex.symbolic.instructions.io.LOAD
+import com.hileco.cortex.symbolic.instructions.math.ADD
+import com.hileco.cortex.symbolic.instructions.math.HASH
+import com.hileco.cortex.symbolic.instructions.math.MODULO
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Test
 
@@ -52,11 +51,7 @@ class SolverTest {
         val solver = Solver()
         val solution = solver.solve(expressionGenerator.currentExpression)
         val onlyValue = solution.values.values.first()
-        Documentation.of(Solver::class.java.simpleName)
-                .headingParagraph(Solver::class.java.simpleName)
-                .paragraph("Example program:").source(instructions)
-                .paragraph("Resulting expression:").source(expressionGenerator.currentExpression)
-                .paragraph("Suggested solution for expression to be true:").source(solution)
+
         Assert.assertTrue(solution.solvable)
         Assert.assertTrue(BackedInteger(onlyValue.sliceArray(IntRange(0, 2))) < 0xffffff.toBackedInteger())
     }

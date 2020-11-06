@@ -4,15 +4,15 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicProgram
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.io.LOAD
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
-import com.hileco.cortex.vm.instructions.math.ADD
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.io.LOAD
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
+import com.hileco.cortex.symbolic.instructions.math.ADD
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

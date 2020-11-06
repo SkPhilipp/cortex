@@ -1,10 +1,10 @@
 package com.hileco.cortex.analysis
 
 import com.hileco.cortex.collections.layer.LayeredVmStack
-import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.stack.DUPLICATE
-import com.hileco.cortex.vm.instructions.stack.PUSH
-import com.hileco.cortex.vm.instructions.stack.SWAP
+import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.stack.SWAP
 
 class VisualGraphPrettifier {
 

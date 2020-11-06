@@ -1,6 +1,6 @@
 package com.hileco.cortex.analysis
 
-import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.Instruction
 import java.util.*
 
 class GraphBlock {

@@ -1,19 +1,18 @@
 package com.hileco.cortex.symbolic
 
-import com.hileco.cortex.documentation.Documentation
 import com.hileco.cortex.symbolic.expressions.Expression.*
-import com.hileco.cortex.vm.ProgramStoreZone.CALL_DATA
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.debug.DROP
-import com.hileco.cortex.vm.instructions.io.LOAD
-import com.hileco.cortex.vm.instructions.math.ADD
-import com.hileco.cortex.vm.instructions.math.SUBTRACT
-import com.hileco.cortex.vm.instructions.stack.DUPLICATE
-import com.hileco.cortex.vm.instructions.stack.POP
-import com.hileco.cortex.vm.instructions.stack.PUSH
-import com.hileco.cortex.vm.instructions.stack.SWAP
+import com.hileco.cortex.symbolic.ProgramStoreZone.CALL_DATA
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.symbolic.instructions.debug.DROP
+import com.hileco.cortex.symbolic.instructions.io.LOAD
+import com.hileco.cortex.symbolic.instructions.math.ADD
+import com.hileco.cortex.symbolic.instructions.math.SUBTRACT
+import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
+import com.hileco.cortex.symbolic.instructions.stack.POP
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.stack.SWAP
 import org.junit.Assert
 import org.junit.Test
 
@@ -81,10 +80,7 @@ class ExpressionGeneratorTest {
                 SUBTRACT())
         val builder = ExpressionGenerator()
         instructions.forEach { builder.addInstruction(it) }
-        Documentation.of(ExpressionGenerator::class.java.simpleName)
-                .headingParagraph(ExpressionGenerator::class.java.simpleName)
-                .paragraph("Program:").source(instructions)
-                .paragraph("Resulting expressions:").source(builder.viewAllExpressions())
+
         val result = builder.currentExpression
         val resultOffset1 = builder.viewExpression(1)
         Assert.assertTrue(result is Value)

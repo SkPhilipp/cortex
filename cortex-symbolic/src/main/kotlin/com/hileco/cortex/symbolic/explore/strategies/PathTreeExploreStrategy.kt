@@ -6,7 +6,7 @@ import com.hileco.cortex.symbolic.Solver
 import com.hileco.cortex.symbolic.expressions.Expression.False
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramException
+import com.hileco.cortex.symbolic.ProgramException
 import java.util.*
 
 class PathTreeExploreStrategy : ExploreStrategy() {

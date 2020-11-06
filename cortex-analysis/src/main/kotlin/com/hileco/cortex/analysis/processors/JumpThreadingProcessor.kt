@@ -3,13 +3,13 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.forEachTwo
-import com.hileco.cortex.vm.instructions.debug.HALT
-import com.hileco.cortex.vm.instructions.debug.NOOP
-import com.hileco.cortex.vm.instructions.jumps.EXIT
-import com.hileco.cortex.vm.instructions.jumps.JUMP
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.debug.HALT
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.jumps.EXIT
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 
 class JumpThreadingProcessor : Processor {
     override fun process(graph: Graph) {

@@ -4,9 +4,9 @@ import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.Value
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
-import com.hileco.cortex.vm.ProgramStoreZone
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
+import com.hileco.cortex.symbolic.ProgramStoreZone
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.toBackedInteger
 import org.hamcrest.CoreMatchers.anyOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert

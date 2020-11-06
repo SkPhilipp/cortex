@@ -1,9 +1,8 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
@@ -22,12 +21,6 @@ class DeadLoadProcessorTest : ProcessorFuzzTest() {
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
-
-        Documentation.of(DeadLoadProcessor::class.java.simpleName)
-                .headingParagraph(DeadLoadProcessor::class.java.simpleName)
-                .paragraph("Identifies read-only elements of program store zones, to eliminate known LOADs.")
-                .paragraph("Program before:").source(original)
-                .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
                 PUSH(ONE_32)

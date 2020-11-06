@@ -5,9 +5,9 @@ import com.hileco.cortex.analysis.GraphNode
 import com.hileco.cortex.analysis.edges.EdgeParameterConsumer
 import com.hileco.cortex.analysis.edges.EdgeParameters
 import com.hileco.cortex.collections.backed.BackedVmStack
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.vm.instructions.stack.DUPLICATE
-import com.hileco.cortex.vm.instructions.stack.SWAP
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
+import com.hileco.cortex.symbolic.instructions.stack.SWAP
 import java.util.*
 
 class ParameterProcessor : Processor {

@@ -4,18 +4,18 @@ import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.*
-import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.bits.*
-import com.hileco.cortex.vm.instructions.conditions.EQUALS
-import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
-import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
-import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
-import com.hileco.cortex.vm.instructions.io.LOAD
-import com.hileco.cortex.vm.instructions.io.SAVE
-import com.hileco.cortex.vm.instructions.math.*
-import com.hileco.cortex.vm.instructions.stack.DUPLICATE
-import com.hileco.cortex.vm.instructions.stack.PUSH
-import com.hileco.cortex.vm.instructions.stack.SWAP
+import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.bits.*
+import com.hileco.cortex.symbolic.instructions.conditions.EQUALS
+import com.hileco.cortex.symbolic.instructions.conditions.GREATER_THAN
+import com.hileco.cortex.symbolic.instructions.conditions.IS_ZERO
+import com.hileco.cortex.symbolic.instructions.conditions.LESS_THAN
+import com.hileco.cortex.symbolic.instructions.io.LOAD
+import com.hileco.cortex.symbolic.instructions.io.SAVE
+import com.hileco.cortex.symbolic.instructions.math.*
+import com.hileco.cortex.symbolic.instructions.stack.DUPLICATE
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.stack.SWAP
 
 class ExpressionGenerator {
     private val expressionOptimizer = ExpressionOptimizer()

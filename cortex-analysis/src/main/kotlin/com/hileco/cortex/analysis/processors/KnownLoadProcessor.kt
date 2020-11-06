@@ -1,11 +1,11 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
-import com.hileco.cortex.vm.ProgramStoreZone
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.instructions.debug.NOOP
-import com.hileco.cortex.vm.instructions.io.LOAD
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.ProgramStoreZone
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.io.LOAD
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 
 class KnownLoadProcessor(private val knownData: Map<ProgramStoreZone, Map<BackedInteger, BackedInteger>>) : Processor {
     override fun process(graph: Graph) {

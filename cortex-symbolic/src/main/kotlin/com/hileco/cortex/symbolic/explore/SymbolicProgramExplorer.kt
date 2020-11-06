@@ -1,15 +1,15 @@
 package com.hileco.cortex.symbolic.explore
 
+import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.Companion.INSTRUCTION_LIMIT
 import com.hileco.cortex.symbolic.explore.strategies.ExploreStrategy
 import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramException
-import com.hileco.cortex.vm.ProgramException.Reason.*
-import com.hileco.cortex.vm.ProgramRunner.Companion.INSTRUCTION_LIMIT
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
+import com.hileco.cortex.symbolic.ProgramException
+import com.hileco.cortex.symbolic.ProgramException.Reason.*
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.atomic.AtomicInteger
 

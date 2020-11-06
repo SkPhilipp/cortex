@@ -1,7 +1,5 @@
 package com.hileco.cortex.ethereum
 
-import com.hileco.cortex.collections.serialize
-import com.hileco.cortex.documentation.Documentation
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Test
@@ -13,13 +11,6 @@ class SolidityCompilerTest {
         Assume.assumeTrue(COMPILER_ENABLED)
 
         val bytecode = TEST_COMPILER.compile("barrier000.sol")
-
-        Documentation.of(SolidityCompiler::class.java.simpleName)
-                .headingParagraph(SolidityCompiler::class.java.simpleName)
-                .paragraph("Allows for direct integration with the Solidity compiler (current default version: ${SolidityCompiler.DEFAULT_VERSION})." +
-                        "This allows for testing on bytecode of contracts found in the wild, on different versions and across platforms.")
-                .paragraph("Using the barrier000.sol example contract, the integration yields bytecode:")
-                .source(bytecode.serialize())
 
         Assert.assertTrue(bytecode.isNotEmpty())
     }

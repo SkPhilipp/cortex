@@ -1,13 +1,13 @@
 package com.hileco.cortex.symbolic.explore
 
+import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.Companion.INSTRUCTION_LIMIT
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_SKIP
 import com.hileco.cortex.symbolic.explore.SymbolicInstructionRunner.StepMode.NON_CONCRETE_JUMP_TAKE
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramException
-import com.hileco.cortex.vm.ProgramException.Reason.*
-import com.hileco.cortex.vm.ProgramRunner.Companion.INSTRUCTION_LIMIT
+import com.hileco.cortex.symbolic.ProgramException
+import com.hileco.cortex.symbolic.ProgramException.Reason.*
 
 class SymbolicProgramDebugger(val virtualMachine: SymbolicVirtualMachine) {
     private val symbolicInstructionRunner = SymbolicInstructionRunner()

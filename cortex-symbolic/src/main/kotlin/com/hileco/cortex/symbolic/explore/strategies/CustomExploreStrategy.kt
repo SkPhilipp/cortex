@@ -8,7 +8,7 @@ import com.hileco.cortex.symbolic.expressions.Expression
 import com.hileco.cortex.symbolic.expressions.Expression.False
 import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
 import java.util.*
 
 // TODO: Tests for PathTreeExploreStrategy & CustomExploreStrategy

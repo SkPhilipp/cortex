@@ -6,10 +6,10 @@ import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
-import com.hileco.cortex.vm.ProgramException
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.stack.ExecutionVariable
+import com.hileco.cortex.symbolic.ProgramException
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.symbolic.instructions.stack.ExecutionVariable
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 

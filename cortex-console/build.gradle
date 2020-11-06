@@ -12,7 +12,6 @@ repositories {
 
 dependencies {
     compile project(':cortex-collections')
-    compile project(':cortex-vm')
     compile project(':cortex-symbolic')
     compile project(':cortex-analysis')
     compile project(':cortex-processing')

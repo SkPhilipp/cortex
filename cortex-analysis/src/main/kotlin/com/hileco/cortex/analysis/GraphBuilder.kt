@@ -1,7 +1,7 @@
 package com.hileco.cortex.analysis
 
 import com.hileco.cortex.analysis.processors.*
-import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.Instruction
 
 class GraphBuilder(val processors: List<Processor>) {
     fun build(instructions: List<Instruction>): Graph {
@@ -19,8 +19,6 @@ class GraphBuilder(val processors: List<Processor>) {
         val OPTIMIZED_GRAPH_BUILDER = GraphBuilder(listOf(
                 ParameterProcessor(),
 
-                KnownProcessor(),
-                KnownJumpIfProcessor(),
                 KnownLoadProcessor(mapOf()),
 
                 DeadStartProcessor(),

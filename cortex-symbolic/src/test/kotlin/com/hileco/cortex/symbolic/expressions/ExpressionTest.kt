@@ -1,6 +1,6 @@
 package com.hileco.cortex.symbolic.expressions
 
-import com.hileco.cortex.vm.bytes.toBackedInteger
+import com.hileco.cortex.collections.backed.toBackedInteger
 import org.junit.Assert
 import org.junit.Test
 

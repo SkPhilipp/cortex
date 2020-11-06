@@ -7,7 +7,7 @@ import com.hileco.cortex.console.components.*
 import com.hileco.cortex.console.graphics.Background
 import com.hileco.cortex.console.graphics.Box
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramStoreZone
+import com.hileco.cortex.symbolic.ProgramStoreZone
 
 class SymbolicProgramComposition(screen: TerminalScreen,
                                  var virtualMachine: SymbolicVirtualMachine,

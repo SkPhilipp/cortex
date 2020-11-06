@@ -7,12 +7,12 @@ import com.hileco.cortex.analysis.edges.EdgeMapping
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.*
-import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
-import com.hileco.cortex.vm.instructions.debug.HALT
-import com.hileco.cortex.vm.instructions.jumps.EXIT
-import com.hileco.cortex.vm.instructions.jumps.JUMP
-import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
-import com.hileco.cortex.vm.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.calls.CALL_RETURN
+import com.hileco.cortex.symbolic.instructions.debug.HALT
+import com.hileco.cortex.symbolic.instructions.jumps.EXIT
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
 
 class FlowProcessor : Processor {
     private fun mapLinesToBlocksForNode(edgeMapping: EdgeMapping, edge: FlowMapping, graphBlock: GraphBlock, graphNode: GraphNode) {

@@ -2,7 +2,7 @@ package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.edges.FlowMapping
-import com.hileco.cortex.vm.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
 import java.util.*
 
 class JumpUnreachableProcessor : Processor {

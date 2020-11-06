@@ -1,8 +1,8 @@
 package com.hileco.cortex.symbolic.expressions
 
-import com.hileco.cortex.vm.ProgramStoreZone
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.symbolic.ProgramStoreZone
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
 import com.microsoft.z3.BitVecExpr
 import com.microsoft.z3.BoolExpr
 import com.microsoft.z3.Context

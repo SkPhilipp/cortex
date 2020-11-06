@@ -1,8 +1,8 @@
 package com.hileco.cortex.analysis
 
 import com.hileco.cortex.analysis.edges.EdgeMapping
-import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
 import java.util.*
 
 class Graph() {

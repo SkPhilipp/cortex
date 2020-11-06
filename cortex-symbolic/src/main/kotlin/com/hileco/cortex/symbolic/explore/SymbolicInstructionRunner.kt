@@ -10,37 +10,36 @@ import com.hileco.cortex.symbolic.vm.SymbolicPathEntry
 import com.hileco.cortex.symbolic.vm.SymbolicProgramContext
 import com.hileco.cortex.symbolic.vm.SymbolicTransfer
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.ProgramException
-import com.hileco.cortex.vm.ProgramException.Reason.*
-import com.hileco.cortex.vm.ProgramRunner.Companion.STACK_LIMIT
-import com.hileco.cortex.vm.ProgramStoreZone.*
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.bits.BITWISE_AND
-import com.hileco.cortex.vm.instructions.bits.BITWISE_NOT
-import com.hileco.cortex.vm.instructions.bits.BITWISE_OR
-import com.hileco.cortex.vm.instructions.bits.SHIFT_RIGHT
-import com.hileco.cortex.vm.instructions.calls.CALL
-import com.hileco.cortex.vm.instructions.calls.CALL_RETURN
-import com.hileco.cortex.vm.instructions.conditions.EQUALS
-import com.hileco.cortex.vm.instructions.conditions.GREATER_THAN
-import com.hileco.cortex.vm.instructions.conditions.IS_ZERO
-import com.hileco.cortex.vm.instructions.conditions.LESS_THAN
-import com.hileco.cortex.vm.instructions.debug.DROP
-import com.hileco.cortex.vm.instructions.debug.HALT
-import com.hileco.cortex.vm.instructions.debug.NOOP
-import com.hileco.cortex.vm.instructions.io.LOAD
-import com.hileco.cortex.vm.instructions.io.SAVE
-import com.hileco.cortex.vm.instructions.jumps.EXIT
-import com.hileco.cortex.vm.instructions.jumps.JUMP
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
-import com.hileco.cortex.vm.instructions.jumps.JUMP_IF
-import com.hileco.cortex.vm.instructions.math.*
-import com.hileco.cortex.vm.instructions.stack.*
-import com.hileco.cortex.vm.instructions.stack.ExecutionVariable.*
+import com.hileco.cortex.symbolic.ProgramException
+import com.hileco.cortex.symbolic.ProgramException.Reason.*
+import com.hileco.cortex.symbolic.ProgramStoreZone.*
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.bits.BITWISE_AND
+import com.hileco.cortex.symbolic.instructions.bits.BITWISE_NOT
+import com.hileco.cortex.symbolic.instructions.bits.BITWISE_OR
+import com.hileco.cortex.symbolic.instructions.bits.SHIFT_RIGHT
+import com.hileco.cortex.symbolic.instructions.calls.CALL
+import com.hileco.cortex.symbolic.instructions.calls.CALL_RETURN
+import com.hileco.cortex.symbolic.instructions.conditions.EQUALS
+import com.hileco.cortex.symbolic.instructions.conditions.GREATER_THAN
+import com.hileco.cortex.symbolic.instructions.conditions.IS_ZERO
+import com.hileco.cortex.symbolic.instructions.conditions.LESS_THAN
+import com.hileco.cortex.symbolic.instructions.debug.DROP
+import com.hileco.cortex.symbolic.instructions.debug.HALT
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.io.LOAD
+import com.hileco.cortex.symbolic.instructions.io.SAVE
+import com.hileco.cortex.symbolic.instructions.jumps.EXIT
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_IF
+import com.hileco.cortex.symbolic.instructions.math.*
+import com.hileco.cortex.symbolic.instructions.stack.*
+import com.hileco.cortex.symbolic.instructions.stack.ExecutionVariable.*
 
 class SymbolicInstructionRunner {
 
@@ -368,5 +367,10 @@ class SymbolicInstructionRunner {
                 throw UnsupportedOperationException("$instruction is not supported")
             }
         }
+    }
+
+    companion object {
+        const val STACK_LIMIT: Long = Long.MAX_VALUE
+        const val INSTRUCTION_LIMIT = 100_000
     }
 }

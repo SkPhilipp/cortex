@@ -6,8 +6,8 @@ import com.hileco.cortex.collections.VmStack
 import com.hileco.cortex.collections.layer.LayeredVmMap
 import com.hileco.cortex.collections.layer.LayeredVmStack
 import com.hileco.cortex.symbolic.expressions.Expression
-import com.hileco.cortex.vm.bytes.BackedInteger
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ZERO_32
+import com.hileco.cortex.collections.backed.BackedInteger
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ZERO_32
 
 class SymbolicProgramContext : VmComponent<SymbolicProgramContext> {
     val program: SymbolicProgram

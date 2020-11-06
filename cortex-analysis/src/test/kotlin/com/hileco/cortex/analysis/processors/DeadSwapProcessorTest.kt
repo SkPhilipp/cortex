@@ -1,12 +1,11 @@
 package com.hileco.cortex.analysis.processors
 
 import com.hileco.cortex.analysis.GraphBuilder
-import com.hileco.cortex.documentation.Documentation
-import com.hileco.cortex.vm.bytes.BackedInteger.Companion.ONE_32
-import com.hileco.cortex.vm.bytes.toBackedInteger
-import com.hileco.cortex.vm.instructions.debug.NOOP
-import com.hileco.cortex.vm.instructions.stack.PUSH
-import com.hileco.cortex.vm.instructions.stack.SWAP
+import com.hileco.cortex.collections.backed.BackedInteger.Companion.ONE_32
+import com.hileco.cortex.collections.backed.toBackedInteger
+import com.hileco.cortex.symbolic.instructions.debug.NOOP
+import com.hileco.cortex.symbolic.instructions.stack.PUSH
+import com.hileco.cortex.symbolic.instructions.stack.SWAP
 import org.junit.Assert
 import org.junit.Test
 
@@ -24,12 +23,6 @@ class DeadSwapProcessorTest : ProcessorFuzzTest() {
         )
         val graph = graphBuilder.build(original)
         val instructions = graph.toInstructions()
-
-        Documentation.of(DeadSwapProcessor::class.java.simpleName)
-                .headingParagraph(DeadSwapProcessor::class.java.simpleName)
-                .paragraph("Removes SWAP instructions which swap an element on the stack with the same element.")
-                .paragraph("Program before:").source(original)
-                .paragraph("Program after:").source(instructions)
 
         Assert.assertEquals(instructions, listOf(
                 PUSH(ONE_32),

@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: |
-          gradle clean build asciidoctor
+          gradle clean build

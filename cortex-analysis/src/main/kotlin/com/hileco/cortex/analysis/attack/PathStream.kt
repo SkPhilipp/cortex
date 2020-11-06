@@ -2,7 +2,7 @@ package com.hileco.cortex.analysis.attack
 
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowType
-import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.Instruction
 
 class PathStream(instructions: List<Instruction>,
                  private val path: List<Flow>) {

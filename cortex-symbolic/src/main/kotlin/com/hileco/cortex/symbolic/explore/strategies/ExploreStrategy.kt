@@ -2,7 +2,7 @@ package com.hileco.cortex.symbolic.explore.strategies
 
 import com.hileco.cortex.symbolic.Solution
 import com.hileco.cortex.symbolic.vm.SymbolicVirtualMachine
-import com.hileco.cortex.vm.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.Instruction
 
 abstract class ExploreStrategy {
     /**

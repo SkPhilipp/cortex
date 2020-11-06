@@ -2,10 +2,10 @@ package com.hileco.cortex.analysis.edges
 
 import com.hileco.cortex.analysis.GraphBlock
 import com.hileco.cortex.analysis.GraphNode
-import com.hileco.cortex.vm.instructions.Instruction
-import com.hileco.cortex.vm.instructions.InstructionModifier
-import com.hileco.cortex.vm.instructions.stack.SWAP
-import com.hileco.cortex.vm.instructions.stack.VARIABLE
+import com.hileco.cortex.symbolic.instructions.Instruction
+import com.hileco.cortex.symbolic.instructions.InstructionModifier
+import com.hileco.cortex.symbolic.instructions.stack.SWAP
+import com.hileco.cortex.symbolic.instructions.stack.VARIABLE
 
 class EdgeMapping {
     private val mapping: MutableMap<Class<*>, MutableMap<Any, MutableList<Edge>>> = HashMap()

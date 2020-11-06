@@ -3,10 +3,10 @@ package com.hileco.cortex.analysis.processors
 import com.hileco.cortex.analysis.Graph
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.INSTRUCTION_JUMP
-import com.hileco.cortex.vm.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
-import com.hileco.cortex.vm.ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS
-import com.hileco.cortex.vm.instructions.debug.HALT
-import com.hileco.cortex.vm.instructions.jumps.JUMP_DESTINATION
+import com.hileco.cortex.symbolic.ProgramException.Reason.JUMP_TO_ILLEGAL_INSTRUCTION
+import com.hileco.cortex.symbolic.ProgramException.Reason.JUMP_TO_OUT_OF_BOUNDS
+import com.hileco.cortex.symbolic.instructions.debug.HALT
+import com.hileco.cortex.symbolic.instructions.jumps.JUMP_DESTINATION
 
 class JumpIllegalProcessor : Processor {
     override fun process(graph: Graph) {
