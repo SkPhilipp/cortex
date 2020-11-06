@@ -1,6 +1,6 @@
-package com.hileco.cortex.analysis.attack
+package com.hileco.cortex.analysis.path
 
-import com.hileco.cortex.analysis.attack.PathGenerator.RotationResult.*
+import com.hileco.cortex.analysis.path.PathGenerator.RotationResult.*
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowMapping
 import com.hileco.cortex.analysis.edges.FlowType.*

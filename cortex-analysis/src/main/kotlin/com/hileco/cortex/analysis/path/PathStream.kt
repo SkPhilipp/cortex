@@ -1,4 +1,4 @@
-package com.hileco.cortex.analysis.attack
+package com.hileco.cortex.analysis.path
 
 import com.hileco.cortex.analysis.edges.Flow
 import com.hileco.cortex.analysis.edges.FlowType
