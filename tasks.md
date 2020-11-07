@@ -18,20 +18,22 @@
 
 ### Cases
 
-- Analyze & manually inspect `0xe28e72fcf78647adce1f1252f240bbfaebd63bcc`
+Some interesting early cases;
+- `0xe28e72fcf78647adce1f1252f240bbfaebd63bcc`
+- `0x258c09146b7a28dde8d3e230030e27643f91115f`
+- `0x020522bf9b8ed6ff41e2fa6765a17e20e2767d64`
+- `0x7153fdeef24e488af4dc001f620407764ee47747`
+- `0xc4c51de1abf5d60dbd329ec0f999fd8f021ae9fc`
+- `0xd79b4c6791784184e2755b2fc1659eaab0f80456`
+- `0x7d692b829cb5a81b9e17066504143fc1b75e0c15`
+- `0x2adfc2febf51d75d195ccd903251c099fdd22f20`
 
 ### Processing
-
-- Split up Cortex Processing
-  - A component to only parse the chain and stay up to date for queries on it
-  - A component to filter programs and mark those that are of interest
-  - A component to solve programs marked by the previous stage, generating analysis reports & potential solutions
-  - A component which submits verified solutions back into the chain
-  Components would lock what they are working on, so that parallel work will become easy to implement
 
 - Implement multi-width instructions to replace NOOP in optimization processing.
 - Check https://www.agner.org/optimize/
 - Check https://llvm.org/docs/Passes.html
+- Implementation of KnownProcessor and KnownJumpIfProcessor using Symbolic runner
 - Implementation of InliningProcessor
 - Implementation of InstructionHoistProcessor
 - Implementation of DeadPathConstraintProcessor
@@ -53,6 +55,7 @@
   These optimizations should be implemented separately from the Layered structures
   These optimizations may be dependent on minimum layer width (hard) which would merge layers on creation unless the parent is of a certain width
   These optimizations may be dependent on maximum depth (soft) which when reached could recalibrate the minimum layer size
+- Verify runtime and potential of `LayeredVMOptimizer` and implement it for `BranchedMap` and `BranchedStack`
 
 ### Cortex Explore Strategies
 
@@ -60,6 +63,9 @@ Currently Explore continues until certain limits are reached. Alternative explor
 - Implementation of an explore using Z3's mkITE depending on path Layered structure
 - Implementation of an explore solving before reaching a target to verify whether paths are possible before continuing further
 - Implementation of an explore which filters out paths that we can know beforehand are not targeted
+- Make Expression references compatible with multiple program contexts
+
+A model of paths through a program could be generated before exploring, filtering out uninteresting paths.
 
 ### Solver Tactics & Strategies
 
@@ -107,51 +113,7 @@ Implement https://swcregistry.io/ as barrier programs.
     - BLOCK_DIFFICULTY
     - BLOCK_GAS_LIMIT
 
-* Implement options for DIVIDE and MODULO to allow for signed and unsigned operation.
-    Configure these new instructions in EthereumTranspiler for `SDIV` and `SMOD`.
-* Implement composite instruction ADD-MODULO and MULTIPLY_MODULO.
-    Configure these new instructions in EthereumTranspiler for `ADDMOD` and `MULMOD`.
-* Implement options for LESS_THAN and GREATER_THAN to allow for signed and unsigned operation.
-    Configure these new instructions in EthereumTranspiler for `SLT` and `SGT`.
-* Implement BYTE instruction, for retrieving a single byte from a 32 byte value.
-* Implement SHIFT instruction, with options for logical or arithmetic, left or right bit shift.
-    Configure this new instructions in EthereumTranspiler for `SHL`, `SHR` and `SAR`.
-* Implement instruction BALANCE to retrieve the available funds of a given address.
-    Configure this new instruction in EthereumTranspiler for `BALANCE`.
-* Implement variable CALL_FUNDS containing the value of funds transferred by the current call.
-    Configure this new variable in EthereumTranspiler for `CALLVALUE`.
-* Implement variable CALL_DATA_SIZE containing the total size in bytes of the CALL_DATA program store zone.
-    Configure this new variable in EthereumTranspiler for `CALLDATASIZE`.
-* Implement instruction LOCAL_PROGRAM_COPY, as loads-then-saves for a given source offset, target offset, and length.
-    Configure this new instruction in EthereumTranspiler for `CALLDATACOPY`.
-* Implement composite instruction PROGRAM_COPY, as LOCAL_PROGRAM_COPY for a given address, source offset, target offset, and length.
-    Configure this new instruction in EthereumTranspiler for `EXTCODECOPY`.
-* Implement instruction PROGRAM_SIZE, to retrieve the size of a program at a given address.
-    Configure this new instruction in EthereumTranspiler for `EXTCODESIZE`.
-* Implement composite variable LOCAL_PROGRAM_SIZE, as PROGRAM_SIZE of the execution-local program.
-    Configure this new variable in EthereumTranspiler for `CODESIZE`.
-* Implement variable CALL_CYCLES containing the conceptually reserved execution cycles.
-    Configure this new variable in EthereumTranspiler for `GASPRICE`.
-* Implement RETURN_DATA as a new program-execution-local program store zone (such as MEMORY).
-    RETURN_DATA can only be written to using CALL_RETURN, and is only available for reading
-    from the context of the calling program, post-CALL.
-    Configure COPY RETURN_DATA in EthereumTranspiler for `RETURNDATACOPY`.
-* Implement instruction SIZE to retrieve the current size of a given program store zone.
-    Configure SIZE RETURN_DATA in EthereumTranspiler for `RETURNDATASIZE`.
-    Configure SIZE MEMORY in EthereumTranspiler for `MSIZE`.
-* Implement variable INTEGRATION_ETHEREUM_BLOCK_HASH as an ethereum-specific variable.
-    Configure this new variable in EthereumTranspiler for `BLOCKHASH`.
-* Implement variable INTEGRATION_ETHEREUM_COINBASE as an ethereum-specific variable.
-    Configure this new variable in EthereumTranspiler for `COINBASE`.
-* Implement variable INTEGRATION_ETHEREUM_NUMBER as an ethereum-specific variable.
-    Configure this new variable in EthereumTranspiler for `NUMBER`.
-* Implement variable INTEGRATION_ETHEREUM_DIFFICULTY as an ethereum-specific variable.
-    Configure this new variable in EthereumTranspiler for `DIFFICULTY`.
-* Implement variable INTEGRATION_ETHEREUM_GASLIMIT as an ethereum-specific variable.
-    Configure this new variable in EthereumTranspiler for `GASLIMIT`.
-* Implement variable INTEGRATION_ETHEREUM_GAS as an ethereum-specific variable.
-    Configure this new variable in EthereumTranspiler for `GAS`.
-* Implement options for SAVE to allow for writing values smaller than the default size.
-    Configure this new option in EthereumTranspiler for `MSTORE8`.
-* Proper representation of Hash functions in solving layer
-* Barrier program which calls itself
+### Corpus
+
+- Implement a Blueprint-style fuzzer
+- Obtain a top N of common contracts and make them available for testing
